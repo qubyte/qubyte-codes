@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  {{#link-next}}<link rel="next" href="{{link}}">{{/link-next}}
+  {{#link-prev}}<link rel="prev" href="{{link}}">{{/link-prev}}
+  <title>Qubyte Codes - {{title}}</title>
+</head>
+<body>
+  <nav></nav>
+  <article>
+    <header>
+      <h1>{{title}}</h1>
+      <time datetime="{{datetime}}">{{human-datetime}}</time>
+    </header>
+    {{{content}}}
+  <article>
+</body>
+</html>
