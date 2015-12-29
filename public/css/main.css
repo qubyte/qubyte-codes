@@ -1,0 +1,72 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+html, body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #fff;
+  padding: 0;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 1rem;
+}
+
+p {
+  margin: 1rem;
+}
+
+nav {
+  font-size: 1.5rem;
+  margin: 1rem;
+}
+
+article {
+  margin: 1rem;
+}
+
+time {
+  margin: 1rem;
+}
+
+li {
+  margin: 0.5rem;
+  display: inline;
+}
+
+@media (min-width: 800px) and (min-device-width: 800px) {
+  html, body {
+    height: 100%;
+    margin: 0;
+    align-items: baseline;
+    display: flex;
+    justify-content: center;
+  }
+
+  nav {
+    padding-right: 0.5em;
+    width: 15em;
+  }
+
+  .blog-container {
+    width: 100%
+  }
+
+  li {
+    display: block;
+  }
+}
+
+pre {
+  margin: inherit;
+  text-align: left;
+  background-color: #FFF;
+}
+
+ul {
+  /*font-size: 2em;*/
+  text-align: left;
+  /*list-style-type: none;*/
+}
