@@ -35,6 +35,12 @@ function readFile(file) {
   });
 }
 
+function writeFile(path, content) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, content, err => err ? reject(err) : resolve());
+  });
+}
+
 function makeSnippet(body) {
   const ast = remark.parse(body);
 
@@ -43,6 +49,8 @@ function makeSnippet(body) {
       return remark.stringify(child);
     }
   }
+
+  return '';
 }
 
 function renderMarkdown(post) {
@@ -61,23 +69,6 @@ function loadPostFiles() {
     .then(contents => contents.map(renderMarkdown));
 }
 
-function order(posts) {
-  posts.sort((a, b) => new Date(a) - new Date(b));
-
-  for (let i = 0, len = posts.length; i < len; i++) {
-    Object.assign(posts[i].attributes, {
-      linkPrev: posts[i - 1] && `/blog/${posts[i - 1].attributes.slug}`,
-      linkNext: posts[i + 1] && `/blog/${posts[i + 1].attributes.slug}`
-    });
-  }
-}
-
-function writeFile(path, content) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, err => err ? reject(err) : resolve());
-  });
-}
-
 function writePost(post) {
   return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.slug), post.html);
 }
@@ -89,7 +80,7 @@ function writeIndex(indexHtml) {
 exports.build = function build() {
   return loadPostFiles()
     .then(posts => {
-      order(posts);
+      posts.sort((a, b) => a.attributes.date - b.attributes.date);
 
       for (const post of posts) {
         post.html = blogTemplate(post);

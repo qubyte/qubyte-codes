@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <link href="/css/reset.css" rel="stylesheet">
+  <link href="/css/main.css" rel="stylesheet">
+  <link href="/css/code-style.css" rel="stylesheet">
+  <meta name="viewport" content="initial-scale=1">
+  <title>Qubyte Codes - </title>
+</head>
+<body>
+  <div class="sidebar"></div>
+  <div class="content">
+    <header class="top-header">
+      <h1><a href="/">Qubyte Codes</a></h1>
+    </header>
+    <article>
+      <header>
+        <h1>Private data for JS classes with WeakMap</h1>
+        <time datetime="2015-12-30T14:35Z">Wed Dec 30 2015</time>
+      </header>
+      <p>Private data has always been awkward in JavaScript. It&#39;s particularly difficult when it comes to
+constructors, and with ES2015 recently published, classes too. Let&#39;s say we have a simple class,
+exported by an ES2015 module:</p>
+<pre><code class="lang-JavaScript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>._privateDatum = <span class="hljs-built_in">Math</span>.random();
+  }
+
+  log() {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>._privateDatum);
+  }
+}
+</code></pre>
+<p>In the constructor a field with some private data, <code>_privateDatum</code> is appended. The initial
+underscore in the name is a common convention and is meant to tell developers using the class that
+they shouldn&#39;t touch, or even look at, that field. Why should this be private? Private stuff is
+subject to change without your users needing to know about it. This field could be renamed or go
+away completely for example.</p>
+<p>So what&#39;s the problem? It&#39;s that you can&#39;t trust anyone else with your private API (including data).
+If your class gets very popular, it becomes inevitable that someone is going to use your
+private-by-convention field, and you&#39;ll break their code when you change it. Changes to your public
+API should be clearly indicated by changes to the version number and updated documentation. The
+inner workings of your code on the other hand, including private data, are subject to dramatic
+change at any time.</p>
+<p>The solution is to hide the private data. You can do this using a
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures"><em>closure</em></a>. Consider:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">const</span> privateDatum = <span class="hljs-built_in">Math</span>.random();
+
+    <span class="hljs-keyword">this</span>.log = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(privateData);
+    }
+  }
+}
+</code></pre>
+<p>In this example, the private data is now assigned to a variable in the constructor. Since the
+variable is not returned, nothing outside the constructor will have access to it. The pain now is
+that the <code>log</code> method has to be attached to the instance inside the constructor, so that it can have
+access to the variable. It&#39;s a real shame to lose the nice method syntax.</p>
+<p>This is where
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap"><code>WeakMap</code></a>
+comes in. An instance of <code>WeakMap</code> has keys which are objects of some kind, and values which can be
+whatever you like. <code>WeakMap</code> instances are especially good, since if they are the last thing to hold
+a reference to an object (as a key), then the JS engine is allowed to garbage collect it. This means
+the risk of memory leaks is lessened. You <em>could</em> simulate most aspects of <code>WeakMap</code> using existing
+structures like arrays, but that would always result in a memory leak, since the garbage collector
+thinks those objects are in use and cannot clear them up. The final example below shows what this
+looks like:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> privateData = <span class="hljs-keyword">new</span> <span class="hljs-built_in">WeakMap</span>();
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    privateData.set(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">Math</span>.random());
+  }
+
+  log() {
+    <span class="hljs-keyword">const</span> privateDatum = privateData.get(<span class="hljs-keyword">this</span>)
+
+    <span class="hljs-built_in">console</span>.log(privateDatum);
+  }
+}
+</code></pre>
+<p>The keys of <code>privateData</code> are the instances of the example class. If nothing else holds a reference
+to an instance of the example class, the garbage collector doesn&#39;t count the reference in
+<code>privateData</code> and can clear it up! Since the instances are keys, <code>this</code> can be used in any method
+to access the private data. The <code>privateData</code> variable hidden by the module, so the user will have
+no access to it!</p>
+
+    </article>
+  </div>
+  <div class="sidebar"></div>
+</body>
+</html>
