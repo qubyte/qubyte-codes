@@ -49,7 +49,7 @@ function renderMarkdown(post) {
   const digested = frontMatter(post);
   digested.attributes.date = new Date(digested.attributes.datetime);
   digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}.html`;
-  digested.attributes.snippet = makeSnippet(post.body);
+  digested.attributes.snippet = makeSnippet(digested.body);
   digested.attributes.humandatetime = digested.attributes.date.toDateString();
   digested.content = marked(digested.body);
   return digested;
