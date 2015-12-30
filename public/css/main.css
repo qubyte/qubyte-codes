@@ -1,72 +1,41 @@
-@import url(https://fonts.googleapis.com/css?family=Montserrat);
+body {
+  font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
 
-html, body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #fff;
-  padding: 0;
-  text-align: left;
-  font-size: 14px;
-  line-height: 1.2;
+.top-header {
+  text-align: center;
+}
+
+.content {
+  flex: 0 1 800px;
+  margin: 0 1rem;
+}
+
+.sidebar {
+  flex: 1;
 }
 
 h1 {
-  font-size: 2em;
-  margin: 1rem;
+  font-size: 2rem;
+  margin: 1rem 0;
 }
 
 p {
-  margin: 1rem;
-}
-
-nav {
-  font-size: 1.5rem;
-  margin: 1rem;
-}
-
-article {
-  margin: 1rem;
-}
-
-time {
-  margin: 1rem;
-}
-
-li {
-  margin: 0.5rem;
-  display: inline;
-}
-
-@media (min-width: 800px) and (min-device-width: 800px) {
-  html, body {
-    height: 100%;
-    margin: 0;
-    align-items: baseline;
-    display: flex;
-    justify-content: center;
-  }
-
-  nav {
-    padding-right: 0.5em;
-    width: 15em;
-  }
-
-  .blog-container {
-    width: 100%
-  }
-
-  li {
-    display: block;
-  }
+  margin: 1rem 0;
 }
 
 pre {
-  margin: inherit;
-  text-align: left;
-  background-color: #FFF;
+  font-family: monospace;
 }
 
-ul {
-  /*font-size: 2em;*/
-  text-align: left;
-  /*list-style-type: none;*/
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+article {
+  margin: 2rem 0;
 }

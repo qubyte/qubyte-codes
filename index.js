@@ -7,7 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const handlebars = require('handlebars');
 const slug = require('slug');
+const remark = require('remark');
 const blogTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'blog.html'), 'utf8'));
+const indexTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'index.html'), 'utf8'));
 
 marked.setOptions({
   highlight(code) {
@@ -33,11 +35,23 @@ function readFile(file) {
   });
 }
 
+function makeSnippet(body) {
+  const ast = remark.parse(body);
+
+  for (const child of ast.children) {
+    if (child.type === 'paragraph') {
+      return remark.stringify(child);
+    }
+  }
+}
+
 function renderMarkdown(post) {
   const digested = frontMatter(post);
   digested.attributes.date = new Date(digested.attributes.datetime);
   digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}.html`;
-  digested.rendered = marked(digested.body);
+  digested.attributes.snippet = makeSnippet(post.body);
+  digested.attributes.humandatetime = digested.attributes.date.toDateString();
+  digested.content = marked(digested.body);
   return digested;
 }
 
@@ -58,21 +72,18 @@ function order(posts) {
   }
 }
 
-function writePost(post) {
+function writeFile(path, content) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path.join(__dirname, 'public', 'blog', post.attributes.slug), post.html, err => err ? reject(err) : resolve());
+    fs.writeFile(path, content, err => err ? reject(err) : resolve());
   });
 }
 
-function renderTemplate(post) {
-  return blogTemplate({
-    'link-prev': post.attributes.linkPrev && { link: post.attributes.linkPrev },
-    'link-next': post.attributes.linkNext && { link: post.attributes.linkNext },
-    title: post.attributes.title,
-    datetime: post.attributes.datetime,
-    'human-datetime': post.attributes.date.toDateString(),
-    content: post.rendered
-  });
+function writePost(post) {
+  return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.slug), post.html);
+}
+
+function writeIndex(indexHtml) {
+  return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
 }
 
 exports.build = function build() {
@@ -81,9 +92,11 @@ exports.build = function build() {
       order(posts);
 
       for (const post of posts) {
-        post.html = renderTemplate(post);
+        post.html = blogTemplate(post);
       }
 
-      return Promise.all(posts.map(writePost));
+      const indexHtml = indexTemplate({ posts });
+
+      return Promise.all([writeIndex(indexHtml), ...posts.map(writePost)]);
     });
 };
