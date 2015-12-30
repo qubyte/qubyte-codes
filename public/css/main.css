@@ -18,6 +18,10 @@ body {
   flex: 1;
 }
 
+article {
+  margin: 2rem 0;
+}
+
 h1 {
   font-size: 2rem;
   margin: 1rem 0;
@@ -25,9 +29,19 @@ h1 {
 
 p {
   margin: 1rem 0;
+  line-height: 1.2em;
+  text-align: justify;
+}
+
+p:not(:first-of-type) {
+  text-indent: 1em;
 }
 
 pre {
+  margin: 1rem 0;
+}
+
+code {
   font-family: monospace;
 }
 
@@ -36,6 +50,10 @@ a {
   text-decoration: none;
 }
 
-article {
-  margin: 2rem 0;
+p > a {
+  text-decoration: underline;
+}
+
+em {
+  font-style: italic;
 }
