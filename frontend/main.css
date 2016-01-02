@@ -39,6 +39,7 @@ p:not(:first-of-type) {
 
 pre {
   margin: 1rem 0;
+  white-space: pre-wrap;
 }
 
 code {
