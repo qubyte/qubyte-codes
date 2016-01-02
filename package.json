@@ -12,6 +12,7 @@
   "author": "Mark Stanley Everitt",
   "license": "Private",
   "dependencies": {
+    "clean-css": "3.4.8",
     "front-matter": "2.0.1",
     "handlebars": "3.0.3",
     "highlight.js": "9.0.0",

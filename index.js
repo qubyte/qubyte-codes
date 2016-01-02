@@ -10,6 +10,7 @@ const slug = require('slug');
 const remark = require('remark');
 const blogTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'blog.html'), 'utf8'));
 const indexTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'index.html'), 'utf8'));
+const CleanCSS = require('clean-css');
 
 marked.setOptions({
   highlight(code) {
@@ -69,6 +70,18 @@ function loadPostFiles() {
     .then(contents => contents.map(renderMarkdown));
 }
 
+function loadCssFiles() {
+  return Promise.all([
+    'frontend/reset.css',
+    'frontend/main.css',
+    'frontend/code-style.css'
+  ].map(readFile));
+}
+
+function compileCss(sources) {
+  return new CleanCSS({ advanced: false }).minify(Array.from(sources).join('\n')).styles;
+}
+
 function writePost(post) {
   return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.slug), post.html);
 }
@@ -77,16 +90,22 @@ function writeIndex(indexHtml) {
   return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
 }
 
+
+
 exports.build = function build() {
-  return loadPostFiles()
-    .then(posts => {
+  return Promise.all([loadPostFiles(), loadCssFiles()])
+    .then(results => {
+      const posts = results[0];
+      const style = compileCss(results[1]);
+
       posts.sort((a, b) => a.attributes.date - b.attributes.date);
 
       for (const post of posts) {
+        post.style = style;
         post.html = blogTemplate(post);
       }
 
-      const indexHtml = indexTemplate({ posts });
+      const indexHtml = indexTemplate({ posts, style });
 
       return Promise.all([writeIndex(indexHtml), ...posts.map(writePost)]);
     });
