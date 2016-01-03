@@ -8,8 +8,6 @@ const path = require('path');
 const handlebars = require('handlebars');
 const slug = require('slug');
 const remark = require('remark');
-const blogTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'blog.html'), 'utf8'));
-const indexTemplate = handlebars.compile(fs.readFileSync(path.join(__dirname, 'frontend', 'index.html'), 'utf8'));
 const CleanCSS = require('clean-css');
 
 marked.setOptions({
@@ -40,6 +38,11 @@ function writeFile(path, content) {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, content, err => err ? reject(err) : resolve());
   });
+}
+
+function loadTemplate(filename) {
+  return readFile(path.join(__dirname, 'frontend', filename))
+    .then(source => handlebars.compile(source));
 }
 
 function makeSnippet(body) {
@@ -90,15 +93,22 @@ function writeIndex(indexHtml) {
   return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
 }
 
-
-
 exports.build = function build() {
-  return Promise.all([loadPostFiles(), loadCssFiles()])
+  const promises = [
+    loadPostFiles(),
+    loadCssFiles(),
+    loadTemplate('index.html'),
+    loadTemplate('blog.html')
+  ];
+
+  return Promise.all(promises)
     .then(results => {
       const posts = results[0];
       const style = compileCss(results[1]);
+      const indexTemplate = results[2];
+      const blogTemplate = results[3];
 
-      posts.sort((a, b) => a.attributes.date - b.attributes.date);
+      posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
       for (const post of posts) {
         post.style = style;
