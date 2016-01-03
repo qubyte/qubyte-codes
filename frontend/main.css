@@ -18,7 +18,7 @@ body {
   flex: 1;
 }
 
-article {
+article, footer {
   margin: 2rem 0;
 }
 
@@ -31,6 +31,7 @@ p {
   margin: 1rem 0;
   line-height: 1.2em;
   text-align: justify;
+  hanging-punctuation: force-end;
 }
 
 p:not(:first-of-type) {
@@ -57,4 +58,18 @@ p > a {
 
 em {
   font-style: italic;
+}
+
+table {
+  margin: 1rem 0;
+  text-align: left;
+  width: 100%;
+}
+
+thead {
+  border-bottom: solid 1px;
+}
+
+th, td {
+  padding: 0.5rem;
 }
