@@ -112,8 +112,8 @@ maintained version of Node, you&#39;re good to go!</p>
 with the usual reasons to not modify the prototype of a built in constructor, modifying WeakMap
 risks undoing the whole reason for using it in the first place. By monitoring objects used as the
 keys of a WeakMap, references can be created and the garbage collector may not be able to clean up
-after you. That said, it can be done. If you want to avoid that risk, you can <code>Object.freeze</code> both
-<code>WeakMap</code> and <code>WeakMap.prototype</code> before any other code runs.</p>
+after you. That said, patching can be done. If you want to avoid that risk, you can <code>Object.freeze</code>
+both <code>WeakMap</code> and <code>WeakMap.prototype</code> before any other code runs.</p>
 
     </article>
     <footer>
