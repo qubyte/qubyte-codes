@@ -11,34 +11,70 @@
   <div class="sidebar"></div>
   <div class="content">
     <header class="top-header">
-      <h1>Qubyte Codes</h1>
+      <h1><a href="/">Qubyte Codes</a></h1>
     </header>
-    <p>
-      Welcome to my blog! I'm a professional software developer, working mainly with JavaScript and
-      related technologies. This blog will centre on JS, but is not limited to it. If you have any
-      questions or comments, tweet to me <a href="https://twitter.com/qubyte">@qubyte</a>!
-    </p>
     <article>
       <header>
-        <h1><a href="/blog/about-this-blog.html">About this blog</a></h1>
+        <h1>About this blog</h1>
         <time datetime="2016-01-03T12:22Z">Sun Jan 03 2016</time>
       </header>
       <p>This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
 some tech I wanted to use to host it. In the previous iteration, I even
 <a href="https://github.com/qubyte/toisu">wrote a server framework</a>. I took some holiday over the Christmas
 period, so I decided to throw everything away and make something minimal.</p>
+<p>I chose to go with NGINX serving flat files produced by a static site generator. This is still me of
+course, and on my own time I like to allow myself to indulge in a little reinvention of the wheel,
+so I wrote the generator myself. It&#39;s about a hundred lines of code, mainly stitching together other
+small modules. I used Node to make the generator, with the following modules:</p>
+<table>
+<thead>
+<tr>
+<th>module</th>
+<th>explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.npmjs.com/package/front-matter"><code>front-matter</code></a></td>
+<td>For keeping YAML metadata at the top of post files.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/marked"><code>marked</code></a></td>
+<td>To compile post markdown to HTML.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/highlight.js"><code>highlight.js</code></a></td>
+<td>To highlight code listings.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/handlebars"><code>handlebars</code></a></td>
+<td>To render posts into templates and an index page.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/remark"><code>remark</code></a></td>
+<td>To pluck the first paragraph from each post to render into the index page.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/package/slug"><code>slug</code></a></td>
+<td>To make post URLs readable.</td>
+</tr>
+<tr>
+<td><a href="https://www.npmjs.com/packages/clean-css"><code>clean-css</code></a></td>
+<td>To compile CSS sources together.</td>
+</tr>
+</tbody>
+</table>
+<p>Posts are markdown files committed to a git repo. I use the pre-commit hook to compile and add the
+rendered posts. At the moment I log into the server to pull changes down. I&#39;ll have that working on
+a GitHub hook soon.</p>
+<p>I&#39;ve no intention of posting the generator, since that would mean supporting it. It&#39;s strictly for
+my use. I&#39;ve linked the modules above since they&#39;ve been very useful to me. If you&#39;re thinking about
+setting up a blog and you&#39;re a programmer, I recommend this approach!</p>
 
     </article>
-    <article>
-      <header>
-        <h1><a href="/blog/private-data-for-js-classes-with-weakmap.html">Private data for JS classes with WeakMap</a></h1>
-        <time datetime="2015-12-30T14:35Z">Wed Dec 30 2015</time>
-      </header>
-      <p>Private data has always been awkward in JavaScript. It&#39;s particularly difficult when it comes to
-constructors, and with ES2015 recently published, classes too. Let&#39;s say we have an example class,
-exported by an ES2015 module:</p>
-
-    </article>
+    <footer>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
   </div>
   <div class="sidebar"></div>
 </body>
