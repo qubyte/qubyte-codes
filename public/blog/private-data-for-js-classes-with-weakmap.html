@@ -71,24 +71,22 @@ the risk of memory leaks is lessened. You <em>could</em> simulate most aspects o
 structures like arrays, but that would always result in a memory leak, since the garbage collector
 thinks those objects are in use and cannot clear them up. The final example below shows what this
 looks like:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> privateData = <span class="hljs-keyword">new</span> <span class="hljs-built_in">WeakMap</span>();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> privateDatum = <span class="hljs-keyword">new</span> <span class="hljs-built_in">WeakMap</span>();
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Example</span> </span>{
   <span class="hljs-keyword">constructor</span>() {
-    privateData.set(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">Math</span>.random());
+    privateDatum.set(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">Math</span>.random());
   }
 
   log() {
-    <span class="hljs-keyword">const</span> privateDatum = privateData.get(<span class="hljs-keyword">this</span>);
-
-    <span class="hljs-built_in">console</span>.log(privateDatum);
+    <span class="hljs-built_in">console</span>.log(privateDatum.get(<span class="hljs-keyword">this</span>));
   }
 }
 </code></pre>
-<p>The keys of <code>privateData</code> are the instances of the example class. If nothing else holds a reference
+<p>The keys of <code>privateDatum</code> are the instances of the example class. If nothing else holds a reference
 to an instance of the example class, the garbage collector doesn&#39;t count the reference in
-<code>privateData</code> and can clear it up! Since the instances are keys, <code>this</code> can be used in any method
-to access the private data. The <code>privateData</code> variable hidden by the module, so the user will have
+<code>privateDatum</code> and can clear it up! Since the instances are keys, <code>this</code> can be used in any method
+to access the private data. The <code>privateDatum</code> variable hidden by the module, so the user will have
 no access to it!</p>
 <p>This approach can be used with constructor functions and methods appended to the prototype too. The
 following constructor produces objects with similar behaviour to those produced by the class in the
