@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-05T00:35:29Z</updated>
+  <updated>2016-01-05T00:39:21Z</updated>
   <id>https://qubyte.codes</id>
   <author>
     <name>qubyte</name>
@@ -19,7 +19,11 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html"></content>
+    <content type="html">&lt;p&gt;This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
+some tech I wanted to use to host it. In the previous iteration, I even
+&lt;a href=&quot;https://github.com/qubyte/toisu&quot;&gt;wrote a server framework&lt;/a&gt;. I took some holiday over the Christmas
+period, so I decided to throw everything away and make something minimal.&lt;/p&gt;
+</content>
   </entry>
   <entry>
     <id>https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html</id>
@@ -31,7 +35,10 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html"></content>
+    <content type="html">&lt;p&gt;Private data has always been awkward in JavaScript. It&amp;#39;s particularly difficult when it comes to
+constructors, and with ES2015 recently published, classes too. Let&amp;#39;s say we have an example class,
+exported by an ES2015 module:&lt;/p&gt;
+</content>
   </entry>
 
 </feed>

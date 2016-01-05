@@ -20,7 +20,7 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">{{post.attributes.snippet}}</content>
+    <content type="html">{{attributes.snippet}}</content>
   </entry>
   {{/posts}}
 
