@@ -39,8 +39,12 @@ p {
   hanging-punctuation: force-end;
 }
 
-p:not(:first-of-type) {
+p {
   text-indent: 1em;
+}
+
+header + p, h1 + p, h2 + p, footer > p {
+  text-indent: 0;
 }
 
 pre {
