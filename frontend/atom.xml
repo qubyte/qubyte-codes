@@ -4,7 +4,7 @@
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
   <updated>{{updated}}</updated>
-  <id>https://qubyte.codes</id>
+  <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
@@ -20,7 +20,7 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">{{{attributes.snippet}}}</content>
+    <content type="html"><div>{{{attributes.snippet}}}</div></content>
   </entry>
   {{/posts}}
 
