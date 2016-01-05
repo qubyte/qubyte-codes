@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-05T00:48:38Z</updated>
+  <updated>2016-01-05T00:57:40Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -19,11 +19,89 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html"><div><p>This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
+    <content type="html">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1&quot;&gt;
+  &lt;link href=&quot;atom.xml&quot; type=&quot;application/atom+xml&quot; rel=&quot;alternate&quot; title=&quot;ATOM Feed&quot; /&gt;
+  &lt;title&gt;Qubyte Codes - About this blog&lt;/title&gt;
+  &lt;style&gt;
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:&#x27;&#x27;;content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,&#x27;Palatino Linotype&#x27;,&#x27;Palatino LT STD&#x27;,&#x27;Book Antiqua&#x27;,Georgia,serif;display:flex;width:100%;min-height:100vh}.top-header{text-align:center}.content{flex:0 1 800px;margin:0 1rem}.sidebar{flex:1}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify;hanging-punctuation:force-end}p:not(:first-of-type){text-indent:1em}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p&gt;a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;sidebar&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;content&quot;&gt;
+    &lt;header class=&quot;top-header&quot;&gt;
+      &lt;h1&gt;&lt;a href=&quot;/&quot;&gt;Qubyte Codes&lt;/a&gt;&lt;/h1&gt;
+    &lt;/header&gt;
+    &lt;article&gt;
+      &lt;header&gt;
+        &lt;h1&gt;About this blog&lt;/h1&gt;
+        &lt;time datetime=&quot;2016-01-03T12:22Z&quot;&gt;Sun Jan 03 2016&lt;/time&gt;
+      &lt;/header&gt;
+      &lt;p&gt;This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
 some tech I wanted to use to host it. In the previous iteration, I even
-<a href="https://github.com/qubyte/toisu">wrote a server framework</a>. I took some holiday over the Christmas
-period, so I decided to throw everything away and make something minimal.</p>
-</div></content>
+&lt;a href=&quot;https://github.com/qubyte/toisu&quot;&gt;wrote a server framework&lt;/a&gt;. I took some holiday over the Christmas
+period, so I decided to throw everything away and make something minimal.&lt;/p&gt;
+&lt;p&gt;I chose to go with NGINX serving flat files produced by a static site generator. This is still me of
+course, and on my own time I like to allow myself to indulge in a little reinvention of the wheel,
+so I wrote the generator myself. It&amp;#39;s about a hundred lines of code, mainly stitching together other
+small modules. I used Node to make the generator, with the following modules:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;module&lt;/th&gt;
+&lt;th&gt;explanation&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/front-matter&quot;&gt;&lt;code&gt;front-matter&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;For keeping YAML metadata at the top of post files.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/marked&quot;&gt;&lt;code&gt;marked&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To compile post markdown to HTML.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/highlight.js&quot;&gt;&lt;code&gt;highlight.js&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To highlight code listings.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/handlebars&quot;&gt;&lt;code&gt;handlebars&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To render posts into templates and an index page.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/remark&quot;&gt;&lt;code&gt;remark&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To pluck the first paragraph from each post to render into the index page.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/package/slug&quot;&gt;&lt;code&gt;slug&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To make post URLs readable.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.npmjs.com/packages/clean-css&quot;&gt;&lt;code&gt;clean-css&lt;/code&gt;&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;To compile CSS sources together.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Posts are markdown files committed to a git repo. I use the pre-commit hook to compile and add the
+rendered posts. At the moment I log into the server to pull changes down. I&amp;#39;ll have that working on
+a GitHub hook soon.&lt;/p&gt;
+&lt;p&gt;I&amp;#39;ve no intention of posting the generator, since that would mean supporting it. It&amp;#39;s strictly for
+my use. I&amp;#39;ve linked the modules above since they&amp;#39;ve been very useful to me. If you&amp;#39;re thinking about
+setting up a blog and you&amp;#39;re a programmer, I recommend this approach!&lt;/p&gt;
+
+    &lt;/article&gt;
+    &lt;footer&gt;
+      &lt;p&gt;Comments or corrections? &lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=qubyte&quot;&gt;Send me a tweet!&lt;/a&gt;&lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;sidebar&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</content>
   </entry>
   <entry>
     <id>https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html</id>
@@ -35,10 +113,133 @@ period, so I decided to throw everything away and make something minimal.</p>
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html"><div><p>Private data has always been awkward in JavaScript. It&#39;s particularly difficult when it comes to
-constructors, and with ES2015 recently published, classes too. Let&#39;s say we have an example class,
-exported by an ES2015 module:</p>
-</div></content>
+    <content type="html">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1&quot;&gt;
+  &lt;link href=&quot;atom.xml&quot; type=&quot;application/atom+xml&quot; rel=&quot;alternate&quot; title=&quot;ATOM Feed&quot; /&gt;
+  &lt;title&gt;Qubyte Codes - Private data for JS classes with WeakMap&lt;/title&gt;
+  &lt;style&gt;
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:&#x27;&#x27;;content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,&#x27;Palatino Linotype&#x27;,&#x27;Palatino LT STD&#x27;,&#x27;Book Antiqua&#x27;,Georgia,serif;display:flex;width:100%;min-height:100vh}.top-header{text-align:center}.content{flex:0 1 800px;margin:0 1rem}.sidebar{flex:1}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify;hanging-punctuation:force-end}p:not(:first-of-type){text-indent:1em}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p&gt;a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;sidebar&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;content&quot;&gt;
+    &lt;header class=&quot;top-header&quot;&gt;
+      &lt;h1&gt;&lt;a href=&quot;/&quot;&gt;Qubyte Codes&lt;/a&gt;&lt;/h1&gt;
+    &lt;/header&gt;
+    &lt;article&gt;
+      &lt;header&gt;
+        &lt;h1&gt;Private data for JS classes with WeakMap&lt;/h1&gt;
+        &lt;time datetime=&quot;2015-12-30T14:35Z&quot;&gt;Wed Dec 30 2015&lt;/time&gt;
+      &lt;/header&gt;
+      &lt;p&gt;Private data has always been awkward in JavaScript. It&amp;#39;s particularly difficult when it comes to
+constructors, and with ES2015 recently published, classes too. Let&amp;#39;s say we have an example class,
+exported by an ES2015 module:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-JavaScript&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;hljs-class&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Example&lt;/span&gt; &lt;/span&gt;{
+  &lt;span class=&quot;hljs-keyword&quot;&gt;constructor&lt;/span&gt;() {
+    &lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;._privateDatum = &lt;span class=&quot;hljs-built_in&quot;&gt;Math&lt;/span&gt;.random();
+  }
+
+  log() {
+    &lt;span class=&quot;hljs-built_in&quot;&gt;console&lt;/span&gt;.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;._privateDatum);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the constructor, a field with some private data, &lt;code&gt;_privateDatum&lt;/code&gt; is appended (the value is a
+placeholder for illustration). The initial underscore in the name is a common convention and is
+meant to tell developers using the class that they shouldn&amp;#39;t touch or look at that field. Why should
+this be private? Private stuff is subject to change without your users needing to know about it.
+This field could be renamed or go away completely if you refactor, without affecting the public API.
+So what&amp;#39;s the problem?&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;You can&amp;#39;t trust your users!&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This isn&amp;#39;t meant as an insult. Your users are cunning, and if they can solve a problem without
+filing an issue or raising a pull request, they probably will. They have deadlines after all... If
+your class gets very popular, it becomes inevitable that someone is going to use your
+private-by-convention field to hack together a solution to a problem they&amp;#39;re having, and you&amp;#39;ll
+break their code when you change it. Changes to your public API should be clearly indicated by
+changes to the version number and updated documentation. The inner workings of your code on the
+other hand, including private data, are subject to dramatic change at any time.&lt;/p&gt;
+&lt;p&gt;The solution is to hide the private data, removing the temptation. You can do this using a
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures&quot;&gt;&lt;em&gt;closure&lt;/em&gt;&lt;/a&gt;. Consider:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;hljs-class&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Example&lt;/span&gt; &lt;/span&gt;{
+  &lt;span class=&quot;hljs-keyword&quot;&gt;constructor&lt;/span&gt;() {
+    &lt;span class=&quot;hljs-keyword&quot;&gt;const&lt;/span&gt; privateDatum = &lt;span class=&quot;hljs-built_in&quot;&gt;Math&lt;/span&gt;.random();
+
+    &lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.log = &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;hljs-params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+      &lt;span class=&quot;hljs-built_in&quot;&gt;console&lt;/span&gt;.log(privateDatum);
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this example, the private data is now assigned to a variable in the constructor. Since the
+variable is not returned, nothing outside the constructor will have access to it. The pain now is
+that the &lt;code&gt;log&lt;/code&gt; method has to be attached to the instance inside the constructor, so that it can have
+access to the variable. It&amp;#39;s a real shame to lose the nice method syntax. It also make an individual
+&lt;code&gt;log&lt;/code&gt; method for each instance, which means objects will each use more memory.&lt;/p&gt;
+&lt;p&gt;This is where
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap&quot;&gt;&lt;code&gt;WeakMap&lt;/code&gt;&lt;/a&gt;
+comes in. An instance of &lt;code&gt;WeakMap&lt;/code&gt; has keys which are objects of some kind, and values which can be
+whatever you like. &lt;code&gt;WeakMap&lt;/code&gt; instances are especially good, since if they are the last thing to hold
+a reference to an object (as a key), then the JS engine is allowed to garbage collect it. This means
+the risk of memory leaks is lessened. You &lt;em&gt;could&lt;/em&gt; simulate most aspects of &lt;code&gt;WeakMap&lt;/code&gt; using existing
+structures like arrays, but that would always result in a memory leak, since the garbage collector
+thinks those objects are in use and cannot clear them up. The final example below shows what this
+looks like:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;const&lt;/span&gt; privateDatum = &lt;span class=&quot;hljs-keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;hljs-built_in&quot;&gt;WeakMap&lt;/span&gt;();
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;hljs-class&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Example&lt;/span&gt; &lt;/span&gt;{
+  &lt;span class=&quot;hljs-keyword&quot;&gt;constructor&lt;/span&gt;() {
+    privateDatum.set(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;, &lt;span class=&quot;hljs-built_in&quot;&gt;Math&lt;/span&gt;.random());
+  }
+
+  log() {
+    &lt;span class=&quot;hljs-built_in&quot;&gt;console&lt;/span&gt;.log(privateDatum.get(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;));
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The keys of &lt;code&gt;privateDatum&lt;/code&gt; are the instances of the example class. If nothing else holds a reference
+to an instance of the example class, the garbage collector doesn&amp;#39;t count the reference in
+&lt;code&gt;privateDatum&lt;/code&gt; and can clear it up! Since the instances are keys, &lt;code&gt;this&lt;/code&gt; can be used in any method
+to access the private data. The &lt;code&gt;privateDatum&lt;/code&gt; variable hidden by the module, so the user will have
+no access to it!&lt;/p&gt;
+&lt;p&gt;This approach can be used with constructor functions and methods appended to the prototype too. The
+following constructor produces objects with similar behaviour to those produced by the class in the
+previous example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;const&lt;/span&gt; privateDatum = &lt;span class=&quot;hljs-keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;hljs-built_in&quot;&gt;WeakMap&lt;/span&gt;();
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Example&lt;/span&gt;(&lt;span class=&quot;hljs-params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+  privateDatum.set(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;, &lt;span class=&quot;hljs-built_in&quot;&gt;Math&lt;/span&gt;.random());
+}
+
+Example.prototype.log = &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;hljs-params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;{
+  &lt;span class=&quot;hljs-built_in&quot;&gt;console&lt;/span&gt;.log(privateDatum.get(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;));
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The good news is that &lt;code&gt;WeakMap&lt;/code&gt; is one of the most well supported features of ES2015. With the
+exception of IE Mobile and Opera Mobile, all current versions of major browsers support the
+functionality in this post. See the
+&lt;a href=&quot;http://kangax.github.io/compat-table/es6/#test-WeakMap&quot;&gt;compatibility table&lt;/a&gt;. If you&amp;#39;re using a
+maintained version of Node, you&amp;#39;re good to go!&lt;/p&gt;
+&lt;h2 id=&quot;addendum&quot;&gt;Addendum&lt;/h2&gt;
+&lt;p&gt;It&amp;#39;s still possible to gain access to private data stored in a WeakMap by patching
+&lt;code&gt;WeakMap.prototype.set&lt;/code&gt; or &lt;code&gt;WeakMap.prototype.get&lt;/code&gt;. This should &lt;em&gt;absolutely never be done!&lt;/em&gt; Along
+with the usual reasons to not modify the prototype of a built in constructor, modifying WeakMap
+risks undoing the whole reason for using it in the first place. By monitoring objects used as the
+keys of a WeakMap, references can be created and the garbage collector may not be able to clean up
+after you. That said, patching can be done. If you want to avoid that risk, you can &lt;code&gt;Object.freeze&lt;/code&gt;
+both &lt;code&gt;WeakMap&lt;/code&gt; and &lt;code&gt;WeakMap.prototype&lt;/code&gt; before any other code runs.&lt;/p&gt;
+
+    &lt;/article&gt;
+    &lt;footer&gt;
+      &lt;p&gt;Comments or corrections? &lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=qubyte&quot;&gt;Send me a tweet!&lt;/a&gt;&lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;sidebar&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</content>
   </entry>
 
 </feed>
