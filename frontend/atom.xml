@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Qubyte Codes</title>
+  <link href="https://qubyte.codes"/>
+  <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
+  <updated>{{updated}}</updated>
+  <id>https://qubyte.codes</id>
+  <author>
+    <name>qubyte</name>
+  </author>
+
+  {{#posts}}
+  <entry>
+    <id>https://qubyte.codes/blog/{{attributes.slug}}</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/{{attributes.slug}}"/>
+    <title>{{attributes.title}}</title>
+    <published>{{attributes.isoDate}}</published>
+    <updated>{{attributes.isoUpdated}}</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">{{post.attributes.snippet}}</content>
+  </entry>
+  {{/posts}}
+
+</feed>

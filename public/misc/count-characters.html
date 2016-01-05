@@ -1,46 +1,35 @@
 <!doctype html>
 <html>
 <head>
-  <meta name="viewport" content="initial-scale=1">
-  <link href="atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
-  <title>Qubyte Codes - </title>
   <style>
     a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,'Palatino Linotype','Palatino LT STD','Book Antiqua',Georgia,serif;display:flex;width:100%;min-height:100vh}.top-header{text-align:center}.content{flex:0 1 800px;margin:0 1rem}.sidebar{flex:1}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify;hanging-punctuation:force-end}p:not(:first-of-type){text-indent:1em}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p>a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+    input, label {
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <div class="sidebar"></div>
-  <div class="content">
-    <header class="top-header">
-      <h1>Qubyte Codes</h1>
-    </header>
-    <p>
-      Welcome to my blog! I'm a professional software developer, working mainly with JavaScript and
-      related technologies. This blog will centre on JS, but is not limited to it. If you have any
-      questions or comments, tweet to me <a href="https://twitter.com/qubyte">@qubyte</a>!
-    </p>
-    <article>
-      <header>
-        <h1><a href="/blog/about-this-blog.html">About this blog</a></h1>
-        <time datetime="2016-01-03T12:22Z">Sun Jan 03 2016</time>
-      </header>
-      <p>This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
-some tech I wanted to use to host it. In the previous iteration, I even
-<a href="https://github.com/qubyte/toisu">wrote a server framework</a>. I took some holiday over the Christmas
-period, so I decided to throw everything away and make something minimal.</p>
+  <form id="character-counter">
+    <label for="textbox">Text to check</label>
+    <textarea id="textbox" name="textarea" rows="10" cols="50"></textarea>
+    <label for="character">Character(s) to count</label>
+    <input id="character" type="text">
+    <button type="submit">check</button>
+    <label for="result">Result</label>
+    <output id="result"></output>
+  </form>
+  <script>
+    var form = document.getElementById('character-counter');
 
-    </article>
-    <article>
-      <header>
-        <h1><a href="/blog/private-data-for-js-classes-with-weakmap.html">Private data for JS classes with WeakMap</a></h1>
-        <time datetime="2015-12-30T14:35Z">Wed Dec 30 2015</time>
-      </header>
-      <p>Private data has always been awkward in JavaScript. It&#39;s particularly difficult when it comes to
-constructors, and with ES2015 recently published, classes too. Let&#39;s say we have an example class,
-exported by an ES2015 module:</p>
+    form.onsubmit = function (e) {
+      e.preventDefault();
 
-    </article>
-  </div>
-  <div class="sidebar"></div>
+      var text = form.getElementsByTagName('textarea')[0].value;
+      var char = form.getElementsByTagName('input')[0].value;
+      var output = form.getElementsByTagName('output')[0]
+
+      output.value = (text.match(new RegExp(char, 'ig')) || []).length;
+    };
+  </script>
 </body>
 </html>

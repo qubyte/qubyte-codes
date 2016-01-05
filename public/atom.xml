@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Qubyte Codes</title>
+  <link href="https://qubyte.codes"/>
+  <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
+  <updated>2016-01-05T00:28:41Z</updated>
+  <id>https://qubyte.codes</id>
+  <author>
+    <name>qubyte</name>
+  </author>
+
+  <entry>
+    <id>https://qubyte.codes/blog/about-this-blog.html</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog.html"/>
+    <title>About this blog</title>
+    <published>2016-01-03T12:22:00Z</published>
+    <updated>2016-01-03T12:22:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html"></content>
+  </entry>
+  <entry>
+    <id>https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html"/>
+    <title>Private data for JS classes with WeakMap</title>
+    <published>2015-12-30T14:35:00Z</published>
+    <updated>2015-12-30T14:35:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html"></content>
+  </entry>
+
+</feed>

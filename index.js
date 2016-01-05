@@ -57,12 +57,19 @@ function makeSnippet(body) {
   return '';
 }
 
+function dateToIso(date) {
+  return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
+}
+
 function renderMarkdown(post) {
   const digested = frontMatter(post);
   digested.attributes.date = new Date(digested.attributes.datetime);
+  digested.attributes.updated = new Date(digested.attributes.updated || digested.attributes.datetime);
   digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}.html`;
   digested.attributes.snippet = marked(makeSnippet(digested.body));
   digested.attributes.humandatetime = digested.attributes.date.toDateString();
+  digested.attributes.isoDate = dateToIso(digested.attributes.date);
+  digested.attributes.isoUpdated = dateToIso(digested.attributes.updated);
   digested.content = marked(digested.body);
   return digested;
 }
@@ -93,12 +100,17 @@ function writeIndex(indexHtml) {
   return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
 }
 
+function writeAtom(atomXml) {
+  return writeFile(path.join(__dirname, 'public', 'atom.xml'), atomXml);
+}
+
 exports.build = function build() {
   const promises = [
     loadPostFiles(),
     loadCssFiles(),
     loadTemplate('index.html'),
-    loadTemplate('blog.html')
+    loadTemplate('blog.html'),
+    loadTemplate('atom.xml')
   ];
 
   return Promise.all(promises)
@@ -107,6 +119,7 @@ exports.build = function build() {
       const style = compileCss(results[1]);
       const indexTemplate = results[2];
       const blogTemplate = results[3];
+      const atomTemplate = results[4];
 
       posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
@@ -115,8 +128,11 @@ exports.build = function build() {
         post.html = blogTemplate(post);
       }
 
-      const indexHtml = indexTemplate({ posts, style });
+      const updated = dateToIso(new Date());
 
-      return Promise.all([writeIndex(indexHtml), ...posts.map(writePost)]);
+      const indexHtml = indexTemplate({ posts, style });
+      const atomXML = atomTemplate({ posts, updated });
+
+      return Promise.all([writeIndex(indexHtml), ...posts.map(writePost), writeAtom(atomXML)]);
     });
 };
