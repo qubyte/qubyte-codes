@@ -3,12 +3,27 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-05T00:59:15Z</updated>
+  <updated>2016-01-06T00:49:14Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/about-this-blog-part-2.html</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog-part-2.html"/>
+    <title>About this blog, part 2</title>
+    <published>2016-01-05T01:58:00Z</published>
+    <updated>2016-01-05T01:58:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;I touched briefly on the technology used in this blog in
+&lt;a href=&quot;/blog/about-this-blog.html&quot;&gt;a previous post&lt;/a&gt;, but I didn&amp;#39;t explain the motivation behind a lot of
+the choices I made when building it. I&amp;#39;d like to do that in this post.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/about-this-blog.html</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog.html"/>
