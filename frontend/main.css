@@ -18,6 +18,10 @@ body {
   flex: 1;
 }
 
+header {
+  margin: 1rem 0;
+}
+
 article, footer {
   margin: 2rem 0;
 }
@@ -37,14 +41,6 @@ p {
   line-height: 1.2em;
   text-align: justify;
   hanging-punctuation: force-end;
-}
-
-p {
-  text-indent: 1em;
-}
-
-header + p, h1 + p, h2 + p, footer > p {
-  text-indent: 0;
 }
 
 pre {
