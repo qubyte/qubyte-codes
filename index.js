@@ -128,10 +128,8 @@ exports.build = function build() {
         post.html = blogTemplate(post);
       }
 
-      const updated = dateToIso(new Date());
-
       const indexHtml = indexTemplate({ posts, style });
-      const atomXML = atomTemplate({ posts, updated });
+      const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
 
       return Promise.all([writeIndex(indexHtml), ...posts.map(writePost), writeAtom(atomXML)]);
     });
