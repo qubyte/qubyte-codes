@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="initial-scale=1">
   <link href="atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
-  <title>Qubyte Codes</title>
+  <title>Qubyte Codes - How I schedule posts using atd</title>
   <style>
     a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,'Palatino Linotype','Palatino LT STD','Book Antiqua',Georgia,serif;display:flex;width:100%;min-height:100vh}.top-header{text-align:center}.content{flex:0 1 800px;margin:0 1rem}.sidebar{flex:1}header{margin:1rem 0}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify;hanging-punctuation:force-end}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p>a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
   </style>
@@ -12,58 +12,36 @@
   <div class="sidebar"></div>
   <div class="content">
     <header class="top-header">
-      <h1>Qubyte Codes</h1>
+      <h1><a href="/">Qubyte Codes</a></h1>
     </header>
-    <p>
-      Welcome to my blog! I'm a professional software developer, working mainly with JavaScript and
-      related technologies. This blog will centre on JS, but is not limited to it. If you have any
-      questions or comments, tweet to me <a href="https://twitter.com/qubyte">@qubyte</a>!
-    </p>
     <article>
       <header>
-        <h1><a href="/blog/how-i-schedule-posts-using-atd.html">How I schedule posts using atd</a></h1>
+        <h1>How I schedule posts using atd</h1>
         <time datetime="2016-01-14T07:00Z">Thu Jan 14 2016</time>
       </header>
       <p>This blog is built with a static site generator. The generator, the markdown source files, and the
 generated HTML files are all kept together in the same git repository. Every time I commit a change,
 a pre-commit hook runs the generator and adds the generated HTML, so that the blog entries are
 always up to date. Then the changes are pushed up to GitHub.</p>
+<p>On the server (running Linux), NGINX is hosting a folder containing the files to serve from a clone
+of the repo. To publish a new post, or update an old one, all I have to do is pull the changes from
+GitHub. Publishing via the terminal allows me to use a one liner to <em>schedule</em> the publication.
+Many know about <code>cron</code> for scheduling repeated tasks, but fewer are aware of <code>atd</code>, which is for one
+time scheduled tasks. The one liner I use is:</p>
+<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> "git -C /absolute/<span class="hljs-built_in">path</span>/to/repo pull origin master" | <span class="hljs-built_in">at</span> <span class="hljs-number">07</span>:<span class="hljs-number">00</span> tomorrow
+</code></pre>
+<p><code>at</code> accepts input through stdin, which is why I&#39;ve echoed the command and piped it. One big
+gotcha is that you have to be aware of the timezone your machine is configured for. I have mine set
+to UTC, and schedule according to that.</p>
+<p>There are companion utilities to manage scheduled jobs. The <code>man</code> page for <code>at</code> is extremely good,
+so I won&#39;t try to better it. The purpose of this post is to show you that it exists and how simple
+(especially when compared with <code>cron</code>) it is to use. You can use it to schedule pretty much
+anything!</p>
 
     </article>
-    <article>
-      <header>
-        <h1><a href="/blog/about-this-blog-2.html">About this blog 2</a></h1>
-        <time datetime="2016-01-11T20:15Z">Mon Jan 11 2016</time>
-      </header>
-      <p>I touched briefly on the technology used in this blog in
-<a href="/blog/about-this-blog.html">a previous post</a>, but I didn&#39;t explain the motivation behind a lot of
-the choices I made when building it. I&#39;d like to do that in this post. The design and architecture
-of this blog is the product of what things I like in other blogs, and also those things that I find
-frustrating. Where a choice was not obvious, I opted for the simplest option. The point of the
-exercise was to get it online. Below are a few points in no particular order.</p>
-
-    </article>
-    <article>
-      <header>
-        <h1><a href="/blog/about-this-blog.html">About this blog</a></h1>
-        <time datetime="2016-01-03T12:22Z">Sun Jan 03 2016</time>
-      </header>
-      <p>This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
-some tech I wanted to use to host it. In the previous iteration, I even
-<a href="https://github.com/qubyte/toisu">wrote a server framework</a>. I took some holiday over the Christmas
-period, so I decided to throw everything away and make something minimal.</p>
-
-    </article>
-    <article>
-      <header>
-        <h1><a href="/blog/private-data-for-js-classes-with-weakmap.html">Private data for JS classes with WeakMap</a></h1>
-        <time datetime="2015-12-30T14:35Z">Wed Dec 30 2015</time>
-      </header>
-      <p>Private data has always been awkward in JavaScript. It&#39;s particularly difficult when it comes to
-constructors, and with ES2015 recently published, classes too. Let&#39;s say we have an example class,
-exported by an ES2015 module:</p>
-
-    </article>
+    <footer>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
   </div>
   <div class="sidebar"></div>
 </body>

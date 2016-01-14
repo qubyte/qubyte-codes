@@ -3,12 +3,28 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-11T20:09:19Z</updated>
+  <updated>2016-01-14T00:57:02Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/how-i-schedule-posts-using-atd.html</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/how-i-schedule-posts-using-atd.html"/>
+    <title>How I schedule posts using atd</title>
+    <published>2016-01-14T07:00:00Z</published>
+    <updated>2016-01-14T07:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;This blog is built with a static site generator. The generator, the markdown source files, and the
+generated HTML files are all kept together in the same git repository. Every time I commit a change,
+a pre-commit hook runs the generator and adds the generated HTML, so that the blog entries are
+always up to date. Then the changes are pushed up to GitHub.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/about-this-blog-2.html</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog-2.html"/>
