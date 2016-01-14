@@ -1,8 +1,8 @@
 body {
   font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
+  max-width: 800px;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .top-header {
@@ -10,12 +10,8 @@ body {
 }
 
 .content {
-  flex: 0 1 800px;
+  text-align: left;
   margin: 0 1rem;
-}
-
-.sidebar {
-  flex: 1;
 }
 
 header {
@@ -40,7 +36,6 @@ p {
   margin: 1rem 0;
   line-height: 1.2em;
   text-align: justify;
-  hanging-punctuation: force-end;
 }
 
 pre {
