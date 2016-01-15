@@ -65,7 +65,8 @@ function renderMarkdown(post) {
   const digested = frontMatter(post);
   digested.attributes.date = new Date(digested.attributes.datetime);
   digested.attributes.updated = new Date(digested.attributes.updated || digested.attributes.datetime);
-  digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}.html`;
+  digested.attributes.filename = `${slug(digested.attributes.title, { lower: true })}.html`;
+  digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}`;
   digested.attributes.snippet = marked(makeSnippet(digested.body));
   digested.attributes.humandatetime = digested.attributes.date.toDateString();
   digested.attributes.isoDate = dateToIso(digested.attributes.date);
@@ -93,11 +94,15 @@ function compileCss(sources) {
 }
 
 function writePost(post) {
-  return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.slug), post.html);
+  return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.filename), post.html);
 }
 
 function writeIndex(indexHtml) {
   return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
+}
+
+function writeAbout(aboutHtml) {
+  return writeFile(path.join(__dirname, 'public', 'about.html'), aboutHtml);
 }
 
 function writeAtom(atomXml) {
@@ -109,6 +114,7 @@ exports.build = function build() {
     loadPostFiles(),
     loadCssFiles(),
     loadTemplate('index.html'),
+    loadTemplate('about.html'),
     loadTemplate('blog.html'),
     loadTemplate('atom.xml')
   ];
@@ -118,8 +124,9 @@ exports.build = function build() {
       const posts = results[0];
       const style = compileCss(results[1]);
       const indexTemplate = results[2];
-      const blogTemplate = results[3];
-      const atomTemplate = results[4];
+      const aboutTemplate = results[3];
+      const blogTemplate = results[4];
+      const atomTemplate = results[5];
 
       posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
@@ -129,8 +136,9 @@ exports.build = function build() {
       }
 
       const indexHtml = indexTemplate({ posts, style });
+      const aboutHtml = aboutTemplate({ style });
       const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
 
-      return Promise.all([writeIndex(indexHtml), ...posts.map(writePost), writeAtom(atomXML)]);
+      return Promise.all([writeIndex(indexHtml), writeAbout(aboutHtml), ...posts.map(writePost), writeAtom(atomXML)]);
     });
 };

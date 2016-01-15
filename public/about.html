@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="initial-scale=1">
   <link href="atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
-  <title>Qubyte Codes - How I schedule posts using atd</title>
+  <title>Qubyte Codes</title>
   <style>
     a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,'Palatino Linotype','Palatino LT STD','Book Antiqua',Georgia,serif;max-width:800px;text-align:center;margin:0 auto}.top-header{text-align:center}.content{text-align:left;margin:0 1rem}header{margin:1rem 0}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:2rem;margin:1rem 0}h3{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify}.quote p:before{content:"\0022"}.quote p:after{content:" …\0022"}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p>a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}nav{padding:.5rem;background-color:#eee}nav>ul>li{display:inline;margin:.5rem}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
   </style>
@@ -14,39 +14,16 @@
     <nav>
       <ul>
         <li><a href="/">archive</a></li>
-        <li><a href="/about">about</a></li>
+        <li>about</li>
       </ul>
     </nav>
   </header>
   <div class="content">
-    <article>
-      <header>
-        <h2>How I schedule posts using atd</h2>
-        <time datetime="2016-01-14T19:30Z">Thu Jan 14 2016</time>
-      </header>
-      <p>This blog is built with a static site generator. The generator, the markdown source files, and the
-generated HTML files are all kept together in the same git repository. Every time I commit a change,
-a pre-commit hook runs the generator and adds the generated HTML, so that the blog entries are
-always up to date. Then the changes are pushed up to GitHub.</p>
-<p>On the server (running Linux), NGINX is hosting a folder containing the files to serve from a clone
-of the repo. To publish a new post, or update an old one, all I have to do is pull the changes from
-GitHub. Publishing via the terminal allows me to use a one liner to <em>schedule</em> the publication.
-Many know about <code>cron</code> for scheduling repeated tasks, but fewer are aware of <code>atd</code>, which is for one
-time scheduled tasks. The one liner I use is:</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> "git -C /absolute/<span class="hljs-built_in">path</span>/to/repo pull origin master" | <span class="hljs-built_in">at</span> <span class="hljs-number">07</span>:<span class="hljs-number">00</span> tomorrow
-</code></pre>
-<p><code>at</code> accepts input through stdin, which is why I&#39;ve echoed the command and piped it. One big
-gotcha is that you have to be aware of the timezone your machine is configured for. I have mine set
-to UTC, and schedule according to that.</p>
-<p>There are companion utilities to manage scheduled jobs. The <code>man</code> page for <code>at</code> is extremely good,
-so I won&#39;t try to better it. The purpose of this post is to show you that it exists and how simple
-(especially when compared with <code>cron</code>) it is to use. You can use it to schedule pretty much
-anything!</p>
-
-    </article>
-    <footer>
-      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
-    </footer>
+    <p>
+      Welcome to my blog! I'm a professional software developer, working mainly with JavaScript and
+      related technologies. This blog will centre on JS, but is not limited to it. If you have any
+      questions or comments, tweet to me <a href="https://twitter.com/qubyte">@qubyte</a>!
+    </p>
   </div>
 </body>
 </html>

@@ -28,6 +28,11 @@ h1 {
 }
 
 h2 {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+h3 {
   font-size: 1.5rem;
   margin: 1rem 0;
 }
@@ -36,6 +41,14 @@ p {
   margin: 1rem 0;
   line-height: 1.2em;
   text-align: justify;
+}
+
+.quote p:before {
+  content: "\0022";
+}
+
+.quote p:after {
+  content: " …\0022";
 }
 
 pre {
@@ -72,4 +85,14 @@ thead {
 
 th, td {
   padding: 0.5rem;
+}
+
+nav {
+  padding: 0.5rem;
+  background-color: #eee;
+}
+
+nav > ul > li {
+  display: inline;
+  margin: 0.5rem;
 }

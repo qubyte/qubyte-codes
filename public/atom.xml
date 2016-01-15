@@ -3,15 +3,15 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-14T19:25:08Z</updated>
+  <updated>2016-01-15T00:05:56Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
   <entry>
-    <id>https://qubyte.codes/blog/how-i-schedule-posts-using-atd.html</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/how-i-schedule-posts-using-atd.html"/>
+    <id>https://qubyte.codes/blog/how-i-schedule-posts-using-atd</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/how-i-schedule-posts-using-atd"/>
     <title>How I schedule posts using atd</title>
     <published>2016-01-14T19:30:00Z</published>
     <updated>2016-01-14T19:30:00Z</updated>
@@ -26,8 +26,8 @@ always up to date. Then the changes are pushed up to GitHub.&lt;/p&gt;
 </content>
   </entry>
   <entry>
-    <id>https://qubyte.codes/blog/about-this-blog-2.html</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog-2.html"/>
+    <id>https://qubyte.codes/blog/about-this-blog-2</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog-2"/>
     <title>About this blog 2</title>
     <published>2016-01-11T20:15:00Z</published>
     <updated>2016-01-11T20:15:00Z</updated>
@@ -44,8 +44,8 @@ exercise was to get it online. Below are a few points in no particular order.&lt
 </content>
   </entry>
   <entry>
-    <id>https://qubyte.codes/blog/about-this-blog.html</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog.html"/>
+    <id>https://qubyte.codes/blog/about-this-blog</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/about-this-blog"/>
     <title>About this blog</title>
     <published>2016-01-03T12:22:00Z</published>
     <updated>2016-01-03T12:22:00Z</updated>
@@ -60,8 +60,8 @@ period, so I decided to throw everything away and make something minimal.&lt;/p&
 </content>
   </entry>
   <entry>
-    <id>https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap.html"/>
+    <id>https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/private-data-for-js-classes-with-weakmap"/>
     <title>Private data for JS classes with WeakMap</title>
     <published>2015-12-30T14:35:00Z</published>
     <updated>2015-12-30T14:35:00Z</updated>

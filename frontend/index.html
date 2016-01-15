@@ -9,22 +9,23 @@
   </style>
 </head>
 <body>
+  <header class="top-header">
+    <h1>Qubyte Codes</h1>
+    <nav>
+      <ul>
+        <li>archive</li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
   <div class="content">
-    <header class="top-header">
-      <h1>Qubyte Codes</h1>
-    </header>
-    <p>
-      Welcome to my blog! I'm a professional software developer, working mainly with JavaScript and
-      related technologies. This blog will centre on JS, but is not limited to it. If you have any
-      questions or comments, tweet to me <a href="https://twitter.com/qubyte">@qubyte</a>!
-    </p>
     {{#posts}}
     <article>
       <header>
-        <h1><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h1>
+        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
       </header>
-      {{{attributes.snippet}}}
+      <div class="quote">{{{attributes.snippet}}}</div>
     </article>
     {{/posts}}
   </div>

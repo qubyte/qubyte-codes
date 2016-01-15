@@ -9,13 +9,19 @@
   </style>
 </head>
 <body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
   <div class="content">
-    <header class="top-header">
-      <h1><a href="/">Qubyte Codes</a></h1>
-    </header>
     <article>
       <header>
-        <h1>{{attributes.title}}</h1>
+        <h2>{{attributes.title}}</h2>
         <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
       </header>
       {{{content}}}
