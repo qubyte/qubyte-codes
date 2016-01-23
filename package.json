@@ -9,7 +9,8 @@
     "postinstall": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "build": "node -e \"require('.').build()\"",
     "addbuiltfiles": "git add public",
-    "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at"
+    "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
+    "start": "http-server"
   },
   "author": "Mark Stanley Everitt",
   "license": "Private",
@@ -18,6 +19,7 @@
     "front-matter": "2.0.1",
     "handlebars": "3.0.3",
     "highlight.js": "9.0.0",
+    "http-server": "0.8.5",
     "marked": "0.3.5",
     "remark": "3.1.0",
     "slug": "0.9.1"
