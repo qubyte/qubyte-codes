@@ -89,7 +89,8 @@ th, td {
 
 nav {
   padding: 0.5rem;
-  background-color: #eee;
+  border-top: 1px black solid;
+  border-bottom: 1px black solid;
 }
 
 nav > ul > li {
