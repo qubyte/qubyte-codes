@@ -1,0 +1,5 @@
+https://qubyte.codes
+https://quyte.codes/about
+{{#posts}}
+https://qubyte.codes/blog/{{attributes.slug}}
+{{/posts}}

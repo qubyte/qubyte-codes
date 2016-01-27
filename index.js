@@ -65,8 +65,8 @@ function renderMarkdown(post) {
   const digested = frontMatter(post);
   digested.attributes.date = new Date(digested.attributes.datetime);
   digested.attributes.updated = new Date(digested.attributes.updated || digested.attributes.datetime);
-  digested.attributes.filename = `${slug(digested.attributes.title, { lower: true })}.html`;
   digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}`;
+  digested.attributes.filename = `${digested.attributes.slug}.html`;
   digested.attributes.snippet = marked(makeSnippet(digested.body));
   digested.attributes.humandatetime = digested.attributes.date.toDateString();
   digested.attributes.isoDate = dateToIso(digested.attributes.date);
@@ -109,6 +109,10 @@ function writeAtom(atomXml) {
   return writeFile(path.join(__dirname, 'public', 'atom.xml'), atomXml);
 }
 
+function writeSitemap(sitemapTxt) {
+  return writeFile(path.join(__dirname, 'public', 'sitemap.txt'), sitemapTxt);
+}
+
 exports.build = function build() {
   const promises = [
     loadPostFiles(),
@@ -116,7 +120,8 @@ exports.build = function build() {
     loadTemplate('index.html'),
     loadTemplate('about.html'),
     loadTemplate('blog.html'),
-    loadTemplate('atom.xml')
+    loadTemplate('atom.xml'),
+    loadTemplate('sitemap.txt')
   ];
 
   return Promise.all(promises)
@@ -127,6 +132,7 @@ exports.build = function build() {
       const aboutTemplate = results[3];
       const blogTemplate = results[4];
       const atomTemplate = results[5];
+      const sitemapTemplate = results[6];
 
       posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
@@ -138,7 +144,14 @@ exports.build = function build() {
       const indexHtml = indexTemplate({ posts, style });
       const aboutHtml = aboutTemplate({ style });
       const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
+      const sitemapTxt = sitemapTemplate({ posts });
 
-      return Promise.all([writeIndex(indexHtml), writeAbout(aboutHtml), ...posts.map(writePost), writeAtom(atomXML)]);
+      return Promise.all([
+        writeIndex(indexHtml),
+        writeAbout(aboutHtml),
+        ...posts.map(writePost),
+        writeAtom(atomXML),
+        writeSitemap(sitemapTxt)
+      ]);
     });
 };
