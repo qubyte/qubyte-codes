@@ -1,5 +1,5 @@
 https://qubyte.codes
-https://quyte.codes/about
+https://qubyte.codes/about
 {{#posts}}
 https://qubyte.codes/blog/{{attributes.slug}}
 {{/posts}}
