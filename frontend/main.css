@@ -49,7 +49,7 @@ p {
 }
 
 .quote p:after {
-  content: " …\0022";
+  content: " ...\0022";
 }
 
 pre {
