@@ -25,9 +25,9 @@
         <time datetime="2016-01-31T02:00Z">Sun Jan 31 2016</time>
       </header>
       <p>This is a short companion to an
-<a href="/blog/private-data-for-js-classes-with-weakmap">earlier article I wrote</a> on using WeakMap for
-private data with JS classes. Contrary to private data, private methods have always been possible by
-wrapping a class, or a constructor function, in a closure. An updated version using ES2015 modules
+<a href="/blog/private-data-for-js-classes-with-weakmap">earlier article I wrote</a> on using <code>WeakMap</code> for
+private data with JS classes. While private data belongs to instances, private methods can be shared
+between instances of a class (just like its regular methods). An implementation using ES2015 modules
 looks like:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setContent</span>(<span class="hljs-params">content</span>) </span>{
   <span class="hljs-keyword">const</span> text = <span class="hljs-built_in">document</span>.createTextNode(content);

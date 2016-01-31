@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-01-31T13:16:38Z</updated>
+  <updated>2016-01-31T17:32:05Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -20,9 +20,9 @@
       <uri>https://qubyte.codes</uri>
     </author>
     <content type="html">&lt;p&gt;This is a short companion to an
-&lt;a href=&quot;/blog/private-data-for-js-classes-with-weakmap&quot;&gt;earlier article I wrote&lt;/a&gt; on using WeakMap for
-private data with JS classes. Contrary to private data, private methods have always been possible by
-wrapping a class, or a constructor function, in a closure. An updated version using ES2015 modules
+&lt;a href=&quot;/blog/private-data-for-js-classes-with-weakmap&quot;&gt;earlier article I wrote&lt;/a&gt; on using &lt;code&gt;WeakMap&lt;/code&gt; for
+private data with JS classes. While private data belongs to instances, private methods can be shared
+between instances of a class (just like its regular methods). An implementation using ES2015 modules
 looks like:&lt;/p&gt;
 </content>
   </entry>
