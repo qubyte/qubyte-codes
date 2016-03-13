@@ -55,13 +55,8 @@ assert.ok(<span class="hljs-string">'hi'</span> <span class="hljs-keyword">insta
 <span class="hljs-keyword">var</span> positiveInt = <span class="hljs-keyword">new</span> PositiveInteger();    <span class="hljs-comment">// throws</span>
 </code></pre>
 <p>The class above exists <em>only</em> to provide this <code>instanceof</code> check. A more interesting example might
-be a view. I assert that a view has the following properties:</p>
-<ul>
-<li>A <code>render</code> method.</li>
-<li>A <code>remove</code> method.</li>
-<li>An HTMLElement object <code>element</code>,</li>
-</ul>
-<p>An interface class for this might be:</p>
+be a view. I assert that a view has an element, and reander and remove methods. An interface class
+for this might be:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title">View</span> {
   constructor() {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'View is an interface class.'</span>);
