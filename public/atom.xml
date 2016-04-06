@@ -3,12 +3,29 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-03-15T00:25:25Z</updated>
+  <updated>2016-04-06T20:51:07Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/a-presentation-on-async-await-and-toisu</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/a-presentation-on-async-await-and-toisu"/>
+    <title>A presentation on async-await and Toisu!</title>
+    <published>2016-04-06T22:00:00Z</published>
+    <updated>2016-04-06T22:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;Just before Christmas I gave a presentation on the upcoming async-await JavaScript language feature,
+its basis in promises and generators, and finally a tiny server framework (like Express but a lot
+leaner and more modular) which can make use of async functions as middleware (since an async
+function is indistinguishable from a normal function which returns a promise). I&amp;#39;ll introduce Toisu!
+in a blog post soon, but until then here&amp;#39;s the presentation:&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/interfaces-for-javascript</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/interfaces-for-javascript"/>
