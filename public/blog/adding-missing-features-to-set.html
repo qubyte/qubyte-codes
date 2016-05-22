@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <title>Qubyte Codes - Adding missing features to Set</title>
+  <style>
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,'Palatino Linotype','Palatino LT STD','Book Antiqua',Georgia,serif;max-width:800px;text-align:center;margin:0 auto;background-color:#F1E7CD}.top-header{text-align:center}.content{text-align:left;margin:0 1rem}header{margin:1rem 0}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:2rem;margin:1rem 0}h3{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify}.quote p:before{content:"\0022"}.quote p:after{content:" ...\0022"}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p>a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}nav{padding:.5rem;border-top:1px #000 solid;border-bottom:1px #000 solid}nav>ul>li{display:inline;margin:.5rem}pre{padding:.5rem;border:1px #000 solid;background-color:#fff}.embed-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%}.embed-container embed,.embed-container iframe,.embed-container object{position:absolute;top:0;left:0;width:100%;height:100%}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <article>
+      <header>
+        <h2>Adding missing features to Set</h2>
+        <time datetime="2016-05-22T16:30Z">Sun May 22 2016</time>
+      </header>
+      <p>ES2015 bought a <code>Set</code> constructor to JavaScript. It&#39;s pretty barebones,
+consisting of a constructor which creates objects with a few methods for adding,
+removing, checking if something is a member, and iterating over the set.
+Instances have the essential quality of a set; an item is a member of the set or
+not a member. Unlike an array, an item cannot be an element more than once. In
+other words you can avoid using arrays and doing a lot of <code>indexOf</code> checking.</p>
+<p>For example, abusing an array to act like a set is very common:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = [];
+
+<span class="hljs-comment">// Add an element to the collection.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(collection, element)</span> </span>{
+  <span class="hljs-keyword">if</span> (collection.indexOf(someElement) !== <span class="hljs-number">-1</span>) {
+    collection.push(element);
+  }
+}
+
+<span class="hljs-comment">// Check if element is in the collection.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">has</span><span class="hljs-params">(collection, element)</span> </span>{
+  <span class="hljs-keyword">return</span> collection.indexOf(element) !== <span class="hljs-number">-1</span>;
+}
+
+add(myCollection, <span class="hljs-number">123</span>);
+has(myCollection, <span class="hljs-number">123</span>); <span class="hljs-comment">// returns true</span>
+has(myCollection, <span class="hljs-number">456</span>); <span class="hljs-comment">// returns false</span>
+</code></pre>
+<p>Using a set is more straight forward:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>();
+
+collection.<span class="hljs-keyword">add</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// add an element</span>
+collection.<span class="hljs-keyword">has</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// returns true</span>
+collection.<span class="hljs-keyword">has</span>(<span class="hljs-number">456</span>); <span class="hljs-comment">// returns false</span>
+</code></pre>
+<p>That&#39;s all grand, but a colleague of mine, a programmer dipping a toe into
+modern JS, noted that <code>Set</code> lacks some functions that you might expect it to
+have out of the box, such as <em>union</em>, <em>intersection</em> and (relative)
+<em>complement</em>.</p>
+<p>I&#39;d implement these as static methods of <code>Set</code>, and shim them in. Hopefully
+these methods will be added to the standard in the future. Until then, here are
+some possible implementations.</p>
+<h2 id="union">Union</h2>
+<p>The union of two sets is defined as the set of elements found in either or both
+sets.</p>
+<pre><code class="lang-javascript">Set.<span class="hljs-keyword">union</span> = function (a, b) {
+  const unionSet = new Set();
+
+  <span class="hljs-keyword">for</span> (const element <span class="hljs-keyword">of</span> a) {
+    unionSet.add(element);
+  }
+
+  <span class="hljs-keyword">for</span> (const element <span class="hljs-keyword">of</span> b) {
+    unionSet.add(element)
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-class"><span class="hljs-keyword">union</span>;</span>
+};
+</code></pre>
+<p>This function iterates over both sets, adding their elements to a new set, which
+is then returned.</p>
+<p>As a one liner:</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.union = (a, b) =&gt; <span class="hljs-literal">new</span> <span class="hljs-built_in">Set</span>(<span class="hljs-meta">[</span><span class="hljs-attr">...</span>a, <span class="hljs-attr">...</span>b<span class="hljs-meta">]</span>);
+</code></pre>
+<p>Sets are iterable, so the spread operator can be used to expand them as arrays.
+Set can also take an array as an argument, filling the constructed set object
+with elements from the array. This means that both sets can be spread into an
+array literal and fed back into the set constructor. Since repeated elements are
+ignored, the resultant set is the union of the two input sets.</p>
+<h2 id="intersection">Intersection</h2>
+<p>The intersection of two sets is defined as the set of elements they have in
+common.</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.intersection = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">const</span> [small, big] = a.size &lt; b.size ? [a, b] : [b, a];
+  <span class="hljs-keyword">const</span> intersectionSet = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> element <span class="hljs-keyword">of</span> small) {
+    <span class="hljs-keyword">if</span> (big.has(element)) {
+      intersectionSet.add(element);
+    }
+  }
+
+  <span class="hljs-keyword">return</span> intersectionSet;
+};
+</code></pre>
+<p>The first line of this one is an optimisation. The largest an intersection can
+be is the size of the smaller set. The first line uses destructuring assignment
+and a ternary to assign the smaller set to <code>small</code> and the larger set to <code>big</code>.
+The <code>intersectionSet</code> is then constructed, and <code>small</code> looped over to fill it
+with elements which are also in the <code>big</code>.</p>
+<p>If you want a one liner for this (and don&#39;t care about the size optimisation):</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">Set</span>.intersection = (a, b) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>([...a].filter(<span class="hljs-keyword">element</span> =&gt; b.has(<span class="hljs-keyword">element</span>)));
+</code></pre>
+<p>This uses similar tricks to <code>Set.union</code>. One set is expanded as an array, and
+then filtered to an array of elements which are in the other. The filtered array
+is then fed to <code>Set</code> to get the intersection set.</p>
+<h2 id="relative-complement">Relative complement</h2>
+<p>The relative complement of A in B is the set of those elements in B which are
+not in A.</p>
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.complement = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">const</span> complementSet = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> element <span class="hljs-keyword">of</span> b) {
+    <span class="hljs-keyword">if</span> (!a.has(element)) {
+      complementSet.add(element);
+    }
+  }
+
+  <span class="hljs-keyword">return</span> complementSet;
+};
+</code></pre>
+<p>This function makes a new set and iterates over the second set, filling the new
+set with elements of the second set which are not in the first.</p>
+<p>As a one liner:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">Set</span>.complement = (a, b) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>([...b].filter(<span class="hljs-keyword">element</span> =&gt; !a.has(<span class="hljs-keyword">element</span>)));
+</code></pre>
+<p>This uses similar tricks the <code>Set.intersection</code> one liner. It expands the second
+set as an array, filters it down to elements not in the first, and then
+initializes a new <code>Set</code> with the filtered array.</p>
+
+    </article>
+    <footer>
+      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Adding%20missing%20features%20to%20Set&url=https%3A%2F%2Fqubyte.codes%2Fblog%2Fadding-missing-features-to-set&hashtags=javascript">Tweet this post!</a></p>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
+  </div>
+</body>
+</html>
