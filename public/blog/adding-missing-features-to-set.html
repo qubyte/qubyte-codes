@@ -35,7 +35,7 @@ other words you can avoid using arrays and doing a lot of <code>indexOf</code> c
 
 <span class="hljs-comment">// Add an element to the collection.</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(collection, element)</span> </span>{
-  <span class="hljs-keyword">if</span> (collection.indexOf(someElement) !== <span class="hljs-number">-1</span>) {
+  <span class="hljs-keyword">if</span> (collection.indexOf(element) === <span class="hljs-number">-1</span>) {
     collection.push(element);
   }
 }
