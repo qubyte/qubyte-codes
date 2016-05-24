@@ -137,8 +137,8 @@ set with elements of the second set which are not in the first.</p>
 <p>As a one liner:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">Set</span>.complement = (a, b) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>([...b].filter(<span class="hljs-keyword">element</span> =&gt; !a.has(<span class="hljs-keyword">element</span>)));
 </code></pre>
-<p>This uses similar tricks the <code>Set.intersection</code> one liner. It expands the second
-set as an array, filters it down to elements not in the first, and then
+<p>This uses similar tricks to the <code>Set.intersection</code> one liner. It expands the
+second set as an array, filters it down to elements not in the first, and then
 initializes a new <code>Set</code> with the filtered array.</p>
 
     </article>
