@@ -33,16 +33,16 @@ other words you can avoid using arrays and doing a lot of <code>indexOf</code> c
 <p>For example, abusing an array to act like a set is very common:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = [];
 
-<span class="hljs-comment">// Add an element to the collection.</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(collection, element)</span> </span>{
-  <span class="hljs-keyword">if</span> (collection.indexOf(element) === <span class="hljs-number">-1</span>) {
-    collection.push(element);
-  }
-}
-
 <span class="hljs-comment">// Check if element is in the collection.</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">has</span><span class="hljs-params">(collection, element)</span> </span>{
   <span class="hljs-keyword">return</span> collection.indexOf(element) !== <span class="hljs-number">-1</span>;
+}
+
+<span class="hljs-comment">// Add an element to the collection.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(collection, element)</span> </span>{
+  <span class="hljs-keyword">if</span> (!has(collection, element)) {
+    collection.push(element);
+  }
 }
 
 add(myCollection, <span class="hljs-number">123</span>);
