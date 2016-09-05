@@ -25,17 +25,18 @@
         <time datetime="2016-09-05T20:00Z">Mon Sep 05 2016</time>
       </header>
       <p>The npm CLI has a bunch of useful utilities for managing projects. The obvious
-one is <code>npm test</code>. I particularly like working with <code>npm version</code>. Without
-customization it checks that the working git directory is clean, sets the new
-version in the package file, and then commits it and tags the repository with
-the same new version.</p>
-<p>That&#39;s great, but what if you have a <code>bower.json</code> file? <code>npm version</code> updates
-the verion in <code>package.json</code>, but it misses the version in the <code>bower.json</code>
-file. Various tasks might need to be done to add things after the new version is
-known, but before it has been committed and tagged.</p>
+one is <code>npm test</code> but there are others. I particularly like working with
+<code>npm version</code> (the subject of this tip).</p>
+<p>Without customization, <code>npm version</code> checks that the working git directory is
+clean, sets the new version in the package file, and then commits it and tags
+the repository with the same new version.</p>
+<p>That&#39;s great, but what if you have a <code>bower.json</code> file, or some other task which
+needs the new version before the tag is made? <code>npm version</code> updates the version
+in <code>package.json</code> and it misses the version in the <code>bower.json</code> file. The
+<code>bower.json</code> version is just an example, but one that illustrates this point.</p>
 <p>This is where customizing <code>npm version</code> comes in. Continuing the <code>bower.json</code>
-example, we&#39;re going to have a script which performs the version update, and
-<code>git add</code>s it. In the <code>package.json</code> file:</p>
+example, we can write a script which performs the version update, and
+uses <code>git add</code> on it. In the <code>package.json</code> file:</p>
 <pre><code class="lang-javascript">{
   "<span class="hljs-attr">name</span>": <span class="hljs-string">"my lovely app"</span>,
   "<span class="hljs-attr">version</span>": <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>,
@@ -45,9 +46,9 @@ example, we&#39;re going to have a script which performs the version update, and
 }
 </code></pre>
 <p>To reiterate, <code>npm version</code> will update the version in the package file, run the
-version script, and then commit the changes and tag the result. That means that
-the script needs to do something to the <code>bower.json</code> file, then <code>git add</code> the
-result.</p>
+version script above, and then commit the changes and tag the result. That means
+that the script needs to do something to the <code>bower.json</code> file, then <code>git add</code>
+the result.</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// update-bower-version.js</span>
 
 <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
@@ -65,6 +66,10 @@ matter what the new version will be we have access to it in this script.</p>
 <p>Since the <code>bower.json</code> file contains JSON it can be read and parsed by <code>require</code>
 in one step. The version is updated, and the result stringified (I&#39;m using two
 space indentation here) and written back to the bower file.</p>
+<p>With a script in place, you can use <code>npm version</code> without further thought. for
+example, a major version bump looks like:</p>
+<pre><code class="lang-bash">npm <span class="hljs-built_in">version</span> major
+</code></pre>
 <p>Enjoy!</p>
 
     </article>
