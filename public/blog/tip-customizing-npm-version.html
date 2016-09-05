@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <title>Qubyte Codes - Tip: customizing npm version</title>
+  <style>
+    a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}body{font-family:Palatino,'Palatino Linotype','Palatino LT STD','Book Antiqua',Georgia,serif;max-width:800px;text-align:center;margin:0 auto;background-color:#F1E7CD}.top-header{text-align:center}.content{text-align:left;margin:0 1rem}header{margin:1rem 0}article,footer{margin:2rem 0}h1{font-size:2rem;margin:1rem 0}h2{font-size:2rem;margin:1rem 0}h3{font-size:1.5rem;margin:1rem 0}p{margin:1rem 0;line-height:1.2em;text-align:justify}.quote p:before{content:"\0022"}.quote p:after{content:" ...\0022"}pre{margin:1rem 0;white-space:pre-wrap}code{font-family:monospace}a{color:inherit;text-decoration:none}p>a{text-decoration:underline}em{font-style:italic}table{margin:1rem 0;text-align:left;width:100%}thead{border-bottom:solid 1px}td,th{padding:.5rem}nav{padding:.5rem;border-top:1px #000 solid;border-bottom:1px #000 solid}nav>ul>li{display:inline;margin:.5rem}pre{padding:.5rem;border:1px #000 solid;background-color:#fff}.embed-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%}.embed-container embed,.embed-container iframe,.embed-container object{position:absolute;top:0;left:0;width:100%;height:100%}.hljs{display:block;overflow-x:auto;padding:.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-literal{color:#1F811F}.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#BC6060}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-comment{color:#888}.hljs-meta{color:#2B6EA1}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <article>
+      <header>
+        <h2>Tip: customizing npm version</h2>
+        <time datetime="2016-09-05T20:00Z">Mon Sep 05 2016</time>
+      </header>
+      <p>The npm CLI has a bunch of useful utilities for managing projects. The obvious
+one is <code>npm test</code>. I particularly like working with <code>npm version</code>. Without
+customization it checks that the working git directory is clean, sets the new
+version in the package file, and then commits it and tags the repository with
+the same new version.</p>
+<p>That&#39;s great, but what if you have a <code>bower.json</code> file? <code>npm version</code> updates
+the verion in <code>package.json</code>, but it misses the version in the <code>bower.json</code>
+file. Various tasks might need to be done to add things after the new version is
+known, but before it has been committed and tagged.</p>
+<p>This is where customizing <code>npm version</code> comes in. Continuing the <code>bower.json</code>
+example, we&#39;re going to have a script which performs the version update, and
+<code>git add</code>s it. In the <code>package.json</code> file:</p>
+<pre><code class="lang-javascript">{
+  "<span class="hljs-attr">name</span>": <span class="hljs-string">"my lovely app"</span>,
+  "<span class="hljs-attr">version</span>": <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>,
+  "<span class="hljs-attr">scripts</span>": {
+    "<span class="hljs-attr">version</span>": <span class="hljs-string">"node update-bower-version.js &amp;&amp; git add bower.json"</span>
+  }
+}
+</code></pre>
+<p>To reiterate, <code>npm version</code> will update the version in the package file, run the
+version script, and then commit the changes and tag the result. That means that
+the script needs to do something to the <code>bower.json</code> file, then <code>git add</code> the
+result.</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// update-bower-version.js</span>
+
+<span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">var</span> bowerJsonPath = <span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">'bower'</span>)
+<span class="hljs-keyword">var</span> bowerJson = <span class="hljs-built_in">require</span>(bowerJsonPath);
+
+bowerJson.version = process.env.npm_package_version; <span class="hljs-comment">// npm injects this</span>
+
+fs.writeFileSync(bowerJsonPath, <span class="hljs-built_in">JSON</span>.stringify(bowerJson, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+</code></pre>
+<p>This script is going to be run by <code>npm</code> from the <code>package.json</code> file, which
+handily <a href="https://docs.npmjs.com/misc/scripts#packagejson-vars">injects some environment variables</a>. One of these variables is the
+version in the <code>package.json</code> file. This is great because it means that no
+matter what the new version will be we have access to it in this script.</p>
+<p>Since the <code>bower.json</code> file contains JSON it can be read and parsed by <code>require</code>
+in one step. The version is updated, and the result stringified (I&#39;m using two
+space indentation here) and written back to the bower file.</p>
+<p>Enjoy!</p>
+
+    </article>
+    <footer>
+      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Tip%3A%20customizing%20npm%20version&url=https%3A%2F%2Fqubyte.codes%2Fblog%2Ftip-customizing-npm-version&hashtags=javascript">Tweet this post!</a></p>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
+  </div>
+</body>
+</html>

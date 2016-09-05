@@ -1,5 +1,6 @@
 https://qubyte.codes
 https://qubyte.codes/about
+https://qubyte.codes/blog/tip-customizing-npm-version
 https://qubyte.codes/blog/adding-missing-features-to-set
 https://qubyte.codes/blog/a-presentation-on-async-await-and-toisu
 https://qubyte.codes/blog/interfaces-for-javascript

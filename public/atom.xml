@@ -3,12 +3,29 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-05-24T22:28:39Z</updated>
+  <updated>2016-09-05T18:58:26Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/tip-customizing-npm-version</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/tip-customizing-npm-version"/>
+    <title>Tip: customizing npm version</title>
+    <published>2016-09-05T20:00:00Z</published>
+    <updated>2016-09-05T20:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;The npm CLI has a bunch of useful utilities for managing projects. The obvious
+one is &lt;code&gt;npm test&lt;/code&gt;. I particularly like working with &lt;code&gt;npm version&lt;/code&gt;. Without
+customization it checks that the working git directory is clean, sets the new
+version in the package file, and then commits it and tags the repository with
+the same new version.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/adding-missing-features-to-set</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/adding-missing-features-to-set"/>
