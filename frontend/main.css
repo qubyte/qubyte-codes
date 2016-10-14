@@ -8,11 +8,18 @@ body {
 
 .top-header {
   text-align: center;
+  position: fixed;
+  margin: 0;
+  top: 0;
+  width: 100%;
+  max-width: 800px;
+  background-color: #F1E7CD;
 }
 
 .content {
   text-align: left;
   margin: 0 1rem;
+  padding-top: 6rem;
 }
 
 header {
@@ -26,6 +33,12 @@ article, footer {
 h1 {
   font-size: 2rem;
   margin: 1rem 0;
+  transition: all 0.3s;
+}
+
+h1.smaller {
+  font-size: 1rem;
+  margin: 0.5rem 0;
 }
 
 h2 {
@@ -119,4 +132,12 @@ pre {
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 0.125rem;
+  background-color: black;
 }
