@@ -1,0 +1,7 @@
+{
+  "env": {
+    "browser": true
+  },
+  "root": true,
+  "extends": "qubyte"
+}
