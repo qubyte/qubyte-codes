@@ -8,7 +8,6 @@ const path = require('path');
 const handlebars = require('handlebars');
 const slug = require('slug');
 const remark = require('remark');
-const CleanCSS = require('clean-css');
 
 marked.setOptions({
   highlight(code) {
@@ -83,28 +82,12 @@ function loadPostFiles() {
     .then(contents => contents.map(renderMarkdown));
 }
 
-function loadCssFiles() {
-  return Promise.all([
-    'frontend/reset.css',
-    'frontend/main.css',
-    'frontend/code-style.css'
-  ].map(readFile));
-}
-
-function compileCss(sources) {
-  return new CleanCSS({ advanced: false }).minify(Array.from(sources).join('\n')).styles;
-}
-
 function writePost(post) {
   return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.filename), post.html);
 }
 
 function writeIndex(indexHtml) {
   return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
-}
-
-function writeAbout(aboutHtml) {
-  return writeFile(path.join(__dirname, 'public', 'about.html'), aboutHtml);
 }
 
 function writeAtom(atomXml) {
@@ -118,39 +101,26 @@ function writeSitemap(sitemapTxt) {
 exports.build = function build() {
   const promises = [
     loadPostFiles(),
-    loadCssFiles(),
     loadTemplate('index.html'),
-    loadTemplate('about.html'),
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
     loadTemplate('sitemap.txt')
   ];
 
   return Promise.all(promises)
-    .then(results => {
-      const posts = results[0];
-      const style = compileCss(results[1]);
-      const indexTemplate = results[2];
-      const aboutTemplate = results[3];
-      const blogTemplate = results[4];
-      const atomTemplate = results[5];
-      const sitemapTemplate = results[6];
-
+    .then(([posts, indexTemplate, blogTemplate, atomTemplate, sitemapTemplate]) => {
       posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
       for (const post of posts) {
-        post.style = style;
         post.html = blogTemplate(post);
       }
 
-      const indexHtml = indexTemplate({ posts, style });
-      const aboutHtml = aboutTemplate({ style });
+      const indexHtml = indexTemplate({ posts });
       const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
       const sitemapTxt = sitemapTemplate({ posts });
 
       return Promise.all([
         writeIndex(indexHtml),
-        writeAbout(aboutHtml),
         ...posts.map(writePost),
         writeAtom(atomXML),
         writeSitemap(sitemapTxt)
