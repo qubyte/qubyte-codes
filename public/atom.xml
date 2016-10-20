@@ -3,12 +3,27 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-10-15T16:09:47Z</updated>
+  <updated>2016-10-20T02:35:44Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/progressive-enhancement-1</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/progressive-enhancement-1"/>
+    <title>Progressive enhancement #1</title>
+    <published>2016-10-15T18:00:00Z</published>
+    <updated>2016-10-15T18:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;When I first put together the CSS for this blog I avoided a fixed header since
+the header felt a bit large, and I didn&amp;#39;t want to take up too much space which
+could be used for content.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/tip-customizing-npm-version</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/tip-customizing-npm-version"/>
