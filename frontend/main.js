@@ -3,13 +3,13 @@
 
   'use strict';
 
-  var title = document.querySelector('.top-header > h1');
+  var $header = document.querySelector('.top-header');
 
   function checkHeaderSmallText() {
     if (window.pageYOffset) {
-      title.classList.add('smaller');
+      $header.classList.add('smaller');
     } else {
-      title.classList.remove('smaller');
+      $header.classList.remove('smaller');
     }
   }
 

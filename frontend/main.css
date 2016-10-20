@@ -36,7 +36,7 @@ h1 {
   transition: all 0.3s;
 }
 
-h1.smaller {
+.smaller h1 {
   font-size: 1rem;
   margin: 0.5rem 0;
 }
@@ -53,7 +53,7 @@ h3 {
 
 p {
   margin: 1rem 0;
-  line-height: 1.2em;
+  line-height: 1.5em;
   text-align: justify;
 }
 
