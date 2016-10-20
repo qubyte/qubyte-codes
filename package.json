@@ -7,10 +7,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
-    "build": "node -e \"require('.').build()\" && uglifyjs frontend/main.js -c -m > public/main.js",
+    "build-js": "uglifyjs frontend/main.js -c -m > public/main.js",
+    "build-css": "cleancss --skip-advanced frontend/reset.css frontend/main.css frontend/code-style.css > public/main.css",
+    "build": "node -e \"require('.').build()\" && npm run build-js && npm run build-css",
     "addbuiltfiles": "git add public",
     "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
-    "start": "http-server"
+    "start": "node serve.js"
   },
   "author": "Mark Stanley Everitt",
   "license": "Private",
@@ -19,7 +21,6 @@
     "front-matter": "2.0.1",
     "handlebars": "3.0.3",
     "highlight.js": "9.0.0",
-    "http-server": "0.8.5",
     "marked": "0.3.5",
     "remark": "3.1.0",
     "slug": "0.9.1",
@@ -27,6 +28,8 @@
   },
   "devDependencies": {
     "eslint": "3.8.0",
-    "eslint-config-qubyte": "1.0.1"
+    "eslint-config-qubyte": "1.0.1",
+    "toisu": "3.0.3",
+    "toisu-static": "1.1.0"
   }
 }
