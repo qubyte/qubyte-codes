@@ -6,7 +6,7 @@
   var $header = document.querySelector('.top-header');
 
   function checkHeaderSmallText() {
-    if (window.pageYOffset) {
+    if (window.pageYOffset > 0) {
       $header.classList.add('smaller');
     } else {
       $header.classList.remove('smaller');
