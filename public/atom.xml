@@ -3,12 +3,28 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-11-12T02:02:00Z</updated>
+  <updated>2016-11-12T13:51:20Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/progressive-enhancement-2</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/progressive-enhancement-2"/>
+    <title>Progressive enhancement #2</title>
+    <published>2016-11-12T03:00:00Z</published>
+    <updated>2016-11-12T03:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;I recently attended ffconf, and was introduced to &lt;code&gt;position: sticky;&lt;/code&gt;. Support
+for it is patchy, but where not available the header will scroll out of view as
+it did in the past. Where available, the navbar will stick to the top of the
+window when the rest of the header is scrolled out of view.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/progressive-enhancement-1</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/progressive-enhancement-1"/>
