@@ -1,1 +1,1 @@
-!function(){"use strict";function e(){window.pageYOffset>0?s.classList.add("smaller"):s.classList.remove("smaller")}var s=document.querySelector(".top-header");window.addEventListener("scroll",e,!1),e()}();
+!function(){"use strict";function t(){0===e.getBoundingClientRect().top?e.classList.add("stuck"):e.classList.remove("stuck")}var e=document.querySelector(".top-header nav");window.addEventListener("scroll",t,!1),t()}();
