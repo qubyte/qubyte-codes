@@ -8,18 +8,18 @@ body {
 
 .top-header {
   text-align: center;
-  position: fixed;
   margin: 0;
-  top: 0;
   width: 100%;
   max-width: 800px;
   background-color: #F1E7CD;
+  position: sticky;
+  position: -webkit-sticky;
+  top: calc(-1px - 4rem);
 }
 
 .content {
   text-align: left;
   margin: 0 1rem;
-  padding-top: 6rem;
 }
 
 header {
@@ -32,13 +32,8 @@ article, footer {
 
 h1 {
   font-size: 2rem;
-  margin: 1rem 0;
-  transition: all 0.3s;
-}
-
-.smaller h1 {
-  font-size: 1rem;
-  margin: 0.5rem 0;
+  padding: 1rem 0;
+  border-bottom: 1px black solid;
 }
 
 h2 {
@@ -103,7 +98,6 @@ th, td {
 
 nav {
   padding: 0.5rem;
-  border-top: 1px black solid;
   border-bottom: 1px black solid;
 }
 
