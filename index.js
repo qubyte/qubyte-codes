@@ -82,22 +82,6 @@ function loadPostFiles() {
     .then(contents => contents.map(renderMarkdown));
 }
 
-function writePost(post) {
-  return writeFile(path.join(__dirname, 'public', 'blog', post.attributes.filename), post.html);
-}
-
-function writeIndex(indexHtml) {
-  return writeFile(path.join(__dirname, 'public', 'index.html'), indexHtml);
-}
-
-function writeAtom(atomXml) {
-  return writeFile(path.join(__dirname, 'public', 'atom.xml'), atomXml);
-}
-
-function writeSitemap(sitemapTxt) {
-  return writeFile(path.join(__dirname, 'public', 'sitemap.txt'), sitemapTxt);
-}
-
 exports.build = function build() {
   const promises = [
     loadPostFiles(),
@@ -118,12 +102,13 @@ exports.build = function build() {
       const indexHtml = indexTemplate({ posts });
       const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
       const sitemapTxt = sitemapTemplate({ posts });
+      const buildPublicPath = (...parts) => path.join(__dirname, 'public', ...parts);
 
       return Promise.all([
-        writeIndex(indexHtml),
-        ...posts.map(writePost),
-        writeAtom(atomXML),
-        writeSitemap(sitemapTxt)
+        writeFile(buildPublicPath('index.html'), indexHtml),
+        ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
+        writeFile(buildPublicPath('atom.xml'), atomXML),
+        writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
       ]);
     });
 };
