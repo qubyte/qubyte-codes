@@ -14,7 +14,7 @@ body {
   background-color: #F1E7CD;
   position: sticky;
   position: -webkit-sticky;
-  top: calc(-1px - 4rem);
+  top: -4rem;
 }
 
 .content {
@@ -33,7 +33,6 @@ article, footer {
 h1 {
   font-size: 2rem;
   padding: 1rem 0;
-  border-bottom: 1px black solid;
 }
 
 h2 {
@@ -98,7 +97,7 @@ th, td {
 
 nav {
   padding: 0.5rem;
-  border-bottom: 1px black solid;
+  box-shadow: 0px 1px 0px #000, 0px -1px 0px #000;
 }
 
 nav > ul > li {
