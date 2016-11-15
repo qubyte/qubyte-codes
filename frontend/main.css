@@ -126,11 +126,3 @@ pre {
   width: 100%;
   height: 100%;
 }
-
-.scroll-progress {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  height: 0.125rem;
-  background-color: black;
-}
