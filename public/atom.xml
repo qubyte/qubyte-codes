@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-11-15T18:35:28Z</updated>
+  <updated>2016-11-16T00:15:29Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -19,10 +19,10 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;I recently attended ffconf, and was introduced to &lt;code&gt;position: sticky;&lt;/code&gt;. Support
+    <content type="html">&lt;p&gt;“I recently attended ffconf, and was introduced to &lt;code&gt;position: sticky;&lt;/code&gt;. Support
 for it is patchy, but where not available the header will scroll out of view as
 it did in the past. Where available, the navbar will stick to the top of the
-window when the rest of the header is scrolled out of view&lt;/p&gt;
+window when the rest of the header is scrolled out of view…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -35,9 +35,9 @@ window when the rest of the header is scrolled out of view&lt;/p&gt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;When I first put together the CSS for this blog I avoided a fixed header since
+    <content type="html">&lt;p&gt;“When I first put together the CSS for this blog I avoided a fixed header since
 the header felt a bit large, and I didn&amp;#39;t want to take up too much space which
-could be used for content&lt;/p&gt;
+could be used for content…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -50,9 +50,9 @@ could be used for content&lt;/p&gt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;The npm CLI has a bunch of useful utilities for managing projects. The obvious
+    <content type="html">&lt;p&gt;“The npm CLI has a bunch of useful utilities for managing projects. The obvious
 one is &lt;code&gt;npm test&lt;/code&gt; but there are others. I particularly like working with
-&lt;code&gt;npm version&lt;/code&gt; (the subject of this tip)&lt;/p&gt;
+&lt;code&gt;npm version&lt;/code&gt; (the subject of this tip)…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -65,12 +65,12 @@ one is &lt;code&gt;npm test&lt;/code&gt; but there are others. I particularly li
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;ES2015 bought a &lt;code&gt;Set&lt;/code&gt; constructor to JavaScript. It&amp;#39;s pretty barebones,
+    <content type="html">&lt;p&gt;“ES2015 bought a &lt;code&gt;Set&lt;/code&gt; constructor to JavaScript. It&amp;#39;s pretty barebones,
 consisting of a constructor which creates objects with a few methods for adding,
 removing, checking if something is a member, and iterating over the set.
 Instances have the essential quality of a set; an item is a member of the set or
 not a member. Unlike an array, an item cannot be an element more than once. In
-other words you can avoid using arrays and doing a lot of &lt;code&gt;indexOf&lt;/code&gt; checking&lt;/p&gt;
+other words you can avoid using arrays and doing a lot of &lt;code&gt;indexOf&lt;/code&gt; checking…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -83,11 +83,11 @@ other words you can avoid using arrays and doing a lot of &lt;code&gt;indexOf&lt
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;Just before Christmas I gave a presentation on the upcoming async-await JavaScript language feature,
+    <content type="html">&lt;p&gt;“Just before Christmas I gave a presentation on the upcoming async-await JavaScript language feature,
 its basis in promises and generators, and finally a tiny server framework (like Express but a lot
 leaner and more modular) which can make use of async functions as middleware (since an async
 function is indistinguishable from a normal function which returns a promise). I&amp;#39;ll introduce Toisu!
-in a blog post soon, but until then here&amp;#39;s the presentation&lt;/p&gt;
+in a blog post soon, but until then here&amp;#39;s the presentation…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -100,8 +100,8 @@ in a blog post soon, but until then here&amp;#39;s the presentation&lt;/p&gt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;I use &lt;code&gt;instanceof&lt;/code&gt; a lot in JavaScript. It&amp;#39;s very handy when writing unit tests. It&amp;#39;s easier to do
-an &lt;code&gt;instanceof&lt;/code&gt; check than it is to exhaustively probe an object&lt;/p&gt;
+    <content type="html">&lt;p&gt;“I use &lt;code&gt;instanceof&lt;/code&gt; a lot in JavaScript. It&amp;#39;s very handy when writing unit tests. It&amp;#39;s easier to do
+an &lt;code&gt;instanceof&lt;/code&gt; check than it is to exhaustively probe an object…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -114,11 +114,11 @@ an &lt;code&gt;instanceof&lt;/code&gt; check than it is to exhaustively probe an
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;This is a short companion to an
+    <content type="html">&lt;p&gt;“This is a short companion to an
 &lt;a href&#x3D;&quot;/blog/private-data-for-js-classes-with-weakmap&quot;&gt;earlier article I wrote&lt;/a&gt; on using &lt;code&gt;WeakMap&lt;/code&gt; for
 private data with JS classes. While private data belongs to instances, private methods can be shared
 between instances of a class (just like its regular methods). An implementation using ES2015 modules
-looks like&lt;/p&gt;
+looks like…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -131,10 +131,10 @@ looks like&lt;/p&gt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;This blog is built with a static site generator. The generator, the markdown source files, and the
+    <content type="html">&lt;p&gt;“This blog is built with a static site generator. The generator, the markdown source files, and the
 generated HTML files are all kept together in the same git repository. Every time I commit a change,
 a pre-commit hook runs the generator and adds the generated HTML, so that the blog entries are
-always up to date. Then the changes are pushed up to GitHub&lt;/p&gt;
+always up to date. Then the changes are pushed up to GitHub…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -147,12 +147,12 @@ always up to date. Then the changes are pushed up to GitHub&lt;/p&gt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;I touched briefly on the technology used in this blog in
+    <content type="html">&lt;p&gt;“I touched briefly on the technology used in this blog in
 &lt;a href&#x3D;&quot;/blog/about-this-blog.html&quot;&gt;a previous post&lt;/a&gt;, but I didn&amp;#39;t explain the motivation behind a lot of
 the choices I made when building it. I&amp;#39;d like to do that in this post. The design and architecture
 of this blog is the product of what things I like in other blogs, and also those things that I find
 frustrating. Where a choice was not obvious, I opted for the simplest option. The point of the
-exercise was to get it online. Below are a few points in no particular order&lt;/p&gt;
+exercise was to get it online. Below are a few points in no particular order…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -165,10 +165,10 @@ exercise was to get it online. Below are a few points in no particular order&lt;
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
+    <content type="html">&lt;p&gt;“This blog took a long time to get started. Every time I tried to build it, I wound up focussed on
 some tech I wanted to use to host it. In the previous iteration, I even
 &lt;a href&#x3D;&quot;https://github.com/qubyte/toisu&quot;&gt;wrote a server framework&lt;/a&gt;. I took some holiday over the Christmas
-period, so I decided to throw everything away and make something minimal&lt;/p&gt;
+period, so I decided to throw everything away and make something minimal…”&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -181,9 +181,9 @@ period, so I decided to throw everything away and make something minimal&lt;/p&g
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;Private data has always been awkward in JavaScript. It&amp;#39;s particularly difficult when it comes to
+    <content type="html">&lt;p&gt;“Private data has always been awkward in JavaScript. It&amp;#39;s particularly difficult when it comes to
 constructors, and with ES2015 recently published, classes too. Let&amp;#39;s say we have an example class,
-exported by an ES2015 module&lt;/p&gt;
+exported by an ES2015 module…”&lt;/p&gt;
 </content>
   </entry>
 

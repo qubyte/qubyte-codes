@@ -49,7 +49,7 @@ function makeSnippet(body) {
 
   for (const child of ast.children) {
     if (child.type === 'paragraph') {
-      return remark.stringify(child).slice(0, -1);
+      return `“${remark.stringify(child).slice(0, -1)}…”`;
     }
   }
 

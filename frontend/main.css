@@ -51,16 +51,8 @@ p {
   text-align: justify;
 }
 
-.quote p:before {
-  content: "\0201C";
-  position: absolute;
-  margin-left: -1em;
-  width: 1em;
-  text-align: right;
-}
-
-.quote p:after {
-  content: "...\0201D";
+.quote {
+  hanging-punctuation: first force-end;
 }
 
 pre {
