@@ -1,1 +1,0 @@
-!function(){"use strict";function t(){0===e.getBoundingClientRect().top?e.classList.add("stuck"):e.classList.remove("stuck")}var e=document.querySelector(".top-header nav");window.addEventListener("scroll",t,!1),t()}();
