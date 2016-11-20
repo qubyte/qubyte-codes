@@ -5,6 +5,7 @@ const highlight = require('highlight.js');
 const frontMatter = require('front-matter');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const handlebars = require('handlebars');
 const slug = require('slug');
 const remark = require('remark');
@@ -14,6 +15,10 @@ marked.setOptions({
     return highlight.highlightAuto(code).value;
   }
 });
+
+function buildPublicPath(...parts) {
+  return path.join(__dirname, 'public', ...parts);
+}
 
 function readDir(dir) {
   return new Promise((resolve, reject) => {
@@ -37,6 +42,15 @@ function writeFile(path, content) {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, content, err => err ? reject(err) : resolve());
   });
+}
+
+function hashCss() {
+  return readFile(buildPublicPath('main.css'))
+    .then(content => {
+      return crypto.createHash('md5')
+        .update(content)
+        .digest('hex');
+    });
 }
 
 function loadTemplate(filename) {
@@ -86,26 +100,30 @@ exports.build = function build() {
   const promises = [
     loadPostFiles(),
     loadTemplate('index.html'),
+    loadTemplate('about.html'),
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
-    loadTemplate('sitemap.txt')
+    loadTemplate('sitemap.txt'),
+    hashCss()
   ];
 
   return Promise.all(promises)
-    .then(([posts, indexTemplate, blogTemplate, atomTemplate, sitemapTemplate]) => {
+    .then(([posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, cssHash]) => {
       posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
       for (const post of posts) {
+        post.cssHash = cssHash;
         post.html = blogTemplate(post);
       }
 
-      const indexHtml = indexTemplate({ posts });
+      const indexHtml = indexTemplate({ posts, cssHash });
+      const aboutHtml = aboutTemplate({ cssHash });
       const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
       const sitemapTxt = sitemapTemplate({ posts });
-      const buildPublicPath = (...parts) => path.join(__dirname, 'public', ...parts);
 
       return Promise.all([
         writeFile(buildPublicPath('index.html'), indexHtml),
+        writeFile(buildPublicPath('about.html'), aboutHtml),
         ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
         writeFile(buildPublicPath('atom.xml'), atomXML),
         writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
