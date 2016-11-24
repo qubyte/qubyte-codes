@@ -50,7 +50,7 @@ the result.</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// update-bower-version.js</span>
 
 <span class="hljs-keyword">var</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
-<span class="hljs-keyword">var</span> bowerJsonPath = <span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">'bower'</span>)
+<span class="hljs-keyword">var</span> bowerJsonPath = <span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">'./bower'</span>);
 <span class="hljs-keyword">var</span> bowerJson = <span class="hljs-built_in">require</span>(bowerJsonPath);
 
 bowerJson.version = process.env.npm_package_version; <span class="hljs-comment">// npm injects this</span>
