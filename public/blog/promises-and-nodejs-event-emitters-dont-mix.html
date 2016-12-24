@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <title>Qubyte Codes - Promises and Node.js event emitters don&#x27;t mix</title>
+  <link href="../main.css?v=9d88a80f0d3c2953fe3087afbed3d426" rel="stylesheet">
+</head>
+<body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <article>
+      <header>
+        <h2>Promises and Node.js event emitters don&#x27;t mix</h2>
+        <time datetime="2016-12-24T17:00Z">Sat Dec 24 2016</time>
+      </header>
+      <p>To many experienced Node developers, the title of this post will seem
+intuitively obvious. Nevertheless, it&#39;s useful to see what unexpected behaviour
+can occur when the two are used together. Here&#39;s an example:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { EventEmitter } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>);
+<span class="hljs-keyword">const</span> emitter = <span class="hljs-keyword">new</span> EventEmitter();
+
+<span class="hljs-built_in">Promise</span>.reject(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Oh noes!'</span>))
+  .catch(e =&gt; emitter.emit(<span class="hljs-string">'error'</span>, e));
+</code></pre>
+<p>If you run this code (tested in Node v7.3 from a script, not REPL), what do you
+expect to happen? I expected an <code>uncaughtException</code> event, since an event
+emitter is emitting an <a href="https://nodejs.org/dist/latest-v7.x/docs/api/events.html#events_error_events">error event with no event handler</a>, but that&#39;s not
+what happens at all. Instead you get an <code>UnhandledPromiseRejectionWarning</code>!</p>
+<p>This is bad news. If something genuinely nasty has happened, you might want to
+emit an error like this which is either explicitly handled or causes an
+<code>uncaughtException</code> event. Uncaught exceptions <em>should</em> lead to the process
+exiting, and a promise has just stifled it.</p>
+<p>So, what happened? Here&#39;s a hint:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { EventEmitter } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>);
+<span class="hljs-keyword">const</span> emitter = <span class="hljs-keyword">new</span> EventEmitter();
+
+<span class="hljs-keyword">try</span> {
+  emitter.emit(<span class="hljs-string">'error'</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Oh noes!'</span>));
+} <span class="hljs-keyword">catch</span> (e) {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'caught'</span>);
+}
+</code></pre>
+<p>What do you expect to happen here? Again, at first glance I would have expected
+an <code>uncaughtException</code> event. <code>uncaughtException</code> events can happen when one of
+two conditions is met. The first is an error is thrown but not caught (thus the
+name). The second is when an error event is emitted and the emitter has no
+handler to deal with it.</p>
+<p>Did I say there were two conditions? I meant to say one! The second condition is
+really the first in disguise. When an emitter lacks an error handler and it
+emits an error event, the default error handler takes control and <em>throws</em> the
+error. Since event handlers are called synchronously upon event emissions, this:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { EventEmitter } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>);
+<span class="hljs-keyword">const</span> emitter = <span class="hljs-keyword">new</span> EventEmitter();
+
+emitter.emit(<span class="hljs-string">'error'</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Oh noes!'</span>));
+</code></pre>
+<p>is equivalent to</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Oh noes!'</span>);
+</code></pre>
+<p>So, the very first snippet is equivalent To:</p>
+<pre><code class="lang-javascript">Promise.reject(<span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Oh noes!'</span>))
+  .<span class="hljs-keyword">catch</span>(e =&gt; {
+    <span class="hljs-keyword">throw</span> e;
+  });
+</code></pre>
+<p>The promise chain captures the thrown error and wraps it as a rejected promise,
+which leads to an <code>UnhandledPromiseRejectionWarning</code> since a second <code>.catch</code> is
+needed in the chain to handle it.</p>
+<p>If you want to ensure that unhandled error events lead to uncaught exceptions
+which aren&#39;t captured by a <code>catch</code> or a promise chain, then you can wrap the
+emission in a <code>setTimeout</code> or a <code>setImmediate</code>.</p>
+
+    </article>
+    <footer>
+      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Promises%20and%20Node.js%20event%20emitters%20don&#x27;t%20mix&url=https%3A%2F%2Fqubyte.codes%2Fblog%2Fpromises-and-nodejs-event-emitters-dont-mix&hashtags=javascript">Tweet this post!</a></p>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
+  </div>
+</body>
+</html>

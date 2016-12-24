@@ -3,12 +3,27 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2016-11-24T11:07:11Z</updated>
+  <updated>2016-12-24T16:56:33Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/promises-and-nodejs-event-emitters-dont-mix</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/promises-and-nodejs-event-emitters-dont-mix"/>
+    <title>Promises and Node.js event emitters don&#x27;t mix</title>
+    <published>2016-12-24T17:00:00Z</published>
+    <updated>2016-12-24T17:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;“To many experienced Node developers, the title of this post will seem
+intuitively obvious. Nevertheless, it&amp;#39;s useful to see what unexpected behaviour
+can occur when the two are used together. Here&amp;#39;s an example…”&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/progressive-enhancement-2</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/progressive-enhancement-2"/>
