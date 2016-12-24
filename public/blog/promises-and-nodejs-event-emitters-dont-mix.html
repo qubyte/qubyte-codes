@@ -66,7 +66,7 @@ emitter.emit(<span class="hljs-string">'error'</span>, <span class="hljs-keyword
 <p>is equivalent to</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Oh noes!'</span>);
 </code></pre>
-<p>So, the very first snippet is equivalent To:</p>
+<p>So, the very first snippet is equivalent to:</p>
 <pre><code class="lang-javascript">Promise.reject(<span class="hljs-keyword">new</span> Error(<span class="hljs-string">'Oh noes!'</span>))
   .<span class="hljs-keyword">catch</span>(e =&gt; {
     <span class="hljs-keyword">throw</span> e;
