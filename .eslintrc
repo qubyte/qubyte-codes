@@ -3,5 +3,8 @@
     "node": true,
     "es6": true
   },
-  "extends": "qubyte/ES2015"
+  "extends": "qubyte/ES2015",
+  "parserOptions": {
+    "ecmaVersion": 8
+  }
 }
