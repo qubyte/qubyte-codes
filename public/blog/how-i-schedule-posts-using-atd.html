@@ -4,7 +4,7 @@
   <meta name="viewport" content="initial-scale=1">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
   <title>Qubyte Codes - How I schedule posts using atd</title>
-  <link href="../main.css?v=9d88a80f0d3c2953fe3087afbed3d426" rel="stylesheet">
+  <link href="../main-847805d3b000e6198faf08c4ba05bb20.css" rel="stylesheet">
 </head>
 <body>
   <header class="top-header">
@@ -31,7 +31,7 @@ of the repo. To publish a new post, or update an old one, all I have to do is pu
 GitHub. Publishing via the terminal allows me to use a one liner to <em>schedule</em> the publication.
 Many know about <code>cron</code> for scheduling repeated tasks, but fewer are aware of <code>atd</code>, which is for one
 time scheduled tasks. The one liner I use is:</p>
-<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> "git -C /absolute/<span class="hljs-built_in">path</span>/to/repo pull origin master" | <span class="hljs-built_in">at</span> <span class="hljs-number">07</span>:<span class="hljs-number">00</span> tomorrow
+<pre><code class="lang-bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">"git -C /absolute/path/to/repo pull origin master"</span> | at 07:00 tomorrow
 </code></pre>
 <p><code>at</code> accepts input through stdin, which is why I&#39;ve echoed the command and piped it. One big
 gotcha is that you have to be aware of the timezone your machine is configured for. I have mine set

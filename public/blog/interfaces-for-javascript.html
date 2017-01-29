@@ -4,7 +4,7 @@
   <meta name="viewport" content="initial-scale=1">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
   <title>Qubyte Codes - Interfaces for JavaScript</title>
-  <link href="../main.css?v=9d88a80f0d3c2953fe3087afbed3d426" rel="stylesheet">
+  <link href="../main-847805d3b000e6198faf08c4ba05bb20.css" rel="stylesheet">
 </head>
 <body>
   <header class="top-header">
@@ -34,7 +34,7 @@ fiddly.</p>
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'PositiveInteger is an interface class.'</span>);
   }
 
-  static [<span class="hljs-built_in">Symbol</span>.hasInstance](value) {
+  <span class="hljs-keyword">static</span> [<span class="hljs-built_in">Symbol</span>.hasInstance](value) {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value !== <span class="hljs-string">'number'</span>) {
       <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
@@ -55,25 +55,25 @@ assert.ok(<span class="hljs-string">'hi'</span> <span class="hljs-keyword">insta
 <p>The class above exists <em>only</em> to provide this <code>instanceof</code> check. A more interesting example might
 be a view. I assert that a view has an element, and render and remove methods. An interface class
 for this might be:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title">View</span> {
-  constructor() {
-    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(<span class="hljs-string">'View is an interface class.'</span>);
+<pre><code class="lang-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">View</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'View is an interface class.'</span>);
   }
 
-  <span class="hljs-keyword">static</span> [Symbol.hasInstance](<span class="hljs-keyword">value</span>) {    
-    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">value</span>) {
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+  <span class="hljs-keyword">static</span> [<span class="hljs-built_in">Symbol</span>.hasInstance](value) {    
+    <span class="hljs-keyword">if</span> (!value) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
 
-    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">value</span>.render !== <span class="hljs-string">'function'</span>) {
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value.render !== <span class="hljs-string">'function'</span>) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
 
-    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-keyword">value</span>.remove !== <span class="hljs-string">'function'</span>) {
-      <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value.remove !== <span class="hljs-string">'function'</span>) {
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
 
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">value</span>.element instanceof HTMLElement;
+    <span class="hljs-keyword">return</span> value.element <span class="hljs-keyword">instanceof</span> HTMLElement;
   }
 }
 </code></pre>

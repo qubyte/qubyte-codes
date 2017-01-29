@@ -4,7 +4,7 @@
   <meta name="viewport" content="initial-scale=1">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
   <title>Qubyte Codes - Adding missing features to Set</title>
-  <link href="../main.css?v=9d88a80f0d3c2953fe3087afbed3d426" rel="stylesheet">
+  <link href="../main-847805d3b000e6198faf08c4ba05bb20.css" rel="stylesheet">
 </head>
 <body>
   <header class="top-header">
@@ -32,12 +32,12 @@ other words you can avoid using arrays and doing a lot of <code>indexOf</code> c
 <pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = [];
 
 <span class="hljs-comment">// Check if element is in the collection.</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">has</span><span class="hljs-params">(collection, element)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">has</span>(<span class="hljs-params">collection, element</span>) </span>{
   <span class="hljs-keyword">return</span> collection.indexOf(element) !== <span class="hljs-number">-1</span>;
 }
 
 <span class="hljs-comment">// Add an element to the collection.</span>
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">(collection, element)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span>(<span class="hljs-params">collection, element</span>) </span>{
   <span class="hljs-keyword">if</span> (!has(collection, element)) {
     collection.push(element);
   }
@@ -48,11 +48,11 @@ has(myCollection, <span class="hljs-number">123</span>); <span class="hljs-comme
 has(myCollection, <span class="hljs-number">456</span>); <span class="hljs-comment">// returns false</span>
 </code></pre>
 <p>Using a set is more straight forward:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>();
+<pre><code class="lang-javascript"><span class="hljs-keyword">var</span> myCollection = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
 
-collection.<span class="hljs-keyword">add</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// add an element</span>
-collection.<span class="hljs-keyword">has</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// returns true</span>
-collection.<span class="hljs-keyword">has</span>(<span class="hljs-number">456</span>); <span class="hljs-comment">// returns false</span>
+myCollection.add(<span class="hljs-number">123</span>); <span class="hljs-comment">// add an element</span>
+myCollection.has(<span class="hljs-number">123</span>); <span class="hljs-comment">// returns true</span>
+myCollection.has(<span class="hljs-number">456</span>); <span class="hljs-comment">// returns false</span>
 </code></pre>
 <p>That&#39;s all grand, but a colleague of mine, a programmer dipping a toe into
 modern JS, noted that <code>Set</code> lacks some functions that you might expect it to
@@ -64,24 +64,24 @@ some possible implementations.</p>
 <h2 id="union">Union</h2>
 <p>The union of two sets is defined as the set of elements found in either or both
 sets.</p>
-<pre><code class="lang-javascript">Set.<span class="hljs-keyword">union</span> = function (a, b) {
-  const unionSet = new Set();
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.union = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">const</span> unionSet = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
 
-  <span class="hljs-keyword">for</span> (const element <span class="hljs-keyword">of</span> a) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> element <span class="hljs-keyword">of</span> a) {
     unionSet.add(element);
   }
 
-  <span class="hljs-keyword">for</span> (const element <span class="hljs-keyword">of</span> b) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> element <span class="hljs-keyword">of</span> b) {
     unionSet.add(element)
   }
 
-  <span class="hljs-keyword">return</span> <span class="hljs-class"><span class="hljs-keyword">union</span>;</span>
+  <span class="hljs-keyword">return</span> union;
 };
 </code></pre>
 <p>This function iterates over both sets, adding their elements to a new set, which
 is then returned.</p>
 <p>As a one liner:</p>
-<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.union = (a, b) =&gt; <span class="hljs-literal">new</span> <span class="hljs-built_in">Set</span>(<span class="hljs-meta">[</span><span class="hljs-attr">...</span>a, <span class="hljs-attr">...</span>b<span class="hljs-meta">]</span>);
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.union = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>([...a, ...b]);
 </code></pre>
 <p>Sets are iterable, so the spread operator can be used to expand them as arrays.
 Set can also take an array as an argument, filling the constructed set object
@@ -110,7 +110,7 @@ and a ternary to assign the smaller set to <code>small</code> and the larger set
 The <code>intersectionSet</code> is then constructed, and <code>small</code> looped over to fill it
 with elements which are also in the <code>big</code>.</p>
 <p>If you want a one liner for this (and don&#39;t care about the size optimisation):</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">Set</span>.intersection = (a, b) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>([...a].filter(<span class="hljs-keyword">element</span> =&gt; b.has(<span class="hljs-keyword">element</span>)));
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.intersection = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>([...a].filter(<span class="hljs-function"><span class="hljs-params">element</span> =&gt;</span> b.has(element)));
 </code></pre>
 <p>This uses similar tricks to <code>Set.union</code>. One set is expanded as an array, and
 then filtered to an array of elements which are in the other. The filtered array
@@ -133,7 +133,7 @@ not in A.</p>
 <p>This function makes a new set and iterates over the second set, filling the new
 set with elements of the second set which are not in the first.</p>
 <p>As a one liner:</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">Set</span>.complement = (a, b) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-keyword">Set</span>([...b].filter(<span class="hljs-keyword">element</span> =&gt; !a.has(<span class="hljs-keyword">element</span>)));
+<pre><code class="lang-javascript"><span class="hljs-built_in">Set</span>.complement = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>([...b].filter(<span class="hljs-function"><span class="hljs-params">element</span> =&gt;</span> !a.has(element)));
 </code></pre>
 <p>This uses similar tricks to the <code>Set.intersection</code> one liner. It expands the
 second set as an array, filters it down to elements not in the first, and then
