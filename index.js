@@ -11,8 +11,8 @@ const slug = require('slug');
 const remark = require('remark');
 
 marked.setOptions({
-  highlight(code) {
-    return highlight.highlightAuto(code).value;
+  highlight(code, language) {
+    return highlight.highlight(language, code).value;
   }
 });
 
@@ -44,26 +44,42 @@ function writeFile(path, content) {
   });
 }
 
-function hashCss() {
-  return readFile(buildPublicPath('main.css'))
-    .then(content => {
-      return crypto.createHash('md5')
-        .update(content)
-        .digest('hex');
-    });
+function rename(oldPath, newPath) {
+  return new Promise((resolve, reject) => {
+    fs.rename(oldPath, newPath, err => err ? reject(err) : resolve());
+  });
 }
 
-function loadTemplate(filename) {
-  return readFile(path.join(__dirname, 'frontend', filename))
-    .then(source => handlebars.compile(source));
+async function hashAndMoveCss() {
+  const content = await readFile(buildPublicPath('main.css'));
+
+  const hash = crypto
+    .createHash('md5')
+    .update(content)
+    .digest('hex');
+
+  const oldPath = buildPublicPath('main.css');
+  const newPath = buildPublicPath(`main-${hash}.css`);
+
+  await rename(oldPath, newPath);
+
+  return `main-${hash}.css`;
+}
+
+
+async function loadTemplate(filename) {
+  const source = await readFile(path.join(__dirname, 'frontend', filename));
+
+  return handlebars.compile(source);
 }
 
 function makeSnippet(body) {
-  const ast = remark.parse(body);
+  const ast = remark().parse(body);
 
   for (const child of ast.children) {
     if (child.type === 'paragraph') {
-      return `“${remark.stringify(child).slice(0, -1)}…”`;
+      const stringified = remark().stringify(child);
+      return `“${stringified.slice(0, -1)}…”`;
     }
   }
 
@@ -90,43 +106,43 @@ function renderMarkdown(post) {
   return digested;
 }
 
-function loadPostFiles() {
-  return readDir(path.join(__dirname, 'posts'))
-    .then(files => Promise.all(files.map(readFile)))
-    .then(contents => contents.map(renderMarkdown));
+async function loadPostFiles() {
+  const files = await readDir(path.join(__dirname, 'posts'));
+  const contents = await Promise.all(files.map(readFile));
+
+  return contents.map(renderMarkdown);
 }
 
-exports.build = function build() {
-  const promises = [
+exports.build = async function build() {
+  const loadPromises = [
     loadPostFiles(),
     loadTemplate('index.html'),
     loadTemplate('about.html'),
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
     loadTemplate('sitemap.txt'),
-    hashCss()
+    hashAndMoveCss()
   ];
 
-  return Promise.all(promises)
-    .then(([posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, cssHash]) => {
-      posts.sort((a, b) => b.attributes.date - a.attributes.date);
+  const [posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, cssPath] = await Promise.all(loadPromises);
 
-      for (const post of posts) {
-        post.cssHash = cssHash;
-        post.html = blogTemplate(post);
-      }
+  posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
-      const indexHtml = indexTemplate({ posts, cssHash });
-      const aboutHtml = aboutTemplate({ cssHash });
-      const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
-      const sitemapTxt = sitemapTemplate({ posts });
+  for (const post of posts) {
+    post.cssPath = cssPath;
+    post.html = blogTemplate(post);
+  }
 
-      return Promise.all([
-        writeFile(buildPublicPath('index.html'), indexHtml),
-        writeFile(buildPublicPath('about.html'), aboutHtml),
-        ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
-        writeFile(buildPublicPath('atom.xml'), atomXML),
-        writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
-      ]);
-    });
+  const indexHtml = indexTemplate({ posts, cssPath });
+  const aboutHtml = aboutTemplate({ cssPath });
+  const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
+  const sitemapTxt = sitemapTemplate({ posts });
+
+  await Promise.all([
+    writeFile(buildPublicPath('index.html'), indexHtml),
+    writeFile(buildPublicPath('about.html'), aboutHtml),
+    ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
+    writeFile(buildPublicPath('atom.xml'), atomXML),
+    writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
+  ]);
 };
