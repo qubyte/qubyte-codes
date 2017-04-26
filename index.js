@@ -121,10 +121,11 @@ exports.build = async function build() {
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
     loadTemplate('sitemap.txt'),
+    loadTemplate('sw-sitemap.txt'),
     hashAndMoveCss()
   ];
 
-  const [posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, cssPath] = await Promise.all(loadPromises);
+  const [posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, swSitemapTemplate, cssPath] = await Promise.all(loadPromises);
 
   posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
@@ -137,12 +138,14 @@ exports.build = async function build() {
   const aboutHtml = aboutTemplate({ cssPath });
   const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
   const sitemapTxt = sitemapTemplate({ posts });
+  const swSitemapTxt = swSitemapTemplate({ posts, cssPath });
 
   await Promise.all([
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
     writeFile(buildPublicPath('atom.xml'), atomXML),
-    writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
+    writeFile(buildPublicPath('sitemap.txt'), sitemapTxt),
+    writeFile(buildPublicPath('sw-sitemap.txt'), swSitemapTxt)
   ]);
 };

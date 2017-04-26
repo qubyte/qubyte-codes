@@ -1,4 +1,4 @@
-https://qubyte.codes
+https://qubyte.codes/
 https://qubyte.codes/about
 {{#posts}}
 https://qubyte.codes/blog/{{attributes.slug}}

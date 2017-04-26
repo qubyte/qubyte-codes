@@ -1,0 +1,6 @@
+/{{cssPath}}
+/
+/about
+{{#posts}}
+/blog/{{attributes.slug}}
+{{/posts}}

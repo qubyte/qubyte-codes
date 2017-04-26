@@ -3,5 +3,8 @@
     "browser": true
   },
   "root": true,
-  "extends": "qubyte"
+  "extends": "qubyte",
+  "rules": {
+    "no-console": "off"
+  }
 }
