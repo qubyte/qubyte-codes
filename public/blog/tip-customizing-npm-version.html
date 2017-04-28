@@ -62,7 +62,7 @@ bowerJson.version = process.env.npm_package_version; <span class="hljs-comment">
 fs.writeFileSync(bowerJsonPath, <span class="hljs-built_in">JSON</span>.stringify(bowerJson, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 </code></pre>
 <p>This script is going to be run by <code>npm</code> from the <code>package.json</code> file, which
-handily <a href="https://docs.npmjs.com/misc/scripts#packagejson-vars">injects some environment variables</a>. One of these variables is the
+handily <a target="_blank" rel="noopener" href="https://docs.npmjs.com/misc/scripts#packagejson-vars">injects some environment variables</a>. One of these variables is the
 version in the <code>package.json</code> file. This is great because it means that no
 matter what the new version will be we have access to it in this script.</p>
 <p>Since the <code>bower.json</code> file contains JSON it can be read and parsed by <code>require</code>
@@ -76,7 +76,7 @@ example, a major version bump looks like:</p>
 
     </article>
     <footer>
-      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Tip%3A%20customizing%20npm%20version&url=https%3A%2F%2Fqubyte.codes%2Fblog%2Ftip-customizing-npm-version&hashtags=javascript">Tweet this post!</a></p>
+      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Tip%3A%20customizing%20npm%20version&url=https%3A%2F%2Fqubyte.codes%2Ftip-customizing-npm-version&hashtags=javascript">Tweet this post!</a></p>
       <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
     </footer>
   </div>
