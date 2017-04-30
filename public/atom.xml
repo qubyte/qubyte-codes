@@ -3,12 +3,29 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2017-04-28T17:11:56Z</updated>
+  <updated>2017-04-30T22:53:21Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code"/>
+    <title>Making arcade controls: Arduino Leonardo code.</title>
+    <published>2017-05-01T00:00:00Z</published>
+    <updated>2017-05-01T00:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;“I recently got it into my head that I wanted to build an arcade control panel
+from parts. Specifically, an 8 way digital joystick and a bunch of buttons. How
+it&amp;#39;ll look when finished isn&amp;#39;t important at the moment. It&amp;#39;s enough now to say
+that there&amp;#39;ll be a joystick, six regular buttons, and two buttons for start and
+select use…”&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/promises-and-nodejs-event-emitters-dont-mix</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/promises-and-nodejs-event-emitters-dont-mix"/>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1">
+  <link rel="icon" type="image/png" href="/icons/icon-64.png" />
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <title>Qubyte Codes - Making arcade controls: Arduino Leonardo code.</title>
+  <script src="/index.js" async></script>
+  <link href="/main-847805d3b000e6198faf08c4ba05bb20.css" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f1e7cd">
+</head>
+<body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <article>
+      <header>
+        <h2>Making arcade controls: Arduino Leonardo code.</h2>
+        <time datetime="2017-05-01T00:00Z">Mon May 01 2017</time>
+      </header>
+      <p>I recently got it into my head that I wanted to build an arcade control panel
+from parts. Specifically, an 8 way digital joystick and a bunch of buttons. How
+it&#39;ll look when finished isn&#39;t important at the moment. It&#39;s enough now to say
+that there&#39;ll be a joystick, six regular buttons, and two buttons for start and
+select use.</p>
+<p>I decided to use an Arduino Leonardo to accept inputs from the buttons and
+stick. The Leonardo presents itself as a keyboard to the machine you plug it
+into, which is perfect for this. The only thing I needed to do is to initialize
+the pins on the Arduino as inputs with inline resistance, and bind them to the
+desired keys.</p>
+<p>Usually when a programmer thinks &quot;the only thing I need to do&quot;, what follows is
+three or four times as much effort as predicted. I was surprised this time that
+the effort required was so low, particularly given that I&#39;ve not written any
+C/C++ in years. In addition to functions for setting key states, <code>keyboard.h</code>
+provides a bunch of useful constants for special keys.</p>
+<pre><code class="lang-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Keyboard.h&gt;</span></span>
+
+<span class="hljs-comment">// MAMEish. An array of pin-key pairs.</span>
+<span class="hljs-keyword">struct</span> { <span class="hljs-keyword">int</span> pin; <span class="hljs-keyword">int</span> key; } pinsToKeys[] = {
+  { <span class="hljs-number">2</span>,  KEY_LEFT_ARROW  },
+  { <span class="hljs-number">3</span>,  KEY_UP_ARROW    },
+  { <span class="hljs-number">4</span>,  KEY_RIGHT_ARROW },
+  { <span class="hljs-number">5</span>,  KEY_DOWN_ARROW  },
+  { <span class="hljs-number">6</span>,  KEY_LEFT_CTRL }, <span class="hljs-comment">// Fire 1</span>
+  { <span class="hljs-number">7</span>,  KEY_LEFT_ALT  }, <span class="hljs-comment">// Fire 2</span>
+  { <span class="hljs-number">8</span>,  <span class="hljs-number">32</span> }, <span class="hljs-comment">// space      Fire 3</span>
+  { <span class="hljs-number">9</span>,  <span class="hljs-number">65</span> }, <span class="hljs-comment">// a          Fire 4</span>
+  { <span class="hljs-number">10</span>, <span class="hljs-number">83</span> }, <span class="hljs-comment">// s          Fire 5</span>
+  { <span class="hljs-number">11</span>, <span class="hljs-number">81</span> }, <span class="hljs-comment">// q          Fire 6</span>
+  { A0, <span class="hljs-number">1</span>  }, <span class="hljs-comment">// 1          start</span>
+  { A2, <span class="hljs-number">27</span> }  <span class="hljs-comment">// esc        pause</span>
+};
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// Set all used pins to handle input from</span>
+  <span class="hljs-comment">// arcade buttons.</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> <span class="hljs-keyword">const</span> &amp;pinToKey : pinsToKeys) {
+    pinMode(pinToKey.pin, INPUT_PULLUP);
+  }
+
+  <span class="hljs-comment">// Initialize keyboard.</span>
+  Keyboard.begin();
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// For each pin-key pair, check the state</span>
+  <span class="hljs-comment">// of the pin and set the associated key</span>
+  <span class="hljs-comment">// state to match.</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> <span class="hljs-keyword">const</span> &amp;pinToKey : pinsToKeys) {
+    <span class="hljs-keyword">if</span> (digitalRead(pinToKey.pin) == LOW) {
+      Keyboard.press(pinToKey.key);
+    } <span class="hljs-keyword">else</span> {
+      Keyboard.release(pinToKey.key);
+    }
+  }
+}
+</code></pre>
+<p>Since the Arduino is programmed in a dialect of recent  C++, range-based for
+loops are available, as is type inference with <code>auto</code>. This meant I could use an
+array of instances of an anonymous structure to express the pin-key pairs. Not a
+<code>sizeof</code> in sight!</p>
+
+    </article>
+    <footer>
+      <p>Feel like sharing? <a href="https://twitter.com/intent/tweet?via=qubyte&text=Qubyte%20Codes%20-%20Making%20arcade%20controls%3A%20Arduino%20Leonardo%20code.&url=https%3A%2F%2Fqubyte.codes%2Fmaking-arcade-controls-arduino-leonardo-code&hashtags=javascript">Tweet this post!</a></p>
+      <p>Comments or corrections? <a href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a></p>
+    </footer>
+  </div>
+</body>
+</html>
