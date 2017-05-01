@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2017-05-01T00:06:24Z</updated>
+  <updated>2017-05-01T00:09:14Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -12,7 +12,7 @@
   <entry>
     <id>https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code"/>
-    <title>Making arcade controls: Arduino Leonardo code.</title>
+    <title>Making arcade controls: Arduino Leonardo code</title>
     <published>2017-05-01T00:00:00Z</published>
     <updated>2017-05-01T00:00:00Z</updated>
     <author>
