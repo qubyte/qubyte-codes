@@ -13,6 +13,6 @@ module.exports = {
   ],
   root: 'public/',
   stripPrefix: 'public',
-  dontCacheBustUrlsMatching: /./,
+  // dontCacheBustUrlsMatching: /./,
   swFile: 'sw.js'
 };
