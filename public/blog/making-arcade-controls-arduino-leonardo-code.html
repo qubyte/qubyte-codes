@@ -63,7 +63,7 @@ provides a bunch of useful constants for special keys.</p>
   <span class="hljs-comment">// Set all used pins to handle input</span>
   <span class="hljs-comment">// from arcade buttons.</span>
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> <span class="hljs-keyword">const</span> &amp;pinkey : pinkeys) {
-    pinMode(pinToKey.pin, INPUT_PULLUP);
+    pinMode(pinkey.pin, INPUT_PULLUP);
   }
 
   <span class="hljs-comment">// Initialize keyboard.</span>
