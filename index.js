@@ -8,14 +8,20 @@ const slug = require('slug');
 const remark = require('remark');
 const render = require('./lib/render');
 const baseUrl = require('./lib/baseUrl');
-const fs = require('./lib/fs');
+const fs = require('fs');
+const { promisify } = require('util');
+
+const readDir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
+const rename = promisify(fs.rename);
+const writeFile = promisify(fs.writeFile);
 
 function buildPublicPath(...parts) {
   return path.join(__dirname, 'public', ...parts);
 }
 
 async function hashAndMoveCss() {
-  const content = await fs.readFile(buildPublicPath('main.css'));
+  const content = await readFile(buildPublicPath('main.css'), 'utf-8');
 
   const hash = crypto
     .createHash('md5')
@@ -25,13 +31,13 @@ async function hashAndMoveCss() {
   const oldPath = buildPublicPath('main.css');
   const newPath = buildPublicPath(`main-${hash}.css`);
 
-  await fs.rename(oldPath, newPath);
+  await rename(oldPath, newPath);
 
   return `main-${hash}.css`;
 }
 
 async function loadTemplate(filename) {
-  const source = await fs.readFile(path.join(__dirname, 'frontend', filename));
+  const source = await readFile(path.join(__dirname, 'frontend', filename), 'utf-8');
 
   return handlebars.compile(source);
 }
@@ -70,8 +76,9 @@ function renderMarkdown(post) {
 }
 
 async function loadPostFiles() {
-  const files = await fs.readDir(path.join(__dirname, 'posts'));
-  const contents = await Promise.all(files.map(fs.readFile));
+  const filenames = await readDir(path.join(__dirname, 'posts'));
+  const filePaths = filenames.map(filename => path.join(__dirname, 'posts', filename));
+  const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
 
   return contents.map(renderMarkdown);
 }
@@ -102,10 +109,10 @@ exports.build = async function build() {
   const sitemapTxt = sitemapTemplate({ posts });
 
   await Promise.all([
-    fs.writeFile(buildPublicPath('index.html'), indexHtml),
-    fs.writeFile(buildPublicPath('about.html'), aboutHtml),
-    ...posts.map(post => fs.writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
-    fs.writeFile(buildPublicPath('atom.xml'), atomXML),
-    fs.writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
+    writeFile(buildPublicPath('index.html'), indexHtml),
+    writeFile(buildPublicPath('about.html'), aboutHtml),
+    ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
+    writeFile(buildPublicPath('atom.xml'), atomXML),
+    writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
   ]);
 };
