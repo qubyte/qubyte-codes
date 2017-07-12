@@ -70,7 +70,7 @@ function renderMarkdown(post) {
   digested.attributes.isoDate = dateToIso(digested.attributes.date);
   digested.attributes.isoUpdated = dateToIso(digested.attributes.updated);
   digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${digested.attributes.title}`);
-  digested.attributes.canonical = encodeURIComponent(`${baseUrl}/${digested.attributes.slug}`);
+  digested.attributes.canonical = encodeURIComponent(`${baseUrl}/blog/${digested.attributes.slug}`);
   digested.content = render(digested.body);
   return digested;
 }

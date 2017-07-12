@@ -18,6 +18,7 @@
   },
   "author": "Mark Stanley Everitt",
   "license": "Private",
+  "private": true,
   "dependencies": {
     "clean-css-cli": "4.0.0",
     "front-matter": "2.1.2",
@@ -29,8 +30,8 @@
     "sw-precache": "5.1.0"
   },
   "devDependencies": {
-    "eslint": "3.14.1",
-    "eslint-config-qubyte": "1.0.1",
+    "eslint": "4.2.0",
+    "eslint-config-qubyte": "1.1.0",
     "toisu": "3.0.3",
     "toisu-static": "1.1.1"
   }
