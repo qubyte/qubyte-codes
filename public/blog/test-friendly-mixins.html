@@ -63,8 +63,8 @@ such mixin could add a <code>move</code> method (which I suggested earlier in th
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> movable = createMixin({
   <span class="hljs-attr">move</span>: {
     value(dt) {
-      <span class="hljs-keyword">this</span>.position.x = <span class="hljs-keyword">this</span>.velocity.x * dt;
-      <span class="hljs-keyword">this</span>.position.y = <span class="hljs-keyword">this</span>.velocity.y * dt;
+      <span class="hljs-keyword">this</span>.position.x += <span class="hljs-keyword">this</span>.velocity.x * dt;
+      <span class="hljs-keyword">this</span>.position.y += <span class="hljs-keyword">this</span>.velocity.y * dt;
     },
     <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// These three properties</span>
     enumerable: <span class="hljs-literal">false</span>,  <span class="hljs-comment">// are like how class</span>
