@@ -3,12 +3,27 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2017-07-12T20:25:22Z</updated>
+  <updated>2017-07-20T13:03:21Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/test-friendly-mixins</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/test-friendly-mixins"/>
+    <title>Test friendly mixins</title>
+    <published>2017-07-12T20:00:00Z</published>
+    <updated>2017-07-12T20:00:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;“I&amp;#39;ve recently been attempting to code a clone of the classic game asteroids
+using canvas in the browser. Since this is me, I&amp;#39;ve been distracted by all sorts
+of programming detours…”&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/making-arcade-controls-arduino-leonardo-code"/>

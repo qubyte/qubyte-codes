@@ -14,7 +14,7 @@
     "build": "rm -f public/*.css && npm run build-css && ./bin/cli.js . && sw-precache --config=sw-precache-config.js",
     "addbuiltfiles": "git add public",
     "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
-    "start": "node serve.js"
+    "start": "NODE_ENV=development node serve.js"
   },
   "author": "Mark Stanley Everitt",
   "license": "Private",
@@ -23,16 +23,18 @@
     "clean-css-cli": "4.0.0",
     "front-matter": "2.1.2",
     "handlebars": "4.0.6",
-    "highlight.js": "9.9.0",
+    "highlight.js": "9.12.0",
     "marked": "0.3.6",
     "remark": "6.2.0",
     "slug": "0.9.1",
     "sw-precache": "5.1.0"
   },
   "devDependencies": {
+    "chokidar": "1.7.0",
     "eslint": "4.2.0",
     "eslint-config-qubyte": "1.1.0",
     "toisu": "3.0.3",
+    "toisu-router": "4.0.0",
     "toisu-static": "1.1.1"
   }
 }

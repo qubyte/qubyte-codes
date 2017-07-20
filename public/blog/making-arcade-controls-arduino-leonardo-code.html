@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="initial-scale=1">
-  <link rel="icon" type="image/png" href="/icons/icon-64.png" />
-  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <link rel="icon" type="image/png" href="/icons/icon-64.png">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
   <title>Qubyte Codes - Making arcade controls: Arduino Leonardo code</title>
   <script src="/index.js" async></script>
   <link href="/main-b3f7d9640b40ed1a723695fb5b7cc00c.css" rel="stylesheet">
@@ -44,7 +44,7 @@ provides a bunch of useful constants for special keys.</p>
 <pre><code class="lang-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Keyboard.h&gt;</span></span>
 
 <span class="hljs-comment">// MAMEish. An array of pin-key pairs.</span>
-<span class="hljs-keyword">struct</span> { <span class="hljs-keyword">int</span> pin; <span class="hljs-keyword">int</span> key; } pinkeys[] = {
+<span class="hljs-class"><span class="hljs-keyword">struct</span> {</span> <span class="hljs-keyword">int</span> pin; <span class="hljs-keyword">int</span> key; } pinkeys[] = {
   { <span class="hljs-number">2</span>,  KEY_LEFT_ARROW  },
   { <span class="hljs-number">3</span>,  KEY_UP_ARROW    },
   { <span class="hljs-number">4</span>,  KEY_RIGHT_ARROW },

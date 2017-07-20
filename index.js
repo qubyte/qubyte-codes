@@ -98,13 +98,16 @@ exports.build = async function build() {
 
   posts.sort((a, b) => b.attributes.date - a.attributes.date);
 
+  const dev = process.env.NODE_ENV === 'development';
+
   for (const post of posts) {
+    post.dev = dev;
     post.cssPath = cssPath;
     post.html = blogTemplate(post);
   }
 
-  const indexHtml = indexTemplate({ posts, cssPath });
-  const aboutHtml = aboutTemplate({ cssPath });
+  const indexHtml = indexTemplate({ posts, cssPath, dev });
+  const aboutHtml = aboutTemplate({ cssPath, dev });
   const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
   const sitemapTxt = sitemapTemplate({ posts });
 

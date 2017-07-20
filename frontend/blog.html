@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="initial-scale=1">
-  <link rel="icon" type="image/png" href="/icons/icon-64.png" />
-  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+  <link rel="icon" type="image/png" href="/icons/icon-64.png">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
   <title>Qubyte Codes - {{attributes.title}}</title>
   <script src="/index.js" async></script>
   <link href="/{{cssPath}}" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f1e7cd">
+  {{#dev}}
+  <script>
+    new EventSource('/events').addEventListener('new', () => {
+      console.log('RELOAD');
+      window.location.reload(true);
+    });
+  </script>
+  {{/dev}}
 </head>
 <body>
   <header class="top-header">
