@@ -174,11 +174,11 @@ be a problem in particular for asteroids, as each time one is destroyed the
 object itself would be held in the <code>Set</code> or array be a strong reference, leading
 it to grow as more and more asteroids are spawned.</p>
 <p>Now we can ask the mixin if an object has had the mixin applied to it:</p>
-<pre><code class="lang-javascript">mixin.isMixed(entity); <span class="hljs-comment">// false</span>
+<pre><code class="lang-javascript">movable.isMixed(entity); <span class="hljs-comment">// false</span>
 
-mixin(entity);
+movable(entity);
 
-mixin.isMixed(entity); <span class="hljs-comment">// true</span>
+movable.isMixed(entity); <span class="hljs-comment">// true</span>
 </code></pre>
 <p>What about classes though? This won&#39;t work because the mixin is applied to the
 prototype and no reference to an instance will be stored by the mixin. We can
