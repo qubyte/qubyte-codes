@@ -145,7 +145,7 @@ mixin. That&#39;s repetitive though. It would be nicer to have some mechanism to
 a mixin if an object has had the mixin applied to it. Then test for a class can
 use a single test for each mixin to check that the mixin has been applied, and
 all the repetition can be avoided.</p>
-<p>Revisiting the mixin creating function, a first go at such a mechanism looks
+<p>Revisiting the mixin creating function, the first go at such a mechanism looks
 like:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createMixin</span>(<span class="hljs-params">descriptors</span>) </span>{
   <span class="hljs-comment">// References to objects the mixin has been</span>
@@ -180,9 +180,9 @@ mixin(entity);
 
 mixin.isMixed(entity); <span class="hljs-comment">// true</span>
 </code></pre>
-<p>What about classes though? This won&#39;t work, because the mixin is applied to the
-prototype and no reference to an instance is stored by the mixin. We can fix
-this by climbing up the prototype chain and checking each prototype object:</p>
+<p>What about classes though? This won&#39;t work because the mixin is applied to the
+prototype and no reference to an instance will be stored by the mixin. We can
+fix this by climbing up the prototype chain and checking each prototype object:</p>
 <pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createMixin</span>(<span class="hljs-params">descriptors</span>) </span>{
   <span class="hljs-comment">// References to objects the mixin has been</span>
   <span class="hljs-comment">// applied to.</span>
