@@ -9,7 +9,6 @@ const serveStatic = require('toisu-static');
 const chokidar = require('chokidar');
 const { spawn } = require('child_process');
 const { EventEmitter } = require('events');
-const nudge = require('nudge');
 
 const buildEmitter = new EventEmitter();
 
@@ -55,11 +54,6 @@ router.route('/events', {
 
 app.use(router.middleware);
 app.use(serveStatic('public', { extensions: ['html'] }));
-
-app.handleError = function (req, res, error) {
-  console.error(error);
-  Toisu.defaultHandleError(res, res, error);
-};
 
 http.createServer(app.requestHandler).listen(8000, () => {
   console.log('listening on 8000');

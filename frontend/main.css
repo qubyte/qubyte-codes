@@ -51,8 +51,13 @@ p {
   text-align: justify;
 }
 
-.quote {
-  hanging-punctuation: first force-end;
+.quote > p::before {
+  margin-left: -.4em;
+  content: "“"
+}
+
+.quote > p::after {
+  content: "…”"
 }
 
 pre {

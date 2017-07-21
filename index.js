@@ -47,8 +47,9 @@ function makeSnippet(body) {
 
   for (const child of ast.children) {
     if (child.type === 'paragraph') {
-      const stringified = remark().stringify(child);
-      return `“${stringified.slice(0, -1)}…”`;
+      return remark()
+        .stringify(child)
+        .slice(0, -1);
     }
   }
 
