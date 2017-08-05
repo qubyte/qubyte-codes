@@ -9,6 +9,10 @@
   <link href="/{{cssPath}}" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f1e7cd">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@qubyte">
+  <meta name="twitter:title" content="{{attributes.title}}">
+  <meta name="twitter:description" content="{{attributes.description}}">
   {{#dev}}
   <script>
     new EventSource('/events').addEventListener('new', () => {
