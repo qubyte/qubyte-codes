@@ -14,7 +14,7 @@ body {
   background-color: inherit;
   position: sticky;
   position: -webkit-sticky;
-  top: -4rem;
+  top: calc(-4rem - 1px);
 }
 
 .content {
@@ -98,7 +98,8 @@ th, td {
 
 nav {
   padding: 0.5rem;
-  box-shadow: 0px 2px 0px -1px #000, 0px -2px 0px -1px #000;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
 }
 
 nav > ul > li {
