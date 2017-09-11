@@ -4,7 +4,7 @@ const frontMatter = require('front-matter');
 const path = require('path');
 const crypto = require('crypto');
 const handlebars = require('handlebars');
-const slug = require('slug');
+const makeSlug = require('slug');
 const remark = require('remark');
 const render = require('./lib/render');
 const baseUrl = require('./lib/baseUrl');
@@ -62,16 +62,25 @@ function dateToIso(date) {
 
 function renderMarkdown(post) {
   const digested = frontMatter(post);
-  digested.attributes.date = new Date(digested.attributes.datetime);
-  digested.attributes.updated = new Date(digested.attributes.updated || digested.attributes.datetime);
-  digested.attributes.slug = `${slug(digested.attributes.title, { lower: true })}`;
-  digested.attributes.filename = `${digested.attributes.slug}.html`;
+  const { title, tags = [] } = digested.attributes;
+  const slug = `${makeSlug(title, { lower: true })}`;
+  const canonical = `${baseUrl}/blog/${slug}`;
+  const date = new Date(digested.attributes.datetime);
+  const updated = new Date(digested.attributes.updated || digested.attributes.datetime);
+
+  digested.attributes.date = date;
+  digested.attributes.updated = updated;
+  digested.attributes.slug = slug;
+  digested.attributes.filename = `${slug}.html`;
   digested.attributes.snippet = render(makeSnippet(digested.body));
-  digested.attributes.humandatetime = digested.attributes.date.toDateString();
-  digested.attributes.isoDate = dateToIso(digested.attributes.date);
-  digested.attributes.isoUpdated = dateToIso(digested.attributes.updated);
-  digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${digested.attributes.title}`);
-  digested.attributes.canonical = encodeURIComponent(`${baseUrl}/blog/${digested.attributes.slug}`);
+  digested.attributes.humandatetime = date.toDateString();
+  digested.attributes.isoDate = dateToIso(date);
+  digested.attributes.isoUpdated = dateToIso(updated);
+  digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
+  digested.attributes.tootText = encodeURIComponent(
+    `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
+  );
+  digested.attributes.canonical = encodeURIComponent(canonical);
   digested.content = render(digested.body);
   return digested;
 }
