@@ -51,6 +51,10 @@ p {
   text-align: justify;
 }
 
+.tags {
+  float: right;
+}
+
 .quote > p::before {
   margin-left: -.4em;
   content: "“"

@@ -33,7 +33,7 @@ async function hashAndMoveCss() {
 
   await rename(oldPath, newPath);
 
-  return `main-${hash}.css`;
+  return `/main-${hash}.css`;
 }
 
 async function loadTemplate(filename) {
@@ -97,6 +97,7 @@ exports.build = async function build() {
   const loadPromises = [
     loadPostFiles(),
     loadTemplate('index.html'),
+    loadTemplate('tag.html'),
     loadTemplate('about.html'),
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
@@ -104,9 +105,30 @@ exports.build = async function build() {
     hashAndMoveCss()
   ];
 
-  const [posts, indexTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate, cssPath] = await Promise.all(loadPromises);
+  const [
+    posts,
+    indexTemplate,
+    tagTemplate,
+    aboutTemplate,
+    blogTemplate,
+    atomTemplate,
+    sitemapTemplate,
+    cssPath
+  ] = await Promise.all(loadPromises);
 
   posts.sort((a, b) => b.attributes.date - a.attributes.date);
+
+  const tags = {};
+
+  for (const post of posts) {
+    for (const tag of post.attributes.tags || []) {
+      if (!tags[tag]) {
+        tags[tag] = [];
+      }
+
+      tags[tag].push(post);
+    }
+  }
 
   const dev = process.env.NODE_ENV === 'development';
 
@@ -125,6 +147,11 @@ exports.build = async function build() {
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
+    ...Object.keys(tags).map(tag => {
+      const tagHtml = tagTemplate({ posts: tags[tag], tag, cssPath, dev });
+
+      return writeFile(buildPublicPath('tags', `${tag}.html`), tagHtml);
+    }),
     writeFile(buildPublicPath('atom.xml'), atomXML),
     writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
   ]);

@@ -4,41 +4,34 @@
   <meta name="viewport" content="initial-scale=1">
   <link rel="icon" type="image/png" href="/icons/icon-64.png">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes</title>
+  <title>Qubyte Codes - Posts tagged as games</title>
   <script src="/index.js" async></script>
-  <link href="{{cssPath}}" rel="stylesheet">
+  <link href="/main-d0691f7ca49d0f83f4d298a7ec093f87.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f1e7cd">
-  {{#dev}}
-  <script>
-    new EventSource('/events').addEventListener('new', () => {
-      console.log('RELOAD');
-      window.location.reload(true);
-    });
-  </script>
-  {{/dev}}
 </head>
 <body>
   <header class="top-header">
     <h1>Qubyte Codes</h1>
     <nav>
       <ul>
-        <li>archive</li>
+        <li><a href="/">archive</a></li>
         <li><a href="/about">about</a></li>
       </ul>
     </nav>
   </header>
   <div class="content">
-    {{#posts}}
     <article>
       <header>
-        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+        <h2><a href="/blog/test-friendly-mixins">Test friendly mixins</a></h2>
+        <time datetime="2017-07-20T13:30Z">Thu Jul 20 2017</time>
+        <span class="tags"><a href="/tags/JavaScript">#JavaScript</a> <a href="/tags/games">#games</a> </span>
       </header>
-      <div class="quote">{{{attributes.snippet}}}</div>
+      <div class="quote"><p>I&#39;ve recently been attempting to code a clone of the classic game asteroids
+using canvas in the browser. Since this is me, I&#39;ve been distracted by all sorts
+of programming detours</p>
+</div>
     </article>
-    {{/posts}}
   </div>
 </body>
 </html>

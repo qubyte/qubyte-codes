@@ -4,15 +4,11 @@
   <meta name="viewport" content="initial-scale=1">
   <link rel="icon" type="image/png" href="/icons/icon-64.png">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes - {{attributes.title}}</title>
+  <title>Qubyte Codes - Posts tagged as {{tag}}</title>
   <script src="/index.js" async></script>
   <link href="{{cssPath}}" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f1e7cd">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@qubyte">
-  <meta name="twitter:title" content="{{attributes.title}}">
-  <meta name="twitter:description" content="{{attributes.description}}">
   {{#dev}}
   <script>
     new EventSource('/events').addEventListener('new', () => {
@@ -24,7 +20,7 @@
 </head>
 <body>
   <header class="top-header">
-    <h1><a href="/">Qubyte Codes</a></h1>
+    <h1>Qubyte Codes</h1>
     <nav>
       <ul>
         <li><a href="/">archive</a></li>
@@ -33,18 +29,16 @@
     </nav>
   </header>
   <div class="content">
+    {{#posts}}
     <article>
       <header>
-        <h2>{{attributes.title}}</h2>
+        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
         <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
       </header>
-      {{{content}}}
+      <div class="quote">{{{attributes.snippet}}}</div>
     </article>
-    <footer>
-      <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text={{attributes.tweetText}}&amp;url={{attributes.canonical}}&amp;hashtags={{attributes.tags}}">Tweet this post!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text={{attributes.tootText}}">toot it!</a></p>
-      <p>Comments or corrections? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=%40qubyte%40mastodon.social">toot to me!</a></p>
-    </footer>
+    {{/posts}}
   </div>
 </body>
 </html>
