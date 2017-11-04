@@ -33,9 +33,9 @@
   </header>
   <div class="content">
     {{#posts}}
-    <article>
+    <article class="h-card">
       <header>
-        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
+        <h2><a href="/blog/{{attributes.slug}}" class="p-name u-url">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
         <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
       </header>
