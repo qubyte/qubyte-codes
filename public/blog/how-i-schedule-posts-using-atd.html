@@ -25,13 +25,14 @@
     </nav>
   </header>
   <div class="content">
-    <article>
+    <article class="h-entry">
       <header>
-        <h2>How I schedule posts using atd</h2>
-        <time datetime="2016-01-14T19:30Z">Thu Jan 14 2016</time>
+        <h2 class="p-name">How I schedule posts using atd</h2>
+        <time datetime="2016-01-14T19:30Z" class="dt-published">Thu Jan 14 2016</time>
         <span class="tags"><a href="/tags/bash">#bash</a> </span>
       </header>
-      <p>This blog is built with a static site generator. The generator, the markdown source files, and the
+      <div class="e-content">
+        <p>This blog is built with a static site generator. The generator, the markdown source files, and the
 generated HTML files are all kept together in the same git repository. Every time I commit a change,
 a pre-commit hook runs the generator and adds the generated HTML, so that the blog entries are
 always up to date. Then the changes are pushed up to GitHub.</p>
@@ -50,6 +51,7 @@ so I won&#39;t try to better it. The purpose of this post is to show you that it
 (especially when compared with <code>cron</code>) it is to use. You can use it to schedule pretty much
 anything!</p>
 
+      </div>
     </article>
     <footer>
       <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text=Qubyte%20Codes%20-%20How%20I%20schedule%20posts%20using%20atd&amp;url=https%3A%2F%2Fqubyte.codes%2Fblog%2Fhow-i-schedule-posts-using-atd&amp;hashtags=bash">Tweet this post!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=Qubyte%20Codes%20-%20How%20I%20schedule%20posts%20using%20atd%20via%20%40qubyte%40mastodon.social%20%23bash%20https%3A%2F%2Fqubyte.codes%2Fblog%2Fhow-i-schedule-posts-using-atd">toot it!</a></p>
