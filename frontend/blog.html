@@ -35,7 +35,7 @@
   <div class="content">
     <article class="h-entry">
       <header>
-        <h2 class="p-name">{{attributes.title}}</h2>
+        <h2><a href="{{{attributes.canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}" class="dt-published">{{attributes.humandatetime}}</time>
         <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
       </header>
