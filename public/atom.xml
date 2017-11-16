@@ -3,12 +3,29 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2017-11-04T15:56:47Z</updated>
+  <updated>2017-11-16T01:42:45Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/my-first-custom-element</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/my-first-custom-element"/>
+    <title>My first custom element</title>
+    <published>2017-11-16T01:45:00Z</published>
+    <updated>2017-11-16T01:45:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;After some years of browser vendors working out what web components should look
+like, they&amp;#39;re almost ready for the prime time. The part which I find most
+intriguing (custom elements) has finally stabilised. With custom elements, you
+can make new HTML elements which have custom behaviour which you define using
+JavaScript. In this post I&amp;#39;ll demonstrate a custom element for fuzzy counting&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/test-friendly-mixins</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/test-friendly-mixins"/>

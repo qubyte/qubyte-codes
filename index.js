@@ -80,7 +80,7 @@ function renderMarkdown(post) {
   digested.attributes.tootText = encodeURIComponent(
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
-  digested.attributes.canonical = encodeURIComponent(canonical);
+  digested.attributes.canonical = canonical;
   digested.content = render(digested.body);
   return digested;
 }
