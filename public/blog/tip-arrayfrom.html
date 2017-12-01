@@ -56,9 +56,9 @@ ignore that option.</p>
   numbers.push(<span class="hljs-built_in">parseInt</span>(character, <span class="hljs-number">10</span>));
 }
 </code></pre>
-<p>Both suffer from being a bit bulky though. ES2015 also introduced <code>Array.from</code>
-and the spread operator (<code>...</code>), which offer a similar way of creating an array
-when used in combination with <code>Array.prototype.map</code>:</p>
+<p>Both suffer from being a bit bulky though. ES2015 also introduced
+<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from"><code>Array.from</code></a> and the <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator">spread operator (<code>...</code>)</a>, which offer a similar
+way of creating an array when used in combination with <code>Array.prototype.map</code>:</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> numbers = [...sequence].map(<span class="hljs-function"><span class="hljs-params">char</span> =&gt;</span> <span class="hljs-built_in">parseInt</span>(char, <span class="hljs-number">10</span>));
 <span class="hljs-comment">// or</span>
 <span class="hljs-keyword">const</span> numbers = <span class="hljs-built_in">Array</span>.from(sequence).map(<span class="hljs-function"><span class="hljs-params">char</span> =&gt;</span> <span class="hljs-built_in">parseInt</span>(char, <span class="hljs-number">10</span>));
