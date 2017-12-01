@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2017-12-01T20:25:31Z</updated>
+  <updated>2017-12-01T20:29:55Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -19,9 +19,9 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">&lt;p&gt;⚠️ SPOILER ALERT BEGINS ⚠️: If you&amp;#39;re doing the advent of code this year, you may
-not want to read onward. This post &lt;em&gt;does not&lt;/em&gt; give any solutions away, but does
-contain information about how I approached a part of the first challenge&lt;/p&gt;
+    <content type="html">&lt;p&gt;SPOILER ALERT: If you&amp;#39;re doing the advent of code this year, you may not want to
+read onward. This post &lt;em&gt;does not&lt;/em&gt; give any solutions away, but does contain
+information about how I approached a part of the first challenge&lt;/p&gt;
 </content>
   </entry>
   <entry>
