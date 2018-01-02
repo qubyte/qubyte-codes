@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="initial-scale=1">
+  <link rel="icon" type="image/png" href="/icons/icon-64.png">
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
+  <title>Qubyte Codes - Advent of Code 2017 day 20 task 2</title>
+  <script src="/index.js" async></script>
+  <link href="/main-0d9985ebbfcfd22aeeefc7c031ae0739.css" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f1e7cd">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@qubyte">
+  <meta name="twitter:title" content="Advent of Code 2017 day 20 task 2">
+  <meta name="twitter:description" content="The second problem for the 2017 Advent of Code on day 20 was fun!">
+</head>
+<body>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <article class="h-entry">
+      <header>
+        <h2><a href="https://qubyte.codes/blog/advent-of-code-2017-day-20-task-2" class="u-url p-name">Advent of Code 2017 day 20 task 2</a></h2>
+        <time datetime="2018-01-02T20:50Z" class="dt-published">Tue Jan 02 2018</time>
+        <span class="tags"><a href="/tags/JavaScript">#JavaScript</a> </span>
+      </header>
+      <div class="e-content">
+        <p>SPOILER ALERT: If you&#39;re doing the 2017 Advent of Code, you may not want to read
+onward.</p>
+<p>Over the holiday period I found a little time to work on the
+<a target="_blank" rel="noopener" href="https://adventofcode.com">2017 advent of code</a> challenges. The later ones get quite involved, and I&#39;ve
+particularly enjoyed day 20. The second part of the task involves a 3D grid
+containing accelerating particles. Particles which collide at a grid point
+(occupy that point at the same time) are removed, and we&#39;re asked to determine
+how many particles remain after all collisions have occurred. This one was
+fun for me because the solution I came up with involved a little mathematics to
+avoid brute forcing the solution.</p>
+<p>At this point in the challenges, writing a parser for an input file is something
+I&#39;ll skip over. The parser gives back an array of objects, each representing a
+particle, with <code>p</code>, <code>v</code>, and <code>a</code> fields to represent position, velocity, and
+acceleration respectively. These quantities are all represented as length three
+arrays for the x, y, and z axes. The input looks like:</p>
+<pre><code class="lang-json">[
+  {
+    <span class="hljs-attr">"p"</span>: [<span class="hljs-number">-4897</span>, <span class="hljs-number">3080</span>, <span class="hljs-number">2133</span>],
+    <span class="hljs-attr">"v"</span>: [<span class="hljs-number">-58</span>, <span class="hljs-number">-15</span>, <span class="hljs-number">-78</span>],
+    <span class="hljs-attr">"a"</span>: [<span class="hljs-number">17</span>, <span class="hljs-number">-7</span>, <span class="hljs-number">0</span>]
+  },
+  {
+    <span class="hljs-attr">"p"</span>: [<span class="hljs-number">395</span>, <span class="hljs-number">-997</span>, <span class="hljs-number">4914</span>],
+    <span class="hljs-attr">"v"</span>: [<span class="hljs-number">-30</span>, <span class="hljs-number">66</span>, <span class="hljs-number">-69</span>],
+    <span class="hljs-attr">"a"</span>: [<span class="hljs-number">1</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">-8</span>]
+  },
+  {
+    <span class="hljs-attr">"p"</span>: [<span class="hljs-number">-334</span>, <span class="hljs-number">-754</span>, <span class="hljs-number">-567</span>],
+    <span class="hljs-attr">"v"</span>: [<span class="hljs-number">-31</span>, <span class="hljs-number">15</span>, <span class="hljs-number">-34</span>],
+    <span class="hljs-attr">"a"</span>: [<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>]
+  },
+  // ...
+]
+</code></pre>
+<p>The general algorithm I used was to calculate a collision times for each pair
+of particles, order them by time ascending, and then remove all pairs for
+each time with collisions when both colliding particles were in the set of all
+particles up to that time (earlier collisions can invalidate later collisions
+since collisions remove colliding particles).</p>
+<p>To calculate potential collisions, I used the following:</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> collisions = [];
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; input.length - <span class="hljs-number">1</span>; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = i + <span class="hljs-number">1</span>; j &lt; input[i].length; j++) {
+        <span class="hljs-keyword">const</span> t = collisionTime(input[i], input[j]);
+
+        <span class="hljs-keyword">if</span> (t !== <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">if</span> (!collisions[t]) {
+                collisions[t] = [];
+            }
+
+            collisions[t].push([i, j]);
+        }
+    }
+}
+</code></pre>
+<p>I&#39;ve used the index of each particle in the input array as its ID for
+convenience. The snippet grabs all pairs and uses the function <code>collisionTime</code>,
+which returns either an integer (time of their first collision after <code>t=0</code>), or
+<code>null</code> if they never collide. The <code>collisions</code> array is indexed by time, and
+populated with arrays of collisions. I&#39;ll come back to <code>collisionTime</code> later,
+because that&#39;s where interesting things happen.</p>
+<p>Next I create a set containing the IDs of all particles.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> particles = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>(<span class="hljs-built_in">Array</span>.from({ <span class="hljs-attr">length</span>: input.length }, (v, i) =&gt; i));
+</code></pre>
+<p>See <a href="/blog/tip-arrayfrom">my <code>Array.from</code> tip</a> for a partial explanation of this, and the
+<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">MDN article on <code>Set</code></a> for the rest.</p>
+<p>The rest is looping over collision times to discover which collisions are valid
+(both particles have not yet collided) and remove the particles which collide
+from the particles set. The size of the set after all collisions have been
+checked is the number of remaning particles, which is the goal of this problem.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> collisionsAtTime <span class="hljs-keyword">of</span> collisions) {
+    <span class="hljs-keyword">if</span> (!collisionsAtTime) {
+        <span class="hljs-keyword">continue</span>;
+    }
+
+    <span class="hljs-keyword">const</span> toDelete = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>();
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [a, b] <span class="hljs-keyword">of</span> collisionsAtTime) {
+        <span class="hljs-keyword">if</span> (particles.has(a) &amp;&amp; particles.has(b)) {
+            toDelete.add(a);
+            toDelete.add(b);
+        }
+    }
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> index <span class="hljs-keyword">of</span> toDelete) {
+        particles.delete(index);
+    }
+}
+
+<span class="hljs-built_in">console</span>.log(particles.size);
+</code></pre>
+<p>I don&#39;t care about the time of each set of collisions; I only care about the
+order. Since <code>collisions</code> is a sparse array (indexed by time), I do have to
+check for <code>undefined</code> elements and <code>continue</code> to skip those.</p>
+<p>Ive modelled all collisions as pairs, so a collision between three particles
+will look like three collisions at the same time. In order to properly count
+these particle ID to be removed are held in the <code>toDelete</code> set and removed after
+all collisions at a given time have been checked.</p>
+<p>Let&#39;s go back to the function <code>collisionTime</code>. For a given pair of particle
+objects, it determines when their first collision is after <code>t=0</code>. Here&#39;s a naïve
+implementation:</p>
+<pre><code class="lang-javascript"><span class="hljs-comment">// Calculates the Manhatten distance between two particles.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">manhatten</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">1</span>] - b[<span class="hljs-number">1</span>]) + <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">2</span>] - b[<span class="hljs-number">2</span>]);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">vectorAdd</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-keyword">return</span> [a[<span class="hljs-number">0</span>] + b[<span class="hljs-number">0</span>], a[<span class="hljs-number">1</span>] + b[<span class="hljs-number">1</span>], a[<span class="hljs-number">2</span>] + b[<span class="hljs-number">2</span>]];
+}
+
+<span class="hljs-comment">// Returns a new particle which represents the evolution of a given particle by</span>
+<span class="hljs-comment">// one step.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span>(<span class="hljs-params">particle</span>) </span>{
+    <span class="hljs-keyword">const</span> a = particle.a.slice();
+    <span class="hljs-keyword">const</span> v = vectorAdd(particle.v, a);
+    <span class="hljs-keyword">const</span> p = vectorAdd(particle.p, v);
+
+    <span class="hljs-keyword">return</span> { p, v, a };
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">collisionTime</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-keyword">let</span> nextD = manhatten(a.p, b.p);
+
+    <span class="hljs-comment">// Trivial case in which particles are initially in the same place.</span>
+    <span class="hljs-keyword">if</span> (nextD === <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    }
+
+    <span class="hljs-keyword">let</span> t = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">let</span> d;
+    <span class="hljs-keyword">let</span> v;
+    <span class="hljs-keyword">let</span> nextV = manhatten(a.v, b.v);
+    <span class="hljs-keyword">let</span> particle0 = a;
+    <span class="hljs-keyword">let</span> particle1 = b;
+
+    <span class="hljs-keyword">do</span> {
+        d = nextD;
+        v = nextV;
+        particle0 = tick(particle0);
+        particle1 = tick(particle1);
+        t++;
+        nextD = manhatten(particle0.p, particle1.p);
+
+        <span class="hljs-keyword">if</span> (nextD === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> t;
+        }
+
+        nextV = manhatten(particle0.v, particle1.v);
+
+        <span class="hljs-comment">// Continue while the particles are moving together, or failing that,</span>
+        <span class="hljs-comment">// the rate at which they're moving apart is slowing (indicating that</span>
+        <span class="hljs-comment">// they will move toward each other in the future).</span>
+    } <span class="hljs-keyword">while</span> (nextD &lt; d || nextV &lt; v);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+}
+</code></pre>
+<p>This implementation takes a pair of particles, and evolves both while either
+they are approaching each other, or accelerating toward each other. If the two
+particles are at zero distance during the evolution, they have collided. It
+works, but it&#39;s slow.</p>
+<p>All I really need is the location of each particle at a given time. Since the
+particles move under a very simple set of rules, I <em>should</em> be able to predict
+where a particle will be at any time without needing to resort to loops. If I
+can predict the location of two particles, I can calculate the relative location
+of one particle with respect to another, and ultimately I can solve an equation
+for which that location is the same (zero distance).</p>
+<p>First I have to predict the location of a particle though. We are told that at
+each time, the acceleration vector is added to the velocity vector, and then the
+updated velocity vector is added to the position vector. The position of a
+particle is thus (in one dimension, where zeros denote initial values):</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="22.863ex" height="7.176ex" style="vertical-align: -3.005ex; margin-left: -0.089ex;" viewBox="-38.5 -1796 9843.7 3089.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">p_t = p_0 + v_0 t + a\sum_{n=0}^t n</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-76" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJSZ2-2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-6E" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-74" x="712" y="-213"></use>
+ <use xlink:href="#E1-MJMAIN-3D" x="1136" y="0"></use>
+<g transform="translate(2193,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="3372" y="0"></use>
+<g transform="translate(4373,0)">
+ <use xlink:href="#E1-MJMATHI-76" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="686" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMATHI-74" x="5312" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="5896" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="6897" y="0"></use>
+<g transform="translate(7593,0)">
+ <use xlink:href="#E1-MJSZ2-2211" x="0" y="0"></use>
+<g transform="translate(57,-1090)">
+ <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-6E" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-3D" x="600" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="1379" y="0"></use>
+</g>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-74" x="840" y="1627"></use>
+</g>
+ <use xlink:href="#E1-MJMATHI-6E" x="9204" y="0"></use>
+</g>
+</svg>
+</code></pre>
+<p>That sum can be swapped out for an equation (high schoolers will know this but
+I, with the full weight of two degrees in physics, had managed to forget and I
+looked it up). This is equivalent:</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="25.667ex" height="5.676ex" style="vertical-align: -1.838ex; margin-left: -0.089ex;" viewBox="-38.5 -1652.5 11050.8 2443.8" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">p_t = p_0 + v_0 t + a\frac{(t + 1)t}{2}</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-76" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-74" x="712" y="-213"></use>
+ <use xlink:href="#E1-MJMAIN-3D" x="1136" y="0"></use>
+<g transform="translate(2193,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="3372" y="0"></use>
+<g transform="translate(4373,0)">
+ <use xlink:href="#E1-MJMATHI-76" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="686" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMATHI-74" x="5312" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="5896" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="6897" y="0"></use>
+<g transform="translate(7426,0)">
+<g transform="translate(120,0)">
+<rect stroke="none" width="3345" height="60" x="0" y="220"></rect>
+<g transform="translate(60,770)">
+ <use xlink:href="#E1-MJMAIN-28" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-74" x="389" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="973" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-31" x="1973" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-29" x="2474" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-74" x="2863" y="0"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-32" x="1422" y="-687"></use>
+</g>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>Armed with this equation, I need to calculate the difference in position
+between two particles:</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="33.321ex" height="5.676ex" style="vertical-align: -1.838ex;" viewBox="0 -1652.5 14346.3 2443.8" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">\Delta p_t = \Delta p_0 + \Delta v_0 t + \Delta a\frac{(t + 1)t}{2}</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMAIN-394" d="M51 0Q46 4 46 7Q46 9 215 357T388 709Q391 716 416 716Q439 716 444 709Q447 705 616 357T786 7Q786 4 781 0H51ZM507 344L384 596L137 92L383 91H630Q630 93 507 344Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-76" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMAIN-394" x="0" y="0"></use>
+<g transform="translate(833,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMATHI-74" x="712" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-3D" x="1970" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="3026" y="0"></use>
+<g transform="translate(3860,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="5039" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="6040" y="0"></use>
+<g transform="translate(6874,0)">
+ <use xlink:href="#E1-MJMATHI-76" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="686" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMATHI-74" x="7813" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="8397" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="9397" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="10231" y="0"></use>
+<g transform="translate(10760,0)">
+<g transform="translate(120,0)">
+<rect stroke="none" width="3345" height="60" x="0" y="220"></rect>
+<g transform="translate(60,770)">
+ <use xlink:href="#E1-MJMAIN-28" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-74" x="389" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="973" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-31" x="1973" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-29" x="2474" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-74" x="2863" y="0"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-32" x="1422" y="-687"></use>
+</g>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>Where the delta signifies a difference (the above is the equation of one
+particle subtracted from the equation for a another particle). The solutions for
+<code>t</code> I want are when the left hand side is zero. To avoid a division and retain
+integers as long as possible, I multiply both sides by two and rewrite slightly
+to collect powers of <code>t</code>.</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="34.646ex" height="3.176ex" style="vertical-align: -0.838ex;" viewBox="0 -1006.6 14916.8 1367.4" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">0 = \Delta a t^2 + \left(2\Delta v_0 + \Delta a\right) t + 2\Delta p_0</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-394" d="M51 0Q46 4 46 7Q46 9 215 357T388 709Q391 716 416 716Q439 716 444 709Q447 705 616 357T786 7Q786 4 781 0H51ZM507 344L384 596L137 92L383 91H630Q630 93 507 344Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-76" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMAIN-30" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-3D" x="778" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="1834" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="2668" y="0"></use>
+<g transform="translate(3197,0)">
+ <use xlink:href="#E1-MJMATHI-74" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-32" x="511" y="583"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="4235" y="0"></use>
+<g transform="translate(5235,0)">
+ <use xlink:href="#E1-MJMAIN-28" x="0" y="0"></use>
+<g transform="translate(389,0)">
+ <use xlink:href="#E1-MJMAIN-32" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="500" y="0"></use>
+<g transform="translate(1334,0)">
+ <use xlink:href="#E1-MJMATHI-76" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="686" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="2495" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="3496" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="4329" y="0"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-29" x="5248" y="0"></use>
+</g>
+ <use xlink:href="#E1-MJMATHI-74" x="11040" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2B" x="11624" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-32" x="12625" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="13125" y="0"></use>
+<g transform="translate(13959,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>This is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Quadratic_equation">quadratic equation</a>! When the acceleration is zero this collapses
+down to a linear equation with the solution:</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="10.742ex" height="5.509ex" style="vertical-align: -2.005ex;" viewBox="0 -1508.9 4625 2372" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">t = -\frac{\Delta p_0}{\Delta a}</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-394" d="M51 0Q46 4 46 7Q46 9 215 357T388 709Q391 716 416 716Q439 716 444 709Q447 705 616 357T786 7Q786 4 781 0H51ZM507 344L384 596L137 92L383 91H630Q630 93 507 344Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMATHI-74" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-3D" x="639" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-2212" x="1695" y="0"></use>
+<g transform="translate(2474,0)">
+<g transform="translate(120,0)">
+<rect stroke="none" width="1910" height="60" x="0" y="220"></rect>
+<g transform="translate(60,714)">
+ <use xlink:href="#E1-MJMAIN-394" x="0" y="0"></use>
+<g transform="translate(833,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+</g>
+<g transform="translate(273,-737)">
+ <use xlink:href="#E1-MJMAIN-394" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="833" y="0"></use>
+</g>
+</g>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>When acceleration is non-zero, I have to solve a quadratic equation:</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="21.035ex" height="6.176ex" style="vertical-align: -1.838ex;" viewBox="0 -1867.7 9056.9 2659.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">t = \frac{-b\pm\sqrt{b^2-4ac}}{2a}</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMATHI-74" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-62" d="M73 647Q73 657 77 670T89 683Q90 683 161 688T234 694Q246 694 246 685T212 542Q204 508 195 472T180 418L176 399Q176 396 182 402Q231 442 283 442Q345 442 383 396T422 280Q422 169 343 79T173 -11Q123 -11 82 27T40 150V159Q40 180 48 217T97 414Q147 611 147 623T109 637Q104 637 101 637H96Q86 637 83 637T76 640T73 647ZM336 325V331Q336 405 275 405Q258 405 240 397T207 376T181 352T163 330L157 322L136 236Q114 150 114 114Q114 66 138 42Q154 26 178 26Q211 26 245 58Q270 81 285 114T318 219Q336 291 336 325Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-B1" d="M56 320T56 333T70 353H369V502Q369 651 371 655Q376 666 388 666Q402 666 405 654T409 596V500V353H707Q722 345 722 333Q722 320 707 313H409V40H707Q722 32 722 20T707 0H70Q56 7 56 20T70 40H369V313H70Q56 320 56 333Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-34" d="M462 0Q444 3 333 3Q217 3 199 0H190V46H221Q241 46 248 46T265 48T279 53T286 61Q287 63 287 115V165H28V211L179 442Q332 674 334 675Q336 677 355 677H373L379 671V211H471V165H379V114Q379 73 379 66T385 54Q393 47 442 46H471V0H462ZM293 211V545L74 212L183 211H293Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-63" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path>
+<path stroke-width="1" id="E1-MJSZ1-221A" d="M263 249Q264 249 315 130T417 -108T470 -228L725 302Q981 837 982 839Q989 850 1001 850Q1008 850 1013 844T1020 832V826L741 243Q645 43 540 -176Q479 -303 469 -324T453 -348Q449 -350 436 -350L424 -349L315 -96Q206 156 205 156L171 130Q138 104 137 104L111 130L263 249Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMATHI-74" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-3D" x="639" y="0"></use>
+<g transform="translate(1417,0)">
+<g transform="translate(397,0)">
+<rect stroke="none" width="7121" height="60" x="0" y="220"></rect>
+<g transform="translate(60,775)">
+ <use xlink:href="#E1-MJMAIN-2212" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-62" x="778" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-B1" x="1430" y="0"></use>
+<g transform="translate(2430,0)">
+ <use xlink:href="#E1-MJSZ1-221A" x="0" y="94"></use>
+<rect stroke="none" width="3569" height="60" x="1000" y="885"></rect>
+<g transform="translate(1000,0)">
+ <use xlink:href="#E1-MJMATHI-62" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-32" x="607" y="408"></use>
+ <use xlink:href="#E1-MJMAIN-2212" x="1105" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-34" x="2106" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="2606" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-63" x="3136" y="0"></use>
+</g>
+</g>
+</g>
+<g transform="translate(3045,-687)">
+ <use xlink:href="#E1-MJMAIN-32" x="0" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="500" y="0"></use>
+</g>
+</g>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>where</p>
+<pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="16.366ex" height="8.843ex" style="vertical-align: -3.838ex;" viewBox="0 -2154.8 7046.5 3807.2" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">\begin{split}
+a &amp;= \Delta a \\
+b &amp;= 2\Delta v_0 + \Delta a \\
+c &amp;= 2\Delta p_0
+\end{split}</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMATHI-61" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-394" d="M51 0Q46 4 46 7Q46 9 215 357T388 709Q391 716 416 716Q439 716 444 709Q447 705 616 357T786 7Q786 4 781 0H51ZM507 344L384 596L137 92L383 91H630Q630 93 507 344Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-62" d="M73 647Q73 657 77 670T89 683Q90 683 161 688T234 694Q246 694 246 685T212 542Q204 508 195 472T180 418L176 399Q176 396 182 402Q231 442 283 442Q345 442 383 396T422 280Q422 169 343 79T173 -11Q123 -11 82 27T40 150V159Q40 180 48 217T97 414Q147 611 147 623T109 637Q104 637 101 637H96Q86 637 83 637T76 640T73 647ZM336 325V331Q336 405 275 405Q258 405 240 397T207 376T181 352T163 330L157 322L136 236Q114 150 114 114Q114 66 138 42Q154 26 178 26Q211 26 245 58Q270 81 285 114T318 219Q336 291 336 325Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-76" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-63" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path>
+<path stroke-width="1" id="E1-MJMATHI-70" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+<g transform="translate(167,0)">
+<g transform="translate(-11,0)">
+ <use xlink:href="#E1-MJMATHI-61" x="0" y="1250"></use>
+ <use xlink:href="#E1-MJMATHI-62" x="100" y="-50"></use>
+ <use xlink:href="#E1-MJMATHI-63" x="96" y="-1350"></use>
+</g>
+<g transform="translate(519,0)">
+<g transform="translate(0,1250)">
+ <use xlink:href="#E1-MJMAIN-3D" x="277" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="1334" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="2167" y="0"></use>
+</g>
+<g transform="translate(0,-50)">
+ <use xlink:href="#E1-MJMAIN-3D" x="277" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-32" x="1334" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="1834" y="0"></use>
+<g transform="translate(2668,0)">
+ <use xlink:href="#E1-MJMATHI-76" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="686" y="-213"></use>
+</g>
+ <use xlink:href="#E1-MJMAIN-2B" x="3829" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="4830" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-61" x="5663" y="0"></use>
+</g>
+<g transform="translate(0,-1350)">
+ <use xlink:href="#E1-MJMAIN-3D" x="277" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-32" x="1334" y="0"></use>
+ <use xlink:href="#E1-MJMAIN-394" x="1834" y="0"></use>
+<g transform="translate(2668,0)">
+ <use xlink:href="#E1-MJMATHI-70" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-30" x="712" y="-213"></use>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>
+</code></pre>
+<p>I&#39;m interested in solutions which are <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Natural_number">natural numbers</a> (real positive
+integers). To get natural number solutions to quadratic equations, I wrote these
+functions:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isNaturalNumber</span>(<span class="hljs-params">num</span>) </span>{
+    <span class="hljs-keyword">return</span> num &gt;&gt;&gt; <span class="hljs-number">0</span> === num;
+}
+
+<span class="hljs-comment">// Provides only solutions which are natural numbers.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">solveQuadratic</span>(<span class="hljs-params">a, b, c</span>) </span>{
+  <span class="hljs-keyword">if</span> (a === <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> solution = -c / b;
+
+    <span class="hljs-keyword">return</span> isNaturalNumber(solution) ? [solution] : [];
+  }
+
+  <span class="hljs-keyword">const</span> rootDiscriminant = <span class="hljs-built_in">Math</span>.sqrt(b * b - <span class="hljs-number">4</span> * a * c);
+
+  <span class="hljs-keyword">return</span> [
+    (-b + rootDiscriminant) / (<span class="hljs-number">2</span> * a),
+    (-b - rootDiscriminant) / (<span class="hljs-number">2</span> * a)
+  ].filter(isNaturalNumber);
+}
+</code></pre>
+<p>The function <code>isNaturalNumber</code> uses the right bitshift opertor. This is a trick
+to get an integer out of a number. Positive numbers will be floored, negative
+numbers will overflow (become large positive integers), and <code>NaN</code> will become
+zero. Only positive integers will pass the strict equality check.
+<code>solveQuadratic</code> itself encodes the solution to both the linear case
+(acceleration of zero) and the quadratic case.</p>
+<p>This solution is in one dimension. For collisions in three dimensions, this
+equation must be solved for each, and only when all three dimensions have a
+solution which is the same can I say that the two particles are projected to
+collide. At last, here is the improved implementation of <code>collisionTime</code>:</p>
+<pre><code class="lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">collisionTime</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-keyword">let</span> commonSolutions;
+
+    <span class="hljs-comment">// Calculate the solutions for each axis and initialise or whittle down</span>
+    <span class="hljs-comment">// commonSolutions.</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {
+        <span class="hljs-keyword">const</span> dp = a.p[i] - b.p[i];
+        <span class="hljs-keyword">const</span> dv = a.v[i] - b.v[i];
+        <span class="hljs-keyword">const</span> da = a.a[i] - b.a[i];
+
+        <span class="hljs-keyword">const</span> axisSolutions = solveQuadratic(da, <span class="hljs-number">2</span> * dv + da, <span class="hljs-number">2</span> * dp);
+
+        <span class="hljs-comment">// Most of the time there are no solutions, so this is a good</span>
+        <span class="hljs-comment">// optimisation.</span>
+        <span class="hljs-keyword">if</span> (axisSolutions.length === <span class="hljs-number">0</span>) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+
+        <span class="hljs-keyword">if</span> (!commonSolutions) {
+            <span class="hljs-comment">// Initialise the set with solutions for the first axis.</span>
+            commonSolutions = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>(axisSolutions);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// Remove solutions for other axes which this axis does't have.</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> solution <span class="hljs-keyword">of</span> commonSolutions) {
+                <span class="hljs-keyword">if</span> (!axisSolutions.includes(solution)) {
+                    commonSolutions.delete(solution);
+                }
+            }
+        }
+
+        <span class="hljs-comment">// If the set of common solutions is ever empty, there will be no</span>
+        <span class="hljs-comment">// collision.</span>
+        <span class="hljs-keyword">if</span> (commonSolutions.size === <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+    }
+
+    <span class="hljs-comment">// I only want the earliest collision.</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.min(...commonSolutions);
+}
+</code></pre>
+<p>This function first calculates solutions for the x-axis. Solutions which are not
+in common with both the y-axis and z-axis are then removed. If the set of common
+solutions is ever empty, the function returns <code>null</code>. If any axis has no
+solutions I can take a shortcut and immediately return <code>null</code>. If the set has
+remaining entries, these represent times when the particles will occupy the same
+coordinates in all three dimensions (a collision). The lowest (earliest) is
+plucked out as the solution!</p>
+<p>On my machine, the naïve implementation takes ~3.2 seconds with the input I&#39;m
+given. With the improved implementation, it takes less than 0.1 seconds. The
+full solution can be found <a target="_blank" rel="noopener" href="https://gist.github.com/qubyte/d43432e0e1716bc5efca4426ee762071">in this gist</a>.</p>
+
+      </div>
+    </article>
+    <footer>
+      <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text=Qubyte%20Codes%20-%20Advent%20of%20Code%202017%20day%2020%20task%202&amp;url=https://qubyte.codes/blog/advent-of-code-2017-day-20-task-2&amp;hashtags=JavaScript">Tweet this post!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=Qubyte%20Codes%20-%20Advent%20of%20Code%202017%20day%2020%20task%202%20via%20%40qubyte%40mastodon.social%20%23JavaScript%20https%3A%2F%2Fqubyte.codes%2Fblog%2Fadvent-of-code-2017-day-20-task-2">toot it!</a></p>
+      <p>Comments or corrections? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=%40qubyte%40mastodon.social">toot to me!</a></p>
+    </footer>
+  </div>
+</body>
+</html>

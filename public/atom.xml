@@ -3,12 +3,26 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2018-01-02T14:59:33Z</updated>
+  <updated>2018-01-02T20:46:08Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
   </author>
 
+  <entry>
+    <id>https://qubyte.codes/blog/advent-of-code-2017-day-20-task-2</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/advent-of-code-2017-day-20-task-2"/>
+    <title>Advent of Code 2017 day 20 task 2</title>
+    <published>2018-01-02T20:50:00Z</published>
+    <updated>2018-01-02T20:50:00Z</updated>
+    <author>
+      <name>qubyte</name>
+      <uri>https://qubyte.codes</uri>
+    </author>
+    <content type="html">&lt;p&gt;SPOILER ALERT: If you&amp;#39;re doing the 2017 Advent of Code, you may not want to read
+onward&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <id>https://qubyte.codes/blog/tip-arrayfrom</id>
     <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/tip-arrayfrom"/>

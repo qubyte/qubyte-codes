@@ -1,5 +1,6 @@
 https://qubyte.codes/
 https://qubyte.codes/about
+https://qubyte.codes/blog/advent-of-code-2017-day-20-task-2
 https://qubyte.codes/blog/tip-arrayfrom
 https://qubyte.codes/blog/my-first-custom-element
 https://qubyte.codes/blog/test-friendly-mixins
