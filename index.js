@@ -60,7 +60,7 @@ function dateToIso(date) {
   return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
 }
 
-function renderMarkdown(post) {
+async function renderMarkdown(post) {
   const digested = frontMatter(post);
   const { title, tags = [] } = digested.attributes;
   const slug = `${makeSlug(title, { lower: true })}`;
@@ -81,7 +81,7 @@ function renderMarkdown(post) {
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
   digested.attributes.canonical = canonical;
-  digested.content = render(digested.body);
+  digested.content = await new Promise(resolve => render(digested.body, (err, result) => resolve(result)));
   return digested;
 }
 
@@ -89,8 +89,9 @@ async function loadPostFiles() {
   const filenames = await readDir(path.join(__dirname, 'posts'));
   const filePaths = filenames.map(filename => path.join(__dirname, 'posts', filename));
   const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
+  const rendered = await Promise.all(contents.map(c => renderMarkdown(c)));
 
-  return contents.map(renderMarkdown);
+  return rendered;
 }
 
 exports.build = async function build() {
