@@ -35,13 +35,13 @@
         <p>SPOILER ALERT: If you&#39;re doing the 2017 Advent of Code, you may not want to read
 onward.</p>
 <p>Over the holiday period I found a little time to work on the
-<a target="_blank" rel="noopener" href="https://adventofcode.com">2017 advent of code</a> challenges. The later ones get quite involved, and I&#39;ve
+<a target="_blank" rel="noopener" href="https://adventofcode.com">2017 advent of code</a> challenges. The later ones get quite involved, and I
 particularly enjoyed day 20. The second part of the task involves a 3D grid
 containing accelerating particles. Particles which collide at a grid point
 (occupy that point at the same time) are removed, and we&#39;re asked to determine
 how many particles remain after all collisions have occurred. This one was
 fun for me because the solution I came up with involved a little mathematics to
-avoid brute forcing the solution.</p>
+avoid brute forcing the answer.</p>
 <p>At this point in the challenges, writing a parser for an input file is something
 I&#39;ll skip over. The parser gives back an array of objects, each representing a
 particle, with <code>p</code>, <code>v</code>, and <code>a</code> fields to represent position, velocity, and
@@ -68,7 +68,7 @@ arrays for the x, y, and z axes. The input looks like:</p>
 </code></pre>
 <p>The general algorithm I used was to calculate a collision times for each pair
 of particles, order them by time ascending, and then remove all pairs for
-each time with collisions when both colliding particles were in the set of all
+each time step when both colliding particles are still in the set of all
 particles up to that time (earlier collisions can invalidate later collisions
 since collisions remove colliding particles).</p>
 <p>To calculate potential collisions, I used the following:</p>
@@ -90,10 +90,10 @@ since collisions remove colliding particles).</p>
 </code></pre>
 <p>I&#39;ve used the index of each particle in the input array as its ID for
 convenience. The snippet grabs all pairs and uses the function <code>collisionTime</code>,
-which returns either an integer (time of their first collision after <code>t=0</code>), or
-<code>null</code> if they never collide. The <code>collisions</code> array is indexed by time, and
-populated with arrays of collisions. I&#39;ll come back to <code>collisionTime</code> later,
-because that&#39;s where interesting things happen.</p>
+which returns either an integer (time of their first collision from <code>t=0</code>), or
+<code>null</code> if they never collide. The <code>collisions</code> array is indexed by time step,
+and populated with arrays of collisions. I&#39;ll come back to <code>collisionTime</code>
+later, because that&#39;s where interesting things happen.</p>
 <p>Next I create a set containing the IDs of all particles.</p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> particles = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Set</span>(<span class="hljs-built_in">Array</span>.from({ <span class="hljs-attr">length</span>: input.length }, (v, i) =&gt; i));
 </code></pre>
@@ -125,15 +125,15 @@ checked is the number of remaning particles, which is the goal of this problem.<
 <span class="hljs-built_in">console</span>.log(particles.size);
 </code></pre>
 <p>I don&#39;t care about the time of each set of collisions; I only care about the
-order. Since <code>collisions</code> is a sparse array (indexed by time), I do have to
+order. Since <code>collisions</code> is a sparse array (indexed by time step), I do have to
 check for <code>undefined</code> elements and <code>continue</code> to skip those.</p>
-<p>Ive modelled all collisions as pairs, so a collision between three particles
-will look like three collisions at the same time. In order to properly count
-these particle ID to be removed are held in the <code>toDelete</code> set and removed after
-all collisions at a given time have been checked.</p>
+<p>I&#39;ve modelled all collisions as pairs, so a collision between three or more
+particles will look like multiple collisions of pairs at the same time. In order
+to properly count these, particle IDs to be removed are held in the <code>toDelete</code>
+set and removed after all collisions at a given time step have been checked.</p>
 <p>Let&#39;s go back to the function <code>collisionTime</code>. For a given pair of particle
-objects, it determines when their first collision is after <code>t=0</code>. Here&#39;s a naïve
-implementation:</p>
+objects, it determines when their first collision is beginning at <code>t=0</code>. Here&#39;s
+a naïve implementation:</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// Calculates the Manhatten distance between two particles.</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">manhatten</span>(<span class="hljs-params">a, b</span>) </span>{
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>]) + <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">1</span>] - b[<span class="hljs-number">1</span>]) + <span class="hljs-built_in">Math</span>.abs(a[<span class="hljs-number">2</span>] - b[<span class="hljs-number">2</span>]);
@@ -144,7 +144,7 @@ implementation:</p>
 }
 
 <span class="hljs-comment">// Returns a new particle which represents the evolution of a given particle by</span>
-<span class="hljs-comment">// one step.</span>
+<span class="hljs-comment">// one time step.</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tick</span>(<span class="hljs-params">particle</span>) </span>{
     <span class="hljs-keyword">const</span> a = particle.a.slice();
     <span class="hljs-keyword">const</span> v = vectorAdd(particle.v, a);
@@ -246,9 +246,9 @@ particle is thus (in one dimension, where zeros denote initial values):</p>
 </g>
 </svg>
 </code></pre>
-<p>That sum can be swapped out for an equation (high schoolers will know this but
-I, with the full weight of two degrees in physics, had managed to forget and I
-looked it up). This is equivalent:</p>
+<p>That sum can be swapped out for an expression (high schoolers will know this but
+I, with the full weight of two degrees in physics, had forgotten and had to look
+it up). This is equivalent:</p>
 <pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="25.667ex" height="5.676ex" style="vertical-align: -1.838ex; margin-left: -0.089ex;" viewBox="-38.5 -1652.5 11050.8 2443.8" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">p_t = p_0 + v_0 t + a\frac{(t + 1)t}{2}</title>
 <defs aria-hidden="true">
@@ -356,9 +356,9 @@ between two particles:</p>
 </code></pre>
 <p>Where the delta signifies a difference (the above is the equation of one
 particle subtracted from the equation for a another particle). The solutions for
-<code>t</code> I want are when the left hand side is zero. To avoid a division and retain
-integers as long as possible, I multiply both sides by two and rewrite slightly
-to collect powers of <code>t</code>.</p>
+<code>t</code> I want are when the left hand side (difference in position at time step <code>t</code>)
+is zero. To avoid a division and retain integers as long as possible, I multiply
+both sides by two and rewrite slightly to collect powers of <code>t</code>.</p>
 <pre><code class="lang-mathematics"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="34.646ex" height="3.176ex" style="vertical-align: -0.838ex;" viewBox="0 -1006.6 14916.8 1367.4" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">0 = \Delta a t^2 + \left(2\Delta v_0 + \Delta a\right) t + 2\Delta p_0</title>
 <defs aria-hidden="true">
@@ -579,7 +579,8 @@ to get an integer out of a number. Positive numbers will be floored, negative
 numbers will overflow (become large positive integers), and <code>NaN</code> will become
 zero. Only positive integers will pass the strict equality check.
 <code>solveQuadratic</code> itself encodes the solution to both the linear case
-(acceleration of zero) and the quadratic case.</p>
+(acceleration of zero) and the quadratic case. JavaScript is on our side here
+with how it represents numbers.</p>
 <p>This solution is in one dimension. For collisions in three dimensions, this
 equation must be solved for each, and only when all three dimensions have a
 solution which is the same can I say that the two particles are projected to
@@ -626,9 +627,9 @@ collide. At last, here is the improved implementation of <code>collisionTime</co
 }
 </code></pre>
 <p>This function first calculates solutions for the x-axis. Solutions which are not
-in common with both the y-axis and z-axis are then removed. If the set of common
-solutions is ever empty, the function returns <code>null</code>. If any axis has no
-solutions I can take a shortcut and immediately return <code>null</code>. If the set has
+in common with both the y-axis and z-axis are subsequently removed. If the set
+of common solutions is ever empty, the function returns <code>null</code>. If any axis has
+no solutions I can take a shortcut and immediately return <code>null</code>. If the set has
 remaining entries, these represent times when the particles will occupy the same
 coordinates in all three dimensions (a collision). The lowest (earliest) is
 plucked out as the solution!</p>
