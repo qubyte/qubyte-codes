@@ -72,7 +72,7 @@ async function renderMarkdown(post) {
   digested.attributes.updated = updated;
   digested.attributes.slug = slug;
   digested.attributes.filename = `${slug}.html`;
-  digested.attributes.snippet = render(makeSnippet(digested.body));
+  digested.attributes.snippet = await render(makeSnippet(digested.body));
   digested.attributes.humandatetime = date.toDateString();
   digested.attributes.isoDate = dateToIso(date);
   digested.attributes.isoUpdated = dateToIso(updated);
@@ -81,7 +81,7 @@ async function renderMarkdown(post) {
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
   digested.attributes.canonical = canonical;
-  digested.content = await new Promise(resolve => render(digested.body, (err, result) => resolve(result)));
+  digested.content = await render(digested.body);
   return digested;
 }
 
