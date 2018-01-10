@@ -3,7 +3,7 @@
   <title>Qubyte Codes</title>
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/atom.xml"/>
-  <updated>2018-01-10T13:54:03Z</updated>
+  <updated>2018-01-10T13:55:09Z</updated>
   <id>https://qubyte.codes/</id>
   <author>
     <name>qubyte</name>
@@ -194,7 +194,7 @@ in a blog post soon, but until then here&amp;#39;s the presentation&lt;/p&gt;
       <uri>https://qubyte.codes</uri>
     </author>
     <content type="html">&lt;p&gt;I use &lt;code&gt;instanceof&lt;/code&gt; a lot in JavaScript. It&amp;#39;s very handy when writing unit tests. It&amp;#39;s easier to do
-an &lt;code&gt;instanceof&lt;/code&gt; check than it is to exhaustively probe an object. &#x60;$some maths probably$&lt;/p&gt;
+an &lt;code&gt;instanceof&lt;/code&gt; check than it is to exhaustively probe an object&lt;/p&gt;
 </content>
   </entry>
   <entry>
