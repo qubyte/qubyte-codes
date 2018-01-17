@@ -1,5 +1,6 @@
 'use strict';
 
+const CleanCss = require('clean-css');
 const frontMatter = require('front-matter');
 const path = require('path');
 const crypto = require('crypto');
@@ -13,25 +14,23 @@ const { promisify } = require('util');
 
 const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
-const rename = promisify(fs.rename);
 const writeFile = promisify(fs.writeFile);
 
 function buildPublicPath(...parts) {
   return path.join(__dirname, 'public', ...parts);
 }
 
-async function hashAndMoveCss() {
-  const content = await readFile(buildPublicPath('main.css'), 'utf-8');
+async function generateCss(cssEntryPath) {
+  const content = new CleanCss().minify([cssEntryPath]);
 
   const hash = crypto
     .createHash('md5')
-    .update(content)
+    .update(content.styles)
     .digest('hex');
 
-  const oldPath = buildPublicPath('main.css');
-  const newPath = buildPublicPath(`main-${hash}.css`);
+  const cssPath = buildPublicPath(`main-${hash}.css`);
 
-  await rename(oldPath, newPath);
+  await writeFile(cssPath, content.styles);
 
   return `/main-${hash}.css`;
 }
@@ -103,7 +102,7 @@ exports.build = async function build() {
     loadTemplate('blog.html'),
     loadTemplate('atom.xml'),
     loadTemplate('sitemap.txt'),
-    hashAndMoveCss()
+    generateCss(path.join(__dirname, 'css', 'entry.css'))
   ];
 
   const [
