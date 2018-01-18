@@ -204,7 +204,6 @@ for which that location is the same (zero distance).</p>
 each time, the acceleration vector is added to the velocity vector, and then the
 updated velocity vector is added to the position vector. The position of a
 particle is thus (in one dimension, where zeros denote initial values):</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="22.863ex" height="7.176ex" viewBox="-38.5 -1796 9843.7 3089.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">p_t = p_0 + v_0 t + a\sum_{n=0}^t n</title>
   <defs aria-hidden="true">
@@ -248,7 +247,6 @@ particle is thus (in one dimension, where zeros denote initial values):</p>
 </svg><p>That sum can be swapped out for an expression (high schoolers will know this but
 I, with the full weight of two degrees in physics, had forgotten and had to look
 it up). This is equivalent:</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="25.667ex" height="5.676ex" viewBox="-38.5 -1652.5 11050.8 2443.8" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">p_t = p_0 + v_0 t + a\frac{(t + 1)t}{2}</title>
   <defs aria-hidden="true">
@@ -297,7 +295,6 @@ it up). This is equivalent:</p>
   </g>
 </svg><p>Armed with this equation, I need to calculate the difference in position
 between two particles:</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="33.321ex" height="5.676ex" viewBox="0 -1652.5 14346.3 2443.8" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">\Delta p_t = \Delta p_0 + \Delta v_0 t + \Delta a\frac{(t + 1)t}{2}</title>
   <defs aria-hidden="true">
@@ -356,7 +353,6 @@ particle subtracted from the equation for a another particle). The solutions for
 <code>t</code> I want are when the left hand side (difference in position at time step <code>t</code>)
 is zero. To avoid a division and retain integers as long as possible, I multiply
 both sides by two and rewrite slightly to collect powers of <code>t</code>.</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="34.646ex" height="3.176ex" viewBox="0 -1006.6 14916.8 1367.4" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">0 = \Delta a t^2 + \left(2\Delta v_0 + \Delta a\right) t + 2\Delta p_0</title>
   <defs aria-hidden="true">
@@ -408,7 +404,6 @@ both sides by two and rewrite slightly to collect powers of <code>t</code>.</p>
   </g>
 </svg><p>This is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Quadratic_equation">quadratic equation</a>! When the acceleration is zero this collapses
 down to a linear equation with the solution:</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="10.742ex" height="5.843ex" viewBox="0 -1508.9 4625 2515.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">t = -\frac{\Delta p_0}{\Delta v_0}</title>
   <defs aria-hidden="true">
@@ -445,7 +440,6 @@ down to a linear equation with the solution:</p>
     </g>
   </g>
 </svg><p>When acceleration is non-zero, I have to solve a quadratic equation:</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="21.035ex" height="6.176ex" viewBox="0 -1867.7 9056.9 2659.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">t = \frac{-b\pm\sqrt{b^2-4ac}}{2a}</title>
   <defs aria-hidden="true">
@@ -491,7 +485,6 @@ down to a linear equation with the solution:</p>
     </g>
   </g>
 </svg><p>where</p>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="16.366ex" height="8.843ex" viewBox="0 -2154.8 7046.5 3807.2" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title" class="mathematics">
   <title id="MathJax-SVG-1-Title">\begin{split}
 a &amp;= \Delta a \\
