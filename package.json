@@ -13,7 +13,8 @@
     "build": "rm -f public/*.css && ./bin/cli.js . && sw-precache --config=sw-precache-config.js",
     "addbuiltfiles": "git add public",
     "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
-    "start": "NODE_ENV=development node serve.js"
+    "start": "NODE_ENV=development node serve.js",
+    "lint": "eslint ."
   },
   "author": "Mark Stanley Everitt",
   "license": "Private",
