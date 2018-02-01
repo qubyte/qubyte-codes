@@ -9,7 +9,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "build": "rimraf public && ./bin/cli.js https://qubyte.codes && sw-precache --config=sw-precache-config.js",
     "addbuiltfiles": "git add public",
     "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
