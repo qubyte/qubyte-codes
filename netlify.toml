@@ -1,0 +1,4 @@
+redirects = [
+  {from = "/", to = "/index.html", status = 200},
+  {from = "/blog/:title", to = "/blog/:title.html", status = 200},
+]
