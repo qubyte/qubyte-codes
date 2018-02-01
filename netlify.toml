@@ -1,4 +1,26 @@
-redirects = [
-  {from = "/", to = "/index.html", status = 200},
-  {from = "/blog/:title", to = "/blog/:title.html", status = 200},
-]
+[[redirects]]
+  from = "/"
+  to = "index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/:title"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = '"1" always'
+    X-Content-Type-Options = '"nosniff" always'
+    Content-Security-Policy = "default-src https://qubyte.codes; style-src 'self'; img-src *; media-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self'; object-src 'none'; script-src 'self'; "
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "max-age=315360000, public, immutable"
+
