@@ -7,14 +7,19 @@ const crypto = require('crypto');
 const handlebars = require('handlebars');
 const makeSlug = require('slug');
 const remark = require('remark');
-const render = require('./lib/render');
-const baseUrl = require('./lib/baseUrl');
+const makeRenderer = require('./lib/render');
 const fs = require('fs');
 const { promisify } = require('util');
+const cpy = require('cpy');
 
+const mkdir = promisify(fs.mkdir);
 const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+
+function buildSrcPath(...parts) {
+  return path.join(__dirname, 'src', ...parts);
+}
 
 function buildPublicPath(...parts) {
   return path.join(__dirname, 'public', ...parts);
@@ -36,7 +41,7 @@ async function generateCss(cssEntryPath) {
 }
 
 async function loadTemplate(filename) {
-  const source = await readFile(path.join(__dirname, 'frontend', filename), 'utf-8');
+  const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
 
   return handlebars.compile(source);
 }
@@ -59,7 +64,8 @@ function dateToIso(date) {
   return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
 }
 
-async function renderMarkdown(post) {
+async function renderMarkdown(post, baseUrl) {
+  const render = makeRenderer(baseUrl);
   const digested = frontMatter(post);
   const { title, tags = [] } = digested.attributes;
   const slug = `${makeSlug(title, { lower: true })}`;
@@ -84,40 +90,36 @@ async function renderMarkdown(post) {
   return digested;
 }
 
-async function loadPostFiles() {
-  const filenames = await readDir(path.join(__dirname, 'posts'));
-  const filePaths = filenames.map(filename => path.join(__dirname, 'posts', filename));
+async function loadPostFiles(baseUrl) {
+  const filenames = await readDir(buildSrcPath('posts'));
+  const filePaths = filenames.map(filename => buildSrcPath('posts', filename));
   const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
-  const rendered = await Promise.all(contents.map(c => renderMarkdown(c)));
+  const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl)));
 
   return rendered;
 }
 
-exports.build = async function build() {
-  const loadPromises = [
-    loadPostFiles(),
-    loadTemplate('index.html'),
-    loadTemplate('tag.html'),
-    loadTemplate('about.html'),
-    loadTemplate('blog.html'),
-    loadTemplate('atom.xml'),
-    loadTemplate('sitemap.txt'),
-    generateCss(path.join(__dirname, 'css', 'entry.css'))
-  ];
+async function createDirectories() {
+  await mkdir(buildPublicPath());
+  await mkdir(buildPublicPath('blog'));
+  await mkdir(buildPublicPath('icons'));
+  await mkdir(buildPublicPath('tags'));
+}
 
-  const [
-    posts,
-    indexTemplate,
-    tagTemplate,
-    aboutTemplate,
-    blogTemplate,
-    atomTemplate,
-    sitemapTemplate,
-    cssPath
-  ] = await Promise.all(loadPromises);
+async function loadTemplates() {
+  const [indexTemplate, tagTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate] = await Promise.all([
+    loadTemplate('index.html.handlebars'),
+    loadTemplate('tag.html.handlebars'),
+    loadTemplate('about.html.handlebars'),
+    loadTemplate('blog.html.handlebars'),
+    loadTemplate('atom.xml.handlebars'),
+    loadTemplate('sitemap.txt.handlebars')
+  ]);
 
-  posts.sort((a, b) => b.attributes.date - a.attributes.date);
+  return { indexTemplate, tagTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate };
+}
 
+function collateTags(posts) {
   const tags = {};
 
   for (const post of posts) {
@@ -130,6 +132,26 @@ exports.build = async function build() {
     }
   }
 
+  return tags;
+}
+
+exports.build = async function build(baseUrl) {
+  await createDirectories();
+  await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
+  await cpy(['google*', 'keybase.txt', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
+
+  const {
+    indexTemplate,
+    tagTemplate,
+    aboutTemplate,
+    blogTemplate,
+    atomTemplate,
+    sitemapTemplate
+  } = await loadTemplates();
+
+  const posts = (await loadPostFiles(baseUrl)).sort((a, b) => b.attributes.date - a.attributes.date);
+  const cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
+  const tags = collateTags(posts);
   const dev = process.env.NODE_ENV === 'development';
 
   for (const post of posts) {

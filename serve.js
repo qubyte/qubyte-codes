@@ -12,7 +12,7 @@ const { EventEmitter } = require('events');
 
 const buildEmitter = new EventEmitter();
 
-const watcher = chokidar.watch(['frontend', 'posts'])
+const watcher = chokidar.watch(['src'])
   .once('ready', () => {
     watcher.on('all', () => {
       console.log('Sources changed. Rebuilding...');
