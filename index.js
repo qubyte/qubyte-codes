@@ -11,6 +11,7 @@ const makeRenderer = require('./lib/render');
 const fs = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
+const exec = promisify(require('child_process').exec);
 
 const mkdir = promisify(fs.mkdir);
 const readDir = promisify(fs.readdir);
@@ -101,9 +102,11 @@ async function loadPostFiles(baseUrl) {
 
 async function createDirectories() {
   await mkdir(buildPublicPath());
-  await mkdir(buildPublicPath('blog'));
-  await mkdir(buildPublicPath('icons'));
-  await mkdir(buildPublicPath('tags'));
+  await Promise.all([
+    mkdir(buildPublicPath('blog')),
+    mkdir(buildPublicPath('icons')),
+    mkdir(buildPublicPath('tags'))
+  ]);
 }
 
 async function loadTemplates() {
@@ -135,6 +138,16 @@ function collateTags(posts) {
   return tags;
 }
 
+async function getLastPostCommit() {
+  const { stdout, stderr } = await exec('git log -1 --format=%ct src/posts');
+
+  if (stderr) {
+    throw new Error(`Error from exec: ${stderr}`);
+  }
+
+  return new Date(parseInt(stdout.trim(), 10) * 1000);
+}
+
 exports.build = async function build(baseUrl) {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
@@ -160,17 +173,18 @@ exports.build = async function build(baseUrl) {
     post.html = blogTemplate(post);
   }
 
+  const updated = dateToIso(await getLastPostCommit());
   const indexHtml = indexTemplate({ posts, cssPath, dev });
   const aboutHtml = aboutTemplate({ cssPath, dev });
-  const atomXML = atomTemplate({ posts, updated: dateToIso(new Date()) });
+  const atomXML = atomTemplate({ posts, updated });
   const sitemapTxt = sitemapTemplate({ posts });
 
   await Promise.all([
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
-    ...Object.keys(tags).map(tag => {
-      const tagHtml = tagTemplate({ posts: tags[tag], tag, cssPath, dev });
+    ...Object.entries(tags).map(([tag, posts]) => {
+      const tagHtml = tagTemplate({ posts, tag, cssPath, dev });
 
       return writeFile(buildPublicPath('tags', `${tag}.html`), tagHtml);
     }),

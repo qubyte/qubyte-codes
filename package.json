@@ -4,14 +4,9 @@
   "description": "qubyte.codes website",
   "main": "index.js",
   "repository": "github:qubyte/qubyte-codes",
-  "bin": {
-    "build-js": "./bin/cli.js"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf public && ./bin/cli.js https://qubyte.codes && sw-precache --config=sw-precache-config.js",
-    "addbuiltfiles": "git add public",
-    "schedule": "echo \"git --git-dir $(PWD)/.git pull origin master\" | at",
+    "build": "rimraf public && node build.js https://qubyte.codes && sw-precache --config=sw-precache-config.js",
     "start": "NODE_ENV=development node serve.js",
     "lint": "eslint ."
   },
