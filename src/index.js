@@ -1,16 +1,34 @@
-/* eslint no-console: off */
-/* eslint-env browser */
-'use strict';
+(function () {
+  'use strict';
 
-if ('serviceWorker' in window.navigator) {
-  window.addEventListener('load', () => {
-    window.navigator.serviceWorker.register('/sw.js').then(
-      registration => {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      },
-      err => {
-        console.log('ServiceWorker registration failed: ', err);
-      }
-    );
-  });
-}
+  if ('serviceWorker' in window.navigator) {
+    navigator.serviceWorker.getRegistrations()
+      .then(function (workers) {
+        return Promise.all(workers.map(function (worker) {
+          return worker.unregister();
+        }));
+      })
+      .then(function (successes) {
+        if (!successes.length) {
+          return;
+        }
+
+        var succeeded = 0;
+        var failed = 0;
+
+        for (var i = 0; i < successes.length; i++) {
+          if (successes[i]) {
+            succeeded++;
+          } else {
+            failed++;
+          }
+        }
+
+        if (failed) {
+          console.log(failed, 'workers failed to unregister.');
+        }
+
+        console.log(succeeded, 'workers unregistered.');
+      });
+  }
+}());

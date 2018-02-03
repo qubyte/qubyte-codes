@@ -151,7 +151,7 @@ async function getLastPostCommit() {
 exports.build = async function build(baseUrl) {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
-  await cpy(['google*', 'keybase.txt', 'manifest.json', 'index.js'].map(n => buildSrcPath(n)), buildPublicPath());
+  await cpy(['google*', 'keybase.txt', 'manifest.json', 'index.js', 'sw.js'].map(n => buildSrcPath(n)), buildPublicPath());
 
   const {
     indexTemplate,

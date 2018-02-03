@@ -6,7 +6,7 @@
   "repository": "github:qubyte/qubyte-codes",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf public && node build.js https://qubyte.codes && sw-precache --config=sw-precache-config.js",
+    "build": "rimraf public && node build.js https://qubyte.codes",
     "start": "NODE_ENV=development node serve.js",
     "lint": "eslint ."
   },
@@ -24,7 +24,6 @@
     "remark": "9.0.0",
     "rimraf": "2.6.2",
     "slug": "0.9.1",
-    "sw-precache": "5.2.1",
     "xml2js": "0.4.19"
   },
   "devDependencies": {
