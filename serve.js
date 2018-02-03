@@ -7,28 +7,32 @@ const Toisu = require('toisu');
 const Router = require('toisu-router');
 const serveStatic = require('toisu-static');
 const chokidar = require('chokidar');
-const { spawn } = require('child_process');
+const childProcess = require('child_process');
 const { EventEmitter } = require('events');
+const { promisify } = require('util');
+const exec = promisify(childProcess.exec);
 
 const buildEmitter = new EventEmitter();
 
+async function build() {
+  console.log('Sources changed. Rebuilding...');
+
+  const { stderr } = await exec('npm run build');
+
+  if (stderr) {
+    return console.error(stderr);
+  }
+
+  console.log('Build succeeded');
+
+  buildEmitter.emit('new');
+}
+
+build();
+
 const watcher = chokidar.watch(['src'])
   .once('ready', () => {
-    watcher.on('all', () => {
-      console.log('Sources changed. Rebuilding...');
-      const build = spawn('npm', ['run', 'build']);
-
-      build.stdout.on('data', data => console.log(`${data}`));
-      build.stderr.on('data', data => console.error(`${data}`));
-      build.on('close', code => {
-        if (code) {
-          return console.error('Build failed.');
-        }
-
-        console.log('Build succeeded');
-        buildEmitter.emit('new');
-      });
-    });
+    watcher.on('all', build);
   });
 
 const app = new Toisu();
