@@ -110,16 +110,25 @@ async function createDirectories() {
 }
 
 async function loadTemplates() {
-  const [indexTemplate, tagTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate] = await Promise.all([
+  const results = await Promise.all([
     loadTemplate('index.html.handlebars'),
     loadTemplate('tag.html.handlebars'),
     loadTemplate('about.html.handlebars'),
     loadTemplate('blog.html.handlebars'),
+    loadTemplate('webmention.html.handlebars'),
     loadTemplate('atom.xml.handlebars'),
     loadTemplate('sitemap.txt.handlebars')
   ]);
 
-  return { indexTemplate, tagTemplate, aboutTemplate, blogTemplate, atomTemplate, sitemapTemplate };
+  return {
+    indexTemplate: results[0],
+    tagTemplate: results[1],
+    aboutTemplate: results[2],
+    blogTemplate: results[3],
+    webmentionTemplate: results[4],
+    atomTemplate: results[5],
+    sitemapTemplate: results[6]
+  };
 }
 
 function collateTags(posts) {
@@ -158,6 +167,7 @@ exports.build = async function build(baseUrl) {
     tagTemplate,
     aboutTemplate,
     blogTemplate,
+    webmentionTemplate,
     atomTemplate,
     sitemapTemplate
   } = await loadTemplates();
@@ -176,12 +186,14 @@ exports.build = async function build(baseUrl) {
   const updated = dateToIso(await getLastPostCommit());
   const indexHtml = indexTemplate({ posts, cssPath, dev });
   const aboutHtml = aboutTemplate({ cssPath, dev });
+  const webmentionHtml = webmentionTemplate({ cssPath, dev });
   const atomXML = atomTemplate({ posts, updated });
   const sitemapTxt = sitemapTemplate({ posts });
 
   await Promise.all([
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
+    writeFile(buildPublicPath('webmention.html'), webmentionHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
     ...Object.entries(tags).map(([tag, posts]) => {
       const tagHtml = tagTemplate({ posts, tag, cssPath, dev });
