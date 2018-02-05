@@ -4,10 +4,11 @@
   <meta name="viewport" content="initial-scale=1">
   <link rel="icon" type="image/png" href="/icons/icon-64.png">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes - Send Webmention</title>
+  <title>Qubyte Codes - Thanks!</title>
   <script src="/index.js" async></script>
   <link href="{{cssPath}}" rel="stylesheet">
   <meta name="theme-color" content="#f1e7cd">
+  <meta http-equiv="refresh" content="5;/webmention">
   {{#dev}}
   <script>
     new EventSource('/events').addEventListener('new', () => {
@@ -18,10 +19,6 @@
   {{/dev}}
 </head>
 <body>
-  <form method="post" action="/webmention-thanks" netlify>
-    <input name="source" id="webmention-source" type="url"><p>Have you published a response to this? <label for="webmention-source">Let me know the <abbr title="Uniform Resource Locator">URL</abbr></label>:</p>
-    <input name="target" value="{{{attributes.canonical}}}" type="hidden">
-    <button type="submit">Ping!</button>
-  </form>
+  <p>Thank you! Come back later to see your link (I check them myself).</p>
 </body>
 </html>

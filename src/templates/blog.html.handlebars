@@ -45,11 +45,7 @@
     <footer>
       <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text={{attributes.tweetText}}&amp;url={{attributes.canonical}}&amp;hashtags={{attributes.tags}}">Tweet this post!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text={{attributes.tootText}}">toot it!</a></p>
       <p>Comments or corrections? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=%40qubyte%40mastodon.social">toot to me!</a></p>
-      <form method="post" action="/webmention" netlify>
-        <input name="source" id="webmention-source" type="url"><p>Have you published a response to this? <label for="webmention-source">Let me know the <abbr title="Uniform Resource Locator">URL</abbr></label>:</p>
-        <input name="target" value="{{{attributes.canonical}}}" type="hidden">
-        <button type="submit">Ping!</button>
-      </form>
+      <iframe src="/webmention"></iframe>
     </footer>
   </div>
 </body>
