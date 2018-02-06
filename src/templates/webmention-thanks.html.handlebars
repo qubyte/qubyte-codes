@@ -8,7 +8,6 @@
   <script src="/index.js" async></script>
   <link href="{{cssPath}}" rel="stylesheet">
   <meta name="theme-color" content="#f1e7cd">
-  <meta http-equiv="refresh" content="5;/webmention">
   {{#dev}}
   <script>
     new EventSource('/events').addEventListener('new', () => {
@@ -19,6 +18,17 @@
   {{/dev}}
 </head>
 <body>
-  <p>Thank you! Come back later to see your link (I check them myself).</p>
+  <header class="top-header">
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <p>Thank you! Come back later to see your link (I check them myself).</p>
+  </div>
 </body>
 </html>
