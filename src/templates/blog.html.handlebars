@@ -7,6 +7,7 @@
   <title>Qubyte Codes - {{attributes.title}}</title>
   <script src="/index.js" async></script>
   <link href="{{cssPath}}" rel="stylesheet">
+  <link href="/webmention" rel="webmention">
   <meta name="theme-color" content="#f1e7cd">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@qubyte">
@@ -45,8 +46,8 @@
     <footer>
       <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text={{attributes.tweetText}}&amp;url={{attributes.canonical}}&amp;hashtags={{attributes.tags}}">Tweet this post!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text={{attributes.tootText}}">toot it!</a></p>
       <p>Comments or corrections? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet!</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=%40qubyte%40mastodon.social">toot to me!</a></p>
-      <p>Have you mentioned this post in your own blog? <a href="/webmention">Let me know!</a>
-      <form method="post" action="/webmention-thanks" netlify>
+      <p>Have you mentioned this post somewhere? <a href="/webmention">Let me know!</a>
+      <form method="post" name="webmention" action="/webmention" netlify>
         <p>This blog supports webmentions. If you've mentioned this post in a post of your own, please submit the URL to it here:</p>
         <label>Your post: <input name="source" type="url"></label>
         <input name="target" value="{{{attributes.canonical}}}" type="hidden">

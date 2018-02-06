@@ -115,7 +115,7 @@ async function loadTemplates() {
     loadTemplate('tag.html.handlebars'),
     loadTemplate('about.html.handlebars'),
     loadTemplate('blog.html.handlebars'),
-    loadTemplate('webmention-thanks.html.handlebars'),
+    loadTemplate('webmention.html.handlebars'),
     loadTemplate('atom.xml.handlebars'),
     loadTemplate('sitemap.txt.handlebars')
   ]);
@@ -125,7 +125,7 @@ async function loadTemplates() {
     tagTemplate: results[1],
     aboutTemplate: results[2],
     blogTemplate: results[3],
-    webmentionThanksTemplate: results[4],
+    webmentionTemplate: results[4],
     atomTemplate: results[5],
     sitemapTemplate: results[6]
   };
@@ -167,7 +167,7 @@ exports.build = async function build(baseUrl) {
     tagTemplate,
     aboutTemplate,
     blogTemplate,
-    webmentionThanksTemplate,
+    webmentionTemplate,
     atomTemplate,
     sitemapTemplate
   } = await loadTemplates();
@@ -186,14 +186,14 @@ exports.build = async function build(baseUrl) {
   const updated = dateToIso(await getLastPostCommit());
   const indexHtml = indexTemplate({ posts, cssPath, dev });
   const aboutHtml = aboutTemplate({ cssPath, dev });
-  const webmentionThanksHtml = webmentionThanksTemplate({ cssPath, dev });
+  const webmentionHtml = webmentionTemplate({ cssPath, dev });
   const atomXML = atomTemplate({ posts, updated });
   const sitemapTxt = sitemapTemplate({ posts });
 
   await Promise.all([
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
-    writeFile(buildPublicPath('webmention-thanks.html'), webmentionThanksHtml),
+    writeFile(buildPublicPath('webmention.html'), webmentionHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
     ...Object.entries(tags).map(([tag, posts]) => {
       const tagHtml = tagTemplate({ posts, tag, cssPath, dev });
