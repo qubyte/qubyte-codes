@@ -13,4 +13,3 @@
   for = "*.css"
   [headers.values]
     Cache-Control = "max-age=315360000, public, immutable"
-

@@ -32,7 +32,7 @@
     <article>
       <header>
         <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{attributes.humandatetime}}</time>
+        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
         <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
       </header>
       <div class="quote">{{{attributes.snippet}}}</div>

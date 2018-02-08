@@ -18,6 +18,18 @@ const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
+function dateToIso(date) {
+  return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
+}
+
+handlebars.registerHelper('humanDate', datetime => {
+  return new Date(datetime).toDateString();
+});
+
+handlebars.registerHelper('isoDate', datetime => {
+  return dateToIso(new Date(datetime));
+});
+
 function buildSrcPath(...parts) {
   return path.join(__dirname, 'src', ...parts);
 }
@@ -61,27 +73,16 @@ function makeSnippet(body) {
   return '';
 }
 
-function dateToIso(date) {
-  return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
-}
-
 async function renderMarkdown(post, baseUrl) {
   const render = makeRenderer(baseUrl);
   const digested = frontMatter(post);
   const { title, tags = [] } = digested.attributes;
   const slug = `${makeSlug(title, { lower: true })}`;
   const canonical = `${baseUrl}/blog/${slug}`;
-  const date = new Date(digested.attributes.datetime);
-  const updated = new Date(digested.attributes.updated || digested.attributes.datetime);
 
-  digested.attributes.date = date;
-  digested.attributes.updated = updated;
   digested.attributes.slug = slug;
   digested.attributes.filename = `${slug}.html`;
   digested.attributes.snippet = await render(makeSnippet(digested.body));
-  digested.attributes.humandatetime = date.toDateString();
-  digested.attributes.isoDate = dateToIso(date);
-  digested.attributes.isoUpdated = dateToIso(updated);
   digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
   digested.attributes.tootText = encodeURIComponent(
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
@@ -172,7 +173,7 @@ exports.build = async function build(baseUrl) {
     sitemapTemplate
   } = await loadTemplates();
 
-  const posts = (await loadPostFiles(baseUrl)).sort((a, b) => b.attributes.date - a.attributes.date);
+  const posts = (await loadPostFiles(baseUrl)).sort((a, b) => new Date(b.attributes.datetime) - new Date(a.attributes.datetime));
   const cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
   const tags = collateTags(posts);
   const dev = process.env.NODE_ENV === 'development';
@@ -183,11 +184,10 @@ exports.build = async function build(baseUrl) {
     post.html = blogTemplate(post);
   }
 
-  const updated = dateToIso(await getLastPostCommit());
   const indexHtml = indexTemplate({ posts, cssPath, dev });
   const aboutHtml = aboutTemplate({ cssPath, dev });
   const webmentionHtml = webmentionTemplate({ cssPath, dev });
-  const atomXML = atomTemplate({ posts, updated });
+  const atomXML = atomTemplate({ posts, updated: await getLastPostCommit() });
   const sitemapTxt = sitemapTemplate({ posts });
 
   await Promise.all([
