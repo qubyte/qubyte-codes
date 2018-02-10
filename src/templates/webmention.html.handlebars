@@ -4,9 +4,8 @@
   <meta name="viewport" content="initial-scale=1">
   <link rel="icon" type="image/png" href="/icons/icon-64.png">
   <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes - Posts tagged as {{tag}}</title>
+  <title>Qubyte Codes - Webmention</title>
   <script src="/index.js" async></script>
-  <link href="https://paypal.me/qubyte" rel="payment">
   <link href="{{cssPath}}" rel="stylesheet">
   <meta name="theme-color" content="#f1e7cd">
   {{#dev}}
@@ -20,7 +19,7 @@
 </head>
 <body>
   <header class="top-header">
-      <h1><a href="/">Qubyte Codes</a></h1>
+    <h1><a href="/">Qubyte Codes</a></h1>
     <nav>
       <ul>
         <li><a href="/">archive</a></li>
@@ -29,16 +28,8 @@
     </nav>
   </header>
   <div class="content">
-    {{#posts}}
-    <article>
-      <header>
-        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-      </header>
-      <div class="quote">{{{attributes.snippet}}}</div>
-    </article>
-    {{/posts}}
+    <h2>Thank you!</h2>
+    <p>Come back later to see your link (I check them myself).</p>
   </div>
 </body>
 </html>
