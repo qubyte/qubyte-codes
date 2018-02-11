@@ -53,6 +53,12 @@ async function generateCss(cssEntryPath) {
   return `/main-${hash}.css`;
 }
 
+async function loadPartial(name, filename) {
+  const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
+
+  handlebars.registerPartial(name, source);
+}
+
 async function loadTemplate(filename) {
   const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
 
@@ -89,6 +95,8 @@ async function renderMarkdown(post, baseUrl) {
   );
   digested.attributes.canonical = canonical;
   digested.content = await render(digested.body);
+  digested.isBlogEntry = true;
+  digested.title = `Qubyte Codes - ${title}`;
   return digested;
 }
 
@@ -111,6 +119,11 @@ async function createDirectories() {
 }
 
 async function loadTemplates() {
+  await Promise.all([
+    loadPartial('head', 'head.html.handlebars'),
+    loadPartial('copyright', 'copyright.html.handlebars')
+  ]);
+
   const results = await Promise.all([
     loadTemplate('index.html.handlebars'),
     loadTemplate('tag.html.handlebars'),
@@ -184,9 +197,9 @@ exports.build = async function build(baseUrl) {
     post.html = blogTemplate(post);
   }
 
-  const indexHtml = indexTemplate({ posts, cssPath, dev });
-  const aboutHtml = aboutTemplate({ cssPath, dev });
-  const webmentionHtml = webmentionTemplate({ cssPath, dev });
+  const indexHtml = indexTemplate({ posts, cssPath, dev, title: 'Qubyte Codes' });
+  const aboutHtml = aboutTemplate({ cssPath, dev, title: 'Qubyte Codes - about' });
+  const webmentionHtml = webmentionTemplate({ cssPath, dev, title: 'Qubyte Codes - webmention' });
   const atomXML = atomTemplate({ posts, updated: await getLastPostCommit() });
   const sitemapTxt = sitemapTemplate({ posts });
 
@@ -196,7 +209,7 @@ exports.build = async function build(baseUrl) {
     writeFile(buildPublicPath('webmention.html'), webmentionHtml),
     ...posts.map(post => writeFile(buildPublicPath('blog', post.attributes.filename), post.html)),
     ...Object.entries(tags).map(([tag, posts]) => {
-      const tagHtml = tagTemplate({ posts, tag, cssPath, dev });
+      const tagHtml = tagTemplate({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });
 
       return writeFile(buildPublicPath('tags', `${tag}.html`), tagHtml);
     }),

@@ -1,25 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="initial-scale=1">
-  <link rel="icon" type="image/png" href="/icons/icon-64.png">
-  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <link href="https://twitter.com/qubyte" rel="me">
-  <link href="https://github.com/qubyte" rel="me">
-  <link href="https://mastodon.social/@qubyte" rel="me">
-  <link href="https://paypal.me/qubyte" rel="payment">
-  <link href="{{cssPath}}" rel="stylesheet">
-  <title>Qubyte Codes</title>
-  <script src="/index.js" async></script>
-  <meta name="theme-color" content="#f1e7cd">
-  {{#dev}}
-  <script>
-    new EventSource('/events').addEventListener('new', () => {
-      console.log('RELOAD');
-      window.location.reload(true);
-    });
-  </script>
-  {{/dev}}
+  {{> head }}
 </head>
 <body>
   <a href="https://qubyte.codes" class="h-card p-name u-url" hidden>Qubyte Codes</a>
@@ -32,17 +14,18 @@
       </ul>
     </nav>
   </header>
-  <div class="content">
-    {{#posts}}
-    <article>
-      <header>
-        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-      </header>
-      <div class="quote">{{{attributes.snippet}}}</div>
-    </article>
-    {{/posts}}
-  </div>
+  {{#posts}}
+  <article>
+    <header>
+      <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
+      <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
+      <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+    </header>
+    <div class="quote">{{{attributes.snippet}}}</div>
+  </article>
+  {{/posts}}
+  <footer>
+    {{> copyright }}
+  </footer>
 </body>
 </html>

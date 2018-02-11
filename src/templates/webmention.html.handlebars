@@ -1,21 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="initial-scale=1">
-  <link rel="icon" type="image/png" href="/icons/icon-64.png">
-  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes - Webmention</title>
-  <script src="/index.js" async></script>
-  <link href="{{cssPath}}" rel="stylesheet">
-  <meta name="theme-color" content="#f1e7cd">
-  {{#dev}}
-  <script>
-    new EventSource('/events').addEventListener('new', () => {
-      console.log('RELOAD');
-      window.location.reload(true);
-    });
-  </script>
-  {{/dev}}
+  {{> head }}
 </head>
 <body>
   <header class="top-header">
@@ -27,9 +13,12 @@
       </ul>
     </nav>
   </header>
-  <div class="content">
+  <article>
     <h2>Thank you!</h2>
     <p>Come back later to see your link (I check them myself).</p>
-  </div>
+  </article>
+  <footer>
+    {{> copyright }}
+  </footer>
 </body>
 </html>

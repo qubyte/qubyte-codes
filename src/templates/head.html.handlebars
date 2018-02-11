@@ -1,0 +1,22 @@
+<meta name="viewport" content="initial-scale=1">
+<link rel="icon" type="image/png" href="/icons/icon-64.png">
+<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
+<title>{{title}}</title>
+<script src="/index.js" async></script>
+<link href="{{cssPath}}" rel="stylesheet">
+{{#isBlogEntry}}
+<link href="/webmention" rel="webmention">
+<meta name="theme-color" content="#f1e7cd">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@qubyte">
+<meta name="twitter:title" content="{{attributes.title}}">
+<meta name="twitter:description" content="{{attributes.description}}">
+{{/isBlogEntry}}
+{{#dev}}
+<script>
+  new EventSource('/events').addEventListener('new', () => {
+    console.log('RELOAD');
+    window.location.reload(true);
+  });
+</script>
+{{/dev}}

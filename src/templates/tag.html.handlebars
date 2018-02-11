@@ -1,22 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="initial-scale=1">
-  <link rel="icon" type="image/png" href="/icons/icon-64.png">
-  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-  <title>Qubyte Codes - Posts tagged as {{tag}}</title>
-  <script src="/index.js" async></script>
-  <link href="https://paypal.me/qubyte" rel="payment">
-  <link href="{{cssPath}}" rel="stylesheet">
-  <meta name="theme-color" content="#f1e7cd">
-  {{#dev}}
-  <script>
-    new EventSource('/events').addEventListener('new', () => {
-      console.log('RELOAD');
-      window.location.reload(true);
-    });
-  </script>
-  {{/dev}}
+  {{> head }}
 </head>
 <body>
   <header class="top-header">
@@ -28,17 +13,18 @@
       </ul>
     </nav>
   </header>
-  <div class="content">
-    {{#posts}}
-    <article>
-      <header>
-        <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-      </header>
-      <div class="quote">{{{attributes.snippet}}}</div>
-    </article>
-    {{/posts}}
-  </div>
+  {{#posts}}
+  <article>
+    <header>
+      <h2><a href="/blog/{{attributes.slug}}">{{attributes.title}}</a></h2>
+      <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
+      <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+    </header>
+    <div class="quote">{{{attributes.snippet}}}</div>
+  </article>
+  {{/posts}}
+  <footer>
+    {{> copyright }}
+  </footer>
 </body>
 </html>

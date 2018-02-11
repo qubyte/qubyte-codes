@@ -17,17 +17,23 @@ body {
   top: calc(-4rem - 1px);
 }
 
-.content {
-  text-align: left;
-  margin: 0 1rem;
+.share {
+  border-top: 1px solid #000;
 }
 
 header {
   margin: 1rem 0;
 }
 
-article, footer {
-  margin: 2rem 0;
+article {
+  text-align: left;
+  margin: 2rem 1rem;
+}
+
+footer {
+  text-align: left;
+  margin: 2rem 1rem;
+  font-size: small;
 }
 
 h1 {
