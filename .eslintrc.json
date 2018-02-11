@@ -2,5 +2,11 @@
   "extends": "qubyte/ES2017",
   "env": {
     "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "ecmaFeatures": {
+        "experimentalObjectRestSpread": true
+    }
   }
 }

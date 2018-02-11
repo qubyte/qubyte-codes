@@ -5,6 +5,12 @@
 <script src="/index.js" async></script>
 <link href="{{cssPath}}" rel="stylesheet">
 {{#isBlogEntry}}
+{{#if prevLink}}
+<link href="{{prevLink}}" rel="prev">
+{{/if}}
+{{#if nextLink}}
+<link href="{{nextLink}}" rel="next">
+{{/if}}
 <link href="/webmention" rel="webmention">
 <meta name="theme-color" content="#f1e7cd">
 <meta name="twitter:card" content="summary">
