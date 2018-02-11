@@ -48,11 +48,18 @@ router.route('/events', {
 
     res.write('\n');
 
-    buildEmitter.on('new', () => res.write('event: new\ndata: new\n\n'));
+    const write = () => res.write('event: new\ndata: new\n\n');
+    const interval = setInterval(() => res.write('event: heartbeat\ndata: heartbeat\n\n'), 1000);
 
-    setInterval(() => res.write('event: heartbeat\ndata: heartbeat\n\n'), 1000);
+    buildEmitter.on('new', write);
 
-    return new Promise(() => {}); // Prevent the stack from progressing.
+    return new Promise(resolve => {
+      req.once('close', () => {
+        buildEmitter.removeListener('new', write);
+        clearInterval(interval);
+        resolve();
+      });
+    });
   }]
 });
 
