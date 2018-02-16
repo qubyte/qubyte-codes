@@ -5,7 +5,7 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Xss-Protection = "1"
     X-Content-Type-Options = "nosniff"
-    Content-Security-Policy = "default-src https://qubyte.codes; style-src 'self'; img-src *; media-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self'; object-src 'none'; script-src 'self'; "
+    Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src *; media-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self'; object-src 'none'; script-src 'self'; "
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "no-cache"
 

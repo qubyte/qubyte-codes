@@ -53,7 +53,8 @@ async function generateCss(cssEntryPath) {
   return `/main-${hash}.css`;
 }
 
-async function loadPartial(name, filename) {
+async function loadPartial(filename) {
+  const [name] = filename.split('.');
   const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
 
   handlebars.registerPartial(name, source);
@@ -121,8 +122,8 @@ async function createDirectories() {
 
 async function loadTemplates() {
   await Promise.all([
-    loadPartial('head', 'head.html.handlebars'),
-    loadPartial('copyright', 'copyright.html.handlebars')
+    loadPartial('head.html.handlebars'),
+    loadPartial('copyright.html.handlebars')
   ]);
 
   const results = await Promise.all([
