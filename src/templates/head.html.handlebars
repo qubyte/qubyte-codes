@@ -22,7 +22,7 @@
 <script>
   new EventSource('/events').addEventListener('new', () => {
     console.log('RELOAD');
-    window.location.reload(true);
+    window.location.reload();
   });
 </script>
 {{/dev}}
