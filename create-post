@@ -3,7 +3,6 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const { readFileSync } = require('fs');
 const yaml = require('js-yaml');
 const tagsPath = './tags.txt';
 const fs = require('fs');
