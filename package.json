@@ -30,6 +30,8 @@
     "chokidar": "2.0.0",
     "eslint": "4.16.0",
     "eslint-config-qubyte": "1.1.0",
+    "inquirer": "5.1.0",
+    "js-yaml": "3.10.0",
     "toisu": "3.0.3",
     "toisu-router": "4.1.0",
     "toisu-static": "1.1.2"
