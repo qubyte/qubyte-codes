@@ -187,9 +187,9 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
   const rendered = [];
 
   for (let i = 0; i < posts.length; i++) {
-    const previous = posts[i + 1];
+    const previous = posts[i - 1];
     const post = posts[i];
-    const next = posts[i - 1];
+    const next = posts[i + 1];
     const renderObject = { ...post, cssPath, dev };
 
     if (previous) {
