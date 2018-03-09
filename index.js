@@ -176,7 +176,7 @@ async function getLastPostCommit() {
 async function copyFiles() {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
-  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js'].map(n => buildSrcPath(n)), buildPublicPath());
+  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
 }
 
 function dateDescending(a, b) {

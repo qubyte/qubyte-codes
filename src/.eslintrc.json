@@ -1,6 +1,6 @@
 {
   "root": true,
-  "extends": "qubyte",
+  "extends": "qubyte/2017",
   "env": {
     "browser": true
   },

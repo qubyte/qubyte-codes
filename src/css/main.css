@@ -123,6 +123,12 @@ pre {
   background-color: white;
 }
 
+sup {
+  /* font-variant-position: super; */
+  vertical-align: super;
+  font-size: x-small;
+}
+
 .embed-container {
   position: relative;
   padding-bottom: 56.25%;
