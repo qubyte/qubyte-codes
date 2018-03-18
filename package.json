@@ -14,26 +14,26 @@
   "license": "Private",
   "private": true,
   "dependencies": {
-    "clean-css": "4.1.9",
+    "clean-css": "4.1.11",
     "cpy": "6.0.0",
     "front-matter": "2.3.0",
     "handlebars": "4.0.11",
     "highlight.js": "9.12.0",
-    "marked": "0.3.12",
-    "mathjax-node": "1.3.0",
+    "marked": "0.3.17",
+    "mathjax-node": "2.0.1",
     "remark": "9.0.0",
     "rimraf": "2.6.2",
     "slug": "0.9.1",
     "xml2js": "0.4.19"
   },
   "devDependencies": {
-    "chokidar": "2.0.0",
-    "eslint": "4.16.0",
-    "eslint-config-qubyte": "1.1.0",
+    "chokidar": "2.0.2",
+    "eslint": "4.19.0",
+    "eslint-config-qubyte": "2.0.0",
     "inquirer": "5.1.0",
-    "js-yaml": "3.10.0",
-    "toisu": "3.0.3",
+    "js-yaml": "3.11.0",
+    "toisu": "3.0.5",
     "toisu-router": "4.1.0",
-    "toisu-static": "1.1.2"
+    "toisu-static": "2.0.0"
   }
 }
