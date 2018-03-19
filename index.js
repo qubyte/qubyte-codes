@@ -6,11 +6,11 @@ const path = require('path');
 const crypto = require('crypto');
 const handlebars = require('handlebars');
 const makeSlug = require('slug');
-const remark = require('remark');
 const makeRenderer = require('./lib/render');
 const fs = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
+const cheerio = require('cheerio')
 const exec = promisify(require('child_process').exec);
 
 const mkdir = promisify(fs.mkdir);
@@ -66,18 +66,12 @@ async function loadTemplate(filename) {
   return handlebars.compile(source);
 }
 
-function makeSnippet(body) {
-  const ast = remark().parse(body);
+function makeSnippet(rendered) {
+  const innerHtml = cheerio.load(rendered)('p')
+    .html()
+    .slice(0, -1);
 
-  for (const child of ast.children) {
-    if (child.type === 'paragraph') {
-      return remark()
-        .stringify(child)
-        .slice(0, -1);
-    }
-  }
-
-  return '';
+  return `<p>${innerHtml}</p>`;
 }
 
 async function renderMarkdown(post, baseUrl) {
@@ -89,13 +83,13 @@ async function renderMarkdown(post, baseUrl) {
 
   digested.attributes.slug = slug;
   digested.attributes.filename = `${slug}.html`;
-  digested.attributes.snippet = await render(makeSnippet(digested.body));
   digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
   digested.attributes.tootText = encodeURIComponent(
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
   digested.attributes.canonical = canonical;
   digested.content = await render(digested.body);
+  digested.attributes.snippet = makeSnippet(digested.content);
   digested.isBlogEntry = true;
   digested.title = `Qubyte Codes - ${title}`;
   digested.date = new Date(digested.attributes.datetime);
