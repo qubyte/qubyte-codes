@@ -4,6 +4,7 @@ body {
   text-align: center;
   margin: 0 auto;
   background-color: #fff4d9;
+  overscroll-behavior: none;
 }
 
 .top-header {
