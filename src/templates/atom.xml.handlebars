@@ -12,8 +12,8 @@
 
   {{#posts}}
   <entry>
-    <id>https://qubyte.codes/blog/{{attributes.slug}}</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/{{attributes.slug}}"/>
+    <id>https://qubyte.codes/blog/{{slug}}</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/{{slug}}"/>
     <title>{{attributes.title}}</title>
     <published>{{isoDate attributes.datetime}}</published>
     <updated>{{#if attributes.updated}}{{isoDate attributes.updated}}{{else}}{{isoDate attributes.datetime}}{{/if}}</updated>

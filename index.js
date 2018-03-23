@@ -6,11 +6,11 @@ const path = require('path');
 const crypto = require('crypto');
 const handlebars = require('handlebars');
 const makeSlug = require('slug');
-const remark = require('remark');
 const makeRenderer = require('./lib/render');
 const fs = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
+const cheerio = require('cheerio')
 const exec = promisify(require('child_process').exec);
 
 const mkdir = promisify(fs.mkdir);
@@ -66,18 +66,12 @@ async function loadTemplate(filename) {
   return handlebars.compile(source);
 }
 
-function makeSnippet(body) {
-  const ast = remark().parse(body);
+function makeSnippet(rendered) {
+  const innerHtml = cheerio.load(rendered)('p')
+    .html()
+    .slice(0, -1);
 
-  for (const child of ast.children) {
-    if (child.type === 'paragraph') {
-      return remark()
-        .stringify(child)
-        .slice(0, -1);
-    }
-  }
-
-  return '';
+  return `<p class="quote">${innerHtml}</p>`;
 }
 
 async function renderMarkdown(post, baseUrl) {
@@ -87,18 +81,18 @@ async function renderMarkdown(post, baseUrl) {
   const slug = `${makeSlug(title, { lower: true })}`;
   const canonical = `${baseUrl}/blog/${slug}`;
 
-  digested.attributes.slug = slug;
-  digested.attributes.filename = `${slug}.html`;
-  digested.attributes.snippet = await render(makeSnippet(digested.body));
-  digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
-  digested.attributes.tootText = encodeURIComponent(
+  digested.isBlogEntry = true;
+  digested.slug = slug;
+  digested.canonical = canonical;
+  digested.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
+  digested.tootText = encodeURIComponent(
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
-  digested.attributes.canonical = canonical;
   digested.content = await render(digested.body);
-  digested.isBlogEntry = true;
+  digested.snippet = makeSnippet(digested.content);
   digested.title = `Qubyte Codes - ${title}`;
   digested.date = new Date(digested.attributes.datetime);
+
   return digested;
 }
 
@@ -193,16 +187,16 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
     const renderObject = { ...post, cssPath, dev };
 
     if (previous) {
-      renderObject.prevLink = `/blog/${previous.attributes.slug}`;
+      renderObject.prevLink = `/blog/${previous.slug}`;
     }
 
     if (next) {
-      renderObject.nextLink = `/blog/${next.attributes.slug}`;
+      renderObject.nextLink = `/blog/${next.slug}`;
     }
 
     rendered.push({
       html: blogTemplate(renderObject),
-      filename: post.attributes.filename
+      filename: `${post.slug}.html`
     });
   }
 
