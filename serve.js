@@ -14,6 +14,7 @@ const exec = promisify(childProcess.exec);
 
 const buildEmitter = new EventEmitter();
 
+// Refreshes the build, and after alerts the browser to refresh itself.
 async function build() {
   console.log('Sources changed. Rebuilding...');
 
@@ -30,6 +31,8 @@ async function build() {
 
 build();
 
+// This watches the content of the src directory for any changes, triggering a
+// build each time a change happens.
 const watcher = chokidar.watch(['src'])
   .once('ready', () => {
     watcher.on('all', build);
@@ -38,8 +41,14 @@ const watcher = chokidar.watch(['src'])
 const app = new Toisu();
 const router = new Router();
 
+// This route is for consumption by EventSource browser connections. In
+// development mode, templates insert a script which establishes an EventSource
+// connection. Whenever a build completes, a message is sent to the browser,
+// which then reloads.
 router.route('/events', {
   GET: [function (req, res) {
+    // Sending back these headers and a newline is sufficient for the browser
+    // to know that this endpoint is speaking in EventSource.
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -48,11 +57,18 @@ router.route('/events', {
 
     res.write('\n');
 
+    // A function which pushes an event to the browser to notify it of a new
+    // build.
     const write = () => res.write('event: new\ndata: new\n\n');
+
+    // Heartbeats are sent to the browser at intervals to prevent the connection
+    // from timing out.
     const interval = setInterval(() => res.write('event: heartbeat\ndata: heartbeat\n\n'), 1000);
 
     buildEmitter.on('new', write);
 
+    // Unregister the listener on the buildEmitter when the connection closes.
+    // This avoids a memory leak.
     return new Promise(resolve => {
       req.once('close', () => {
         buildEmitter.removeListener('new', write);
@@ -64,6 +80,9 @@ router.route('/events', {
 });
 
 app.use(router.middleware);
+
+// Mostly this server just hosts the public directory, resolving unsuffixed
+// addresses and / to their proper HTML files.
 app.use(serveStatic('public', { extensions: ['html'] }));
 
 http.createServer(app.requestHandler).listen(8000, () => {

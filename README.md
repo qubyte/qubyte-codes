@@ -21,6 +21,16 @@ directory is created, and some of these source files copied over (ones which
 need no compilation, such as the service worker). Other files must be generated
 and are placed in the public directory as they are created.
 
+[create-post](./create-post) is a little CLI utility to create a new markdown
+post file with pre-populated metadata.
+
+[netlify.toml](./netlify.toml) is a configuration for
+[Netlify](https://www.netlify.com/), which hosts my blog (I highly recommend
+it). At the time of writing this file contains only configuration for headers.
+These are optimised for security and for browser caching of CSS. Originally I
+hosted this blog on a DigitalOcean droplet using NGINX. A config for that is
+still a part of this repo, [nginx.conf](./nginx.conf).
+
 ## CSS
 
 I use clean-css to compile CSS. In principle, the CSS can be used without it.

@@ -10,7 +10,7 @@ const makeRenderer = require('./lib/render');
 const fs = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
-const cheerio = require('cheerio')
+const cheerio = require('cheerio');
 const exec = promisify(require('child_process').exec);
 
 // Promisified variants of native file system methods allow me to use
