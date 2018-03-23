@@ -62,12 +62,12 @@ p {
   float: right;
 }
 
-.quote > p::before {
+.quote::before {
   margin-left: -.4em;
   content: "“"
 }
 
-.quote > p::after {
+.quote::after {
   content: "…”"
 }
 
