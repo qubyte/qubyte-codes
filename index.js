@@ -13,31 +13,36 @@ const cpy = require('cpy');
 const cheerio = require('cheerio')
 const exec = promisify(require('child_process').exec);
 
+// Promisified variants of native file system methods allow me to use
+// async-await, avoiding the need for lots of callbacks.
 const mkdir = promisify(fs.mkdir);
 const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-function dateToIso(date) {
-  return date.toISOString().replace(/\.[0-9]{3}Z/, 'Z');
-}
-
+// A helper to turn a datetime into a human readable string.
 handlebars.registerHelper('humanDate', datetime => {
   return new Date(datetime).toDateString();
 });
 
+// A helper to turn a datetime into an ISO string (without milliseconds).
 handlebars.registerHelper('isoDate', datetime => {
-  return dateToIso(new Date(datetime));
+  return new Date(datetime)
+    .toISOString()
+    .replace(/\.[0-9]{3}Z/, 'Z');
 });
 
+// A helper function so I can avoid writing a bunch of path joins to src.
 function buildSrcPath(...parts) {
   return path.join(__dirname, 'src', ...parts);
 }
 
+// A helper function so I can avoid writing a bunch of path joins to public.
 function buildPublicPath(...parts) {
   return path.join(__dirname, 'public', ...parts);
 }
 
+// Compiles and calculates a unique filename for CSS.
 async function generateCss(cssEntryPath) {
   const content = new CleanCss().minify([cssEntryPath]);
 
@@ -53,6 +58,7 @@ async function generateCss(cssEntryPath) {
   return `/main-${hash}.css`;
 }
 
+// Loads and renders a partial template.
 async function loadPartial(filename) {
   const [name] = filename.split('.');
   const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
@@ -60,12 +66,14 @@ async function loadPartial(filename) {
   handlebars.registerPartial(name, source);
 }
 
+// Loads a template from the filesystem and compiles it to a function.
 async function loadTemplate(filename) {
   const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
 
   return handlebars.compile(source);
 }
 
+// Plucks and wraps the first paragraph out of post HTML to form a snippet.
 function makeSnippet(rendered) {
   const innerHtml = cheerio.load(rendered)('p')
     .html()
@@ -74,19 +82,19 @@ function makeSnippet(rendered) {
   return `<p class="quote">${innerHtml}</p>`;
 }
 
+// Renders markdown to an HTML snippet. Also calculates various data which will
+// be used by templates.
 async function renderMarkdown(post, baseUrl) {
   const render = makeRenderer(baseUrl);
   const digested = frontMatter(post);
   const { title, tags = [] } = digested.attributes;
-  const slug = `${makeSlug(title, { lower: true })}`;
-  const canonical = `${baseUrl}/blog/${slug}`;
 
   digested.isBlogEntry = true;
-  digested.slug = slug;
-  digested.canonical = canonical;
+  digested.slug = `${makeSlug(title, { lower: true })}`;
+  digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
   digested.tootText = encodeURIComponent(
-    `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
+    `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${digested.canonical}`
   );
   digested.content = await render(digested.body);
   digested.snippet = makeSnippet(digested.content);
@@ -96,6 +104,9 @@ async function renderMarkdown(post, baseUrl) {
   return digested;
 }
 
+// Loads and renders post source files and their metadata. Note, this renders
+// content to HTML, but *not* pages. The HTML created here must be placed within
+// a template to form a complete page.
 async function loadPostFiles(baseUrl) {
   const filenames = await readDir(buildSrcPath('posts'));
   const filePaths = filenames.map(filename => buildSrcPath('posts', filename));
@@ -105,6 +116,7 @@ async function loadPostFiles(baseUrl) {
   return rendered;
 }
 
+// Creates a public directory and subdirectories.
 async function createDirectories() {
   await mkdir(buildPublicPath());
   await Promise.all([
@@ -114,6 +126,7 @@ async function createDirectories() {
   ]);
 }
 
+// Loads and compiles template files into functions.
 async function loadTemplates() {
   await Promise.all([
     loadPartial('head.html.handlebars'),
@@ -141,6 +154,7 @@ async function loadTemplates() {
   };
 }
 
+// Compiles a list of tags from post metadata.
 function collateTags(posts) {
   const tags = {};
 
@@ -157,6 +171,7 @@ function collateTags(posts) {
   return tags;
 }
 
+// Gets the date of the most recent edit to the post files.
 async function getLastPostCommit() {
   const { stdout, stderr } = await exec('git log -1 --format=%ct src/posts');
 
@@ -167,6 +182,7 @@ async function getLastPostCommit() {
   return new Date(parseInt(stdout.trim(), 10) * 1000);
 }
 
+// Copies static files to a fresh public directory.
 async function copyFiles() {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
@@ -177,6 +193,7 @@ function dateDescending(a, b) {
   return b.date - a.date;
 }
 
+// Renders the blog template with each post.
 function renderPosts(posts, blogTemplate, cssPath, dev) {
   const rendered = [];
 
@@ -203,9 +220,12 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
   return rendered;
 }
 
+// This is where it all kicks off. This function loads posts and templates,
+// renders it all to files, and saves them to the public directory.
 exports.build = async function build(baseUrl) {
   await copyFiles();
 
+  // Load and compile markdown template files into functions.
   const {
     indexTemplate,
     tagTemplate,
@@ -216,19 +236,31 @@ exports.build = async function build(baseUrl) {
     sitemapTemplate
   } = await loadTemplates();
 
+  // Load markdown posts, render them to HTML content, and sort them.
   const posts = (await loadPostFiles(baseUrl)).sort(dateDescending);
+
+  // Compile CSS to a single file, with a unique filename.
   const cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
+
+  // Make a list of tags found in posts.
   const tags = collateTags(posts);
+
+  // Determine if this is in development or production.
   const dev = process.env.NODE_ENV === 'development';
 
+  // Render various pages.
   const renderedPosts = renderPosts(posts, blogTemplate, cssPath, dev);
-
   const indexHtml = indexTemplate({ posts, cssPath, dev, title: 'Qubyte Codes' });
   const aboutHtml = aboutTemplate({ cssPath, dev, title: 'Qubyte Codes - about' });
   const webmentionHtml = webmentionTemplate({ cssPath, dev, title: 'Qubyte Codes - webmention' });
+
+  // Render the atom feed.
   const atomXML = atomTemplate({ posts, updated: await getLastPostCommit() });
+
+  // Render the site map.
   const sitemapTxt = sitemapTemplate({ posts });
 
+  // Write the rendered templates to the public directory.
   await Promise.all([
     writeFile(buildPublicPath('index.html'), indexHtml),
     writeFile(buildPublicPath('about.html'), aboutHtml),
