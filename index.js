@@ -71,7 +71,7 @@ function makeSnippet(rendered) {
     .html()
     .slice(0, -1);
 
-  return `<p>${innerHtml}</p>`;
+  return `<p class="quote">${innerHtml}</p>`;
 }
 
 async function renderMarkdown(post, baseUrl) {
@@ -81,18 +81,18 @@ async function renderMarkdown(post, baseUrl) {
   const slug = `${makeSlug(title, { lower: true })}`;
   const canonical = `${baseUrl}/blog/${slug}`;
 
-  digested.attributes.slug = slug;
-  digested.attributes.filename = `${slug}.html`;
-  digested.attributes.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
-  digested.attributes.tootText = encodeURIComponent(
+  digested.isBlogEntry = true;
+  digested.slug = slug;
+  digested.canonical = canonical;
+  digested.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
+  digested.tootText = encodeURIComponent(
     `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${canonical}`
   );
-  digested.attributes.canonical = canonical;
   digested.content = await render(digested.body);
-  digested.attributes.snippet = makeSnippet(digested.content);
-  digested.isBlogEntry = true;
+  digested.snippet = makeSnippet(digested.content);
   digested.title = `Qubyte Codes - ${title}`;
   digested.date = new Date(digested.attributes.datetime);
+
   return digested;
 }
 
@@ -187,16 +187,16 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
     const renderObject = { ...post, cssPath, dev };
 
     if (previous) {
-      renderObject.prevLink = `/blog/${previous.attributes.slug}`;
+      renderObject.prevLink = `/blog/${previous.slug}`;
     }
 
     if (next) {
-      renderObject.nextLink = `/blog/${next.attributes.slug}`;
+      renderObject.nextLink = `/blog/${next.slug}`;
     }
 
     rendered.push({
       html: blogTemplate(renderObject),
-      filename: post.attributes.filename
+      filename: `${post.slug}.html`
     });
   }
 

@@ -15,7 +15,7 @@
   </header>
   <article class="h-entry">
     <header>
-      <h2><a href="{{{attributes.canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
+      <h2><a href="{{{canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
       <time datetime="{{attributes.datetime}}" class="dt-published">{{humanDate attributes.datetime}}</time>
       <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
     </header>
@@ -33,12 +33,12 @@
       {{/attributes.webmentions}}
     </section>
     <section class="share">
-      <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text={{attributes.tweetText}}&amp;url={{attributes.canonical}}&amp;hashtags={{attributes.tags}}">Tweet this post</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text={{attributes.tootText}}">toot it!</a></p>
+      <p>Feel like sharing? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?via=qubyte&amp;text={{tweetText}}&amp;url={{canonical}}&amp;hashtags={{attributes.tags}}">Tweet this post</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text={{tootText}}">toot it!</a></p>
       <p>Comments or corrections? <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?screen_name=qubyte">Send me a tweet</a> or <a target="_blank" rel="noopener" href="web+mastodon://share?text=%40qubyte%40mastodon.social">toot to me!</a></p>
       <form method="post" name="webmention" action="/webmention" netlify>
         <p>This blog supports webmentions. If your blog supports webmentions and you've linked to this post, then a mention will have been dispatched to me. These are viewed and published manually, so please allow some time. If you would like to manually send me a webmention, please submit the URL to it here:</p>
         <label>Your post: <input name="source" type="url"></label>
-        <input name="target" value="{{{attributes.canonical}}}" type="hidden">
+        <input name="target" value="{{{canonical}}}" type="hidden">
         <button type="submit">submit</button>
       </form>
     </section>
