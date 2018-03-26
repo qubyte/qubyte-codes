@@ -1,25 +1,32 @@
+:root {
+  --base-light-angle: 45;
+  --base-dark-angle: 225;
+  --background-color-main: hsl(var(--base-light-angle), 100%, 90%);
+  --background-color-alt: hsl(calc(var(--base-light-angle) - 15), 100%, 90%);
+  --standout-color-main: hsl(var(--base-dark-angle), 100%, 30%);
+  --standout-color-alt: hsl(calc(var(--base-dark-angle) + 60), 100%, 30%);
+}
+
 body {
   font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
-  max-width: 800px;
   text-align: center;
-  margin: 0 auto;
-  background-color: #fff4d9;
   overscroll-behavior: none;
+  background-color: var(--background-color-main);
+  color: var(--standout-color-main);
 }
 
 .top-header {
   text-align: center;
-  margin: 0;
+  margin: 0 0 1rem 0;
   width: 100%;
-  max-width: 800px;
-  background-color: inherit;
+  background-color: hsl(calc(var(--base-light-angle) - 30), 100%, 90%);
   position: sticky;
   position: -webkit-sticky;
   top: calc(-4rem - 1px);
 }
 
 .share {
-  border-top: 1px solid #000;
+  border-top: 1px solid var(--standout-color-main);
 }
 
 header {
@@ -28,13 +35,17 @@ header {
 
 article {
   text-align: left;
-  margin: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
 }
 
 footer {
   text-align: left;
-  margin: 2rem 1rem;
   font-size: small;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
 }
 
 h1 {
@@ -55,11 +66,15 @@ h3 {
 p {
   margin: 1rem 0;
   line-height: 1.5em;
-  text-align: justify;
 }
 
 .tags {
   float: right;
+}
+
+.quote {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .quote::before {
@@ -71,13 +86,9 @@ p {
   content: "…”"
 }
 
-pre {
-  margin: 1rem 0;
-  white-space: pre-wrap;
-}
-
 code {
   font-family: monospace;
+  color: #000;
 }
 
 a {
@@ -109,8 +120,8 @@ th, td {
 
 nav {
   padding: 0.5rem;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid var(--standout-color-main);
+  background-color: var(--background-color-alt);
 }
 
 nav > ul > li {
@@ -120,16 +131,29 @@ nav > ul > li {
 
 pre {
   padding: 0.5rem;
-  border: 1px black solid;
+  border: 1px var(--standout-color-main) solid;
   background-color: white;
+  margin: 1rem 0;
+  white-space: pre-wrap;
 }
 
 sup {
-  /* font-variant-position: super; */
   font-size: small;
   vertical-align: baseline;
   position: relative;
   top: -0.4em;
+}
+
+button {
+  border-radius: 0;
+  border-color: var(--standout-color-main);
+  background-color: #fff;
+  padding-bottom: 2px;
+}
+
+input {
+  padding-bottom: 2px;
+  border: 1px solid var(--standout-color-main);
 }
 
 .embed-container {
