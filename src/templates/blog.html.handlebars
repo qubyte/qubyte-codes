@@ -13,31 +13,33 @@
       </ul>
     </nav>
   </header>
-  <article class="h-entry">
-    <header>
-      <h2><a href="{{{canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
-      <time datetime="{{attributes.datetime}}" class="dt-published">{{humanDate attributes.datetime}}</time>
-      <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-    </header>
-    <div class="e-content">
-      {{{content}}}
-    </div>
-    <section>
-      {{#if attributes.webmentions}}
-      <h2>Mentions</h2>
-      {{/if}}
-      {{#attributes.webmentions}}
-      <p>
-        <a target="_blank" rel="noopener" href="{{{source}}}">{{author}}</a> on <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
-      </p>
-      {{/attributes.webmentions}}
-    </section>
-    <section class="share">
-      <p>Feel like sharing? {{> share-tweet callToAction="Tweet this post" }} or {{> share-toot callToAction="toot it!" }}</p>
-      <p>Comments or corrections? {{> comments-tweet text="Send me a tweet" }} or {{> comments-toot text="toot to me!" }}</p>
-      {{> webmention-form }}
-    </section>
-  </article>
+  <main>
+    <article class="h-entry">
+      <header>
+        <h2><a href="{{{canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
+        <time datetime="{{attributes.datetime}}" class="dt-published">{{humanDate attributes.datetime}}</time>
+        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+      </header>
+      <div class="e-content">
+        {{{content}}}
+      </div>
+      <section>
+        {{#if attributes.webmentions}}
+        <h2>Mentions</h2>
+        {{/if}}
+        {{#attributes.webmentions}}
+        <p>
+          <a target="_blank" rel="noopener" href="{{{source}}}">{{author}}</a> on <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
+        </p>
+        {{/attributes.webmentions}}
+      </section>
+      <section class="share">
+        <p>Feel like sharing? {{> share-tweet callToAction="Tweet this post" }} or {{> share-toot callToAction="toot it!" }}</p>
+        <p>Comments or corrections? {{> comments-tweet text="Send me a tweet" }} or {{> comments-toot text="toot to me!" }}</p>
+        {{> webmention-form }}
+      </section>
+    </article>
+  </main>
   <footer>
     {{> copyright }}
   </footer>

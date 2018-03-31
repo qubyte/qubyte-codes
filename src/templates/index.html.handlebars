@@ -14,16 +14,18 @@
       </ul>
     </nav>
   </header>
-  {{#posts}}
-  <article>
-    <header>
-      <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2>
-      <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-      <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-    </header>
-    {{{snippet}}}
-  </article>
-  {{/posts}}
+  <main>
+    {{#posts}}
+    <article>
+      <header>
+        <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2>
+        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
+        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+      </header>
+      {{{snippet}}}
+    </article>
+    {{/posts}}
+  </main>
   <footer>
     {{> copyright }}
   </footer>
