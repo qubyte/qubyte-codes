@@ -87,18 +87,14 @@ function makeSnippet(rendered) {
 async function renderMarkdown(post, baseUrl) {
   const render = makeRenderer(baseUrl);
   const digested = frontMatter(post);
-  const { title, tags = [] } = digested.attributes;
 
   digested.isBlogEntry = true;
-  digested.slug = `${makeSlug(title, { lower: true })}`;
+  digested.slug = `${makeSlug(digested.attributes.title, { lower: true })}`;
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
-  digested.tweetText = encodeURIComponent(`Qubyte Codes - ${title}`);
-  digested.tootText = encodeURIComponent(
-    `Qubyte Codes - ${title} via @qubyte@mastodon.social ${tags.map(t => `#${t}`).join(' ')} ${digested.canonical}`
-  );
+  digested.mastodonHandle = '@qubyte@mastodon.social';
   digested.content = await render(digested.body);
   digested.snippet = makeSnippet(digested.content);
-  digested.title = `Qubyte Codes - ${title}`;
+  digested.title = `Qubyte Codes - ${digested.attributes.title}`;
   digested.date = new Date(digested.attributes.datetime);
 
   return digested;
@@ -130,7 +126,12 @@ async function createDirectories() {
 async function loadTemplates() {
   await Promise.all([
     loadPartial('head.html.handlebars'),
-    loadPartial('copyright.html.handlebars')
+    loadPartial('copyright.html.handlebars'),
+    loadPartial('share-tweet.html.handlebars'),
+    loadPartial('share-toot.html.handlebars'),
+    loadPartial('webmention-form.html.handlebars'),
+    loadPartial('comments-tweet.html.handlebars'),
+    loadPartial('comments-toot.html.handlebars')
   ]);
 
   const results = await Promise.all([
