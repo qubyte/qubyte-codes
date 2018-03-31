@@ -4,8 +4,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f1e7cd",
-  "theme_color": "#f1e7cd",
+  "background_color": "#fff2cc",
+  "theme_color": "#fff2cc",
   "description": "A blog on programming, with a focus on JavaScript.",
   "icons": [{
     "src": "icons/icon-48.png",
