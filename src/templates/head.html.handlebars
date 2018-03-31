@@ -33,9 +33,13 @@
 {{/isBlogEntry}}
 {{#dev}}
 <script>
-  new EventSource('/events').addEventListener('new', () => {
-    console.log('RELOAD');
+  const source = new EventSource('/events');
+
+  source.addEventListener('new', () => {
+    source.close();
     window.location.reload();
   });
+
+  window.onbeforeunload = () => source.close();
 </script>
 {{/dev}}
