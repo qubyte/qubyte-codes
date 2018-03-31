@@ -1,6 +1,5 @@
 'use strict';
 
-const CleanCss = require('clean-css');
 const frontMatter = require('front-matter');
 const path = require('path');
 const crypto = require('crypto');
@@ -11,6 +10,10 @@ const fs = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
+const postcss = require('postcss');
+const postcssImport = require('postcss-import');
+const cssnext = require('postcss-cssnext');
+const cssnano = require('cssnano');
 const exec = promisify(require('child_process').exec);
 
 // Promisified variants of native file system methods allow me to use
@@ -44,16 +47,20 @@ function buildPublicPath(...parts) {
 
 // Compiles and calculates a unique filename for CSS.
 async function generateCss(cssEntryPath) {
-  const content = new CleanCss().minify([cssEntryPath]);
+  const { css } = await postcss([
+    postcssImport({ path: path.dirname(cssEntryPath) }),
+    cssnext(),
+    cssnano({ preset: 'default' })
+  ]).process(await readFile(cssEntryPath, 'utf8'), { from: cssEntryPath });
 
   const hash = crypto
     .createHash('md5')
-    .update(content.styles)
+    .update(css)
     .digest('hex');
 
   const cssPath = buildPublicPath(`main-${hash}.css`);
 
-  await writeFile(cssPath, content.styles);
+  await writeFile(cssPath, css);
 
   return `/main-${hash}.css`;
 }
