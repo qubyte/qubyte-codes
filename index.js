@@ -67,7 +67,7 @@ async function generateCss(cssEntryPath) {
 
 // Loads and renders a partial template.
 async function loadPartial(filename) {
-  const [name] = filename.split('.');
+  const name = filename.slice(0, filename.indexOf('.'));
   const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
 
   handlebars.registerPartial(name, source);
@@ -91,15 +91,14 @@ function makeSnippet(rendered) {
 
 // Renders markdown to an HTML snippet. Also calculates various data which will
 // be used by templates.
-async function renderMarkdown(post, baseUrl) {
-  const render = makeRenderer(baseUrl);
+async function renderMarkdown(post, baseUrl, renderer) {
   const digested = frontMatter(post);
 
   digested.isBlogEntry = true;
   digested.slug = `${makeSlug(digested.attributes.title, { lower: true })}`;
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
-  digested.content = await render(digested.body);
+  digested.content = await renderer(digested.body);
   digested.snippet = makeSnippet(digested.content);
   digested.title = `Qubyte Codes - ${digested.attributes.title}`;
   digested.date = new Date(digested.attributes.datetime);
@@ -110,11 +109,11 @@ async function renderMarkdown(post, baseUrl) {
 // Loads and renders post source files and their metadata. Note, this renders
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
-async function loadPostFiles(baseUrl) {
+async function loadPostFiles(baseUrl, renderer) {
   const filenames = await readDir(buildSrcPath('posts'));
   const filePaths = filenames.map(filename => buildSrcPath('posts', filename));
   const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
-  const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl)));
+  const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl, renderer)));
 
   return rendered;
 }
@@ -244,8 +243,10 @@ exports.build = async function build(baseUrl) {
     sitemapTemplate
   } = await loadTemplates();
 
+  const renderer = makeRenderer(baseUrl);
+
   // Load markdown posts, render them to HTML content, and sort them.
-  const posts = (await loadPostFiles(baseUrl)).sort(dateDescending);
+  const posts = (await loadPostFiles(baseUrl, renderer)).sort(dateDescending);
 
   // Compile CSS to a single file, with a unique filename.
   const cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));

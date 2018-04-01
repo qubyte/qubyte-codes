@@ -55,7 +55,7 @@ p {
   main {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0.5rem 1rem;
+    padding: 0 1rem;
   }
 
   body > footer {
@@ -102,6 +102,10 @@ p {
     font-size: small;
   }
 } */
+
+article {
+  padding: 0.5rem 0;
+}
 
 .share {
   border-top: 1px solid var(--standout-color-main);
