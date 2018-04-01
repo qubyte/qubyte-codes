@@ -174,10 +174,11 @@ pre {
 }
 
 sup {
-  font-size: small;
-  vertical-align: baseline;
+  font-size: 75%;
+  line-height: 0;
   position: relative;
-  top: -0.4em;
+  vertical-align: baseline;
+  top: -0.5em;
 }
 
 button {

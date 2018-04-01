@@ -22,7 +22,6 @@
 {{/if}}
 <link href="/webmention" rel="webmention">
 <meta name="description" content="{{attributes.description}}">
-<meta name="theme-color" content="#f1e7cd">
 <meta name="twitter:card" content="summary">
 <meta property="og:type" content="blog">
 <meta name="twitter:site" content="@qubyte">
@@ -31,6 +30,7 @@
 <meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
 <meta name="twitter:image:alt" content="The qubyte.codes site icon.">
 {{/isBlogEntry}}
+<meta name="theme-color" content="#f1e7cd">
 {{#dev}}
 <script>
   const source = new EventSource('/events');
