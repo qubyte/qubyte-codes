@@ -194,6 +194,10 @@ async function copyFiles() {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
   await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
+
+  if (process.argv.includes('--no-css')) {
+    await cpy(buildSrcPath('css', '*.css'), buildPublicPath('css'));
+  }
 }
 
 function dateDescending(a, b) {
@@ -249,7 +253,13 @@ exports.build = async function build(baseUrl) {
   const posts = (await loadPostFiles(baseUrl, renderer)).sort(dateDescending);
 
   // Compile CSS to a single file, with a unique filename.
-  const cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
+  let cssPath;
+
+  if (process.argv.includes('--no-css')) {
+    cssPath = '/css/entry.css';
+  } else {
+    cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
+  }
 
   // Make a list of tags found in posts.
   const tags = collateTags(posts);

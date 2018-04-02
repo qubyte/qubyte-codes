@@ -18,7 +18,7 @@ const buildEmitter = new EventEmitter();
 async function build() {
   console.log('Sources changed. Rebuilding...');
 
-  const { stderr } = await exec('npm run build');
+  const { stderr } = await exec('npm run build -- --no-css');
 
   if (stderr) {
     return console.error(stderr);

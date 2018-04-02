@@ -3,15 +3,33 @@
   --base-background-sat: 100%;
   --base-background-lum: 90%;
 
-  --base-foreground-hue: 225;
+  --base-foreground-hue: calc(var(--base-background-hue) + 180);
   --base-foreground-sat: 100%;
   --base-foreground-lum: 30%;
 
-  --background-color-main: hsl(var(--base-background-hue), var(--base-background-sat), var(--base-background-lum));
-  --background-color-alt: hsl(calc(var(--base-background-hue) - 30), var(--base-background-sat), var(--base-background-lum));
+  --background-color-main: hsl(
+    var(--base-background-hue),
+    var(--base-background-sat),
+    var(--base-background-lum)
+  );
 
-  --standout-color-main: hsl(var(--base-foreground-hue), var(--base-foreground-sat), var(--base-foreground-lum));
-  --standout-color-alt: hsl(calc(var(--base-foreground-hue) - 30), var(--base-foreground-sat), var(--base-foreground-lum));
+  --background-color-alt: hsl(
+    calc(var(--base-background-hue) - 30),
+    var(--base-background-sat),
+    var(--base-background-lum)
+  );
+
+  --standout-color-main: hsl(
+    var(--base-foreground-hue),
+    var(--base-foreground-sat),
+    var(--base-foreground-lum)
+  );
+
+  --standout-color-alt: hsl(
+    calc(var(--base-foreground-hue) - 30),
+    var(--base-foreground-sat),
+    var(--base-foreground-lum)
+  );
 }
 
 body {
