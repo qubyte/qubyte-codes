@@ -38,6 +38,7 @@ body {
   overscroll-behavior: none;
   background-color: var(--background-color-main);
   color: var(--standout-color-main);
+  min-height: 100vh;
 }
 
 h1 {
@@ -63,7 +64,7 @@ p {
 /* @media (max-width: 800px) { */
   body > header {
     text-align: center;
-    margin: 0 0 1rem 0;
+    margin: 0;
     width: 100%;
     position: sticky;
     position: -webkit-sticky;
@@ -73,14 +74,22 @@ p {
   main {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 1rem;
   }
 
   body > footer {
     font-size: small;
-    max-width: 800px;
+    text-align: center;
+    width: 100%;
     margin: 0 auto;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0;
+    border-color: var(--standout-color-main);
+    border-style: solid;
+    border-top-width: 1px;
+    background-color: var(--background-color-alt);
+    position: sticky;
+    position: -webkit-sticky;
+    top: 100vh;
   }
 
   nav {
