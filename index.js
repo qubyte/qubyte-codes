@@ -124,7 +124,8 @@ async function createDirectories() {
   await Promise.all([
     mkdir(buildPublicPath('blog')),
     mkdir(buildPublicPath('icons')),
-    mkdir(buildPublicPath('tags'))
+    mkdir(buildPublicPath('tags')),
+    mkdir(buildPublicPath('img'))
   ]);
 }
 
@@ -193,6 +194,7 @@ async function getLastPostCommit() {
 async function copyFiles() {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
+  await cpy(buildSrcPath('img', '*'), buildPublicPath('img'));
   await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
 
   if (process.argv.includes('--no-css')) {
