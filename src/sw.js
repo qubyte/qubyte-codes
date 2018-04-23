@@ -16,10 +16,6 @@ addEventListener('fetch', fetchEvent => {
     return;
   }
 
-  // if (request.cache === 'only-if-cache') {
-  //   request.mode = 'same-origin';
-  // }
-
   const responseFromFetch = fetch(request);
   const cachePromise = caches.open(cacheName);
   const clonedResponsePromise = responseFromFetch.then(res => res.clone());
