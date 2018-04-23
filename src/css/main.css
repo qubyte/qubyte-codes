@@ -192,6 +192,11 @@ nav > ul > li {
   margin: 0.5rem;
 }
 
+article ul {
+  list-style: disc inside none;
+  line-height: 1.5em;
+}
+
 pre {
   padding: 0.5rem;
   border: 1px var(--standout-color-main) solid;
