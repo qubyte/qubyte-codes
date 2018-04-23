@@ -16,27 +16,20 @@ addEventListener('fetch', fetchEvent => {
     return;
   }
 
-  if (request.cache === 'only-if-cache') {
-    request.mode = 'same-origin';
+  const responseFromFetch = fetch(request);
+  const cachePromise = caches.open(cacheName);
+  const clonedResponsePromise = responseFromFetch.then(res => res.clone());
+  const cachedResponsePromise = Promise.all([cachePromise, clonedResponsePromise])
+    .then(([cache, response]) => cache.put(request, response));
+
+  // Extend the lifetime of this event until a fresh response has been cached.
+  fetchEvent.waitUntil(cachedResponsePromise);
+
+  // Always try to get fresh HTML before falling back on the cache.
+  if (acceptHeader.includes('text/html')) {
+    return fetchEvent.respondWith(responseFromFetch.catch(() => caches.match(request)));
   }
 
-  fetchEvent.respondWith((async () => {
-    const responseFromFetch = fetch(request);
-
-    fetchEvent.waitUntil((async () => {
-      const responseCopy = (await responseFromFetch).clone();
-      const myCache = await caches.open(cacheName);
-      await myCache.put(request, responseCopy);
-    })());
-
-    if (acceptHeader.includes('text/html')) {
-      try {
-        return await responseFromFetch;
-      } catch (error) {
-        return caches.match(request);
-      }
-    }
-
-    return (await caches.match(request)) || responseFromFetch;
-  })());
+  // Try the cache first for oher things, and cache a fresh copy in the background.
+  fetchEvent.respondWith(caches.match(request).then(matched => matched || responseFromFetch));
 });
