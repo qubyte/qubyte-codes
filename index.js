@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const handlebars = require('handlebars');
 const makeSlug = require('slug');
 const makeRenderer = require('./lib/render');
-const fs = require('fs');
+const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
 const { promisify } = require('util');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
@@ -16,24 +16,14 @@ const cssnext = require('postcss-cssnext');
 const cssnano = require('cssnano');
 const exec = promisify(require('child_process').exec);
 
-// Promisified variants of native file system methods allow me to use
-// async-await, avoiding the need for lots of callbacks.
-const mkdir = promisify(fs.mkdir);
-const readDir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-
 // A helper to turn a datetime into a human readable string.
-handlebars.registerHelper('humanDate', datetime => {
-  return new Date(datetime).toDateString();
-});
+handlebars.registerHelper('humanDate', datetime => new Date(datetime).toDateString());
 
 // A helper to turn a datetime into an ISO string (without milliseconds).
-handlebars.registerHelper('isoDate', datetime => {
-  return new Date(datetime)
-    .toISOString()
-    .replace(/\.[0-9]{3}Z/, 'Z');
-});
+handlebars.registerHelper('isoDate', datetime => new Date(datetime)
+  .toISOString()
+  .replace(/\.[0-9]{3}Z/, 'Z')
+);
 
 // A helper function so I can avoid writing a bunch of path joins to src.
 function buildSrcPath(...parts) {
@@ -110,7 +100,7 @@ async function renderMarkdown(post, baseUrl, renderer) {
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
 async function loadPostFiles(baseUrl, renderer) {
-  const filenames = await readDir(buildSrcPath('posts'));
+  const filenames = await readdir(buildSrcPath('posts'));
   const filePaths = filenames.map(filename => buildSrcPath('posts', filename));
   const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
   const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl, renderer)));
