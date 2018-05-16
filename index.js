@@ -7,14 +7,13 @@ const handlebars = require('handlebars');
 const makeSlug = require('slug');
 const makeRenderer = require('./lib/render');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
-const { promisify } = require('util');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
 const postcss = require('postcss');
 const postcssImport = require('postcss-import');
 const cssnext = require('postcss-cssnext');
 const cssnano = require('cssnano');
-const exec = promisify(require('child_process').exec);
+const exec = require('util').promisify(require('child_process').exec);
 
 // A helper to turn a datetime into a human readable string.
 handlebars.registerHelper('humanDate', datetime => new Date(datetime).toDateString());
@@ -181,13 +180,13 @@ async function getLastPostCommit() {
 }
 
 // Copies static files to a fresh public directory.
-async function copyFiles() {
+async function copyFiles(compileCss) {
   await createDirectories();
   await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
   await cpy(buildSrcPath('img', '*'), buildPublicPath('img'));
   await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
 
-  if (process.argv.includes('--no-css')) {
+  if (!compileCss) {
     await cpy(buildSrcPath('css', '*.css'), buildPublicPath('css'));
   }
 }
@@ -225,8 +224,8 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-exports.build = async function build(baseUrl) {
-  await copyFiles();
+exports.build = async function build(baseUrl, dev, compileCss) {
+  await copyFiles(compileCss);
 
   // Load and compile markdown template files into functions.
   const {
@@ -245,19 +244,10 @@ exports.build = async function build(baseUrl) {
   const posts = (await loadPostFiles(baseUrl, renderer)).sort(dateDescending);
 
   // Compile CSS to a single file, with a unique filename.
-  let cssPath;
-
-  if (process.argv.includes('--no-css')) {
-    cssPath = '/css/entry.css';
-  } else {
-    cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
-  }
+  const cssPath = compileCss ? await generateCss(path.join(__dirname, 'src', 'css', 'entry.css')) : '/css/entry.css';
 
   // Make a list of tags found in posts.
   const tags = collateTags(posts);
-
-  // Determine if this is in development or production.
-  const dev = process.env.NODE_ENV === 'development';
 
   // Render various pages.
   const renderedPosts = renderPosts(posts, blogTemplate, cssPath, dev);

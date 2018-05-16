@@ -7,10 +7,8 @@ const Toisu = require('toisu');
 const Router = require('toisu-router');
 const serveStatic = require('toisu-static');
 const chokidar = require('chokidar');
-const childProcess = require('child_process');
 const { EventEmitter } = require('events');
-const { promisify } = require('util');
-const exec = promisify(childProcess.exec);
+const exec = require('util').promisify(require('child_process').exec);
 
 const buildEmitter = new EventEmitter();
 
@@ -18,7 +16,7 @@ const buildEmitter = new EventEmitter();
 async function build() {
   console.log('Sources changed. Rebuilding...');
 
-  const { stderr } = await exec('npm run build -- --no-css');
+  const { stderr } = await exec('npm run build -- --no-css-compile --dev');
 
   if (stderr) {
     return console.error(stderr);
