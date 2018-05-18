@@ -3,37 +3,18 @@
 const frontMatter = require('front-matter');
 const path = require('path');
 const crypto = require('crypto');
-const handlebars = require('handlebars');
+const { loadPartial, loadTemplate } = require('./lib/templates');
+const buildPaths = require('./lib/build-paths');
 const makeSlug = require('slug');
 const makeRenderer = require('./lib/render');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
-const { promisify } = require('util');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
 const postcss = require('postcss');
 const postcssImport = require('postcss-import');
 const cssnext = require('postcss-cssnext');
 const cssnano = require('cssnano');
-const exec = promisify(require('child_process').exec);
-
-// A helper to turn a datetime into a human readable string.
-handlebars.registerHelper('humanDate', datetime => new Date(datetime).toDateString());
-
-// A helper to turn a datetime into an ISO string (without milliseconds).
-handlebars.registerHelper('isoDate', datetime => new Date(datetime)
-  .toISOString()
-  .replace(/\.[0-9]{3}Z/, 'Z')
-);
-
-// A helper function so I can avoid writing a bunch of path joins to src.
-function buildSrcPath(...parts) {
-  return path.join(__dirname, 'src', ...parts);
-}
-
-// A helper function so I can avoid writing a bunch of path joins to public.
-function buildPublicPath(...parts) {
-  return path.join(__dirname, 'public', ...parts);
-}
+const exec = require('util').promisify(require('child_process').exec);
 
 // Compiles and calculates a unique filename for CSS.
 async function generateCss(cssEntryPath) {
@@ -48,26 +29,11 @@ async function generateCss(cssEntryPath) {
     .update(css)
     .digest('hex');
 
-  const cssPath = buildPublicPath(`main-${hash}.css`);
+  const cssPath = buildPaths.public(`main-${hash}.css`);
 
   await writeFile(cssPath, css);
 
   return `/main-${hash}.css`;
-}
-
-// Loads and renders a partial template.
-async function loadPartial(filename) {
-  const name = filename.slice(0, filename.indexOf('.'));
-  const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
-
-  handlebars.registerPartial(name, source);
-}
-
-// Loads a template from the filesystem and compiles it to a function.
-async function loadTemplate(filename) {
-  const source = await readFile(buildSrcPath('templates', filename), 'utf-8');
-
-  return handlebars.compile(source);
 }
 
 // Plucks and wraps the first paragraph out of post HTML to form a snippet.
@@ -100,8 +66,8 @@ async function renderMarkdown(post, baseUrl, renderer) {
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
 async function loadPostFiles(baseUrl, renderer) {
-  const filenames = await readdir(buildSrcPath('posts'));
-  const filePaths = filenames.map(filename => buildSrcPath('posts', filename));
+  const filenames = await readdir(buildPaths.src('posts'));
+  const filePaths = filenames.map(filename => buildPaths.src('posts', filename));
   const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
   const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl, renderer)));
 
@@ -110,12 +76,12 @@ async function loadPostFiles(baseUrl, renderer) {
 
 // Creates a public directory and subdirectories.
 async function createDirectories() {
-  await mkdir(buildPublicPath());
+  await mkdir(buildPaths.public());
   await Promise.all([
-    mkdir(buildPublicPath('blog')),
-    mkdir(buildPublicPath('icons')),
-    mkdir(buildPublicPath('tags')),
-    mkdir(buildPublicPath('img'))
+    mkdir(buildPaths.public('blog')),
+    mkdir(buildPaths.public('icons')),
+    mkdir(buildPaths.public('tags')),
+    mkdir(buildPaths.public('img'))
   ]);
 }
 
@@ -181,19 +147,15 @@ async function getLastPostCommit() {
 }
 
 // Copies static files to a fresh public directory.
-async function copyFiles() {
+async function copyFiles(compileCss) {
   await createDirectories();
-  await cpy(buildSrcPath('icons', '*.png'), buildPublicPath('icons'));
-  await cpy(buildSrcPath('img', '*'), buildPublicPath('img'));
-  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildSrcPath(n)), buildPublicPath());
+  await cpy(buildPaths.src('icons', '*.png'), buildPaths.src('icons'));
+  await cpy(buildPaths.src('img', '*'), buildPaths.src('img'));
+  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.src());
 
-  if (process.argv.includes('--no-css')) {
-    await cpy(buildSrcPath('css', '*.css'), buildPublicPath('css'));
+  if (!compileCss) {
+    await cpy(buildPaths.src('css', '*.css'), buildPaths.src('css'));
   }
-}
-
-function dateDescending(a, b) {
-  return b.date - a.date;
 }
 
 // Renders the blog template with each post.
@@ -225,8 +187,8 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-exports.build = async function build(baseUrl) {
-  await copyFiles();
+exports.build = async function build(baseUrl, dev, compileCss) {
+  await copyFiles(compileCss);
 
   // Load and compile markdown template files into functions.
   const {
@@ -241,23 +203,14 @@ exports.build = async function build(baseUrl) {
 
   const renderer = makeRenderer(baseUrl);
 
-  // Load markdown posts, render them to HTML content, and sort them.
-  const posts = (await loadPostFiles(baseUrl, renderer)).sort(dateDescending);
+  // Load markdown posts, render them to HTML content, and sort them by date descending.
+  const posts = (await loadPostFiles(baseUrl, renderer)).sort((a, b) => b.date - a.date);
 
   // Compile CSS to a single file, with a unique filename.
-  let cssPath;
-
-  if (process.argv.includes('--no-css')) {
-    cssPath = '/css/entry.css';
-  } else {
-    cssPath = await generateCss(path.join(__dirname, 'src', 'css', 'entry.css'));
-  }
+  const cssPath = compileCss ? await generateCss(path.join(__dirname, 'src', 'css', 'entry.css')) : '/css/entry.css';
 
   // Make a list of tags found in posts.
   const tags = collateTags(posts);
-
-  // Determine if this is in development or production.
-  const dev = process.env.NODE_ENV === 'development';
 
   // Render various pages.
   const renderedPosts = renderPosts(posts, blogTemplate, cssPath, dev);
@@ -273,16 +226,16 @@ exports.build = async function build(baseUrl) {
 
   // Write the rendered templates to the public directory.
   await Promise.all([
-    writeFile(buildPublicPath('index.html'), indexHtml),
-    writeFile(buildPublicPath('about.html'), aboutHtml),
-    writeFile(buildPublicPath('webmention.html'), webmentionHtml),
-    ...renderedPosts.map(({ html, filename }) => writeFile(buildPublicPath('blog', filename), html)),
+    writeFile(buildPaths.public('index.html'), indexHtml),
+    writeFile(buildPaths.public('about.html'), aboutHtml),
+    writeFile(buildPaths.public('webmention.html'), webmentionHtml),
+    ...renderedPosts.map(({ html, filename }) => writeFile(buildPaths.public('blog', filename), html)),
     ...Object.entries(tags).map(([tag, posts]) => {
       const tagHtml = tagTemplate({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });
 
-      return writeFile(buildPublicPath('tags', `${tag}.html`), tagHtml);
+      return writeFile(buildPaths.public('tags', `${tag}.html`), tagHtml);
     }),
-    writeFile(buildPublicPath('atom.xml'), atomXML),
-    writeFile(buildPublicPath('sitemap.txt'), sitemapTxt)
+    writeFile(buildPaths.public('atom.xml'), atomXML),
+    writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)
   ]);
 };
