@@ -149,9 +149,9 @@ async function getLastPostCommit() {
 // Copies static files to a fresh public directory.
 async function copyFiles(compileCss) {
   await createDirectories();
-  await cpy(buildPaths.src('icons', '*.png'), buildPaths.src('icons'));
-  await cpy(buildPaths.src('img', '*'), buildPaths.src('img'));
-  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.src());
+  await cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons'));
+  await cpy(buildPaths.src('img', '*'), buildPaths.public('img'));
+  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.public());
 
   if (!compileCss) {
     await cpy(buildPaths.src('css', '*.css'), buildPaths.src('css'));
