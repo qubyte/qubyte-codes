@@ -154,7 +154,7 @@ async function copyFiles(compileCss) {
   await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.public());
 
   if (!compileCss) {
-    await cpy(buildPaths.src('css', '*.css'), buildPaths.src('css'));
+    await cpy(buildPaths.src('css', '*.css'), buildPaths.public('css'));
   }
 }
 
