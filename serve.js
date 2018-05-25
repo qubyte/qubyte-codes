@@ -12,9 +12,14 @@ const exec = require('util').promisify(require('child_process').exec);
 
 const buildEmitter = new EventEmitter();
 
+// This watches the content of the src directory for any changes, triggering a
+// build each time a change happens.
+const watcher = chokidar.watch(['src'])
+  .once('ready', build);
+
 // Refreshes the build, and after alerts the browser to refresh itself.
-async function build() {
-  console.log('Sources changed. Rebuilding...');
+async function build(...args) {
+  console.log('Sources changed. Rebuilding...', args);
 
   const { stderr } = await exec('npm run build -- --no-css-compile --dev');
 
@@ -25,16 +30,8 @@ async function build() {
   console.log('Build succeeded');
 
   buildEmitter.emit('new');
+  watcher.once('all', build);
 }
-
-build();
-
-// This watches the content of the src directory for any changes, triggering a
-// build each time a change happens.
-const watcher = chokidar.watch(['src'])
-  .once('ready', () => {
-    watcher.on('all', build);
-  });
 
 const app = new Toisu();
 const router = new Router();
