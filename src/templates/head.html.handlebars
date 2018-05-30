@@ -44,3 +44,6 @@
   window.onbeforeunload = () => source.close();
 </script>
 {{/dev}}
+{{#each attributes.scripts}}
+<script src="{{{href}}}" type="module"></script>
+{{/each}}

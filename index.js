@@ -155,6 +155,7 @@ async function copyFiles(compileCss) {
   await createDirectories();
   await cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons'));
   await cpy(buildPaths.src('img', '*'), buildPaths.public('img'));
+  await cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts'));
   await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.public());
 
   if (!compileCss) {
