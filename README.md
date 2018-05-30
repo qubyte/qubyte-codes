@@ -33,8 +33,8 @@ still a part of this repo, [nginx.conf](./nginx.conf).
 
 ## CSS
 
-I use clean-css to compile CSS. In principle, the CSS can be used without it.
-For the most part clean-css is used to concatenate and minify the CSS. The
+I use postcss to compile CSS. In principle, the CSS can be used without it.
+For the most part postcss is used to concatenate and minify the CSS. The
 output CSS is hashed, and the hash becomes part of the CSS filename. This is
 to cache-bust, since CSS is given a long or indefinite cache time to avoid it
 blocking page loads after it has been loaded once.
@@ -64,6 +64,7 @@ a YAML preamble containing various metadata:
 | description | The description of the post. This is added to the HTML head as a meta description and a meta twitter description. The latter is used by twitter to populate twitter cards. |
 | tags | A list of tags. These are displayed at the top of each entry, and are also used when sharing to twitter and mastodon via the links at the bottom of each post. |
 | webmentions | A list of [webmentions](https://indieweb.org/Webmention) from other blogs. |
+| scripts | A list of objects with an `href` field. These will be added as module type scripts to the head of the post. |
 
 ## Templates
 
