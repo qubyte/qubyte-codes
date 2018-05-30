@@ -12,7 +12,9 @@ const cpy = require('cpy');
 const cheerio = require('cheerio');
 const postcss = require('postcss');
 const postcssImport = require('postcss-import');
-const cssnext = require('postcss-cssnext');
+const postCssPresetEnv = require('postcss-preset-env');
+const postCssCalc = require('postcss-calc');
+const customProperties = require('postcss-custom-properties');
 const cssnano = require('cssnano');
 const exec = require('util').promisify(require('child_process').exec);
 
@@ -20,7 +22,9 @@ const exec = require('util').promisify(require('child_process').exec);
 async function generateCss(cssEntryPath) {
   const { css } = await postcss([
     postcssImport({ path: path.dirname(cssEntryPath) }),
-    cssnext(),
+    postCssPresetEnv(),
+    customProperties({ preserve: false }),
+    postCssCalc(),
     cssnano({ preset: 'default' })
   ]).process(await readFile(cssEntryPath, 'utf8'), { from: cssEntryPath });
 
