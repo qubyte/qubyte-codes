@@ -83,9 +83,7 @@ p {
     width: 100%;
     margin: 0 auto;
     padding: 0.5rem 0;
-    border-color: var(--standout-color-main);
-    border-style: solid;
-    border-top-width: 1px;
+    border-top: 1px solid var(--standout-color-main);
     background-color: var(--background-color-alt);
     position: sticky;
     position: -webkit-sticky;
