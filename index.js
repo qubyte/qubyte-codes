@@ -19,14 +19,14 @@ const cssnano = require('cssnano');
 const exec = require('util').promisify(require('child_process').exec);
 
 // Compiles and calculates a unique filename for CSS.
-async function generateCss(cssEntryPath) {
+async function generateCss(directory, filename) {
   const { css } = await postcss([
-    postcssImport({ path: path.dirname(cssEntryPath) }),
+    postcssImport({ path: directory }),
     postCssPresetEnv(),
     customProperties({ preserve: false }),
     postCssCalc(),
     cssnano({ preset: 'default' })
-  ]).process(await readFile(cssEntryPath, 'utf8'), { from: cssEntryPath });
+  ]).process(`@import url('${filename}')\n`, { from: undefined });
 
   const hash = crypto
     .createHash('md5')
@@ -78,48 +78,29 @@ async function loadPostFiles(baseUrl, renderer) {
   return rendered;
 }
 
-// Creates a public directory and subdirectories.
-async function createDirectories() {
-  await mkdir(buildPaths.public());
-  await Promise.all([
-    mkdir(buildPaths.public('blog')),
-    mkdir(buildPaths.public('icons')),
-    mkdir(buildPaths.public('tags')),
-    mkdir(buildPaths.public('img'))
-  ]);
-}
-
 // Loads and compiles template files into functions.
 async function loadTemplates() {
   await Promise.all([
-    loadPartial('head.html.handlebars'),
-    loadPartial('copyright.html.handlebars'),
-    loadPartial('share-tweet.html.handlebars'),
-    loadPartial('share-toot.html.handlebars'),
-    loadPartial('webmention-form.html.handlebars'),
-    loadPartial('comments-tweet.html.handlebars'),
-    loadPartial('comments-toot.html.handlebars')
-  ]);
+    'head.html',
+    'copyright.html',
+    'share-tweet.html',
+    'share-toot.html',
+    'webmention-form.html',
+    'comments-tweet.html',
+    'comments-toot.html'
+  ].map(loadPartial));
 
-  const results = await Promise.all([
-    loadTemplate('index.html.handlebars'),
-    loadTemplate('tag.html.handlebars'),
-    loadTemplate('about.html.handlebars'),
-    loadTemplate('blog.html.handlebars'),
-    loadTemplate('webmention.html.handlebars'),
-    loadTemplate('atom.xml.handlebars'),
-    loadTemplate('sitemap.txt.handlebars')
-  ]);
+  const [index, tag, about, blog, webmention, atom, sitemap] = await Promise.all([
+    'index.html',
+    'tag.html',
+    'about.html',
+    'blog.html',
+    'webmention.html',
+    'atom.xml',
+    'sitemap.txt'
+  ].map(loadTemplate));
 
-  return {
-    indexTemplate: results[0],
-    tagTemplate: results[1],
-    aboutTemplate: results[2],
-    blogTemplate: results[3],
-    webmentionTemplate: results[4],
-    atomTemplate: results[5],
-    sitemapTemplate: results[6]
-  };
+  return { index, tag, about, blog, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -150,13 +131,21 @@ async function getLastPostCommit() {
   return new Date(parseInt(stdout.trim(), 10) * 1000);
 }
 
-// Copies static files to a fresh public directory.
+// Copies static files and directories to a fresh public directory.
 async function copyFiles(compileCss) {
-  await createDirectories();
-  await cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons'));
-  await cpy(buildPaths.src('img', '*'), buildPaths.public('img'));
-  await cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts'));
-  await cpy(['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)), buildPaths.public());
+  await mkdir(buildPaths.public());
+
+  await Promise.all([
+    mkdir(buildPaths.public('blog')),
+    mkdir(buildPaths.public('tags')),
+    cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
+    cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
+    cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts')),
+    cpy(
+      ['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
+      buildPaths.public()
+    )
+  ]);
 
   if (!compileCss) {
     await cpy(buildPaths.src('css', '*.css'), buildPaths.public('css'));
@@ -193,41 +182,35 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 exports.build = async function build(baseUrl, dev, compileCss) {
+  // Do this first, since it also creates the public directory tree.
   await copyFiles(compileCss);
 
   // Load and compile markdown template files into functions.
-  const {
-    indexTemplate,
-    tagTemplate,
-    aboutTemplate,
-    blogTemplate,
-    webmentionTemplate,
-    atomTemplate,
-    sitemapTemplate
-  } = await loadTemplates();
+  const templates = await loadTemplates();
 
+  // Make a renderer instance which is sensitive to external domains.
   const renderer = makeRenderer(baseUrl);
 
   // Load markdown posts, render them to HTML content, and sort them by date descending.
   const posts = (await loadPostFiles(baseUrl, renderer)).sort((a, b) => b.date - a.date);
 
   // Compile CSS to a single file, with a unique filename.
-  const cssPath = compileCss ? await generateCss(path.join(__dirname, 'src', 'css', 'entry.css')) : '/css/entry.css';
+  const cssPath = compileCss ? await generateCss(path.join(__dirname, 'src', 'css'), 'entry.css') : '/css/entry.css';
 
   // Make a list of tags found in posts.
   const tags = collateTags(posts);
 
   // Render various pages.
-  const renderedPosts = renderPosts(posts, blogTemplate, cssPath, dev);
-  const indexHtml = indexTemplate({ posts, cssPath, dev, title: 'Qubyte Codes' });
-  const aboutHtml = aboutTemplate({ cssPath, dev, title: 'Qubyte Codes - about' });
-  const webmentionHtml = webmentionTemplate({ cssPath, dev, title: 'Qubyte Codes - webmention' });
+  const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
+  const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
+  const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
+  const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
-  const atomXML = atomTemplate({ posts, updated: await getLastPostCommit() });
+  const atomXML = templates.atom({ posts, updated: await getLastPostCommit() });
 
   // Render the site map.
-  const sitemapTxt = sitemapTemplate({ posts });
+  const sitemapTxt = templates.sitemap({ posts });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
@@ -236,7 +219,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     ...renderedPosts.map(({ html, filename }) => writeFile(buildPaths.public('blog', filename), html)),
     ...Object.entries(tags).map(([tag, posts]) => {
-      const tagHtml = tagTemplate({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });
+      const tagHtml = templates.tag({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });
 
       return writeFile(buildPaths.public('tags', `${tag}.html`), tagHtml);
     }),
