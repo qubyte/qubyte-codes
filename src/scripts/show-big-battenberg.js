@@ -31,6 +31,7 @@ function makeNumberInput({ labelText, min, max, value, onchange }) {
   input.step = 1;
   input.value = value;
   input.onchange = onchange;
+  input.inputmode = 'numeric';
   input.style.width = `${Math.max(`${min}`.length, `${max}`.length) + 1}rem`;
 
   const label = document.createElement('label');
