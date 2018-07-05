@@ -5,7 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { loadPartial, loadTemplate } = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
-const makeSlug = require('slug');
+const slugify = require('slugify');
 const makeRenderer = require('./lib/render');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
 const cpy = require('cpy');
@@ -55,7 +55,7 @@ async function renderMarkdown(post, baseUrl, renderer) {
   const digested = frontMatter(post);
 
   digested.isBlogEntry = true;
-  digested.slug = `${makeSlug(digested.attributes.title, { lower: true })}`;
+  digested.slug = `${slugify(digested.attributes.title, { lower: true, remove: /[#$*_+~.()'"!:@]/g })}`;
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
   digested.content = await renderer(digested.body);
