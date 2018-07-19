@@ -210,7 +210,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   const atomXML = templates.atom({ posts, updated: await getLastPostCommit() });
 
   // Render the site map.
-  const sitemapTxt = templates.sitemap({ posts });
+  const sitemapTxt = templates.sitemap({ posts, tags });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
