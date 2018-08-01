@@ -146,7 +146,7 @@ async function copyFiles(compileCss) {
     cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts')),
     cpy(buildPaths.src('papers', '*'), buildPaths.public('papers')),
     cpy(
-      ['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
+      ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
       buildPaths.public()
     )
   ]);
