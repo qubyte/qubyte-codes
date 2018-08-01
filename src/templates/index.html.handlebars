@@ -20,7 +20,7 @@
       <header>
         <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       {{{snippet}}}
     </article>

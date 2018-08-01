@@ -18,7 +18,7 @@
       <header>
         <h2><a href="{{{canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
         <time datetime="{{attributes.datetime}}" class="dt-published">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
+        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       <div class="e-content">
         {{{content}}}
