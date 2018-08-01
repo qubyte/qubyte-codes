@@ -17,6 +17,7 @@ const postCssCalc = require('postcss-calc');
 const customProperties = require('postcss-custom-properties');
 const cssnano = require('cssnano');
 const exec = require('util').promisify(require('child_process').exec);
+const publications = require('./src/publications');
 
 // Compiles and calculates a unique filename for CSS.
 async function generateCss(directory, filename) {
@@ -90,17 +91,18 @@ async function loadTemplates() {
     'comments-toot.html'
   ].map(loadPartial));
 
-  const [index, tag, about, blog, webmention, atom, sitemap] = await Promise.all([
+  const [index, tag, about, blog, publications, webmention, atom, sitemap] = await Promise.all([
     'index.html',
     'tag.html',
     'about.html',
     'blog.html',
+    'publications.html',
     'webmention.html',
     'atom.xml',
     'sitemap.txt'
   ].map(loadTemplate));
 
-  return { index, tag, about, blog, webmention, atom, sitemap };
+  return { index, tag, about, blog, publications, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -141,6 +143,7 @@ async function copyFiles(compileCss) {
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
     cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
     cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts')),
+    cpy(buildPaths.src('papers', '*'), buildPaths.public('papers')),
     cpy(
       ['google*', 'keybase.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
       buildPaths.public()
@@ -204,6 +207,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
   const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
   const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
+  const publicationsHtml = templates.publications({ cssPath, dev, publications });
   const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
@@ -216,6 +220,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   await Promise.all([
     writeFile(buildPaths.public('index.html'), indexHtml),
     writeFile(buildPaths.public('about.html'), aboutHtml),
+    writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     ...renderedPosts.map(({ html, filename }) => writeFile(buildPaths.public('blog', filename), html)),
     ...Object.entries(tags).map(([tag, posts]) => {

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {{> head }}
+</head>
+<body>
+  <header>
+    <h1><a href="/">Qubyte Codes</a></h1>
+    <nav>
+      <ul>
+        <li><a href="/">archive</a></li>
+        <li><a href="/about">about</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <article>
+      <h2>Publications</h2>
+      <p>A selection of academic publications I've authored and coauthored.</p>
+      {{#publications}}
+      <article>
+      {{#if doi}}
+      <a target="_blank" rel="noopener" href={{doi}}><h3>{{title}}</h3></a>
+      <p>{{ref}}, <a target="_blank" rel="noopener" href={{preprint}}>preprint</a></p>
+      {{else}}
+      <a target="_blank" rel="noopener" href={{preprint}}><h3>{{title}}</h3></a>
+      <p>{{ref}}</p>
+      {{/if}}
+      </article>
+      {{/publications}}
+    </article>
+  </main>
+  <footer>
+    {{> copyright }}
+  </footer>
+</body>
+</html>
