@@ -91,18 +91,19 @@ async function loadTemplates() {
     'comments-toot.html'
   ].map(loadPartial));
 
-  const [index, tag, about, blog, publications, webmention, atom, sitemap] = await Promise.all([
+  const [index, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
     'index.html',
     'tag.html',
     'about.html',
     'blog.html',
     'publications.html',
+    '404.html',
     'webmention.html',
     'atom.xml',
     'sitemap.txt'
   ].map(loadTemplate));
 
-  return { index, tag, about, blog, publications, webmention, atom, sitemap };
+  return { index, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -208,6 +209,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
   const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
   const publicationsHtml = templates.publications({ cssPath, dev, publications });
+  const fourOhFourHtml = templates.fourOhFour({ cssPath, dev, title: 'Qubyte Cods - Not Found' });
   const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
@@ -222,6 +224,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
     writeFile(buildPaths.public('about.html'), aboutHtml),
     writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
+    writeFile(buildPaths.public('404.html'), fourOhFourHtml),
     ...renderedPosts.map(({ html, filename }) => writeFile(buildPaths.public('blog', filename), html)),
     ...Object.entries(tags).map(([tag, posts]) => {
       const tagHtml = templates.tag({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });

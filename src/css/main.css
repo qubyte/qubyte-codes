@@ -253,3 +253,8 @@ input {
   margin: 0 0 1rem 1rem;
   float: right;
 }
+
+.not-found {
+  text-align: center;
+  font-size: 3rem;
+}
