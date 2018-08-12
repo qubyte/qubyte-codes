@@ -32,6 +32,7 @@ async function cli() {
   const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
   const details = yaml.safeDump({
     datetime: now.toISOString().replace(/\.[0-9]{3}Z/, 'Z'),
+    updatedAt: null,
     title,
     description,
     tags
@@ -54,6 +55,8 @@ async function cli() {
   }
 
   await writeFile(filePath, `---\n${details}---\n`);
+
+  console.log('Created:', filePath); // eslint-disable-line no-console
 }
 
 cli();

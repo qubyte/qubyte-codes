@@ -54,15 +54,16 @@ function makeSnippet(rendered) {
 // be used by templates.
 async function renderMarkdown(post, baseUrl, renderer) {
   const digested = frontMatter(post);
+  const { title, datetime } = digested.attributes;
 
   digested.isBlogEntry = true;
-  digested.slug = `${slugify(digested.attributes.title, { lower: true, remove: /[#$*_+~.()'"!:@]/g })}`;
+  digested.slug = `${slugify(title, { lower: true, remove: /[#$*_+~.()'"!:@]/g })}`;
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
   digested.content = await renderer(digested.body);
   digested.snippet = makeSnippet(digested.content);
-  digested.title = `Qubyte Codes - ${digested.attributes.title}`;
-  digested.date = new Date(digested.attributes.datetime);
+  digested.title = `Qubyte Codes - ${title}`;
+  digested.date = new Date(datetime);
 
   return digested;
 }
