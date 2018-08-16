@@ -68,16 +68,20 @@ async function renderMarkdown(post, baseUrl, renderer) {
   return digested;
 }
 
+async function loadPostFile(filePath, baseUrl, renderer) {
+  const content = await readFile(filePath, 'utf8');
+
+  return renderMarkdown(content, baseUrl, renderer);
+}
+
 // Loads and renders post source files and their metadata. Note, this renders
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
 async function loadPostFiles(baseUrl, renderer) {
   const filenames = await readdir(buildPaths.src('posts'));
   const filePaths = filenames.map(filename => buildPaths.src('posts', filename));
-  const contents = await Promise.all(filePaths.map(path => readFile(path, 'utf-8')));
-  const rendered = await Promise.all(contents.map(c => renderMarkdown(c, baseUrl, renderer)));
 
-  return rendered;
+  return Promise.all(filePaths.map(filePath => loadPostFile(filePath, baseUrl, renderer)));
 }
 
 // Loads and compiles template files into functions.

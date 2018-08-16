@@ -80,5 +80,5 @@ app.use(router.middleware);
 app.use(serveStatic('public', { extensions: ['html'] }));
 
 http.createServer(app.requestHandler).listen(8000, () => {
-  console.log('listening on 8000');
+  console.log('listening on http://localhost:8000');
 });
