@@ -35,7 +35,7 @@
 body {
   font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
   text-align: left;
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
   background-color: var(--background-color-main);
   color: var(--standout-color-main);
   min-height: 100vh;
