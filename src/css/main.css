@@ -160,11 +160,11 @@ code {
 
 a {
   color: inherit;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
-p > a {
-  text-decoration: underline;
+header a {
+  text-decoration: none;
 }
 
 em {
