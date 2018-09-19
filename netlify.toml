@@ -18,3 +18,8 @@
   for = "/sw.js"
   [headers.values]
     Content-Security-Policy = "connect-src *;"
+
+[[headers]]
+  for = "/atom.xml"
+  [headders.values]
+    Content-Type = "application/atom+xml; charset=utf-8"
