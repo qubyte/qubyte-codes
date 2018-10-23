@@ -20,10 +20,11 @@ const watcher = chokidar.watch(['src'])
 // Refreshes the build, and after alerts the browser to refresh itself.
 async function build() {
   console.log('Sources changed. Rebuilding...');
+  console.time('Build succeeded');
 
   try {
     await exec('npm run build -- --no-css-compile --dev --no-warnings');
-    console.log('Build succeeded');
+    console.timeEnd('Build succeeded');
     buildEmitter.emit('new');
   } catch (e) {
     console.error(e);
