@@ -2,44 +2,16 @@
 
 const frontMatter = require('front-matter');
 const path = require('path');
-const crypto = require('crypto');
 const { loadPartial, loadTemplate } = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const slugify = require('slugify');
 const makeRenderer = require('./lib/render');
+const generateCss = require('./lib/generate-css');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
-const postcss = require('postcss');
-const postcssImport = require('postcss-import');
-const postCssPresetEnv = require('postcss-preset-env');
-const postCssCalc = require('postcss-calc');
-const customProperties = require('postcss-custom-properties');
-const cssnano = require('cssnano');
 const exec = require('util').promisify(require('child_process').exec);
 const publications = require('./src/publications');
-
-// Compiles and calculates a unique filename for CSS.
-async function generateCss(directory, filename) {
-  const { css } = await postcss([
-    postcssImport({ path: directory }),
-    postCssPresetEnv(),
-    customProperties({ preserve: false }),
-    postCssCalc(),
-    cssnano({ preset: 'default' })
-  ]).process(`@import url('${filename}')\n`, { from: undefined });
-
-  const hash = crypto
-    .createHash('md5')
-    .update(css)
-    .digest('hex');
-
-  const cssPath = buildPaths.public(`main-${hash}.css`);
-
-  await writeFile(cssPath, css);
-
-  return `/main-${hash}.css`;
-}
 
 // Plucks and wraps the first paragraph out of post HTML to form a snippet.
 function makeSnippet(rendered) {
@@ -52,7 +24,8 @@ function makeSnippet(rendered) {
 
 // Renders markdown to an HTML snippet. Also calculates various data which will
 // be used by templates.
-async function renderMarkdown(post, baseUrl, renderer) {
+async function loadPostFile(filePath, baseUrl, renderer) {
+  const post = await readFile(filePath, 'utf8');
   const digested = frontMatter(post);
   const { title, datetime } = digested.attributes;
 
@@ -66,12 +39,6 @@ async function renderMarkdown(post, baseUrl, renderer) {
   digested.date = new Date(datetime);
 
   return digested;
-}
-
-async function loadPostFile(filePath, baseUrl, renderer) {
-  const content = await readFile(filePath, 'utf8');
-
-  return renderMarkdown(content, baseUrl, renderer);
 }
 
 // Loads and renders post source files and their metadata. Note, this renders
@@ -92,6 +59,7 @@ async function loadTemplates() {
     'share-tweet.html',
     'share-toot.html',
     'webmention-form.html',
+    'email-me.html',
     'comments-tweet.html',
     'comments-toot.html'
   ].map(loadPartial));
@@ -112,7 +80,7 @@ async function loadTemplates() {
 }
 
 // Compiles a list of tags from post metadata.
-function collateTags(posts) {
+function collateTags(posts, cssPath, dev, template) {
   const tags = {};
 
   for (const post of posts) {
@@ -125,7 +93,11 @@ function collateTags(posts) {
     }
   }
 
-  return tags;
+  return Object.entries(tags).map(([name, posts]) => ({
+    name,
+    rendered: template({ posts, tag: name, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
+    filename: `${name}.html`
+  }));
 }
 
 // Gets the date of the most recent edit to the post files.
@@ -191,23 +163,29 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 exports.build = async function build(baseUrl, dev, compileCss) {
-  // Do this first, since it also creates the public directory tree.
-  await copyFiles(compileCss);
-
-  // Load and compile markdown template files into functions.
-  const templates = await loadTemplates();
+  const [templates] = await Promise.all([
+    // Load and compile markdown template files into functions.
+    loadTemplates(),
+    // Do this first, since it also creates the public directory tree.
+    copyFiles(compileCss)
+  ]);
 
   // Make a renderer instance which is sensitive to external domains.
   const renderer = makeRenderer(baseUrl);
 
-  // Load markdown posts, render them to HTML content, and sort them by date descending.
-  const posts = (await loadPostFiles(baseUrl, renderer)).sort((a, b) => b.date - a.date);
+  const [posts, cssPath, updated] = await Promise.all([
+    // Load markdown posts, render them to HTML content, and sort them by date descending.
+    loadPostFiles(baseUrl, renderer),
+    // Compile CSS to a single file, with a unique filename.
+    compileCss ? await generateCss(path.join(__dirname, 'src', 'css'), 'entry.css') : '/css/entry.css',
+    // Get the timestamp for the last post update.
+    getLastPostCommit()
+  ]);
 
-  // Compile CSS to a single file, with a unique filename.
-  const cssPath = compileCss ? await generateCss(path.join(__dirname, 'src', 'css'), 'entry.css') : '/css/entry.css';
+  posts.sort((a, b) => b.date - a.date);
 
   // Make a list of tags found in posts.
-  const tags = collateTags(posts);
+  const tags = collateTags(posts, cssPath, dev, templates.tag);
 
   // Render various pages.
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
@@ -218,7 +196,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
-  const atomXML = templates.atom({ posts, updated: await getLastPostCommit() });
+  const atomXML = templates.atom({ posts, updated });
 
   // Render the site map.
   const sitemapTxt = templates.sitemap({ posts, tags });
@@ -230,12 +208,8 @@ exports.build = async function build(baseUrl, dev, compileCss) {
     writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     writeFile(buildPaths.public('404.html'), fourOhFourHtml),
-    ...renderedPosts.map(({ html, filename }) => writeFile(buildPaths.public('blog', filename), html)),
-    ...Object.entries(tags).map(([tag, posts]) => {
-      const tagHtml = templates.tag({ posts, tag, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${tag}` });
-
-      return writeFile(buildPaths.public('tags', `${tag}.html`), tagHtml);
-    }),
+    ...renderedPosts.map(post => writeFile(buildPaths.public('blog', post.filename), post.html)),
+    ...tags.map(tag => writeFile(buildPaths.public('tags', tag.filename), tag.rendered)),
     writeFile(buildPaths.public('atom.xml'), atomXML),
     writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)
   ]);
