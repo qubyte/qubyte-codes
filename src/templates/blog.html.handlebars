@@ -28,10 +28,10 @@
       </div>
       {{#if attributes.webmentions}}
       <section>
-        <h2>Mentions</h2>
+        <h3>Mentions</h3>
         {{#attributes.webmentions}}
         <p>
-          <a target="_blank" rel="noopener" href="{{{source}}}">{{author}}</a> on <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
+          <a target="_blank" rel="noopener" class="webmention" href="{{{source}}}">{{author}} on <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time></a>
         </p>
         {{/attributes.webmentions}}
       </section>
