@@ -21,7 +21,7 @@
         {{#attributes.updatedAt}}
         <time datetime="{{@this}}" class="dt-updated" hidden>{{humanDate @this}}</time>
         {{/attributes.updatedAt}}
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
+        <span class="tags">{{#each attributes.tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       <div class="e-content">
         {{{content}}}
