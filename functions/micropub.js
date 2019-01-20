@@ -72,7 +72,7 @@ function createFile(message, content) {
 
       res.on('data', d => chunks.push(d));
       res.on('end', () => {
-        console.log(Buffer.concat(chunks)); // eslint-disable-line
+        console.log(Buffer.concat(chunks).toString()); // eslint-disable-line
         reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
       });
     })
