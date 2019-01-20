@@ -4,7 +4,6 @@ const { request } = require('https');
 const OWNER = 'qubyte';
 const REPO = 'qubyte-codes';
 const PATH = 'src/notes';
-const Authorization = `Basic ${Buffer.from(`${OWNER}:${process.env.GITHUB_TOKEN}`).toString('base64')}`;
 
 function checkAuth(Authorization) {
   const options = {
@@ -49,14 +48,17 @@ function checkAuth(Authorization) {
 
 function createFile(message, content) {
   const body = JSON.stringify({ message, content }); // TODO check base64 content
+
+  console.log('CREATING FILE:', body); // eslint-disable-line
+
   const options = {
     method: 'PUT',
     host: 'api.github.com',
     path: `/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`,
+    auth: `${OWNER}:${process.env.GITHUB_TOKEN}`,
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(body),
-      Authorization
+      'Content-Length': Buffer.byteLength(body)
     }
   };
 
@@ -74,6 +76,8 @@ function createFile(message, content) {
 }
 
 exports.handler = async function (event) {
+  console.log('EVENT', event); // eslint-disable-line
+
   await checkAuth(event.headers.authorization);
 
   const encoded = event.isBase64Encoded ? event.body : Buffer.from(event.body).toString('base64');
