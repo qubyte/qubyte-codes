@@ -2,6 +2,7 @@
 
 const frontMatter = require('front-matter');
 const path = require('path');
+const { URLSearchParams } = require('url');
 const { loadPartial, loadTemplate } = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const slugify = require('slugify');
@@ -51,6 +52,27 @@ async function loadPostFiles(baseUrl, renderer) {
   return Promise.all(filePaths.map(filePath => loadPostFile(filePath, baseUrl, renderer)));
 }
 
+async function loadNoteFile(filePath) {
+  const note = await readFile(filePath, 'utf8');
+  const parsed = new URLSearchParams(note);
+  const content = parsed.get('content');
+
+  return content;
+}
+
+async function loadNoteFiles() {
+  const filenames = await readdir(buildPaths.src('notes'));
+
+  filenames.sort((a, b) => b - a);
+
+  return Promise.all(filenames.map(async timestamp => {
+    const filePath = buildPaths.src('notes', timestamp);
+    const content = await loadNoteFile(filePath);
+
+    return { timestamp: new Date(parseInt(timestamp, 10)).toISOString(), content };
+  }));
+}
+
 // Loads and compiles template files into functions.
 async function loadTemplates() {
   await Promise.all([
@@ -64,8 +86,9 @@ async function loadTemplates() {
     'comments-toot.html'
   ].map(loadPartial));
 
-  const [index, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
+  const [index, notes, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
     'index.html',
+    'notes.html',
     'tag.html',
     'about.html',
     'blog.html',
@@ -76,7 +99,7 @@ async function loadTemplates() {
     'sitemap.txt'
   ].map(loadTemplate));
 
-  return { index, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap };
+  return { index, notes, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -173,9 +196,11 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   // Make a renderer instance which is sensitive to external domains.
   const renderer = makeRenderer(baseUrl);
 
-  const [posts, cssPath, updated] = await Promise.all([
+  const [posts, notes, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
     loadPostFiles(baseUrl, renderer),
+    // Load short form notes, render them to HTML content, and sort them by date descending.
+    loadNoteFiles(),
     // Compile CSS to a single file, with a unique filename.
     compileCss ? await generateCss(path.join(__dirname, 'src', 'css'), 'entry.css') : '/css/entry.css',
     // Get the timestamp for the last post update.
@@ -190,6 +215,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   // Render various pages.
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
   const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
+  const notesHtml = templates.notes({ notes, cssPath, dev, title: 'Qubyte Codes - Notes' });
   const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
   const publicationsHtml = templates.publications({ cssPath, dev, publications });
   const fourOhFourHtml = templates.fourOhFour({ cssPath, dev, title: 'Qubyte Cods - Not Found' });
@@ -204,6 +230,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   // Write the rendered templates to the public directory.
   await Promise.all([
     writeFile(buildPaths.public('index.html'), indexHtml),
+    writeFile(buildPaths.public('notes.html'), notesHtml),
     writeFile(buildPaths.public('about.html'), aboutHtml),
     writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),

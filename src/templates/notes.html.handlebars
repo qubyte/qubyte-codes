@@ -20,23 +20,23 @@
     <h1>Qubyte Codes</h1>
     <nav>
       <ul>
-        <li>archive</li>
-        <li><a href="/notes">notes</a></li>
+        <li><a href="/">archive</a></li>
+        <li>notes</li>
         <li><a href="/about">about</a></li>
       </ul>
     </nav>
   </header>
   <main>
-    {{#posts}}
+    {{#notes}}
     <article>
       <header>
-        <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
+        {{!-- <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2> --}}
+        <time datetime="{{timestamp}}">{{humanDateTime timestamp}}</time>
+        {{!-- <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span> --}}
       </header>
-      {{{snippet}}}
+      {{{content}}}
     </article>
-    {{/posts}}
+    {{/notes}}
   </main>
   <footer>
     {{> copyright }}
