@@ -82,5 +82,9 @@ exports.handler = async function (event) {
 
   const encoded = event.isBase64Encoded ? event.body : Buffer.from(event.body).toString('base64');
 
+  if (!encoded.length) {
+    return;
+  }
+
   await createFile('New note.', encoded);
 };
