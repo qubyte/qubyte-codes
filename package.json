@@ -6,7 +6,7 @@
   "repository": "github:qubyte/qubyte-codes",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf public && node build.js https://qubyte.codes && netlify-lambda build functions-src",
+    "build": "rimraf public && node build.js https://qubyte.codes",
     "start": "node serve.js",
     "lint": "eslint ."
   },
