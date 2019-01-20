@@ -8,6 +8,8 @@ const Authorization = `Basic ${Buffer.from(`${OWNER}:${process.env.GITHUB_TOKEN}
 
 function checkAuth(Authorization) {
   const options = {
+    host: 'tokens.indieauth.com',
+    path: '/token',
     headers: {
       Accept: 'application/json',
       Authorization
@@ -15,7 +17,7 @@ function checkAuth(Authorization) {
   };
 
   return new Promise((resolve, reject) => {
-    request('https://tokens.indieauth.com/token', options, res => {
+    request(options, res => {
       const chunks = [];
 
       res.on('data', d => chunks.push(d));
@@ -49,14 +51,17 @@ function createFile(message, content) {
   const body = JSON.stringify({ message, content }); // TODO check base64 content
   const options = {
     method: 'PUT',
+    host: 'api.github.com',
+    path: `/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`,
     headers: {
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(body),
       Authorization
     }
   };
+
   return new Promise((resolve, reject) => {
-    request(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`, options, res => {
+    request(options, res => {
       if (res.statusCode !== 201) {
         reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
       } else {
