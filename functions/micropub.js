@@ -11,7 +11,8 @@ function checkAuth(Authorization) {
     path: '/token',
     headers: {
       Accept: 'application/json',
-      Authorization
+      Authorization,
+      'User-Agent': 'nodejs-micropub-endpoint'
     }
   };
 
@@ -58,7 +59,8 @@ function createFile(message, content) {
     auth: `${OWNER}:${process.env.GITHUB_TOKEN}`,
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(body)
+      'Content-Length': Buffer.byteLength(body),
+      'User-Agent': 'nodejs-micropub-endpoint'
     }
   };
 
