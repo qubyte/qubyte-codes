@@ -7,43 +7,20 @@ const PATH = 'src/notes';
 const Authorization = `Basic ${Buffer.from(`${OWNER}:${process.env.GITHUB_TOKEN}`).toString('base64')}`;
 
 function checkAuth(Authorization) {
-  return new Promise((resolve, reject) => {
-    const req = request('https://tokens.indieauth.com/token', {
-      headers: {
-        Accept: 'application/json',
-        Authorization
-      }
-    });
-
-    function reqOnError(error) {
-      req.removeListener('error', reqOnError);
-      req.removeListener('res', reqOnRes);
-
-      reject(error);
+  const options = {
+    headers: {
+      Accept: 'application/json',
+      Authorization
     }
+  };
 
-    function reqOnRes(res) {
-      req.removeListener('error', reqOnError);
-      req.removeListener('res', reqOnRes);
-
+  return new Promise((resolve, reject) => {
+    request('https://tokens.indieauth.com/token', options, res => {
       const chunks = [];
 
-      function resOnData(d) {
-        chunks.push(d);
-      }
-
-      function resOnError(error) {
-        res.removeListener('data', resOnData);
-        res.removeListener('error', resOnError);
-        res.removeListener('end', resOnEnd);
-        reject(error);
-      }
-
-      function resOnEnd() {
-        res.removeListener('data', resOnData);
-        res.removeListener('error', resOnError);
-        res.removeListener('end', resOnEnd);
-
+      res.on('data', d => chunks.push(d));
+      res.on('error', reject);
+      res.on('end', () => {
         let body;
 
         try {
@@ -61,45 +38,25 @@ function checkAuth(Authorization) {
         }
 
         resolve();
-      }
-
-      res.on('data', resOnData);
-      res.on('error', resOnError);
-      res.on('end', resOnEnd);
-    }
-
-    req.on('error', reqOnError);
-    req.on('res', reqOnRes);
+      });
+    }).on('error', reject);
   });
 }
 
 function createFile(message, content) {
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization },
+    body: JSON.stringify({ message, content }) // TODO check base64 content
+  };
   return new Promise((resolve, reject) => {
-    const req = request(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization },
-      body: JSON.stringify({ message, content }) // TODO check base64 content
-    });
-
-    function reqOnError(error) {
-      req.removeListener('error', reqOnError);
-      req.removeListener('res', reqOnRes);
-      reject(error);
-    }
-
-    function reqOnRes(res) {
-      req.removeListener('error', reqOnError);
-      req.removeListener('res', reqOnRes);
-
+    request(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`, options, res => {
       if (res.statusCode !== 201) {
         reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
       } else {
         resolve();
       }
-    }
-
-    req.on('error', reqOnError);
-    req.on('res', reqOnRes);
+    }).on('error', reject);
   });
 }
 
