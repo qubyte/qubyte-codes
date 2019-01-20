@@ -39,15 +39,21 @@ function checkAuth(Authorization) {
 
         resolve();
       });
-    }).on('error', reject);
+    })
+      .on('error', reject)
+      .end();
   });
 }
 
 function createFile(message, content) {
+  const body = JSON.stringify({ message, content }); // TODO check base64 content
   const options = {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', Authorization },
-    body: JSON.stringify({ message, content }) // TODO check base64 content
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      Authorization
+    }
   };
   return new Promise((resolve, reject) => {
     request(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}/${Date.now()}`, options, res => {
@@ -56,7 +62,9 @@ function createFile(message, content) {
       } else {
         resolve();
       }
-    }).on('error', reject);
+    })
+      .on('error', reject)
+      .end(body);
   });
 }
 
