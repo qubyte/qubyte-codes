@@ -64,11 +64,17 @@ function createFile(message, content) {
 
   return new Promise((resolve, reject) => {
     request(options, res => {
-      if (res.statusCode !== 201) {
-        reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
-      } else {
-        resolve();
+      if (res.statusCode === 201) {
+        return resolve();
       }
+
+      const chunks = [];
+
+      res.on('data', d => chunks.push(d));
+      res.on('end', () => {
+        console.log(Buffer.concat(chunks)); // eslint-disable-line
+        reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
+      });
     })
       .on('error', reject)
       .end(body);
