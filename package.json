@@ -23,7 +23,6 @@
     "highlight.js": "9.13.1",
     "marked": "0.5.2",
     "mathjax-node": "2.1.1",
-    "netlify-lambda": "1.2.0",
     "node-fetch": "2.3.0",
     "postcss": "7.0.6",
     "postcss-calc": "7.0.1",
