@@ -74,6 +74,7 @@ function createFile(message, content) {
 }
 
 exports.handler = async function (event) {
+  console.log(event.headers) // eslint-disable-line
   await checkAuth(event.headers.Authorization);
 
   const encoded = event.isBase64Encoded ? event.body : Buffer.from(event.body).toString('base64');
