@@ -16,15 +16,15 @@ function checkAuth(Authorization) {
     });
 
     function reqOnError(error) {
-      req.off('error', reqOnError);
-      req.off('res', reqOnRes);
+      req.removeListener('error', reqOnError);
+      req.removeListener('res', reqOnRes);
 
       reject(error);
     }
 
     function reqOnRes(res) {
-      req.off('error', reqOnError);
-      req.off('res', reqOnRes);
+      req.removeListener('error', reqOnError);
+      req.removeListener('res', reqOnRes);
 
       const chunks = [];
 
@@ -33,16 +33,16 @@ function checkAuth(Authorization) {
       }
 
       function resOnError(error) {
-        res.off('data', resOnData);
-        res.off('error', resOnError);
-        res.off('end', resOnEnd);
+        res.removeListener('data', resOnData);
+        res.removeListener('error', resOnError);
+        res.removeListener('end', resOnEnd);
         reject(error);
       }
 
       function resOnEnd() {
-        res.off('data', resOnData);
-        res.off('error', resOnError);
-        res.off('end', resOnEnd);
+        res.removeListener('data', resOnData);
+        res.removeListener('error', resOnError);
+        res.removeListener('end', resOnEnd);
 
         let body;
 
@@ -82,14 +82,14 @@ function createFile(message, content) {
     });
 
     function reqOnError(error) {
-      req.off('error', reqOnError);
-      req.off('res', reqOnRes);
+      req.removeListener('error', reqOnError);
+      req.removeListener('res', reqOnRes);
       reject(error);
     }
 
     function reqOnRes(res) {
-      req.off('error', reqOnError);
-      req.off('res', reqOnRes);
+      req.removeListener('error', reqOnError);
+      req.removeListener('res', reqOnRes);
 
       if (res.statusCode !== 201) {
         reject(new Error(`Unexpected status from GitHub ${res.statusCode}.`));
