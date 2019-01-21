@@ -67,6 +67,7 @@ function createFile(message, content) {
   return new Promise((resolve, reject) => {
     request(options, res => {
       if (res.statusCode === 201) {
+        res.resume();
         return resolve();
       }
 
