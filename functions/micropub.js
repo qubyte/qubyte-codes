@@ -35,8 +35,7 @@ function checkAuth(Authorization) {
           return reject(new Error('Not authorized.'));
         }
 
-        if (!body.scope.includes('create')) {
-          console.log(JSON.stringify(body, null, 2)); // eslint-disable-line
+        if (!(body.scope.includes('create') || body.scope.includes('post'))) {
           return reject(new Error('Not authorized to post.'));
         }
 
