@@ -84,6 +84,8 @@ function checkAuth(Authorization) {
       req.removeListener('res', onRes);
       req.removeListener('error', onError);
 
+      console.error('Auth request failure:', error); // eslint-disable-line no-console
+
       reject(error);
     }
   });
