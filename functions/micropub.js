@@ -145,7 +145,11 @@ function createFile(message, content) {
 exports.handler = async function (event, context, callback) {
   console.log('EVENT', event); // eslint-disable-line
 
-  await checkAuth(event.headers.authorization);
+  try {
+    await checkAuth(event.headers.authorization);
+  } catch (e) {
+    console.error('checkAuth failed', e); // eslint-disable-line
+  }
 
   const syndications = [
     {
