@@ -62,17 +62,21 @@ function checkAuth(Authorization) {
       try {
         body = await consumeResponse(res);
       } catch (e) {
+        console.error(e); // eslint-disable-line no-console
         return reject(e);
       }
 
       if (body.me !== 'https://qubyte.codes/') {
+        console.error('Not authorized.'); // eslint-disable-line no-console
         return reject(new Error('Not authorized.'));
       }
 
       if (!(body.scope.includes('create') || body.scope.includes('post'))) {
-        return reject(new Error('Not authorized to post.'));
+        console.error('Not an acceptable scope.'); // eslint-disable-line no-console
+        return reject(new Error('Not an acceptable scope.'));
       }
 
+      console.log('Authorized'); // eslint-disable-line no-console
       resolve();
     }
 
