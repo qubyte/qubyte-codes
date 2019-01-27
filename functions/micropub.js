@@ -151,6 +151,7 @@ exports.handler = async function (event, context, callback) {
     await checkAuth(event.headers.authorization);
   } catch (e) {
     console.error('checkAuth failed', e); // eslint-disable-line
+    return callback(e);
   }
 
   const syndications = [
