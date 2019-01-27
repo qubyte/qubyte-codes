@@ -149,12 +149,12 @@ exports.handler = async function (event, context, callback) {
       name: 'qubyte on twitter',
       service: {
         name: 'Twitter',
-        url: 'https://twitter.com/',
-        photo: 'https://abs.twimg.com/icons/apple-touch-icon-192x192.png'
+        url: 'https://twitter.com/'
       },
       user: {
         name: 'qubyte',
-        url: 'https://twitter.com/qubyte'
+        url: 'https://twitter.com/qubyte',
+        photo: 'https://pbs.twimg.com/profile_images/958386895037267968/K7X2jWDU.jpg'
       }
     },
     {
@@ -173,24 +173,28 @@ exports.handler = async function (event, context, callback) {
   ];
 
   if (event.queryStringParameters.q === 'syndicate-to') {
+    console.log('Responding to syndication query.'); // eslint-disable-line no-console
     return callback(null, {
       'syndicate-to': syndications
     });
   }
 
   if (event.queryStringParameters.q === 'config') {
+    console.log('Responding to config query.'); // eslint-disable-line no-console
     return callback(null, {
       'syndicate-to': syndications
     });
   }
 
   if (!event.body) {
+    console.log('Responding to empty body.'); // eslint-disable-line no-console
     return;
   }
 
   const encoded = event.isBase64Encoded ? event.body : Buffer.from(event.body).toString('base64');
 
+  console.log('Creating note.'); // eslint-disable-line no-console
   await createFile('New note.', encoded);
 
-  callback()
+  callback();
 };
