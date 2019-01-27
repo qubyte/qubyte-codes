@@ -47,6 +47,8 @@ function checkAuth(Authorization) {
     }
   };
 
+  console.log('Before and inside auth check.'); // eslint-disable-line
+
   return new Promise((resolve, reject) => {
     const req = request(options)
       .on('res', onRes)
@@ -148,7 +150,7 @@ exports.handler = async function (event, context, callback) {
   console.log('EVENT', event); // eslint-disable-line
 
   try {
-    console.log('Before  auth check.')
+    console.log('Before auth check.')
     await checkAuth(event.headers.authorization);
   } catch (e) {
     console.error('checkAuth failed', e); // eslint-disable-line
