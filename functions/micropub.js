@@ -56,6 +56,7 @@ function checkAuth(Authorization) {
     const req = request(options)
       .on('res', onRes)
       .on('error', onError)
+      .setTimeout(5000)
       .end();
 
     async function onRes(res) {
