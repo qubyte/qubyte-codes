@@ -2,7 +2,7 @@
 
 /* eslint no-console: "off", max-statements: "off" */
 
-const { request, get } = require('https');
+const { request } = require('https');
 
 function consumeResponse(res) {
   const chunks = [];
@@ -57,6 +57,8 @@ async function checkAuth(Authorization) {
       .on('response', onRes)
       .on('error', onError)
       .end();
+
+    console.log(req)
 
     function onRes(res) {
       console.log('Auth response status. ', res.statusCode);
