@@ -50,11 +50,11 @@ async function checkAuth(Authorization) {
     }
   };
 
-  console.log('Before and inside auth check.', Authorization.length); // eslint-disable-line no-console
+  console.log('Before and inside auth check.', options); // eslint-disable-line no-console
 
   const body = await new Promise((resolve, reject) => {
     const req = request(options)
-      .on('res', onRes)
+      .on('response', onRes)
       .on('error', onError)
       .setTimeout(5000)
       .end();
@@ -110,7 +110,7 @@ function createFile(message, content) {
 
   return new Promise((resolve, reject) => {
     const req = request(options)
-      .on('res', onRes)
+      .on('response', onRes)
       .on('error', onError)
       .end(body);
 
