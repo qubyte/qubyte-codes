@@ -53,12 +53,12 @@ async function checkAuth(Authorization) {
   console.log('Before and inside auth check.', options); // eslint-disable-line no-console
 
   const body = await new Promise((resolve, reject) => {
-    const req = request(options)
+    const req = request(options);
+
+    req
       .on('response', onRes)
       .on('error', onError)
       .end();
-
-    console.log(req)
 
     function onRes(res) {
       console.log('Auth response status. ', res.statusCode);
@@ -110,7 +110,9 @@ function createFile(message, content) {
   };
 
   return new Promise((resolve, reject) => {
-    const req = request(options)
+    const req = request(options);
+
+    req
       .on('response', onRes)
       .on('error', onError)
       .end(body);
