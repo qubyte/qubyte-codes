@@ -38,7 +38,7 @@ function consumeResponse(res) {
   });
 }
 
-function checkAuth(Authorization) {
+async function checkAuth(Authorization) {
   const options = {
     method: 'GET',
     host: 'tokens.indieauth.com',
@@ -52,51 +52,43 @@ function checkAuth(Authorization) {
 
   console.log('Before and inside auth check.', Authorization.length); // eslint-disable-line no-console
 
-  return new Promise((resolve, reject) => {
+  const body = await new Promise((resolve, reject) => {
     const req = request(options)
       .on('res', onRes)
       .on('error', onError)
       .setTimeout(5000)
       .end();
 
-    async function onRes(res) {
+    function onRes(res) {
       console.log('Auth response status. ', res.statusCode);
+
       req.removeListener('res', onRes);
       req.removeListener('error', onError);
 
-      let body;
-
-      try {
-        body = await consumeResponse(res);
-        console.log('Auth response body.', body);
-      } catch (e) {
-        console.error(e); // eslint-disable-line no-console
-        return reject(e);
-      }
-
-      if (body.me !== 'https://qubyte.codes/') {
-        console.error('Not authorized.'); // eslint-disable-line no-console
-        return reject(new Error('Not authorized.'));
-      }
-
-      if (!(body.scope.includes('create') || body.scope.includes('post'))) {
-        console.error('Not an acceptable scope.'); // eslint-disable-line no-console
-        return reject(new Error('Not an acceptable scope.'));
-      }
-
-      console.log('Authorized'); // eslint-disable-line no-console
-      resolve();
+      resolve(consumeResponse(res));
     }
 
     function onError(error) {
+      console.error('Auth request failure:', error); // eslint-disable-line no-console
+
       req.removeListener('res', onRes);
       req.removeListener('error', onError);
-
-      console.error('Auth request failure:', error); // eslint-disable-line no-console
 
       reject(error);
     }
   });
+
+  if (body.me !== 'https://qubyte.codes/') {
+    console.error('Not authorized.'); // eslint-disable-line no-console
+    throw new Error('Not authorized.');
+  }
+
+  if (!(body.scope.includes('create') || body.scope.includes('post'))) {
+    console.error('Not an acceptable scope.'); // eslint-disable-line no-console
+    throw new Error('Not an acceptable scope.');
+  }
+
+  console.log('Authorized'); // eslint-disable-line no-console
 }
 
 function createFile(message, content) {
