@@ -47,7 +47,7 @@ function checkAuth(Authorization) {
     }
   };
 
-  console.log('Before and inside auth check.'); // eslint-disable-line
+  console.log('Before and inside auth check.'); // eslint-disa
 
   return new Promise((resolve, reject) => {
     const req = request(options)
@@ -56,6 +56,7 @@ function checkAuth(Authorization) {
       .end();
 
     async function onRes(res) {
+      console.log('Auth response status. ', res.statusCode);
       req.removeListener('res', onRes);
       req.removeListener('error', onError);
 
@@ -63,6 +64,7 @@ function checkAuth(Authorization) {
 
       try {
         body = await consumeResponse(res);
+        console.log('Auth response body.', body);
       } catch (e) {
         console.error(e); // eslint-disable-line no-console
         return reject(e);
