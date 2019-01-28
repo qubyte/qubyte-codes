@@ -40,6 +40,7 @@ function consumeResponse(res) {
 
 function checkAuth(Authorization) {
   const options = {
+    method: 'GET',
     host: 'tokens.indieauth.com',
     path: '/token',
     headers: {
@@ -49,7 +50,7 @@ function checkAuth(Authorization) {
     }
   };
 
-  console.log('Before and inside auth check.'); // eslint-disable-line no-console
+  console.log('Before and inside auth check.', Authorization.length); // eslint-disable-line no-console
 
   return new Promise((resolve, reject) => {
     const req = request(options)
