@@ -56,13 +56,12 @@ async function checkAuth(Authorization) {
     const req = request(options)
       .on('response', onRes)
       .on('error', onError)
-      .setTimeout(5000)
       .end();
 
     function onRes(res) {
       console.log('Auth response status. ', res.statusCode);
 
-      req.removeListener('res', onRes);
+      req.removeListener('response', onRes);
       req.removeListener('error', onError);
 
       resolve(consumeResponse(res));
@@ -71,7 +70,7 @@ async function checkAuth(Authorization) {
     function onError(error) {
       console.error('Auth request failure:', error); // eslint-disable-line no-console
 
-      req.removeListener('res', onRes);
+      req.removeListener('response', onRes);
       req.removeListener('error', onError);
 
       reject(error);
@@ -115,7 +114,7 @@ function createFile(message, content) {
       .end(body);
 
     async function onRes(res) {
-      req.removeListener('res', onRes);
+      req.removeListener('response', onRes);
       req.removeListener('error', onError);
 
       let body;
@@ -136,7 +135,7 @@ function createFile(message, content) {
     }
 
     function onError(error) {
-      req.removeListener('res', onRes);
+      req.removeListener('response', onRes);
       req.removeListener('error', onError);
 
       reject(error);
