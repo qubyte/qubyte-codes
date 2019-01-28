@@ -1,6 +1,8 @@
 'use strict';
 
-const { request } = require('https');
+/* eslint no-console: "off", max-statements: "off" */
+
+const { request, get } = require('https');
 
 function consumeResponse(res) {
   const chunks = [];
@@ -47,7 +49,7 @@ function checkAuth(Authorization) {
     }
   };
 
-  console.log('Before and inside auth check.'); // eslint-disa
+  console.log('Before and inside auth check.'); // eslint-disable-line no-console
 
   return new Promise((resolve, reject) => {
     const req = request(options)
@@ -152,14 +154,14 @@ exports.handler = async function (event, context, callback) {
   console.log('EVENT', event); // eslint-disable-line
 
   try {
-    console.log('Before auth check.')
+    console.log('Before auth check.');
     await checkAuth(event.headers.authorization);
   } catch (e) {
     console.error('checkAuth failed', e); // eslint-disable-line
     return callback(e);
   }
 
-  consle.log('After auth check')
+  console.log('After auth check');
 
   const syndications = [
     {
