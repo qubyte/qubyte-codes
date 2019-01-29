@@ -150,12 +150,25 @@ function createFile(message, content) {
 exports.handler = async function (event, context, callback) {
   console.log('EVENT', event); // eslint-disable-line
 
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Methods': '*',
+    'Access-Control-Max-Age': '2592000',
+    'Access-Control-Allow-Credentials': 'true'
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return callback(null, { statusCode: '204', headers });
+  }
+
   try {
     console.log('Before auth check.');
     await checkAuth(event.headers.authorization);
   } catch (e) {
     console.error('checkAuth failed', e); // eslint-disable-line
-    return callback(e);
+    return callback(null, { statusCode: 401, headers });
   }
 
   console.log('After auth check');
@@ -191,21 +204,35 @@ exports.handler = async function (event, context, callback) {
 
   if (event.queryStringParameters.q === 'syndicate-to') {
     console.log('Responding to syndication query.'); // eslint-disable-line no-console
+
+    headers['Content-Type'] = 'application/json';
+
     return callback(null, {
-      'syndicate-to': syndications
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        'syndicate-to': syndications
+      })
     });
   }
 
   if (event.queryStringParameters.q === 'config') {
     console.log('Responding to config query.'); // eslint-disable-line no-console
+
+    headers['Content-Type'] = 'application/json';
+
     return callback(null, {
-      'syndicate-to': syndications
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        'syndicate-to': syndications
+      })
     });
   }
 
   if (!event.body) {
     console.log('Responding to empty body.'); // eslint-disable-line no-console
-    return;
+    return callback(null, { statusCode: 204, headers });
   }
 
   const encoded = event.isBase64Encoded ? event.body : Buffer.from(event.body).toString('base64');
@@ -213,5 +240,5 @@ exports.handler = async function (event, context, callback) {
   console.log('Creating note.'); // eslint-disable-line no-console
   await createFile('New note.', encoded);
 
-  callback();
+  callback(null, { statusCode: 201, headers });
 };
