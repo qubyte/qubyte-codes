@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/afcbe825-a1e6-445f-a48d-f59e83b739b7/deploy-status)](https://app.netlify.com/sites/festive-lamarr-73c7fe/deploys)
+
 # Qubyte Codes
 
 This repository contains both the static site generator and content for
