@@ -69,7 +69,7 @@ async function loadNoteFiles() {
     const filePath = buildPaths.src('notes', timestamp);
     const content = await loadNoteFile(filePath);
 
-    return { timestamp: new Date(parseInt(timestamp, 10)).toISOString(), content };
+    return { timestamp, datetime: new Date(parseInt(timestamp, 10)).toISOString(), content };
   }));
 }
 
@@ -86,12 +86,13 @@ async function loadTemplates() {
     'comments-toot.html'
   ].map(loadPartial));
 
-  const [index, notes, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
+  const [index, notes, tag, about, blog, note, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
     'index.html',
     'notes.html',
     'tag.html',
     'about.html',
     'blog.html',
+    'note.html',
     'publications.html',
     '404.html',
     'webmention.html',
@@ -99,7 +100,7 @@ async function loadTemplates() {
     'sitemap.txt'
   ].map(loadTemplate));
 
-  return { index, notes, tag, about, blog, publications, fourOhFour, webmention, atom, sitemap };
+  return { index, notes, tag, about, blog, note, publications, fourOhFour, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -140,6 +141,7 @@ async function copyFiles(compileCss) {
 
   await Promise.all([
     mkdir(buildPaths.public('blog')),
+    mkdir(buildPaths.public('note')),
     mkdir(buildPaths.public('tags')),
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
     cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
@@ -183,6 +185,34 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
   return rendered;
 }
 
+function renderNotes(notes, noteTemplate, cssPath, dev) {
+  const rendered = [];
+
+  notes.slice().sort((a, b) => b - a);
+
+  for (let i = 0; i < notes.length; i++) {
+    const previous = notes[i - 1];
+    const note = notes[i];
+    const next = notes[i + 1];
+    const renderObject = { ...note, cssPath, dev };
+
+    if (previous) {
+      renderObject.prevLink = `/note/${previous.timestamp}`;
+    }
+
+    if (next) {
+      renderObject.nextLink = `/note/${next.timestamp}`;
+    }
+
+    rendered.push({
+      html: noteTemplate(renderObject),
+      filename: `${note.timestamp}.html`
+    });
+  }
+
+  return rendered;
+}
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 exports.build = async function build(baseUrl, dev, compileCss) {
@@ -214,6 +244,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
 
   // Render various pages.
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
+  const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
   const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
   const notesHtml = templates.notes({ notes, cssPath, dev, title: 'Qubyte Codes - Notes' });
   const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
@@ -236,6 +267,7 @@ exports.build = async function build(baseUrl, dev, compileCss) {
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     writeFile(buildPaths.public('404.html'), fourOhFourHtml),
     ...renderedPosts.map(post => writeFile(buildPaths.public('blog', post.filename), post.html)),
+    ...renderedNotes.map(note => writeFile(buildPaths.public('note', note.filename), note.html)),
     ...tags.map(tag => writeFile(buildPaths.public('tags', tag.filename), tag.rendered)),
     writeFile(buildPaths.public('atom.xml'), atomXML),
     writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)

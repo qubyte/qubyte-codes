@@ -148,8 +148,6 @@ function createFile(message, content) {
 }
 
 exports.handler = async function (event, context, callback) {
-  console.log('EVENT', event); // eslint-disable-line
-
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
