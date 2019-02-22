@@ -16,11 +16,11 @@
   "dependencies": {
     "cheerio": "1.0.0-rc.2",
     "cpy": "7.0.1",
-    "cssnano": "4.1.9",
+    "cssnano": "4.1.10",
     "front-matter": "3.0.1",
     "handlebars": "4.1.0",
     "highlight.js": "9.14.2",
-    "marked": "0.6.0",
+    "marked": "0.6.1",
     "mathjax-node": "2.1.1",
     "node-fetch": "2.3.0",
     "postcss": "7.0.14",
@@ -33,11 +33,10 @@
     "xml2js": "0.4.19"
   },
   "devDependencies": {
-    "chokidar": "2.1.1",
-    "eslint": "5.13.0",
+    "chokidar": "2.1.2",
+    "eslint": "5.14.1",
     "eslint-config-qubyte": "2.0.0",
     "inquirer": "6.2.2",
-    "js-yaml": "3.12.1",
     "toisu": "3.0.6",
     "toisu-router": "4.1.0",
     "toisu-static": "2.0.0"

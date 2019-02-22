@@ -3,7 +3,6 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const yaml = require('js-yaml');
 const tagsPath = './tags.txt';
 const fs = require('fs');
 const path = require('path');
@@ -30,13 +29,13 @@ async function cli() {
 
   const now = new Date();
   const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  const details = yaml.safeDump({
+  const details = JSON.stringify({
     datetime: now.toISOString().replace(/\.[0-9]{3}Z/, 'Z'),
     updatedAt: null,
     title,
     description,
     tags
-  });
+  }, null, 2);
   const filePath = path.join(__dirname, 'src', 'posts', `${date}.md`);
 
   let stats;
