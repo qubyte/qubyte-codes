@@ -145,7 +145,7 @@ async function copyFiles(compileCss) {
 
   await Promise.all([
     mkdir(buildPaths.public('blog')),
-    mkdir(buildPaths.public('note')),
+    mkdir(buildPaths.public('notes')),
     mkdir(buildPaths.public('tags')),
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
     cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
@@ -200,11 +200,11 @@ function renderNotes(notes, noteTemplate, cssPath, dev) {
     const renderObject = { ...note, cssPath, dev };
 
     if (previous) {
-      renderObject.prevLink = `/note/${previous.timestamp}`;
+      renderObject.prevLink = `/notes/${previous.timestamp}`;
     }
 
     if (next) {
-      renderObject.nextLink = `/note/${next.timestamp}`;
+      renderObject.nextLink = `/notes/${next.timestamp}`;
     }
 
     rendered.push({
@@ -262,13 +262,13 @@ exports.build = async function build(baseUrl, dev, compileCss) {
   // Write the rendered templates to the public directory.
   await Promise.all([
     writeFile(buildPaths.public('index.html'), indexHtml),
-    writeFile(buildPaths.public('notes.html'), notesHtml),
+    writeFile(buildPaths.public('notes', 'index.html'), notesHtml),
     writeFile(buildPaths.public('about.html'), aboutHtml),
     writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     writeFile(buildPaths.public('404.html'), fourOhFourHtml),
     ...renderedPosts.map(post => writeFile(buildPaths.public('blog', post.filename), post.html)),
-    ...renderedNotes.map(note => writeFile(buildPaths.public('note', note.filename), note.html)),
+    ...renderedNotes.map(note => writeFile(buildPaths.public('notes', note.filename), note.html)),
     ...tags.map(tag => writeFile(buildPaths.public('tags', tag.filename), tag.rendered)),
     writeFile(buildPaths.public('atom.xml'), atomXML),
     writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)
