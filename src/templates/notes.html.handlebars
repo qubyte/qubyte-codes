@@ -30,7 +30,7 @@
     {{#notes}}
     <article class="h-note">
       <header>
-        <time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time>
+        <a href="/note/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
       </header>
       <div class="e-content">
         <p>{{content}}</p>

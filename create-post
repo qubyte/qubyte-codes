@@ -53,7 +53,7 @@ async function cli() {
     return process.exit(1);
   }
 
-  await writeFile(filePath, `---\n${details}---\n`);
+  await writeFile(filePath, `---\n${details}\n---\n`);
 
   console.log('Created:', filePath); // eslint-disable-line no-console
 }

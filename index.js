@@ -49,7 +49,11 @@ async function loadPostFiles(baseUrl, renderer) {
   const filenames = await readdir(buildPaths.src('posts'));
   const filePaths = filenames.map(filename => buildPaths.src('posts', filename));
 
-  return Promise.all(filePaths.map(filePath => loadPostFile(filePath, baseUrl, renderer)));
+  const posts = await Promise.all(filePaths.map(filePath => loadPostFile(filePath, baseUrl, renderer)));
+
+  posts.sort((a, b) => b.date - a.date);
+
+  return posts;
 }
 
 async function loadNoteFile(filePath) {
@@ -189,8 +193,6 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
 function renderNotes(notes, noteTemplate, cssPath, dev) {
   const rendered = [];
 
-  notes.slice().sort((a, b) => b - a);
-
   for (let i = 0; i < notes.length; i++) {
     const previous = notes[i - 1];
     const note = notes[i];
@@ -237,8 +239,6 @@ exports.build = async function build(baseUrl, dev, compileCss) {
     // Get the timestamp for the last post update.
     getLastPostCommit()
   ]);
-
-  posts.sort((a, b) => b.date - a.date);
 
   // Make a list of tags found in posts.
   const tags = collateTags(posts, cssPath, dev, templates.tag);
