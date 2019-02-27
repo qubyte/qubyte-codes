@@ -258,3 +258,9 @@ input {
   text-align: center;
   font-size: 3rem;
 }
+
+.h-note + .h-note::before {
+  content: '⁂';
+  display: block;
+  text-align: center;
+}
