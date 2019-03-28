@@ -9,11 +9,11 @@ https://qubyte.codes.
 
 The generator is mostly contained in [index.js](./index.js).
 [build.js](./build.js) serves as an entry point, which is used by a build script
-in the `package.json` file. Most of the heavy lifting is done by marked, which
-takes markdown files and processes them into HTML content. It's not perfect
-though, and some monkey patching was necessary. The
-[lib/render.js](./lib/render.js) module does this patching, and adds syntax
-highlighting and formatting of mathematical formulae.
+in the `package.json` file. Most of the heavy lifting is done by
+[marked](https://github.com/markedjs/marked), which takes markdown files and
+processes them into HTML content. It's not perfect though, and some monkey
+patching was necessary. The [lib/render.js](./lib/render.js) module does this
+patching, and adds syntax highlighting and formatting of mathematical formulae.
 
 [serve.js](./serve.js) is a development server. Any time a file in src changes
 it'll rebuild and refresh the browser.
@@ -35,11 +35,11 @@ still a part of this repo, [nginx.conf](./nginx.conf).
 
 ## CSS
 
-I use postcss to compile CSS. In principle, the CSS can be used without it.
-For the most part postcss is used to concatenate and minify the CSS. The
-output CSS is hashed, and the hash becomes part of the CSS filename. This is
-to cache-bust, since CSS is given a long or indefinite cache time to avoid it
-blocking page loads after it has been loaded once.
+I use [postcss](https://postcss.org/) to compile CSS. In principle, the CSS can
+be used without it. For the most part postcss is used to concatenate and minify
+the CSS. The output CSS is hashed, and the hash becomes part of the CSS
+filename. This is to cache-bust, since CSS is given a long or indefinite cache
+time to avoid it blocking page loads after it has been loaded once.
 
 With the exception of syntax highlighting, this site largely avoids using
 classes in HTML as hooks for CSS, instead asserting that semantic markup
@@ -57,7 +57,7 @@ accordingly. One of these is also the favicon.
 ## Posts
 
 This directory contains the markdown sources of published posts. Each post has
-a YAML preamble containing various metadata:
+a JSON preamble containing various metadata:
 
 | name | description |
 | ---- | ----------- |
