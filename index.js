@@ -6,13 +6,14 @@ const { URLSearchParams } = require('url');
 const { loadPartial, loadTemplate } = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const slugify = require('slugify');
-const makeRenderer = require('./lib/render');
+const render = require('./lib/render');
 const generateCss = require('./lib/generate-css');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
 const cpy = require('cpy');
 const cheerio = require('cheerio');
 const exec = require('util').promisify(require('child_process').exec);
 const publications = require('./src/publications');
+const baseUrl = process.env.URL;
 
 // Plucks and wraps the first paragraph out of post HTML to form a snippet.
 function makeSnippet(rendered) {
@@ -25,7 +26,7 @@ function makeSnippet(rendered) {
 
 // Renders markdown to an HTML snippet. Also calculates various data which will
 // be used by templates.
-async function loadPostFile(filePath, baseUrl, renderer) {
+async function loadPostFile(filePath) {
   const post = await readFile(filePath, 'utf8');
   const digested = frontMatter(post);
   const { title, datetime } = digested.attributes;
@@ -34,7 +35,7 @@ async function loadPostFile(filePath, baseUrl, renderer) {
   digested.slug = `${slugify(title, { lower: true, remove: /[#$*_+~.()'"!:@]/g })}`;
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
-  digested.content = await renderer(digested.body);
+  digested.content = await render(digested.body);
   digested.snippet = makeSnippet(digested.content);
   digested.title = `Qubyte Codes - ${title}`;
   digested.date = new Date(datetime);
@@ -45,11 +46,11 @@ async function loadPostFile(filePath, baseUrl, renderer) {
 // Loads and renders post source files and their metadata. Note, this renders
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
-async function loadPostFiles(baseUrl, renderer) {
+async function loadPostFiles() {
   const filenames = await readdir(buildPaths.src('posts'));
   const filePaths = filenames.map(filename => buildPaths.src('posts', filename));
 
-  const posts = await Promise.all(filePaths.map(filePath => loadPostFile(filePath, baseUrl, renderer)));
+  const posts = await Promise.all(filePaths.map(filePath => loadPostFile(filePath)));
 
   posts.sort((a, b) => b.date - a.date);
 
@@ -140,7 +141,7 @@ async function getLastPostCommit() {
 }
 
 // Copies static files and directories to a fresh public directory.
-async function copyFiles(compileCss) {
+async function copyFiles() {
   await mkdir(buildPaths.public());
 
   await Promise.all([
@@ -157,10 +158,6 @@ async function copyFiles(compileCss) {
       buildPaths.public()
     )
   ]);
-
-  if (!compileCss) {
-    await cpy(buildPaths.src('css', '*.css'), buildPaths.public('css'));
-  }
 }
 
 // Renders the blog template with each post.
@@ -218,24 +215,22 @@ function renderNotes(notes, noteTemplate, cssPath, dev) {
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-exports.build = async function build(baseUrl, dev, compileCss) {
+
+exports.build = async function build(dev) {
   const [templates] = await Promise.all([
     // Load and compile markdown template files into functions.
     loadTemplates(),
     // Do this first, since it also creates the public directory tree.
-    copyFiles(compileCss)
+    copyFiles()
   ]);
-
-  // Make a renderer instance which is sensitive to external domains.
-  const renderer = makeRenderer(baseUrl);
 
   const [posts, notes, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
-    loadPostFiles(baseUrl, renderer),
+    loadPostFiles(render),
     // Load short form notes, render them to HTML content, and sort them by date descending.
     loadNoteFiles(),
     // Compile CSS to a single file, with a unique filename.
-    compileCss ? await generateCss(path.join(__dirname, 'src', 'css'), 'entry.css') : '/css/entry.css',
+    generateCss(path.join(__dirname, 'src', 'css'), 'entry.css', 'default'),
     // Get the timestamp for the last post update.
     getLastPostCommit()
   ]);

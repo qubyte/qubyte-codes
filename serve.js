@@ -7,10 +7,11 @@ const Toisu = require('toisu');
 const Router = require('toisu-router');
 const serveStatic = require('toisu-static');
 const chokidar = require('chokidar');
-const { EventEmitter } = require('events');
+const { EventEmitter, once } = require('events');
 const exec = require('util').promisify(require('child_process').exec);
 
 const buildEmitter = new EventEmitter();
+const port = 8000;
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
@@ -23,7 +24,7 @@ async function build() {
   console.time('Build succeeded');
 
   try {
-    await exec('npm run build -- --no-css-compile --dev --no-warnings');
+    await exec('npm run build -- --dev', { env: { ...process.env, URL: `http://localhost:${port}` } });
     console.timeEnd('Build succeeded');
     buildEmitter.emit('new');
   } catch (e) {
@@ -41,7 +42,7 @@ const router = new Router();
 // connection. Whenever a build completes, a message is sent to the browser,
 // which then reloads.
 router.route('/events', {
-  GET: [function (req, res) {
+  GET: [async function (req, res) {
     // Sending back these headers and a newline is sufficient for the browser
     // to know that this endpoint is speaking in EventSource.
     res.writeHead(200, {
@@ -63,14 +64,12 @@ router.route('/events', {
     buildEmitter.on('new', write);
 
     // Unregister the listener on the buildEmitter when the connection closes.
+    await once(req, 'close');
+
     // This avoids a memory leak.
-    return new Promise(resolve => {
-      req.once('close', () => {
-        buildEmitter.removeListener('new', write);
-        clearInterval(interval);
-        resolve();
-      });
-    });
+    buildEmitter.removeListener('new', write);
+
+    clearInterval(interval);
   }]
 });
 
@@ -80,6 +79,6 @@ app.use(router.middleware);
 // addresses and / to their proper HTML files.
 app.use(serveStatic('public', { extensions: ['html'] }));
 
-http.createServer(app.requestHandler).listen(8000, () => {
-  console.log('listening on http://localhost:8000');
+http.createServer(app.requestHandler).listen(port, () => {
+  console.log(`listening on http://localhost:${port}`);
 });
