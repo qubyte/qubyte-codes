@@ -1,5 +1,7 @@
 'use strict';
 
+console.log(process.env)
+
 const frontMatter = require('front-matter');
 const path = require('path');
 const { URLSearchParams } = require('url');
