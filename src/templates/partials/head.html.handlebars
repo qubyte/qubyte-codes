@@ -4,6 +4,27 @@
 <title>{{title}}</title>
 <script src="/index.js" async></script>
 <link href="{{cssPath}}" rel="stylesheet">
+<script>
+  function invert() {
+    document.documentElement.style.setProperty('--base-background-lum', '10%');
+    document.documentElement.style.setProperty('--base-foreground-lum', '90%');
+    document.documentElement.style.setProperty('--code-invert', '100%');
+  }
+
+  const isDarkMode = localStorage.getItem('darkmode') === 'true';
+
+  if (isDarkMode) {
+    invert();
+
+    //document.documentElement.style.setProperty('--background-color-main', '#000');
+    //document.documentElement.style.setProperty('--background-color-alt', '#000');
+    //document.documentElement.style.setProperty('--standout-color-main', '#0b0');
+    //document.documentElement.style.setProperty('--standout-color-alt', '#0b0');
+    //document.documentElement.style.setProperty('--border-style', 'dashed');
+    //document.documentElement.style.setProperty('--font', 'monospace');
+    //document.documentElement.style.setProperty('--code-color', '#fff');
+  }
+</script>
 <link href="/manifest.json" rel="manifest">
 <link rel="apple-touch-icon" href="/icons/icon-64.png">
 <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144.png">
