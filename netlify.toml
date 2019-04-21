@@ -1,5 +1,7 @@
 [build]
   Functions = "functions"
+  publish = "public"
+  command = "npm run build"
 
 [[headers]]
   for = "*"
@@ -12,6 +14,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "no-cache"
     Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    x-testing-pretty = "true"
 
 [[headers]]
   for = "*.css"
