@@ -3,7 +3,7 @@
 const frontMatter = require('front-matter');
 const path = require('path');
 const { URLSearchParams } = require('url');
-const { loadPartial, loadTemplate } = require('./lib/templates');
+const loadTemplates = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const slugify = require('slugify');
 const render = require('./lib/render');
@@ -76,36 +76,6 @@ async function loadNoteFiles() {
 
     return { timestamp, datetime: new Date(parseInt(timestamp, 10)).toISOString(), content };
   }));
-}
-
-// Loads and compiles template files into functions.
-async function loadTemplates() {
-  await Promise.all([
-    'head.html',
-    'copyright.html',
-    'share-tweet.html',
-    'share-toot.html',
-    'webmention-form.html',
-    'email-me.html',
-    'comments-tweet.html',
-    'comments-toot.html'
-  ].map(loadPartial));
-
-  const [index, notes, tag, about, blog, note, publications, fourOhFour, webmention, atom, sitemap] = await Promise.all([
-    'index.html',
-    'notes.html',
-    'tag.html',
-    'about.html',
-    'blog.html',
-    'note.html',
-    'publications.html',
-    '404.html',
-    'webmention.html',
-    'atom.xml',
-    'sitemap.txt'
-  ].map(loadTemplate));
-
-  return { index, notes, tag, about, blog, note, publications, fourOhFour, webmention, atom, sitemap };
 }
 
 // Compiles a list of tags from post metadata.
@@ -226,7 +196,7 @@ exports.build = async function build(dev) {
 
   const [posts, notes, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
-    loadPostFiles(render),
+    loadPostFiles(),
     // Load short form notes, render them to HTML content, and sort them by date descending.
     loadNoteFiles(),
     // Compile CSS to a single file, with a unique filename.
@@ -245,7 +215,7 @@ exports.build = async function build(dev) {
   const notesHtml = templates.notes({ notes, cssPath, dev, title: 'Qubyte Codes - Notes' });
   const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
   const publicationsHtml = templates.publications({ cssPath, dev, publications });
-  const fourOhFourHtml = templates.fourOhFour({ cssPath, dev, title: 'Qubyte Cods - Not Found' });
+  const fourOhFourHtml = templates[404]({ cssPath, dev, title: 'Qubyte Cods - Not Found' });
   const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
