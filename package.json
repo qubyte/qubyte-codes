@@ -22,7 +22,7 @@
     "highlight.js": "9.15.6",
     "marked": "0.6.2",
     "mathjax-node": "2.1.1",
-    "node-fetch": "2.3.0",
+    "node-fetch": "2.5.0",
     "postcss": "7.0.14",
     "postcss-calc": "7.0.1",
     "postcss-custom-properties": "8.0.10",
@@ -33,7 +33,7 @@
     "xml2js": "0.4.19"
   },
   "devDependencies": {
-    "chokidar": "2.1.5",
+    "chokidar": "3.0.0",
     "eslint": "5.16.0",
     "eslint-config-qubyte": "2.0.0",
     "inquirer": "6.3.1",
