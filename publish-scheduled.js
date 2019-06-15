@@ -10,7 +10,7 @@ const { GITHUB_REPOSITORY: ownerRepo, GITHUB_TOKEN: token } = process.env;
 
 // TODO: It's possible to do this in a single commit using the git trees API.
 async function publishFile(filename, content) {
-  const createRes = await fetch(`https://api.github.com/${ownerRepo}/contents/posts/${filename}?access_token=${token}`, {
+  const createRes = await fetch(`https://api.github.com/repos/${ownerRepo}/contents/posts/${filename}?access_token=${token}`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
     body: JSON.stringify({ message: `Publishes ${filename}`, content: content.toString('base64') })
@@ -20,7 +20,7 @@ async function publishFile(filename, content) {
     throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
   }
 
-  const deleteRes = await fetch(`https://api.github.com/${ownerRepo}/contents/scheduled/${filename}?access_token=${token}`, {
+  const deleteRes = await fetch(`https://api.github.com/repos.${ownerRepo}/contents/scheduled/${filename}?access_token=${token}`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'DELETE',
     body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.` })
