@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf public && node build.js",
     "start": "node serve.js",
-    "publish-scheduled": "node publish-schheduled.js",
+    "publish-scheduled": "node publish-scheduled.js",
     "lint": "eslint ."
   },
   "author": "Mark Stanley Everitt",
