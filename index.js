@@ -47,10 +47,10 @@ async function loadPostFile(filePath) {
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
 async function loadPostFiles() {
-  const filenames = await readdir(buildPaths.src('posts'));
-  const filePaths = filenames.map(filename => buildPaths.src('posts', filename));
+  const filenames = await readdir(path.join(__dirname, 'posts'));
+  const filePaths = filenames.map(filename => path.join(__dirname, 'posts', filename));
 
-  const posts = await Promise.all(filePaths.map(filePath => loadPostFile(filePath)));
+  const posts = await Promise.all(filePaths.map(loadPostFile));
 
   posts.sort((a, b) => b.date - a.date);
 
@@ -101,7 +101,7 @@ function collateTags(posts, cssPath, dev, template) {
 
 // Gets the date of the most recent edit to the post files.
 async function getLastPostCommit() {
-  const { stdout, stderr } = await exec('git log -1 --format=%ct src/posts');
+  const { stdout, stderr } = await exec('git log -1 --format=%ct posts');
 
   if (stderr) {
     throw new Error(`Error from exec: ${stderr}`);
