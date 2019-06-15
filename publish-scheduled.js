@@ -6,11 +6,15 @@ const { readFile, readdir } = require('fs').promises;
 const { join } = require('path');
 const frontMatter = require('front-matter');
 const fetch = require('node-fetch');
-const { GITHUB_REPOSITORY: ownerRepo, GITHUB_TOKEN: token } = process.env;
+const { GITHUB_REPOSITORY, GITHUB_TOKEN } = process.env;
 
 // TODO: It's possible to do this in a single commit using the git trees API.
 async function publishFile(filename, content) {
-  const createRes = await fetch(`https://api.github.com/repos/${ownerRepo}/contents/posts/${filename}?access_token=${token}`, {
+  const createUrl = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/posts/${filename}`;
+
+  console.log(createUrl);
+
+  const createRes = await fetch(`${createUrl}?access_token=${GITHUB_TOKEN}`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
     body: JSON.stringify({ message: `Publishes ${filename}`, content: content.toString('base64') })
@@ -20,7 +24,11 @@ async function publishFile(filename, content) {
     throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
   }
 
-  const deleteRes = await fetch(`https://api.github.com/repos.${ownerRepo}/contents/scheduled/${filename}?access_token=${token}`, {
+  const deleteUrl = `https://api.github.com/repos.${GITHUB_REPOSITORY}/contents/scheduled/${filename}`;
+
+  console.log(deleteUrl);
+
+  const deleteRes = await fetch(`${deleteUrl}?access_token=${GITHUB_TOKEN}`, {
     headers: { 'Content-Type': 'application/json' },
     method: 'DELETE',
     body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.` })

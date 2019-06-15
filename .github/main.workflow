@@ -1,6 +1,6 @@
 workflow "Publish Scheduled Posts" {
   resolves = ["npm run publish-scheduled"]
-  on = "schedule(0 * * * *)"
+  on = "schedule(0/15 * * * *)"
 }
 
 action "npm install" {
