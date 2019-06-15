@@ -17,7 +17,7 @@ async function publishFile(filename, content) {
   const createRes = await fetch(createUrl, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `token ${GITHUB_TOKEN}`
+      Authorization: `Bearer ${GITHUB_TOKEN}`
     },
     method: 'POST',
     body: JSON.stringify({ message: `Publishes ${filename}`, content: content.toString('base64') })
@@ -34,7 +34,7 @@ async function publishFile(filename, content) {
   const deleteRes = await fetch(deleteUrl, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `token ${GITHUB_TOKEN}`
+      Authorization: `Bearer ${GITHUB_TOKEN}`
     },
     method: 'DELETE',
     body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.` })
