@@ -6,6 +6,7 @@ const { readFile, readdir } = require('fs').promises;
 const { join } = require('path');
 const frontMatter = require('front-matter');
 const fetch = require('node-fetch');
+const { createHash } = require('crypto');
 const { GITHUB_REPOSITORY, GITHUB_TOKEN } = process.env;
 
 // TODO: It's possible to do this in a single commit using the git trees API.
@@ -29,6 +30,14 @@ async function publishFile(filename, content) {
 
   const deleteUrl = `https://api.github.com/repos.${GITHUB_REPOSITORY}/contents/scheduled/${filename}`;
 
+  const blobHash = createHash('sha1')
+    .update('blob ')
+    .update(content.length)
+    .update('\0')
+    .update(content)
+    .digest()
+    .toString('hex');
+
   console.log(deleteUrl);
 
   const deleteRes = await fetch(deleteUrl, {
@@ -37,7 +46,7 @@ async function publishFile(filename, content) {
       Authorization: `Bearer ${GITHUB_TOKEN}`
     },
     method: 'DELETE',
-    body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.` })
+    body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.`, sha: blobHash })
   });
 
   if (!deleteRes.ok) {
