@@ -19,7 +19,7 @@ async function publishFile(filename, content) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${GITHUB_TOKEN}`
     },
-    method: 'POST',
+    method: 'PUT',
     body: JSON.stringify({ message: `Publishes ${filename}`, content: content.toString('base64') })
   });
 
