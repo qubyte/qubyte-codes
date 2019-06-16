@@ -28,7 +28,7 @@ async function publishFile(filename, content) {
     throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
   }
 
-  const deleteUrl = `https://api.github.com/repos.${GITHUB_REPOSITORY}/contents/scheduled/${filename}`;
+  const deleteUrl = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/scheduled/${filename}`;
 
   const blobHash = createHash('sha1')
     .update('blob ')
