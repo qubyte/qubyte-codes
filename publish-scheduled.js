@@ -26,7 +26,7 @@ async function publishFile(filename, content) {
     .digest()
     .toString('hex');
 
-  const deleteRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/scheduled/${filename}`, {
+  const deleteRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/content/scheduled/${filename}`, {
     headers: headers(),
     method: 'DELETE',
     body: JSON.stringify({
@@ -39,7 +39,7 @@ async function publishFile(filename, content) {
     throw new Error(`Unexpected response when deleting scheduled/${filename} (${deleteRes.status}): ${await deleteRes.text()}`);
   }
 
-  const createRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/posts/${filename}`, {
+  const createRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/content/posts/${filename}`, {
     headers: headers(),
     method: 'PUT',
     body: JSON.stringify({
@@ -54,7 +54,7 @@ async function publishFile(filename, content) {
 }
 
 async function checkAndPublishScheduled() {
-  const filenames = await readdir(join(__dirname, 'scheduled'));
+  const filenames = await readdir(join(__dirname, 'content', 'scheduled'));
 
   let failures = false;
 
