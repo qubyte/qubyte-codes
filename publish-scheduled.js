@@ -63,7 +63,7 @@ async function checkAndPublishScheduled() {
       continue;
     }
 
-    const path = join(__dirname, 'scheduled', filename);
+    const path = join(__dirname, 'content', 'scheduled', filename);
     const post = await readFile(path);
     const publishDate = new Date(frontMatter(post.toString('utf8')).attributes.datetime);
 
