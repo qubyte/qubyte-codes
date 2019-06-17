@@ -30,7 +30,7 @@ async function publishFile(filename, content) {
     headers: headers(),
     method: 'DELETE',
     body: JSON.stringify({
-      message: `Deletes ${filename} from scheduled directory\n\n[skip ci].`,
+      message: `Deletes ${filename} from scheduled directory.\n\n[skip ci]`,
       sha: blobHash
     })
   });
