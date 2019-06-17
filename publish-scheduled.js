@@ -9,27 +9,15 @@ const fetch = require('node-fetch');
 const { createHash } = require('crypto');
 const { GITHUB_REPOSITORY, GITHUB_TOKEN } = process.env;
 
+function headers() {
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${GITHUB_TOKEN}`
+  };
+}
+
 // TODO: It's possible to do this in a single commit using the git trees API.
 async function publishFile(filename, content) {
-  const createUrl = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/posts/${filename}`;
-
-  console.log(createUrl);
-
-  const createRes = await fetch(createUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`
-    },
-    method: 'PUT',
-    body: JSON.stringify({ message: `Publishes ${filename}`, content: content.toString('base64') })
-  });
-
-  if (!createRes.ok) {
-    throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
-  }
-
-  const deleteUrl = `https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/scheduled/${filename}`;
-
   const blobHash = createHash('sha1')
     .update('blob ')
     .update(content.length)
@@ -38,19 +26,30 @@ async function publishFile(filename, content) {
     .digest()
     .toString('hex');
 
-  console.log(deleteUrl);
-
-  const deleteRes = await fetch(deleteUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${GITHUB_TOKEN}`
-    },
+  const deleteRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/scheduled/${filename}`, {
+    headers: headers(),
     method: 'DELETE',
-    body: JSON.stringify({ message: `Deletes ${filename} from scheduled directory.`, sha: blobHash })
+    body: JSON.stringify({
+      message: `Deletes ${filename} from scheduled directory\n\n[skip ci].`,
+      sha: blobHash
+    })
   });
 
   if (!deleteRes.ok) {
     throw new Error(`Unexpected response when deleting scheduled/${filename} (${deleteRes.status}): ${await deleteRes.text()}`);
+  }
+
+  const createRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/posts/${filename}`, {
+    headers: headers(),
+    method: 'PUT',
+    body: JSON.stringify({
+      message: `Publishes ${filename}.`,
+      content: content.toString('base64')
+    })
+  });
+
+  if (!createRes.ok) {
+    throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
   }
 }
 
