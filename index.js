@@ -47,8 +47,8 @@ async function loadPostFile(filePath) {
 // content to HTML, but *not* pages. The HTML created here must be placed within
 // a template to form a complete page.
 async function loadPostFiles() {
-  const filenames = await readdir(path.join(__dirname, 'posts'));
-  const filePaths = filenames.map(filename => path.join(__dirname, 'posts', filename));
+  const filenames = await readdir(path.join(__dirname, 'content', 'posts'));
+  const filePaths = filenames.map(filename => path.join(__dirname, 'content', 'posts', filename));
 
   const posts = await Promise.all(filePaths.map(loadPostFile));
 
@@ -71,7 +71,7 @@ async function loadNoteFiles() {
   filenames.sort((a, b) => b - a);
 
   return Promise.all(filenames.map(async timestamp => {
-    const filePath = buildPaths.src('notes', timestamp);
+    const filePath = path.join(__dirname, 'content', 'notes', timestamp);
     const content = await loadNoteFile(filePath);
 
     return { timestamp, datetime: new Date(parseInt(timestamp, 10)).toISOString(), content };
@@ -120,9 +120,9 @@ async function copyFiles() {
     mkdir(buildPaths.public('tags')),
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
     cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
-    cpy(buildPaths.src('scripts', '*.js'), buildPaths.public('scripts')),
-    cpy(buildPaths.src('papers', '*'), buildPaths.public('papers')),
-    cpy(buildPaths.src('notes-media', '*'), buildPaths.public('notes-media')),
+    cpy(path.join(__dirname, 'content', 'scripts', '*.js'), buildPaths.public('scripts')),
+    cpy(path.join(__dirname, 'content', 'papers', '*'), buildPaths.public('papers')),
+    cpy(path.join(__dirname, 'content', 'notes-media', '*'), buildPaths.public('notes-media')),
     cpy(
       ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
       buildPaths.public()
