@@ -66,7 +66,7 @@ async function loadNoteFile(filePath) {
 }
 
 async function loadNoteFiles() {
-  const filenames = await readdir(buildPaths.src('notes'));
+  const filenames = await readdir(path.join(__dirname, 'content', 'notes'));
 
   filenames.sort((a, b) => b - a);
 
@@ -101,7 +101,7 @@ function collateTags(posts, cssPath, dev, template) {
 
 // Gets the date of the most recent edit to the post files.
 async function getLastPostCommit() {
-  const { stdout, stderr } = await exec('git log -1 --format=%ct posts');
+  const { stdout, stderr } = await exec('git log -1 --format=%ct content/posts');
 
   if (stderr) {
     throw new Error(`Error from exec: ${stderr}`);
