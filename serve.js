@@ -15,7 +15,7 @@ const port = 8000;
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
-const watcher = chokidar.watch(['src'])
+const watcher = chokidar.watch(['src', 'content'])
   .once('ready', build);
 
 // Refreshes the build, and after alerts the browser to refresh itself.
