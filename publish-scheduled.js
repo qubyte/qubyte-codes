@@ -20,7 +20,7 @@ function headers() {
 async function publishFile(filename, content) {
   const blobHash = createHash('sha1')
     .update('blob ')
-    .update(content.length)
+    .update(content.length.toString())
     .update('\0')
     .update(content)
     .digest()
