@@ -9,6 +9,8 @@ const fetch = require('node-fetch');
 const { createHash } = require('crypto');
 const { GITHUB_REPOSITORY, GITHUB_TOKEN } = process.env;
 
+readFile('.git/config', 'utf8').then(console.log, console.error);
+
 function headers() {
   return {
     'Content-Type': 'application/json',
