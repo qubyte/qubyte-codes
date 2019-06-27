@@ -85,7 +85,7 @@ async function publishPosts(filenames) {
     parents: [branch.commit.sha]
   });
   console.log('Updating master head to:', commit.sha);
-  await updateJson('git/refs/heads/master', {
+  await updateJson('/git/refs/heads/master', {
     sha: commit.sha
   });
 }
