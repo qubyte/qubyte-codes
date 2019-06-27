@@ -17,7 +17,7 @@ action "npm run publish-scheduled" {
 
 workflow "Update Copyright Notice" {
   resolves = ["HTTP client"]
-  on = "schedule(0/10 * * * *)"
+  on = "schedule(0 0 1 1 *)"
 }
 
 action "HTTP client" {
