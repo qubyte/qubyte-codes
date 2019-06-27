@@ -28,7 +28,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const filenames = await readdir(join(__dirname, 'content', 'scheduled'));
+  const filenames = await readdir(join(__dirname, 'content', 'posts'));
   const markdownFilenames = filenames.filter(fn => !fn.startsWith('.') && fn.endsWith('.md'));
   const metadata = await Promise.all(markdownFilenames.map(async fn => {
     const content = await readFile(fn, 'utf8');
