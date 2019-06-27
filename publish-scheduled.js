@@ -45,14 +45,13 @@ async function checkNeedsPublish() {
   console.log('current:', publishedNowSlugs.length, publishedNowSlugs.sort());
   console.log('next:', shouldBePublishedSlugs.length, shouldBePublishedSlugs.sort());
 
-  // Check for newly valid posts.
-  return shouldBePublishedSlugs.some(slug => !publishedNowSlugs.includes(slug));
+  return shouldBePublishedSlugs.filter(slug => !publishedNowSlugs.includes(slug));
 }
 
 async function run() {
   const shouldPublish = await checkNeedsPublish();
 
-  if (!shouldPublish) {
+  if (!shouldPublish.length) {
     return console.log('Nothing to publish right now.');
   }
 
@@ -62,7 +61,7 @@ async function run() {
     throw new Error(`Unexpected status from Netlify ${res.statys}: ${await res.text()}`);
   }
 
-  console.log('Sent build hook request to Netlify.');
+  console.log('Sent build hook request to Netlify to publish', shouldPublish.join(', '));
 }
 
 run()
