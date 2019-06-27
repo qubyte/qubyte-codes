@@ -57,7 +57,7 @@ async function publishPosts(filenames) {
   console.log('Getting branch.');
   const branch = await getJson('/branches/master');
   console.log('Getting root tree for branch sha:', branch.commit.sha);
-  const rootTree = await getJson(`/git/trees/${branch.commit.sha}?recursive`);
+  const rootTree = await getJson(`/git/trees/${branch.commit.sha}?recursive=true`);
 
   if (rootTree.truncated) {
     throw new Error('Tree truncated.');
@@ -68,7 +68,6 @@ async function publishPosts(filenames) {
     base_tree: rootTree.sha,
     tree: rootTree.tree.map(leaf => {
       const copied = { ...leaf };
-      console.log(copied.path);
 
       if (scheduledPaths.includes(copied.path)) {
         copied.path = copied.path.replace('scheduled', 'posts');
