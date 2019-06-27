@@ -55,7 +55,7 @@ async function publishPosts(filenames) {
   const scheduledPaths = filenames.map(fn => `scheduled/${fn}`);
   const branch = await getJson('/branches/master');
   const rootTree = await getJson(`/git/trees/${branch.commit.sha}`);
-  const contentLeaf = rootTree.find(leaf => leaf.path === 'content' && leaf.type === 'tree');
+  const contentLeaf = rootTree.tree.find(leaf => leaf.path === 'content' && leaf.type === 'tree');
   const contentTree = await getJson(`/git/trees/${contentLeaf.sha}?recursive=true`);
 
   if (contentTree.truncated) {
@@ -107,4 +107,8 @@ async function checkAndPublishScheduled() {
   console.log('Published:', toPublish.join(', '));
 }
 
-checkAndPublishScheduled();
+checkAndPublishScheduled()
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
