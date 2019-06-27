@@ -39,14 +39,14 @@ async function checkNeedsPublish() {
       slug: createSlug(meta.attributes.title)
     };
   }));
-  const shouldBePublished = metadata.filter(meta => meta.datetime < Date.now());
+  const shouldBePublished = metadata.filter(meta => meta.timestamp < Date.now());
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
   console.log('current:', publishedNowSlugs.length, publishedNowSlugs.sort());
   console.log('next:', shouldBePublishedSlugs.length, shouldBePublishedSlugs.sort());
 
   // Check for newly valid posts.
-  return shouldBePublishedSlugs.every(slug => publishedNowSlugs.includes(slug));
+  return shouldBePublishedSlugs.some(slug => !publishedNowSlugs.includes(slug));
 }
 
 async function run() {
