@@ -31,7 +31,7 @@ async function checkNeedsPublish() {
   const filenames = await readdir(join(__dirname, 'content', 'posts'));
   const markdownFilenames = filenames.filter(fn => !fn.startsWith('.') && fn.endsWith('.md'));
   const metadata = await Promise.all(markdownFilenames.map(async fn => {
-    const content = await readFile(fn, 'utf8');
+    const content = await readFile(join(__dirname, 'content', 'posts', fn), 'utf8');
     const meta = frontMatter(content);
 
     return {
