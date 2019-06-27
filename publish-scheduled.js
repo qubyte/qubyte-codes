@@ -5,115 +5,65 @@
 const { readFile, readdir } = require('fs').promises;
 const { join } = require('path');
 const frontMatter = require('front-matter');
+const createSlug = require('./lib/create-slug');
 const fetch = require('node-fetch');
 
-const baseUrl = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}`;
-const Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+async function getPublishedBlogSlugs() {
+  const res = await fetch('https://qubyte.codes/sitemap.txt');
+  const body = await res.text();
 
-async function getJson(path) {
-  const url = `${baseUrl}${path}`;
-  const res = await fetch(url, { headers: { Authorization } });
-
-  if (res.status !== 200) {
-    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
+  if (!res.ok) {
+    throw new Error(`Unexpected status from qubyte.codes ${res.status}: ${body}`);
   }
 
-  return res.json();
+  const blogEntryBaseUrl = 'https://qubyte.codes/blog/';
+
+  const slugs = body
+    .split('\n')
+    .filter(url => url.startsWith('https://qubyte.codes/blog/'))
+    .map(url => url.slice(blogEntryBaseUrl.length));
+
+  return slugs;
 }
 
-async function sendJson(path, data) {
-  const url = `${baseUrl}${path}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { Authorization, 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-
-  if (res.status !== 201) {
-    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
-  }
-
-  return res.json();
-}
-
-async function updateJson(path, data) {
-  const url = `${baseUrl}${path}`;
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: { Authorization, 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-
-  if (res.status !== 200) {
-    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
-  }
-
-  return res.json();
-}
-
-async function publishPosts(filenames) {
-  const scheduledPaths = filenames.map(fn => `content/scheduled/${fn}`);
-  console.log('Tree paths to change', scheduledPaths);
-  console.log('Getting branch.');
-  const branch = await getJson('/branches/master');
-  console.log('Getting root tree for branch sha:', branch.commit.sha);
-  const rootTree = await getJson(`/git/trees/${branch.commit.sha}?recursive=true`);
-
-  if (rootTree.truncated) {
-    throw new Error('Tree truncated.');
-  }
-
-  console.log('Sending new tree.');
-  const newTree = await sendJson('/git/trees', {
-    base_tree: rootTree.sha,
-    tree: rootTree.tree.map(leaf => {
-      const copied = { ...leaf };
-
-      if (scheduledPaths.includes(copied.path)) {
-        copied.path = copied.path.replace('scheduled', 'posts');
-        console.log('Rewrote path:', copied.path);
-      }
-
-      return copied;
-    })
-  });
-  console.log('Creating a commit.');
-  const commit = await sendJson('/git/commits', {
-    message: 'Publishes posts.',
-    tree: newTree.sha,
-    parents: [branch.commit.sha]
-  });
-  console.log('Updating master head to:', commit.sha);
-  await updateJson('/git/refs/heads/master', {
-    sha: commit.sha
-  });
-}
-
-async function checkAndPublishScheduled() {
+async function checkNeedsPublish() {
+  const publishedNowSlugs = await getPublishedBlogSlugs();
   const filenames = await readdir(join(__dirname, 'content', 'scheduled'));
-  const toPublish = [];
+  const markdownFilenames = filenames.filter(fn => !fn.startsWith('.') && fn.endsWith('.md'));
+  const metadata = await Promise.all(markdownFilenames.map(async fn => {
+    const content = await readFile(fn, 'utf8');
+    const meta = frontMatter(content);
 
-  for (const filename of filenames) {
-    if (filename.startsWith('.') || !filename.endsWith('.md')) {
-      continue;
-    }
+    return {
+      timestamp: new Date(meta.attributes.datetime).getTime(),
+      slug: createSlug(meta.attributes.title)
+    };
+  }));
+  const shouldBePublished = metadata.filter(meta => meta.datetime < Date.now());
+  const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
-    const path = join(__dirname, 'content', 'scheduled', filename);
-    const post = await readFile(path);
-    const publishDate = new Date(frontMatter(post.toString('utf8')).attributes.datetime);
-
-    if (publishDate.getTime() < Date.now()) {
-      toPublish.push(filename);
-    }
-  }
-
-  await publishPosts(toPublish);
-
-  console.log('Published:', toPublish.join(', '));
+  // Check for newly valid posts.
+  return shouldBePublishedSlugs.every(slug => publishedNowSlugs.includes(slug));
 }
 
-// checkAndPublishScheduled()
-//   .catch(error => {
-//     console.error(error);
-//     process.exit(1);
-//   });
+async function run() {
+  const shouldPublish = await checkNeedsPublish();
+
+  if (!shouldPublish) {
+    return console.log('Nothing to publish right now.');
+  }
+
+  const res = await fetch(process.env.NETLIFY_BUILD_HOOK_URL, { method: 'POST' });
+
+  if (!res.ok) {
+    throw new Error(`Unexpected status from Netlify ${res.statys}: ${await res.text()}`);
+  }
+
+  console.log('Sent build hook request to Netlify.');
+}
+
+run()
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });

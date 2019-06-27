@@ -5,7 +5,7 @@ const path = require('path');
 const { URLSearchParams } = require('url');
 const loadTemplates = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
-const slugify = require('slugify');
+const createSlug = require('./lib/create-slug');
 const render = require('./lib/render');
 const generateCss = require('./lib/generate-css');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
@@ -32,7 +32,7 @@ async function loadPostFile(filePath) {
   const { title, datetime } = digested.attributes;
 
   digested.isBlogEntry = true;
-  digested.slug = `${slugify(title, { lower: true, remove: /[#$*_+~.()'"!:@]/g })}`;
+  digested.slug = createSlug(title);
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
   digested.content = await render(digested.body);
@@ -51,10 +51,11 @@ async function loadPostFiles() {
   const filePaths = filenames.map(filename => path.join(__dirname, 'content', 'posts', filename));
 
   const posts = await Promise.all(filePaths.map(loadPostFile));
+  const now = Date.now();
 
   posts.sort((a, b) => b.date - a.date);
 
-  return posts;
+  return posts.filter(post => post.date.getTime() < now && !post.attributes.draft);
 }
 
 async function loadNoteFile(filePath) {
