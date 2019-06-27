@@ -6,59 +6,87 @@ const { readFile, readdir } = require('fs').promises;
 const { join } = require('path');
 const frontMatter = require('front-matter');
 const fetch = require('node-fetch');
-const { createHash } = require('crypto');
-const { GITHUB_REPOSITORY, GITHUB_TOKEN } = process.env;
 
-readFile('.git/config', 'utf8').then(console.log, console.error);
+const baseUrl = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}`;
+const Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
-function headers() {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${GITHUB_TOKEN}`
-  };
+async function getJson(path) {
+  const url = `${baseUrl}${path}`;
+  const res = await fetch(url, { headers: { Authorization } });
+
+  if (res.status !== 200) {
+    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
+  }
+
+  return res.json();
 }
 
-// TODO: It's possible to do this in a single commit using the git trees API.
-async function publishFile(filename, content) {
-  const blobHash = createHash('sha1')
-    .update('blob ')
-    .update(content.length.toString())
-    .update('\0')
-    .update(content)
-    .digest()
-    .toString('hex');
-
-  const deleteRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/content/scheduled/${filename}`, {
-    headers: headers(),
-    method: 'DELETE',
-    body: JSON.stringify({
-      message: `Deletes ${filename} from scheduled directory.\n\n[skip ci]`,
-      sha: blobHash
-    })
+async function sendJson(path, data) {
+  const url = `${baseUrl}${path}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
   });
 
-  if (!deleteRes.ok) {
-    throw new Error(`Unexpected response when deleting scheduled/${filename} (${deleteRes.status}): ${await deleteRes.text()}`);
+  if (res.status !== 201) {
+    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
   }
 
-  const createRes = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/content/posts/${filename}`, {
-    headers: headers(),
-    method: 'PUT',
-    body: JSON.stringify({
-      message: `Publishes ${filename}.`,
-      content: content.toString('base64')
-    })
+  return res.json();
+}
+
+async function updateJson(path, data) {
+  const url = `${baseUrl}${path}`;
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: { Authorization, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
   });
 
-  if (!createRes.ok) {
-    throw new Error(`Unexpected response when creating posts/${filename} (${createRes.status}): ${await createRes.text()}`);
+  if (res.status !== 200) {
+    throw new Error(`Unexpected status from GitHub ${res.status}: ${await res.text()}`);
   }
+
+  return res.json();
+}
+
+async function publishPosts(filenames) {
+  const scheduledPaths = filenames.map(fn => `scheduled/${fn}`);
+  const branch = await getJson('/branches/master');
+  const rootTree = await getJson(`/git/trees/${branch.commit.sha}`);
+  const contentLeaf = rootTree.find(leaf => leaf.path === 'content' && leaf.type === 'tree');
+  const contentTree = await getJson(`/git/trees/${contentLeaf.sha}?recursive=true`);
+
+  if (contentTree.truncated) {
+    throw new Error('Content tree truncated.');
+  }
+
+  const newTree = await sendJson('/git/trees?recursive=true', {
+    base_tree: contentTree.sha,
+    tree: contentTree.tree.map(leaf => {
+      const copied = { ...leaf };
+
+      if (scheduledPaths.includes(copied.path)) {
+        copied.path = copied.path.replace('scheduled', 'posts');
+      }
+
+      return copied;
+    })
+  });
+  const commit = await sendJson('/git/commits', {
+    message: 'Publishes posts.',
+    tree: newTree.sha,
+    parents: ['branch.commit.sha']
+  });
+  await updateJson('git/refs/heads/master', {
+    sha: commit.sha
+  });
 }
 
 async function checkAndPublishScheduled() {
   const filenames = await readdir(join(__dirname, 'content', 'scheduled'));
-
-  let failures = false;
+  const toPublish = [];
 
   for (const filename of filenames) {
     if (filename.startsWith('.') || !filename.endsWith('.md')) {
@@ -70,20 +98,13 @@ async function checkAndPublishScheduled() {
     const publishDate = new Date(frontMatter(post.toString('utf8')).attributes.datetime);
 
     if (publishDate.getTime() < Date.now()) {
-      try {
-        console.log(`Publishing ${filename}`);
-        await publishFile(filename, post);
-        console.log(`Published ${filename}`);
-      } catch (e) {
-        console.error(e.stack);
-        failures = true;
-      }
+      toPublish.push(filename);
     }
   }
 
-  if (failures) {
-    process.exit(1);
-  }
+  await publishPosts(toPublish);
+
+  console.log('Published:', toPublish.join(', '));
 }
 
 checkAndPublishScheduled();
