@@ -42,6 +42,9 @@ async function checkNeedsPublish() {
   const shouldBePublished = metadata.filter(meta => meta.datetime < Date.now());
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
+  console.log('current:', publishedNowSlugs.length, publishedNowSlugs.sort());
+  console.log('next:', shouldBePublishedSlugs.length, shouldBePublishedSlugs.sort());
+
   // Check for newly valid posts.
   return shouldBePublishedSlugs.every(slug => publishedNowSlugs.includes(slug));
 }
