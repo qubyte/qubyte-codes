@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "chokidar": "3.0.1",
-    "eslint": "6.0.0",
+    "eslint": "6.0.1",
     "eslint-config-qubyte": "2.0.0",
     "inquirer": "6.4.1",
     "toisu": "3.0.6",
