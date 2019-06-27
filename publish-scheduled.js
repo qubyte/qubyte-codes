@@ -52,23 +52,20 @@ async function updateJson(path, data) {
 }
 
 async function publishPosts(filenames) {
-  const scheduledPaths = filenames.map(fn => `scheduled/${fn}`);
+  const scheduledPaths = filenames.map(fn => `content/scheduled/${fn}`);
   console.log('Getting branch.');
   const branch = await getJson('/branches/master');
   console.log('Getting root tree for branch sha:', branch.commit.sha);
-  const rootTree = await getJson(`/git/trees/${branch.commit.sha}`);
-  const contentLeaf = rootTree.tree.find(leaf => leaf.path === 'content' && leaf.type === 'tree');
-  console.log('Getting content tree for branch sha:', contentLeaf.sha);
-  const contentTree = await getJson(`/git/trees/${contentLeaf.sha}?recursive=true`);
+  const rootTree = await getJson(`/git/trees/${branch.commit.sha}?recursive`);
 
-  if (contentTree.truncated) {
-    throw new Error('Content tree truncated.');
+  if (rootTree.truncated) {
+    throw new Error('Tree truncated.');
   }
 
   console.log('Sending new tree.');
   const newTree = await sendJson('/git/trees', {
-    base_tree: contentTree.sha,
-    tree: contentTree.tree.map(leaf => {
+    base_tree: rootTree.sha,
+    tree: rootTree.tree.map(leaf => {
       const copied = { ...leaf };
 
       if (scheduledPaths.includes(copied.path)) {
