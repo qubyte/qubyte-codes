@@ -53,6 +53,7 @@ async function updateJson(path, data) {
 
 async function publishPosts(filenames) {
   const scheduledPaths = filenames.map(fn => `content/scheduled/${fn}`);
+  console.log('Tree paths to change', scheduledPaths);
   console.log('Getting branch.');
   const branch = await getJson('/branches/master');
   console.log('Getting root tree for branch sha:', branch.commit.sha);
@@ -70,6 +71,7 @@ async function publishPosts(filenames) {
 
       if (scheduledPaths.includes(copied.path)) {
         copied.path = copied.path.replace('scheduled', 'posts');
+        console.log('Rewrote path:', copied.path);
       }
 
       return copied;
