@@ -14,3 +14,14 @@ action "npm run publish-scheduled" {
   args = "run publish-scheduled"
   secrets = ["NETLIFY_BUILD_HOOK_URL"]
 }
+
+workflow "Update Copyright Notice" {
+  resolves = ["HTTP client"]
+  on = "schedule(0/10 * * * *)"
+}
+
+action "HTTP client" {
+  uses = "swinton/httpie.action@8ab0a0e926d091e0444fcacd5eb679d2e2d4ab3d"
+  args = ["POST", "$NETLIFY_BUILD_HOOK_URL"]
+  secrets = ["NETLIFY_BUILD_HOOK_URL"]
+}
