@@ -112,8 +112,8 @@ async function checkAndPublishScheduled() {
   console.log('Published:', toPublish.join(', '));
 }
 
-checkAndPublishScheduled()
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
+// checkAndPublishScheduled()
+//   .catch(error => {
+//     console.error(error);
+//     process.exit(1);
+//   });
