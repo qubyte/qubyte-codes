@@ -68,6 +68,7 @@ async function publishPosts(filenames) {
     base_tree: rootTree.sha,
     tree: rootTree.tree.map(leaf => {
       const copied = { ...leaf };
+      console.log(copied.path);
 
       if (scheduledPaths.includes(copied.path)) {
         copied.path = copied.path.replace('scheduled', 'posts');
