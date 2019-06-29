@@ -12,7 +12,7 @@
     "lint": "eslint ."
   },
   "author": "Mark Stanley Everitt",
-  "license": "Private",
+  "license": "AGPL-3.0-only",
   "private": true,
   "dependencies": {
     "cheerio": "1.0.0-rc.3",

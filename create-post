@@ -32,11 +32,12 @@ async function cli() {
   const details = JSON.stringify({
     datetime: now.toISOString().replace(/\.[0-9]{3}Z/, 'Z'),
     updatedAt: null,
+    draft: true,
     title,
     description,
     tags
   }, null, 2);
-  const filePath = path.join(__dirname, 'content', 'drafts', `${date}.md`);
+  const filePath = path.join(__dirname, 'content', 'posts', `${date}.md`);
 
   let stats;
 
