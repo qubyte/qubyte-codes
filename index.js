@@ -2,7 +2,6 @@
 
 const frontMatter = require('front-matter');
 const path = require('path');
-const { URLSearchParams } = require('url');
 const loadTemplates = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const createSlug = require('./lib/create-slug');
