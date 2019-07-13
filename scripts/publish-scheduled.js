@@ -5,7 +5,7 @@
 const { readFile, readdir } = require('fs').promises;
 const { join } = require('path');
 const frontMatter = require('front-matter');
-const createSlug = require('./lib/create-slug');
+const createSlug = require('../lib/create-slug');
 const fetch = require('node-fetch');
 
 async function getPublishedBlogSlugs() {

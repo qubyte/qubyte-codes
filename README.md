@@ -45,25 +45,22 @@ With the exception of syntax highlighting, this site largely avoids using
 classes in HTML as hooks for CSS, instead asserting that semantic markup
 provides sufficient context for CSS to stick to.
 
-## Drafts
-
-The [drafts](./src/drafts) directory contains incomplete or abandoned posts.
-
 ## Icons
 
 The blog is a Progressive Web App (PWA), and has icons at various sizes
 accordingly. One of these is also the favicon.
 
-## Posts
+## Posts (content)
 
 This directory contains the markdown sources of published posts. Each post has
 a JSON preamble containing various metadata:
 
 | name | description |
 | ---- | ----------- |
-| datetime | The publication timestamp of the post. |
+| datetime | The publication timestamp of the post. If this is in the future then the post will not be rendered. |
 | title | The title of the post. |
 | description | The description of the post. This is added to the HTML head as a meta description and a meta twitter description. The latter is used by twitter to populate twitter cards. |
+| draft | If true, the post will not be rendered. |
 | tags | A list of tags. These are displayed at the top of each entry, and are also used when sharing to twitter and mastodon via the links at the bottom of each post. |
 | webmentions | A list of [webmentions](https://indieweb.org/Webmention) from other blogs. |
 | scripts | A list of objects with an `href` field. These will be added as module type scripts to the head of the post. |
