@@ -1,6 +1,6 @@
 'use strict';
 
-const blogEngine = require('./');
+const blogEngine = require('..');
 const baseUrl = process.argv[2];
 const devMode = process.argv.includes('--dev');
 

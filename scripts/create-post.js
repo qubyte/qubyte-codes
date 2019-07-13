@@ -1,9 +1,7 @@
-#!/usr/bin/env node
-
 'use strict';
 
 const inquirer = require('inquirer');
-const tagsPath = './tags.txt';
+const tagsPath = '../tags.txt';
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
