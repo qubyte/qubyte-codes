@@ -33,7 +33,7 @@
 }
 
 body {
-  font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
+  font-family: 'Titillium Web' sans-serif;
   text-align: left;
   overscroll-behavior-y: none;
   background-color: var(--background-color-main);
@@ -42,11 +42,13 @@ body {
 }
 
 h1 {
+  font-family: 'Chakra Petch' sans-serif;
   font-size: 2rem;
   padding: 1rem 0;
 }
 
 h2 {
+  font-family: 'Chakra Petch' sans-serif;
   font-size: 2rem;
   margin: 1rem 0;
 }
@@ -56,7 +58,7 @@ h3 {
   margin: 1rem 0;
 }
 
-p {
+p, summary {
   margin: 1rem 0;
   line-height: 1.5em;
 }
