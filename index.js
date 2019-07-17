@@ -119,6 +119,7 @@ async function copyFiles() {
     mkdir(buildPaths.public('notes')),
     mkdir(buildPaths.public('tags')),
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
+    cpy(buildPaths.src('fonts', '*'), buildPaths.public('fonts')),
     cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
     cpy(path.join(__dirname, 'content', 'scripts', '*.js'), buildPaths.public('scripts')),
     cpy(path.join(__dirname, 'content', 'papers', '*'), buildPaths.public('papers')),
