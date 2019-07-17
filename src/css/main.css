@@ -45,8 +45,15 @@ body {
 h1, h2 {
   font-family: 'Chakra Petch' sans-serif;
   font-size: 2rem;
-  padding: 1rem 0;
   word-spacing: normal;
+}
+
+h1 {
+  padding: 1rem 0;
+}
+
+h2 {
+  margin: 1rem 0;
 }
 
 h3 {
