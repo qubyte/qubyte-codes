@@ -21,6 +21,16 @@
     Cache-Control = "max-age=315360000, public, immutable"
 
 [[headers]]
+  for = "*.woff"
+  [headers.values]
+    Cache-Control = "max-age=315360000, public, immutable"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "max-age=315360000, public, immutable"
+
+[[headers]]
   for = "/sw.js"
   [headers.values]
     Content-Security-Policy = "connect-src *;"
