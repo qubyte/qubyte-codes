@@ -39,18 +39,14 @@ body {
   background-color: var(--background-color-main);
   color: var(--standout-color-main);
   min-height: 100vh;
+  word-spacing: 0.15em;
 }
 
-h1 {
+h1, h2 {
   font-family: 'Chakra Petch' sans-serif;
   font-size: 2rem;
   padding: 1rem 0;
-}
-
-h2 {
-  font-family: 'Chakra Petch' sans-serif;
-  font-size: 2rem;
-  margin: 1rem 0;
+  word-spacing: normal;
 }
 
 h3 {
@@ -143,7 +139,8 @@ header {
 }
 
 .tags {
-  float: right;
+  display: block;
+  margin-top: 0.5rem;
 }
 
 .quote {
