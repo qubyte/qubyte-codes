@@ -3,6 +3,7 @@
   font-family: 'Chakra Petch';
   font-style: normal;
   font-weight: 400;
+  font-display: fallback;
   src: local('Chakra Petch Regular'), local('ChakraPetch-Regular'),
        url('/fonts/chakra-petch-v2-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
        url('/fonts/chakra-petch-v2-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
@@ -13,6 +14,7 @@
   font-family: 'Titillium Web';
   font-style: normal;
   font-weight: 400;
+  font-display: fallback;
   src: local('Titillium Web Regular'), local('TitilliumWeb-Regular'),
        url('/fonts/titillium-web-v7-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
        url('/fonts/titillium-web-v7-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
