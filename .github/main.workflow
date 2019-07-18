@@ -25,3 +25,25 @@ action "HTTP client" {
   args = ["POST", "$NETLIFY_BUILD_HOOK_URL"]
   secrets = ["NETLIFY_BUILD_HOOK_URL"]
 }
+
+workflow "Run tests" {
+  on = "push"
+  resolves = ["npm test", "npm run lint"]
+}
+
+action "npm ci" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  args = "ci --unsafe-perm"
+}
+
+action "npm test" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  args = "test"
+  needs = ["npm ci"]
+}
+
+action "npm run lint" {
+  uses = "actions/npm@59b64a598378f31e49cb76f27d6f3312b582f680"
+  needs = ["npm ci"]
+  args = "run lint"
+}
