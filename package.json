@@ -27,7 +27,7 @@
     "node-fetch": "2.6.0",
     "postcss": "7.0.17",
     "postcss-calc": "7.0.1",
-    "postcss-custom-properties": "9.0.1",
+    "postcss-custom-properties": "9.0.2",
     "postcss-import": "12.0.1",
     "postcss-preset-env": "6.7.0",
     "rimraf": "2.6.3",
@@ -39,7 +39,7 @@
     "eslint": "6.0.1",
     "eslint-config-qubyte": "2.0.0",
     "inquirer": "6.5.0",
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "toisu": "3.0.6",
     "toisu-router": "4.1.0",
     "toisu-static": "2.0.0"
