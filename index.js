@@ -33,6 +33,7 @@ async function loadPostFile(filePath) {
   digested.isBlogEntry = true;
   digested.slug = createSlug(title);
   digested.canonical = `${baseUrl}/blog/${digested.slug}`;
+  digested.localUrl = `/blog/${digested.slug}`;
   digested.mastodonHandle = '@qubyte@mastodon.social';
   digested.content = await render(digested.body);
   digested.snippet = makeSnippet(digested.content);
@@ -74,7 +75,12 @@ async function loadNoteFiles() {
     const filePath = path.join(__dirname, 'content', 'notes', timestamp);
     const content = await loadNoteFile(filePath);
 
-    return { timestamp, datetime: new Date(parseInt(timestamp, 10)).toISOString(), content };
+    return {
+      timestamp,
+      localUrl: `/notes/${timestamp}`,
+      datetime: new Date(parseInt(timestamp, 10)).toISOString(),
+      content
+    };
   }));
 }
 
@@ -94,7 +100,7 @@ function collateTags(posts, cssPath, dev, template) {
 
   return Object.entries(tags).map(([name, posts]) => ({
     name,
-    rendered: template({ posts, tag: name, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
+    rendered: template({ posts, tag: name, localUrl: `/tags/${name}`, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
     filename: `${name}.html`
   }));
 }
@@ -142,11 +148,11 @@ function renderPosts(posts, blogTemplate, cssPath, dev) {
     const renderObject = { ...post, cssPath, dev };
 
     if (previous) {
-      renderObject.prevLink = `/blog/${previous.slug}`;
+      renderObject.prevLink = previous.localUrl;
     }
 
     if (next) {
-      renderObject.nextLink = `/blog/${next.slug}`;
+      renderObject.nextLink = next.localUrl;
     }
 
     rendered.push({
@@ -168,11 +174,11 @@ function renderNotes(notes, noteTemplate, cssPath, dev) {
     const renderObject = { ...note, cssPath, dev };
 
     if (previous) {
-      renderObject.prevLink = `/notes/${previous.timestamp}`;
+      renderObject.prevLink = previous.localUrl;
     }
 
     if (next) {
-      renderObject.nextLink = `/notes/${next.timestamp}`;
+      renderObject.nextLink = next.localUrl;
     }
 
     rendered.push({
@@ -212,12 +218,12 @@ exports.build = async function build(dev) {
   // Render various pages.
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
   const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
-  const indexHtml = templates.index({ posts, cssPath, dev, title: 'Qubyte Codes' });
-  const notesHtml = templates.notes({ notes, cssPath, dev, title: 'Qubyte Codes - Notes' });
-  const aboutHtml = templates.about({ cssPath, dev, title: 'Qubyte Codes - about' });
-  const publicationsHtml = templates.publications({ cssPath, dev, publications });
-  const fourOhFourHtml = templates[404]({ cssPath, dev, title: 'Qubyte Cods - Not Found' });
-  const webmentionHtml = templates.webmention({ cssPath, dev, title: 'Qubyte Codes - webmention' });
+  const indexHtml = templates.index({ posts, cssPath, dev, localUrl: '/', title: 'Qubyte Codes' });
+  const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Qubyte Codes - Notes' });
+  const aboutHtml = templates.about({ cssPath, dev, localUrl: '/about', title: 'Qubyte Codes - about' });
+  const publicationsHtml = templates.publications({ cssPath, dev, localUrl: '/publications', publications });
+  const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Qubyte Cods - Not Found' });
+  const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Qubyte Codes - webmention' });
 
   // Render the atom feed.
   const atomXML = templates.atom({ posts, updated });
