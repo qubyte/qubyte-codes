@@ -5,6 +5,7 @@
   "main": "index.js",
   "repository": "github:qubyte/qubyte-codes",
   "scripts": {
+    "postbuild": "if [ \"$NODE_ENV\" = \"production\" ]; then git clone --bare . public/qubyte-codes.git; cd public/qubyte-codes.git; git --bare update-server-info; fi",
     "test": "URL=https://qubyte.codes.test/ mocha --recursive tests",
     "build": "rimraf public && node scripts/build.js",
     "start": "node scripts/serve.js",
