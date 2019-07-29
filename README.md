@@ -15,7 +15,7 @@ processes them into HTML content. It's not perfect though, and some monkey
 patching was necessary. The [lib/render.js](./lib/render.js) module does this
 patching, and adds syntax highlighting and formatting of mathematical formulae.
 
-[serve.js](./serve.js) is a development server. Any time a file in src changes
+[serve.js](./scripts/serve.js) is a development server. Any time a file in src changes
 it'll rebuild and refresh the browser.
 
 Source files are contained in the [src](./src) directory. Upon build, a public
@@ -23,7 +23,7 @@ directory is created, and some of these source files copied over (ones which
 need no compilation, such as the service worker). Other files must be generated
 and are placed in the public directory as they are created.
 
-[create-post](./create-post) is a little CLI utility to create a new markdown
+[create-post](./scripts/create-post) is a little CLI utility to create a new markdown
 post file with pre-populated metadata.
 
 [netlify.toml](./netlify.toml) is a configuration for
