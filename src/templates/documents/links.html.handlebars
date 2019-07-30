@@ -10,10 +10,7 @@
     {{> nav }}
   </header>
   <main>
-    <article>
-      <h2>Thank you!</h2>
-      <p>Come back later to see your link (I check them myself).</p>
-    </article>
+    {{#links}}{{> link }}{{/links}}
   </main>
   <footer>
     {{> copyright }}

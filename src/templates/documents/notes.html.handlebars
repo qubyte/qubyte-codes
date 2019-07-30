@@ -4,33 +4,13 @@
   {{> head }}
 </head>
 <body>
-  <p class="h-card" hidden>
-    <img
-      class="u-photo"
-      srcset="/img/profile-300.jpg 300w,/img/profile-150.jpg 150w"
-      sizes="150px"
-      src="/img/profile-150.jpg"
-      alt="A profile picture."
-    >
-    <a class="p-name u-url" href="https://qubyte.codes">Mark Stanley Everitt</a>
-    <a class="u-email" href="mailto:hello@qubyte.codes">hello@qubyte.codes</a>
-    <span class="p-nickname">qubyte</span>
-  </p>
+  {{> hcard-basics }}
   <header>
     <h1><a href="/">Qubyte Codes</a></h1>
     {{> nav }}
   </header>
   <main>
-    {{#notes}}
-    <article class="h-note">
-      <header>
-        <a href="/notes/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
-      </header>
-      <div class="e-content">
-        <p>{{content}}</p>
-      </div>
-    </article>
-    {{/notes}}
+    {{#notes}}{{> note }}{{/notes}}
   </main>
   <footer>
     {{> copyright }}
