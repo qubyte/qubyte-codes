@@ -126,11 +126,16 @@ function collateTags(posts, cssPath, dev, template) {
     }
   }
 
-  return Object.entries(tags).map(([name, posts]) => ({
-    name,
-    rendered: template({ posts, tag: name, localUrl: `/tags/${name}`, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
-    filename: `${name}.html`
-  }));
+  return Object.entries(tags).map(([name, posts]) => {
+    const localUrl = `/tags/${name}`;
+
+    return {
+      name,
+      localUrl: `/tags/${name}`,
+      rendered: template({ posts, tag: name, localUrl, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
+      filename: `${name}.html`
+    };
+  });
 }
 
 // Gets the date of the most recent edit to the post files.
@@ -287,7 +292,7 @@ exports.build = async function build(dev) {
   const atomXML = templates.atom({ posts, updated });
 
   // Render the site map.
-  const sitemapTxt = templates.sitemap({ posts, tags });
+  const sitemapTxt = templates.sitemap({ posts, tags, links });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
