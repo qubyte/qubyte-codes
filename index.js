@@ -84,6 +84,34 @@ async function loadNoteFiles() {
   }));
 }
 
+async function loadLinkFile(filePath) {
+  const link = await readFile(filePath, 'utf8');
+  const parsed = new URLSearchParams(link);
+  const repostOf = parsed.get('repost-of');
+  const summary = parsed.get('summary');
+
+  return { repostOf, summary };
+}
+
+async function loadLinkFiles() {
+  const filenames = await readdir(path.join(__dirname, 'content', 'links'));
+
+  filenames.sort((a, b) => b - a);
+
+  return Promise.all(filenames.map(async timestamp => {
+    const filePath = path.join(__dirname, 'content', 'links', timestamp);
+    const { repostOf, summary } = await loadLinkFile(filePath);
+
+    return {
+      timestamp,
+      localUrl: `/links/${timestamp}`,
+      datetime: new Date(parseInt(timestamp, 10)).toISOString(),
+      repostOf,
+      summary
+    };
+  }));
+}
+
 // Compiles a list of tags from post metadata.
 function collateTags(posts, cssPath, dev, template) {
   const tags = {};
@@ -123,6 +151,7 @@ async function copyFiles() {
   await Promise.all([
     mkdir(buildPaths.public('blog')),
     mkdir(buildPaths.public('notes')),
+    mkdir(buildPaths.public('links')),
     mkdir(buildPaths.public('tags')),
     cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
     cpy(buildPaths.src('fonts', '*'), buildPaths.public('fonts')),
@@ -190,6 +219,32 @@ function renderNotes(notes, noteTemplate, cssPath, dev) {
   return rendered;
 }
 
+function renderLinks(links, linkTemplate, cssPath, dev) {
+  const rendered = [];
+
+  for (let i = 0; i < links.length; i++) {
+    const previous = links[i - 1];
+    const link = links[i];
+    const next = links[i + 1];
+    const renderObject = { ...link, cssPath, dev };
+
+    if (previous) {
+      renderObject.prevLink = previous.localUrl;
+    }
+
+    if (next) {
+      renderObject.nextLink = next.localUrl;
+    }
+
+    rendered.push({
+      html: linkTemplate(renderObject),
+      filename: `${link.timestamp}.html`
+    });
+  }
+
+  return rendered;
+}
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
@@ -201,11 +256,12 @@ exports.build = async function build(dev) {
     copyFiles()
   ]);
 
-  const [posts, notes, cssPath, updated] = await Promise.all([
+  const [posts, notes, links, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
     loadPostFiles(),
-    // Load short form notes, render them to HTML content, and sort them by date descending.
+    // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
     loadNoteFiles(),
+    loadLinkFiles(),
     // Compile CSS to a single file, with a unique filename.
     generateCss(path.join(__dirname, 'src', 'css'), 'entry.css', 'default'),
     // Get the timestamp for the last post update.
@@ -218,8 +274,10 @@ exports.build = async function build(dev) {
   // Render various pages.
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
   const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
+  const renderedLinks = renderLinks(links, templates.link, cssPath, dev);
   const indexHtml = templates.index({ posts, cssPath, dev, localUrl: '/', title: 'Qubyte Codes' });
   const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Qubyte Codes - Notes' });
+  const linksHtml = templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Qubyte Codes - Links' });
   const aboutHtml = templates.about({ cssPath, dev, localUrl: '/about', title: 'Qubyte Codes - about' });
   const publicationsHtml = templates.publications({ cssPath, dev, localUrl: '/publications', publications });
   const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Qubyte Cods - Not Found' });
@@ -235,12 +293,14 @@ exports.build = async function build(dev) {
   await Promise.all([
     writeFile(buildPaths.public('index.html'), indexHtml),
     writeFile(buildPaths.public('notes', 'index.html'), notesHtml),
+    writeFile(buildPaths.public('links', 'index.html'), linksHtml),
     writeFile(buildPaths.public('about.html'), aboutHtml),
     writeFile(buildPaths.public('publications.html'), publicationsHtml),
     writeFile(buildPaths.public('webmention.html'), webmentionHtml),
     writeFile(buildPaths.public('404.html'), fourOhFourHtml),
     ...renderedPosts.map(post => writeFile(buildPaths.public('blog', post.filename), post.html)),
     ...renderedNotes.map(note => writeFile(buildPaths.public('notes', note.filename), note.html)),
+    ...renderedLinks.map(link => writeFile(buildPaths.public('links', link.filename), link.html)),
     ...tags.map(tag => writeFile(buildPaths.public('tags', tag.filename), tag.rendered)),
     writeFile(buildPaths.public('atom.xml'), atomXML),
     writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)
