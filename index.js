@@ -87,10 +87,12 @@ async function loadNoteFiles() {
 async function loadLinkFile(filePath) {
   const link = await readFile(filePath, 'utf8');
   const parsed = new URLSearchParams(link);
+  const bookmarkOf = parsed.get('bookmark-of');
   const repostOf = parsed.get('repost-of');
-  const summary = parsed.get('summary');
+  const name = parsed.get('name');
+  const content = parsed.get('content');
 
-  return { repostOf, summary };
+  return { bookmarkOf, repostOf, name, content };
 }
 
 async function loadLinkFiles() {
@@ -100,14 +102,16 @@ async function loadLinkFiles() {
 
   return Promise.all(filenames.map(async timestamp => {
     const filePath = path.join(__dirname, 'content', 'links', timestamp);
-    const { repostOf, summary } = await loadLinkFile(filePath);
+    const { bookmarkOf, repostOf, name, content } = await loadLinkFile(filePath);
 
     return {
       timestamp,
       localUrl: `/links/${timestamp}`,
       datetime: new Date(parseInt(timestamp, 10)).toISOString(),
+      bookmarkOf,
       repostOf,
-      summary
+      name,
+      content
     };
   }));
 }

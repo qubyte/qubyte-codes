@@ -2,5 +2,10 @@
   <header>
     <a href="/links/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
   </header>
-  <a class="u-repost-of" href={{repostOf}} target="_blank" rel="noopener">{{summary}}</a>
+  {{#if bookmarkOf}}
+  <p>{{content}}</p>
+  <a class="u-bookmark-of" href={{bookmarkOf}} target="_blank" rel="noopener">{{name}}</a>
+  {{else if repostOf}}
+  <a class="u-repost-of" href={{repostOf}} target="_blank" rel="noopener">{{name}}</a>
+  {{/if}}
 </article>
