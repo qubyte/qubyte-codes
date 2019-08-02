@@ -1,62 +1,14 @@
 'use strict';
 
-const frontMatter = require('front-matter');
 const path = require('path');
 const loadTemplates = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
-const createSlug = require('./lib/create-slug');
-const render = require('./lib/render');
 const generateCss = require('./lib/generate-css');
+const loadPostFiles = require('./lib/load-post-files');
 const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
 const cpy = require('cpy');
-const cheerio = require('cheerio');
 const exec = require('util').promisify(require('child_process').exec);
 const publications = require('./src/publications');
-const baseUrl = process.env.URL;
-
-// Plucks and wraps the first paragraph out of post HTML to form a snippet.
-function makeSnippet(rendered) {
-  const innerHtml = cheerio.load(rendered)('p')
-    .html()
-    .slice(0, -1);
-
-  return `<p class="quote">${innerHtml}</p>`;
-}
-
-// Renders markdown to an HTML snippet. Also calculates various data which will
-// be used by templates.
-async function loadPostFile(filePath) {
-  const post = await readFile(filePath, 'utf8');
-  const digested = frontMatter(post);
-  const { title, datetime } = digested.attributes;
-
-  digested.isBlogEntry = true;
-  digested.slug = createSlug(title);
-  digested.canonical = `${baseUrl}/blog/${digested.slug}`;
-  digested.localUrl = `/blog/${digested.slug}`;
-  digested.mastodonHandle = '@qubyte@mastodon.social';
-  digested.content = await render(digested.body);
-  digested.snippet = makeSnippet(digested.content);
-  digested.title = `Qubyte Codes - ${title}`;
-  digested.date = new Date(datetime);
-
-  return digested;
-}
-
-// Loads and renders post source files and their metadata. Note, this renders
-// content to HTML, but *not* pages. The HTML created here must be placed within
-// a template to form a complete page.
-async function loadPostFiles() {
-  const filenames = await readdir(path.join(__dirname, 'content', 'posts'));
-  const filePaths = filenames.map(filename => path.join(__dirname, 'content', 'posts', filename));
-
-  const posts = await Promise.all(filePaths.map(loadPostFile));
-  const now = Date.now();
-
-  posts.sort((a, b) => b.date - a.date);
-
-  return posts.filter(post => post.date.getTime() < now && !post.attributes.draft);
-}
 
 async function loadNoteFile(filePath) {
   const note = await readFile(filePath, 'utf8');
@@ -257,7 +209,7 @@ function renderLinks(links, linkTemplate, cssPath, dev) {
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
-exports.build = async function build(dev) {
+exports.build = async function build(baseUrl, dev) {
   const [templates] = await Promise.all([
     // Load and compile markdown template files into functions.
     loadTemplates(),
@@ -267,7 +219,7 @@ exports.build = async function build(dev) {
 
   const [posts, notes, links, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
-    loadPostFiles(),
+    loadPostFiles(baseUrl),
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
     loadNoteFiles(),
     loadLinkFiles(),
