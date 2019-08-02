@@ -2,9 +2,11 @@
 
 const assert = require('assert').strict;
 const cheerio = require('cheerio');
-const render = require('../../lib/render');
+const makeRenderer = require('../../lib/make-renderer');
 
 describe('render', () => {
+  const render = makeRenderer(process.env.URL);
+
   it('is a function', () => {
     assert.equal(typeof render, 'function');
   });

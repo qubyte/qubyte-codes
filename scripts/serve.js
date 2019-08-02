@@ -3,20 +3,25 @@
 /* eslint no-console: off */
 
 const http = require('http');
+const path = require('path');
 const Toisu = require('toisu');
 const Router = require('toisu-router');
 const serveStatic = require('toisu-static');
 const chokidar = require('chokidar');
 const { EventEmitter, once } = require('events');
-const exec = require('util').promisify(require('child_process').exec);
+const util = require('util');
+const rimraf = util.promisify(require('rimraf'));
+const blogEngine = require('..');
 
 const buildEmitter = new EventEmitter();
 const port = 8000;
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
-const watcher = chokidar.watch(['src', 'content'])
-  .once('ready', build);
+const watcher = chokidar.watch([
+  path.join(__dirname, '..', 'src'),
+  path.join(__dirname, '..', 'content')
+]).once('ready', build);
 
 // Refreshes the build, and after alerts the browser to refresh itself.
 async function build() {
@@ -24,7 +29,8 @@ async function build() {
   console.time('Build succeeded');
 
   try {
-    await exec('npm run build -- --dev', { env: { ...process.env, URL: `http://localhost:${port}` } });
+    await rimraf(path.join(__dirname, '..', 'public'));
+    await blogEngine.build(`http://localhost:${port}`, true);
     console.timeEnd('Build succeeded');
     buildEmitter.emit('new');
   } catch (e) {
