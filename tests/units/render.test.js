@@ -2,29 +2,28 @@
 
 const assert = require('assert').strict;
 const cheerio = require('cheerio');
-const makeRenderer = require('../../lib/make-renderer');
+const render = require('../../lib/render');
+const URL = process.env.URL;
 
 describe('render', () => {
-  const render = makeRenderer(process.env.URL);
-
   it('is a function', () => {
     assert.equal(typeof render, 'function');
   });
 
   it('returns a promise', () => {
-    const result = render('');
+    const result = render('', URL);
 
     assert.ok(result instanceof Promise);
   });
 
   it('resolves to rendered content', async () => {
-    const rendered = await render('a paragraph');
+    const rendered = await render('a paragraph', URL);
 
     assert.equal(rendered.trim(), '<p>a paragraph</p>');
   });
 
   it('does not append target="_blank" or rel="noopener" attributes to anchors for absolute URLs within the site', async () => {
-    const rendered = await render(`[a link within the site](${process.env.URL}a/path)`);
+    const rendered = await render(`[a link within the site](${process.env.URL}a/path)`, URL);
 
     const $ = cheerio.load(rendered);
     const $a = $('a');
@@ -35,7 +34,7 @@ describe('render', () => {
   });
 
   it('does not append target="_blank" or rel="noopener" attributes to anchors for local URLs', async () => {
-    const rendered = await render('[a link within the site](/a/path)');
+    const rendered = await render('[a link within the site](/a/path)', URL);
 
     const $ = cheerio.load(rendered);
     const $a = $('a');
@@ -46,7 +45,7 @@ describe('render', () => {
   });
 
   it('does not append target="_blank" or rel="noopener" attributes to anchors for relative URLs', async () => {
-    const rendered = await render('[a link within the site](./a/path)');
+    const rendered = await render('[a link within the site](./a/path)', URL);
 
     const $ = cheerio.load(rendered);
     const $a = $('a');
@@ -57,7 +56,7 @@ describe('render', () => {
   });
 
   it('appends target="_blank" and rel="noopener" attributes to anchors for URLs to other sites', async () => {
-    const rendered = await render('[a link within the site](https://example.com/a/path)');
+    const rendered = await render('[a link within the site](https://example.com/a/path)', URL);
 
     const $ = cheerio.load(rendered);
     const $a = $('a');
@@ -68,7 +67,7 @@ describe('render', () => {
   });
 
   it('renders fenced blocks labelled as SVG in the img role and a title containing the original maths', async () => {
-    const rendered = await render('```mathematics\na=b\n```');
+    const rendered = await render('```mathematics\na=b\n```', URL);
 
     const $ = cheerio.load(rendered);
     const $svg = $('svg');
@@ -81,7 +80,7 @@ describe('render', () => {
   });
 
   it('removes inline style from rendered mathematics', async () => {
-    const rendered = await render('```mathematics\na=b\n```');
+    const rendered = await render('```mathematics\na=b\n```', URL);
 
     const $ = cheerio.load(rendered);
 
@@ -89,7 +88,7 @@ describe('render', () => {
   });
 
   it('removes a redundant ID from the title of the rendered mathematics', async () => {
-    const rendered = await render('```mathematics\na=b\n```');
+    const rendered = await render('```mathematics\na=b\n```', URL);
 
     const $ = cheerio.load(rendered);
 
