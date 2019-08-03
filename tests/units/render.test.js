@@ -87,11 +87,34 @@ describe('render', () => {
     assert.equal($('svg[style]').length, 0);
   });
 
-  it('removes a redundant ID from the title of the rendered mathematics', async () => {
+  it('updates the ID of the title of the rendered mathematics', async () => {
     const rendered = await render('```mathematics\na=b\n```', URL);
 
     const $ = cheerio.load(rendered);
+    const titles = $('svg title[id]');
 
-    assert.equal($('svg title[id]').length, 0);
+    assert.equal(titles.length, 1);
+    assert.equal($(titles[0]).attr('id'), 'maths-snippet-0');
+  });
+
+  it('increments the title ID to avoid collisions', async () => {
+    const rendered = await render('```mathematics\na=b\n```\ntext\n```mathematics\nc=d\n```', URL);
+
+    const $ = cheerio.load(rendered);
+    const titles = $('svg title[id]');
+
+    assert.equal(titles.length, 2);
+    assert.equal($(titles[0]).attr('id'), 'maths-snippet-0');
+    assert.equal($(titles[1]).attr('id'), 'maths-snippet-1');
+  });
+
+  it('sets aria-labelledby to the title element ID for each snipped', async () => {
+    const rendered = await render('```mathematics\na=b\n```\ntext\n```mathematics\nc=d\n```', URL);
+
+    const $ = cheerio.load(rendered);
+    const svgs = $('svg');
+
+    assert.equal($(svgs[0]).attr('aria-labelledby'), 'maths-snippet-0');
+    assert.equal($(svgs[1]).attr('aria-labelledby'), 'maths-snippet-1');
   });
 });
