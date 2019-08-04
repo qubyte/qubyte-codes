@@ -30,7 +30,7 @@ async function build() {
 
   try {
     await rimraf(path.join(__dirname, '..', 'public'));
-    await blogEngine.build(`http://localhost:${port}`, true);
+    await blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', dev: true });
     console.timeEnd('Build succeeded');
     buildEmitter.emit('new');
   } catch (e) {

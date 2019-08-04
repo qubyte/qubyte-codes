@@ -1,7 +1,7 @@
 <meta name="viewport" content="initial-scale=1">
 <link rel="icon" type="image/png" href="/icons/icon-64.png">
 <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed">
-<title>{{title}}</title>
+<title>{{baseTitle}}{{#if title}} - {{title}}{{/if}}</title>
 <script src="/index.js" async></script>
 <link href="{{cssPath}}" rel="stylesheet">
 <link href="/manifest.json" rel="manifest">
@@ -31,7 +31,7 @@
 <meta name="twitter:card" content="summary">
 <meta property="og:type" content="blog">
 <meta name="twitter:site" content="@qubyte">
-<meta name="twitter:title" property="og:title" content="{{attributes.title}}">
+<meta name="twitter:title" property="og:title" content="{{baseTitle}}{{#title}} - {{title}}{{/title}}">
 <meta name="twitter:description" property="og:description" content="{{attributes.description}}">
 <meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
 <meta name="twitter:image:alt" content="The qubyte.codes site icon.">

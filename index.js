@@ -88,7 +88,7 @@ function collateTags(posts, cssPath, dev, template) {
     return {
       name,
       localUrl: `/tags/${name}`,
-      rendered: template({ posts, tag: name, localUrl, cssPath, dev, title: `Qubyte Codes - Posts tagged as ${name}` }),
+      rendered: template({ posts, tag: name, localUrl, cssPath, dev, title: `Posts tagged as ${name}` }),
       filename: `${name}.html`
     };
   });
@@ -161,7 +161,7 @@ function renderNotes(notes, noteTemplate, cssPath, dev) {
     const previous = notes[i - 1];
     const note = notes[i];
     const next = notes[i + 1];
-    const renderObject = { ...note, cssPath, dev };
+    const renderObject = { ...note, cssPath, dev, title: 'Note' };
 
     if (previous) {
       renderObject.prevLink = previous.localUrl;
@@ -187,7 +187,7 @@ function renderLinks(links, linkTemplate, cssPath, dev) {
     const previous = links[i - 1];
     const link = links[i];
     const next = links[i + 1];
-    const renderObject = { ...link, cssPath, dev };
+    const renderObject = { ...link, cssPath, dev, title: 'Link' };
 
     if (previous) {
       renderObject.prevLink = previous.localUrl;
@@ -209,10 +209,10 @@ function renderLinks(links, linkTemplate, cssPath, dev) {
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
-exports.build = async function build(baseUrl, dev) {
+exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const [templates] = await Promise.all([
     // Load and compile markdown template files into functions.
-    loadTemplates(),
+    loadTemplates({ baseTitle }),
     // Do this first, since it also creates the public directory tree.
     copyFiles()
   ]);
@@ -236,13 +236,13 @@ exports.build = async function build(baseUrl, dev) {
   const renderedPosts = renderPosts(posts, templates.blog, cssPath, dev);
   const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
   const renderedLinks = renderLinks(links, templates.link, cssPath, dev);
-  const indexHtml = templates.index({ posts, cssPath, dev, localUrl: '/', title: 'Qubyte Codes' });
-  const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Qubyte Codes - Notes' });
-  const linksHtml = templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Qubyte Codes - Links' });
-  const aboutHtml = templates.about({ cssPath, dev, localUrl: '/about', title: 'Qubyte Codes - about' });
-  const publicationsHtml = templates.publications({ cssPath, dev, localUrl: '/publications', publications });
-  const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Qubyte Cods - Not Found' });
-  const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Qubyte Codes - webmention' });
+  const indexHtml = templates.index({ posts, cssPath, dev, localUrl: '/', title: 'Archive' });
+  const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Notes' });
+  const linksHtml = templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Links' });
+  const aboutHtml = templates.about({ cssPath, dev, localUrl: '/about', title: 'About' });
+  const publicationsHtml = templates.publications({ cssPath, dev, localUrl: '/publications', publications, title: 'Publications' });
+  const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Not Found' });
+  const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Webmention' });
 
   // Render the atom feed.
   const atomXML = templates.atom({ posts, updated });
