@@ -2,10 +2,7 @@
 
 /* eslint-disable no-console */
 
-const { readFile, readdir } = require('fs').promises;
-const { join } = require('path');
-const frontMatter = require('front-matter');
-const createSlug = require('../lib/create-slug');
+const loadPostFiles = require('../lib/load-post-files');
 const fetch = require('node-fetch');
 
 async function getPublishedBlogSlugs() {
@@ -28,18 +25,8 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const filenames = await readdir(join(__dirname, '..', 'content', 'posts'));
-  const markdownFilenames = filenames.filter(fn => !fn.startsWith('.') && fn.endsWith('.md'));
-  const metadata = await Promise.all(markdownFilenames.map(async fn => {
-    const content = await readFile(join(__dirname, '..', 'content', 'posts', fn), 'utf8');
-    const meta = frontMatter(content);
+  const shouldBePublished = await loadPostFiles();
 
-    return {
-      timestamp: new Date(meta.attributes.datetime).getTime(),
-      slug: createSlug(meta.attributes.title)
-    };
-  }));
-  const shouldBePublished = metadata.filter(meta => meta.timestamp < Date.now());
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
   console.log('current:', publishedNowSlugs.length, publishedNowSlugs.sort());
