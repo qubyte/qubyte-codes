@@ -167,6 +167,7 @@ blockquote {
 code {
   font-family: monospace;
   color: #000;
+  word-spacing: normal;
 }
 
 a {
