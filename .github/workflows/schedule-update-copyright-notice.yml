@@ -1,5 +1,7 @@
-name: Pull Request
-on: pull_request
+name: Update Copyright Notice
+on:
+  schedules:
+  - cron: 0 0 1 1 *
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,4 +13,7 @@ jobs:
       with:
         version: 12.x
     - run: npm ci
-    - run: npm test
+    - name: trigger build
+      env:
+        NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+      run: node scripts/trigger-build
