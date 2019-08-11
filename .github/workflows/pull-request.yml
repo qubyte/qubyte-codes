@@ -1,7 +1,7 @@
 name: Pull Request
 on: pull_request
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
@@ -12,3 +12,14 @@ jobs:
         version: 12.x
     - run: npm ci
     - run: npm test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+    - name: use node 12
+      uses: actions/setup-node@v1
+      with:
+        version: 12.x
+    - run: npm ci
+    - run: npm run test
