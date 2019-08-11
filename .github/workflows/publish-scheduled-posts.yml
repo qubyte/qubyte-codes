@@ -16,4 +16,4 @@ jobs:
     - name: publish scheduled
       env:
         NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
-      run: node script/publish-scheduled.js
+      run: node scripts/publish-scheduled.js
