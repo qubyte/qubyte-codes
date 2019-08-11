@@ -31,7 +31,8 @@ async function loadNoteFiles() {
       timestamp,
       localUrl: `/notes/${timestamp}`,
       datetime: new Date(parseInt(timestamp, 10)).toISOString(),
-      content
+      content,
+      type: 'note'
     };
   }));
 }
@@ -63,7 +64,8 @@ async function loadLinkFiles() {
       bookmarkOf,
       repostOf,
       name,
-      content
+      content,
+      type: 'link'
     };
   }));
 }
