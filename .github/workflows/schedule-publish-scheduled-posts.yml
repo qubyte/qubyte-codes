@@ -1,0 +1,19 @@
+name: Publish Scheduled Posts
+on:
+  schedules:
+  - cron: 0/15 * * * *
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+    - name: use node 12
+      uses: actions/setup-node@master
+      with:
+        version: '12.x'
+    - run: npm ci
+    - name: publish scheduled
+      env:
+        NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+      run: node script/publish-scheduled.js
