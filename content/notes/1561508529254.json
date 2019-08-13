@@ -1,0 +1,4 @@
+{
+  "h": "entry",
+  "content": "It’s possible using sed, jq, and date to read timestamps from scheduled posts and git mv and push them. This would be superior to the current Contents API approach because the content of the post will be properly attributed. It’s also lighter and agnostic with respect to git hosting.\n\nThe command to get a time stamp will be something like: `sed -n ‘/^---$/,/^---$/p’ < post.md | sed ‘1d;$d’ | jq ‘.datetime’ | date -f -`"
+}

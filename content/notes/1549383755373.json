@@ -1,0 +1,4 @@
+{
+  "h": "entry",
+  "content": "All micropub client implementations appear to be a bit lacking (none seem to support a media endpoint very well). I'm considering making my own client and embedding it in my blog..."
+}

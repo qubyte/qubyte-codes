@@ -10,64 +10,49 @@ const cpy = require('cpy');
 const exec = require('util').promisify(require('child_process').exec);
 const publications = require('./src/publications');
 
-async function loadNoteFile(filePath) {
-  const note = await readFile(filePath, 'utf8');
-  const parsed = new URLSearchParams(note);
-  const content = parsed.get('content');
-
-  return content;
-}
-
 async function loadNoteFiles() {
   const filenames = await readdir(path.join(__dirname, 'content', 'notes'));
-
-  filenames.sort((a, b) => b - a);
-
-  return Promise.all(filenames.map(async timestamp => {
-    const filePath = path.join(__dirname, 'content', 'notes', timestamp);
-    const content = await loadNoteFile(filePath);
+  const notes = await Promise.all(filenames.map(async filename => {
+    const note = await readFile(path.join(__dirname, 'content', 'notes', filename), 'utf8');
+    const parsed = JSON.parse(note);
+    const timestamp = parseInt(filename, 10);
 
     return {
       timestamp,
       localUrl: `/notes/${timestamp}`,
-      datetime: new Date(parseInt(timestamp, 10)).toISOString(),
-      content,
+      datetime: new Date(timestamp).toISOString(),
+      content: parsed.content,
       type: 'note'
     };
   }));
-}
 
-async function loadLinkFile(filePath) {
-  const link = await readFile(filePath, 'utf8');
-  const parsed = new URLSearchParams(link);
-  const bookmarkOf = parsed.get('bookmark-of');
-  const repostOf = parsed.get('repost-of');
-  const name = parsed.get('name');
-  const content = parsed.get('content');
+  notes.sort((a, b) => b.timestamp - a.timestamp);
 
-  return { bookmarkOf, repostOf, name, content };
+  return notes;
 }
 
 async function loadLinkFiles() {
   const filenames = await readdir(path.join(__dirname, 'content', 'links'));
-
-  filenames.sort((a, b) => b - a);
-
-  return Promise.all(filenames.map(async timestamp => {
-    const filePath = path.join(__dirname, 'content', 'links', timestamp);
-    const { bookmarkOf, repostOf, name, content } = await loadLinkFile(filePath);
+  const notes = await Promise.all(filenames.map(async filename => {
+    const link = await readFile(path.join(__dirname, 'content', 'links', filename), 'utf8');
+    const parsed = JSON.parse(link);
+    const timestamp = parseInt(filename, 10);
 
     return {
       timestamp,
       localUrl: `/links/${timestamp}`,
-      datetime: new Date(parseInt(timestamp, 10)).toISOString(),
-      bookmarkOf,
-      repostOf,
-      name,
-      content,
+      datetime: new Date(timestamp).toISOString(),
+      bookmarkOf: parsed['bookmark-of'],
+      repostOf: parsed['repost-of'],
+      name: parsed.name,
+      content: parsed.content,
       type: 'link'
     };
   }));
+
+  notes.sort((a, b) => b.timestamp - a.timestamp);
+
+  return notes;
 }
 
 // Compiles a list of tags from post metadata.
