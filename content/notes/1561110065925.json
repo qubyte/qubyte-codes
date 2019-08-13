@@ -1,0 +1,4 @@
+{
+  "h": "entry",
+  "content": "Idea: Set up a web hook for webmention.io which posts to a glitch which in turn opens an issue on the GitHub repository for this blog. "
+}
