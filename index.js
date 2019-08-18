@@ -5,55 +5,15 @@ const loadTemplates = require('./lib/templates');
 const buildPaths = require('./lib/build-paths');
 const generateCss = require('./lib/generate-css');
 const loadPostFiles = require('./lib/load-post-files');
-const { promises: { mkdir, readdir, readFile, writeFile } } = require('fs');
+const loadNoteFiles = require('./lib/load-note-files');
+const loadLinkFiles = require('./lib/load-link-files');
+const renderPosts = require('./lib/render-posts');
+const renderNotes = require('./lib/render-notes');
+const renderLinks = require('./lib/render-links');
+const getLastPostCommitTime = require('./lib/get-last-commit-time');
+const { promises: { mkdir, writeFile } } = require('fs');
 const cpy = require('cpy');
-const exec = require('util').promisify(require('child_process').exec);
 const publications = require('./src/publications');
-
-async function loadNoteFiles() {
-  const filenames = await readdir(path.join(__dirname, 'content', 'notes'));
-  const notes = await Promise.all(filenames.map(async filename => {
-    const note = await readFile(path.join(__dirname, 'content', 'notes', filename), 'utf8');
-    const parsed = JSON.parse(note);
-    const timestamp = parseInt(filename, 10);
-
-    return {
-      timestamp,
-      localUrl: `/notes/${timestamp}`,
-      datetime: new Date(timestamp).toISOString(),
-      content: parsed.content,
-      type: 'note'
-    };
-  }));
-
-  notes.sort((a, b) => b.timestamp - a.timestamp);
-
-  return notes;
-}
-
-async function loadLinkFiles() {
-  const filenames = await readdir(path.join(__dirname, 'content', 'links'));
-  const notes = await Promise.all(filenames.map(async filename => {
-    const link = await readFile(path.join(__dirname, 'content', 'links', filename), 'utf8');
-    const parsed = JSON.parse(link);
-    const timestamp = parseInt(filename, 10);
-
-    return {
-      timestamp,
-      localUrl: `/links/${timestamp}`,
-      datetime: new Date(timestamp).toISOString(),
-      bookmarkOf: parsed['bookmark-of'],
-      repostOf: parsed['repost-of'],
-      name: parsed.name,
-      content: parsed.content,
-      type: 'link'
-    };
-  }));
-
-  notes.sort((a, b) => b.timestamp - a.timestamp);
-
-  return notes;
-}
 
 // Compiles a list of tags from post metadata.
 function collateTags(posts, cssPath, dev, template) {
@@ -81,17 +41,6 @@ function collateTags(posts, cssPath, dev, template) {
   });
 }
 
-// Gets the date of the most recent edit to the post files.
-async function getLastPostCommit() {
-  const { stdout, stderr } = await exec('git log -1 --format=%ct content/posts');
-
-  if (stderr) {
-    throw new Error(`Error from exec: ${stderr}`);
-  }
-
-  return new Date(parseInt(stdout.trim(), 10) * 1000);
-}
-
 // Copies static files and directories to a fresh public directory.
 async function copyFiles() {
   await mkdir(buildPaths.public());
@@ -114,106 +63,22 @@ async function copyFiles() {
   ]);
 }
 
-// Renders the blog template with each post.
-function renderPosts(posts, blogTemplate, cssPath, dev) {
-  const rendered = [];
-
-  for (let i = 0; i < posts.length; i++) {
-    const previous = posts[i - 1];
-    const post = posts[i];
-    const next = posts[i + 1];
-    const renderObject = { ...post, cssPath, dev };
-
-    if (previous) {
-      renderObject.prevLink = previous.localUrl;
-    }
-
-    if (next) {
-      renderObject.nextLink = next.localUrl;
-    }
-
-    rendered.push({
-      html: blogTemplate(renderObject),
-      filename: `${post.slug}.html`
-    });
-  }
-
-  return rendered;
-}
-
-function renderNotes(notes, noteTemplate, cssPath, dev) {
-  const rendered = [];
-
-  for (let i = 0; i < notes.length; i++) {
-    const previous = notes[i - 1];
-    const note = notes[i];
-    const next = notes[i + 1];
-    const renderObject = { ...note, cssPath, dev, title: 'Note' };
-
-    if (previous) {
-      renderObject.prevLink = previous.localUrl;
-    }
-
-    if (next) {
-      renderObject.nextLink = next.localUrl;
-    }
-
-    rendered.push({
-      html: noteTemplate(renderObject),
-      filename: `${note.timestamp}.html`
-    });
-  }
-
-  return rendered;
-}
-
-function renderLinks(links, linkTemplate, cssPath, dev) {
-  const rendered = [];
-
-  for (let i = 0; i < links.length; i++) {
-    const previous = links[i - 1];
-    const link = links[i];
-    const next = links[i + 1];
-    const renderObject = { ...link, cssPath, dev, title: 'Link' };
-
-    if (previous) {
-      renderObject.prevLink = previous.localUrl;
-    }
-
-    if (next) {
-      renderObject.nextLink = next.localUrl;
-    }
-
-    rendered.push({
-      html: linkTemplate(renderObject),
-      filename: `${link.timestamp}.html`
-    });
-  }
-
-  return rendered;
-}
-
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
 exports.build = async function build({ baseUrl, baseTitle, dev }) {
-  const [templates] = await Promise.all([
+  const gettingLastPostCommitTime = getLastPostCommitTime(path.join(__dirname, 'content', 'posts'));
+
+  const [templates, posts, notes, links, cssPath] = await Promise.all([
     // Load and compile markdown template files into functions.
     loadTemplates({ baseTitle }),
-    // Do this first, since it also creates the public directory tree.
-    copyFiles()
-  ]);
-
-  const [posts, notes, links, cssPath, updated] = await Promise.all([
     // Load markdown posts, render them to HTML content, and sort them by date descending.
-    loadPostFiles(baseUrl),
+    loadPostFiles(path.join(__dirname, 'content', 'posts'), baseUrl),
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
-    loadNoteFiles(),
-    loadLinkFiles(),
-    // Compile CSS to a single file, with a unique filename.
-    generateCss(path.join(__dirname, 'src', 'css'), 'entry.css', 'default'),
-    // Get the timestamp for the last post update.
-    getLastPostCommit()
+    loadNoteFiles(path.join(__dirname, 'content', 'notes')),
+    loadLinkFiles(path.join(__dirname, 'content', 'links')),
+    // After creating the target directory structure, compile CSS to a single file, with a unique filename.
+    copyFiles().then(() => generateCss(path.join(__dirname, 'src', 'css'), 'entry.css', 'default'))
   ]);
 
   // Make a list of tags found in posts.
@@ -231,11 +96,11 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Not Found' });
   const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Webmention' });
 
-  // Render the atom feed.
-  const atomXML = templates.atom({ posts, updated });
-
   // Render the site map.
   const sitemapTxt = templates.sitemap({ posts, tags, links });
+
+  // Render the atom feed.
+  const atomXML = templates.atom({ posts, updated: await gettingLastPostCommitTime });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
