@@ -2,6 +2,7 @@
 
 /* eslint-disable no-console */
 
+const path = require('path');
 const loadPostFiles = require('../lib/load-post-files');
 const fetch = require('node-fetch');
 
@@ -25,7 +26,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles();
+  const shouldBePublished = await loadPostFiles(path.join(__dirname, '..', 'content', 'posts'));
 
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
