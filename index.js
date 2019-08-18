@@ -71,7 +71,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
 
   const [templates, posts, notes, links, cssPath] = await Promise.all([
     // Load and compile markdown template files into functions.
-    loadTemplates({ baseTitle }),
+    loadTemplates(path.join(__dirname, 'src', 'templates'), { baseTitle }),
     // Load markdown posts, render them to HTML content, and sort them by date descending.
     loadPostFiles(path.join(__dirname, 'content', 'posts'), baseUrl),
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
@@ -97,7 +97,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Webmention' });
 
   // Render the site map.
-  const sitemapTxt = templates.sitemap({ posts, tags, links });
+  const sitemapTxt = templates.sitemap({ posts, tags, notes, links });
 
   // Render the atom feed.
   const atomXML = templates.atom({ posts, updated: await gettingLastPostCommitTime });
