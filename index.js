@@ -56,7 +56,7 @@ async function copyFiles(source, target) {
     cpy(path.join(__dirname, 'content', 'papers', '*'), path.join(target, 'papers')),
     cpy(path.join(__dirname, 'content', 'notes-media', '*'), path.join(target, 'notes-media')),
     cpy(
-      ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(target, n)),
+      ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(source, n)),
       target
     )
   ]);
