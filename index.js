@@ -2,7 +2,6 @@
 
 const path = require('path');
 const loadTemplates = require('./lib/templates');
-const buildPaths = require('./lib/build-paths');
 const generateCss = require('./lib/generate-css');
 const loadPostFiles = require('./lib/load-post-files');
 const loadNoteFiles = require('./lib/load-note-files');
@@ -42,23 +41,23 @@ function collateTags(posts, cssPath, dev, template) {
 }
 
 // Copies static files and directories to a fresh public directory.
-async function copyFiles() {
-  await mkdir(buildPaths.public());
+async function copyFiles(source, target) {
+  await mkdir(target);
 
   await Promise.all([
-    mkdir(buildPaths.public('blog')),
-    mkdir(buildPaths.public('notes')),
-    mkdir(buildPaths.public('links')),
-    mkdir(buildPaths.public('tags')),
-    cpy(buildPaths.src('icons', '*.png'), buildPaths.public('icons')),
-    cpy(buildPaths.src('fonts', '*'), buildPaths.public('fonts')),
-    cpy(buildPaths.src('img', '*'), buildPaths.public('img')),
-    cpy(path.join(__dirname, 'content', 'scripts', '*.js'), buildPaths.public('scripts')),
-    cpy(path.join(__dirname, 'content', 'papers', '*'), buildPaths.public('papers')),
-    cpy(path.join(__dirname, 'content', 'notes-media', '*'), buildPaths.public('notes-media')),
+    mkdir(path.join(target, 'blog')),
+    mkdir(path.join(target, 'notes')),
+    mkdir(path.join(target, 'links')),
+    mkdir(path.join(target, 'tags')),
+    cpy(path.join(source, 'icons', '*.png'), path.join(target, 'icons')),
+    cpy(path.join(source, 'fonts', '*'), path.join(target, 'fonts')),
+    cpy(path.join(source, 'img', '*'), path.join(target, 'img')),
+    cpy(path.join(__dirname, 'content', 'scripts', '*.js'), path.join(target, 'scripts')),
+    cpy(path.join(__dirname, 'content', 'papers', '*'), path.join(target, 'papers')),
+    cpy(path.join(__dirname, 'content', 'notes-media', '*'), path.join(target, 'notes-media')),
     cpy(
-      ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => buildPaths.src(n)),
-      buildPaths.public()
+      ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(target, n)),
+      target
     )
   ]);
 }
@@ -67,18 +66,23 @@ async function copyFiles() {
 // renders it all to files, and saves them to the public directory.
 
 exports.build = async function build({ baseUrl, baseTitle, dev }) {
-  const gettingLastPostCommitTime = getLastPostCommitTime(path.join(__dirname, 'content', 'posts'));
+  const source = path.join(__dirname, 'src');
+  const target = path.join(__dirname, 'public');
+  const content = path.join(__dirname, 'content');
+
+  const gettingLastPostCommitTime = getLastPostCommitTime(path.join(content, 'posts'));
 
   const [templates, posts, notes, links, cssPath] = await Promise.all([
     // Load and compile markdown template files into functions.
-    loadTemplates(path.join(__dirname, 'src', 'templates'), { baseTitle }),
+    loadTemplates(path.join(source, 'templates'), { baseTitle }),
     // Load markdown posts, render them to HTML content, and sort them by date descending.
-    loadPostFiles(path.join(__dirname, 'content', 'posts'), baseUrl),
+    loadPostFiles(path.join(content, 'posts'), baseUrl),
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
-    loadNoteFiles(path.join(__dirname, 'content', 'notes')),
-    loadLinkFiles(path.join(__dirname, 'content', 'links')),
+    loadNoteFiles(path.join(content, 'notes')),
+    loadLinkFiles(path.join(content, 'links')),
     // After creating the target directory structure, compile CSS to a single file, with a unique filename.
-    copyFiles().then(() => generateCss(path.join(__dirname, 'src', 'css'), 'entry.css', 'default'))
+    copyFiles(source, target)
+      .then(() => generateCss(path.join(source, 'css'), target, 'entry.css', 'default'))
   ]);
 
   // Make a list of tags found in posts.
@@ -104,18 +108,18 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
 
   // Write the rendered templates to the public directory.
   await Promise.all([
-    writeFile(buildPaths.public('index.html'), indexHtml),
-    writeFile(buildPaths.public('notes', 'index.html'), notesHtml),
-    writeFile(buildPaths.public('links', 'index.html'), linksHtml),
-    writeFile(buildPaths.public('about.html'), aboutHtml),
-    writeFile(buildPaths.public('publications.html'), publicationsHtml),
-    writeFile(buildPaths.public('webmention.html'), webmentionHtml),
-    writeFile(buildPaths.public('404.html'), fourOhFourHtml),
-    ...renderedPosts.map(post => writeFile(buildPaths.public('blog', post.filename), post.html)),
-    ...renderedNotes.map(note => writeFile(buildPaths.public('notes', note.filename), note.html)),
-    ...renderedLinks.map(link => writeFile(buildPaths.public('links', link.filename), link.html)),
-    ...tags.map(tag => writeFile(buildPaths.public('tags', tag.filename), tag.rendered)),
-    writeFile(buildPaths.public('atom.xml'), atomXML),
-    writeFile(buildPaths.public('sitemap.txt'), sitemapTxt)
+    writeFile(path.join(target, 'index.html'), indexHtml),
+    writeFile(path.join(target, 'notes', 'index.html'), notesHtml),
+    writeFile(path.join(target, 'links', 'index.html'), linksHtml),
+    writeFile(path.join(target, 'about.html'), aboutHtml),
+    writeFile(path.join(target, 'publications.html'), publicationsHtml),
+    writeFile(path.join(target, 'webmention.html'), webmentionHtml),
+    writeFile(path.join(target, '404.html'), fourOhFourHtml),
+    ...renderedPosts.map(post => writeFile(path.join(target, 'blog', post.filename), post.html)),
+    ...renderedNotes.map(note => writeFile(path.join(target, 'notes', note.filename), note.html)),
+    ...renderedLinks.map(link => writeFile(path.join(target, 'links', link.filename), link.html)),
+    ...tags.map(tag => writeFile(path.join(target, 'tags', tag.filename), tag.rendered)),
+    writeFile(path.join(target, 'atom.xml'), atomXML),
+    writeFile(path.join(target, 'sitemap.txt'), sitemapTxt)
   ]);
 };
