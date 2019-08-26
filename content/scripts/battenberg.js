@@ -29,6 +29,8 @@ export default class Battenberg {
     this.θ = (this.θ + this.δθ * dt) % (2 * Math.PI);
     this.φ = (this.φ + this.δφ * dt) % (2 * Math.PI);
     this.ω = (this.ω + this.δω * dt) % (2 * Math.PI);
+
+    return this;
   }
 
   setOuterPath(cosθ, sinθ, cosφ, sinφ) {
@@ -68,6 +70,8 @@ export default class Battenberg {
       });
       this.svg.appendChild(this.outerPath);
     }
+
+    return this;
   }
 
   setInnerPath(cosθ, sinθ, cosφ, sinφ) {
@@ -105,6 +109,8 @@ export default class Battenberg {
       });
       this.svg.appendChild(this.innerPath);
     }
+
+    return this;
   }
 
   draw() {
@@ -113,12 +119,14 @@ export default class Battenberg {
     let [cosθ, sinθ] = [Math.abs(Math.cos(this.θ)), Math.abs(Math.sin(this.θ))];
 
     // Avoid some rounding issues.
-    if (Math.abs(cosθ) < 1e-6) {
+    if (cosθ > -1e-6 && cosθ < 1e-6) {
       cosθ = 0;
       sinθ = 1;
     }
 
     this.setOuterPath(cosθ, sinθ, cosφ, sinφ);
     this.setInnerPath(cosθ, sinθ, fcosφ, fsinφ);
+
+    return this;
   }
 }
