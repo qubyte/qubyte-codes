@@ -13,9 +13,9 @@
     {{#posts}}
     <article>
       <header>
-        <h2><a href="/blog/{{slug}}">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}">{{humanDate attributes.datetime}}</time>
-        <span class="tags">{{#each attributes.tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
+        <h2><a href="{{localUrl}}">{{title}}</a></h2>
+        <time datetime="{{datetime}}">{{humanDate datetime}}</time>
+        <span class="tags">{{#each tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       {{{snippet}}}
     </article>
