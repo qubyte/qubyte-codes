@@ -12,24 +12,24 @@
   <main>
     <article class="h-entry">
       <header>
-        <h2><a href="{{{canonical}}}" class="u-url p-name">{{attributes.title}}</a></h2>
-        <time datetime="{{attributes.datetime}}" class="dt-published">{{humanDate attributes.datetime}}</time>
-        {{#attributes.updatedAt}}
+        <h2><a href="{{{canonical}}}" class="u-url p-name">{{title}}</a></h2>
+        <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
+        {{#updatedAt}}
         <time datetime="{{@this}}" class="dt-updated" hidden>{{humanDate @this}}</time>
-        {{/attributes.updatedAt}}
-        <span class="tags">{{#each attributes.tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
+        {{/updatedAt}}
+        <span class="tags">{{#each tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       <div class="e-content">
         {{{content}}}
       </div>
-      {{#if attributes.webmentions}}
+      {{#if webmentions}}
       <section>
         <h3>Mentions</h3>
-        {{#attributes.webmentions}}
+        {{#webmentions}}
         <p>
           <a target="_blank" rel="noopener" class="webmention" href="{{{source}}}">{{author}} on <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time></a>
         </p>
-        {{/attributes.webmentions}}
+        {{/webmentions}}
       </section>
       {{/if}}
       <details class="share">

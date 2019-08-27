@@ -27,12 +27,12 @@
 {{/if}}
 <link href="https://webmention.io/qubyte.codes/xmlrpc" rel="pingback">
 <link href="https://webmention.io/qubyte.codes/webmention" rel="webmention">
-<meta name="description" content="{{attributes.description}}">
+<meta name="description" content="{{description}}">
 <meta name="twitter:card" content="summary">
 <meta property="og:type" content="blog">
 <meta name="twitter:site" content="@qubyte">
-<meta name="twitter:title" property="og:title" content="{{baseTitle}}{{#title}} - {{title}}{{/title}}">
-<meta name="twitter:description" property="og:description" content="{{attributes.description}}">
+<meta name="twitter:title" property="og:title" content="{{baseTitle}}{{#if title}} - {{title}}{{/if}}">
+<meta name="twitter:description" property="og:description" content="{{description}}">
 <meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
 <meta name="twitter:image:alt" content="The qubyte.codes site icon.">
 {{/isBlogEntry}}
@@ -49,6 +49,6 @@
   window.onbeforeunload = () => source.close();
 </script>
 {{/dev}}
-{{#each attributes.scripts}}
+{{#each scripts}}
 <script src="{{{href}}}" type="module"></script>
 {{/each}}

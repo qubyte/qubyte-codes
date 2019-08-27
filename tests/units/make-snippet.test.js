@@ -27,11 +27,7 @@ describe('make-snippet', () => {
     assert($('p').length, 1);
   });
 
-  it('gives the paragraph a className of "quote"', () => {
-    assert($('p').attr('class'), 'quote');
-  });
-
-  it('removes the final character within the paragraph', () => {
-    assert($('p').text(), 'I\'m the first paragraph');
+  it('removes the final character within the paragraph and replaces it with an elipses', () => {
+    assert($('p').text(), 'I\'m the first paragraph…');
   });
 });

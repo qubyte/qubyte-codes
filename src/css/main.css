@@ -150,15 +150,6 @@ header {
   margin-top: 0.5rem;
 }
 
-.quote {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.quote::after {
-  content: "…";
-}
-
 blockquote {
   margin-left: 1rem;
   font-style: italic;

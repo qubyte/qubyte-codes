@@ -10,19 +10,19 @@
     <name>qubyte</name>
   </author>
 
-  {{#posts}}
+  {{#items}}
   <entry>
-    <id>https://qubyte.codes/blog/{{slug}}</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes/blog/{{slug}}"/>
+    <id>https://qubyte.codes{{localUrl}}</id>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes{{localUrl}}"/>
     <title>{{title}}</title>
-    <published>{{isoDate attributes.datetime}}</published>
-    <updated>{{#if attributes.updated}}{{isoDate attributes.updated}}{{else}}{{isoDate attributes.datetime}}{{/if}}</updated>
+    <published>{{isoDate datetime}}</published>
+    <updated>{{#if updated}}{{isoDate updated}}{{else}}{{isoDate datetime}}{{/if}}</updated>
     <author>
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    <content type="html">{{snippet}}...</content>
+    <content type="html">{{snippet}}</content>
   </entry>
-  {{/posts}}
+  {{/items}}
 
 </feed>
