@@ -9,7 +9,7 @@ const loadLinkFiles = require('./lib/load-link-files');
 const renderPosts = require('./lib/render-posts');
 const renderNotes = require('./lib/render-notes');
 const renderLinks = require('./lib/render-links');
-const getLastPostCommitTime = require('./lib/get-last-commit-time');
+const getLastCommitTime = require('./lib/get-last-commit-time');
 const { promises: { mkdir, writeFile } } = require('fs');
 const cpy = require('cpy');
 const publications = require('./src/publications');
@@ -70,7 +70,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const target = path.join(__dirname, 'public');
   const content = path.join(__dirname, 'content');
 
-  const gettingLastPostCommitTime = getLastPostCommitTime(path.join(content, 'posts'));
+  const gettingLastContentCommitTime = getLastCommitTime(path.join(content));
 
   const [templates, posts, notes, links, cssPath] = await Promise.all([
     // Load and compile markdown template files into functions.
@@ -105,7 +105,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const everything = [...posts, ...notes, ...links].sort((a, b) => b.timestamp - a.timestamp);
 
   // Render the atom feed.
-  const atomXML = templates.atom({ items: everything, updated: await gettingLastPostCommitTime });
+  const atomXML = templates.atom({ items: everything, updated: await gettingLastContentCommitTime });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
