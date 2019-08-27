@@ -19,7 +19,7 @@ function collateTags(posts, cssPath, dev, template) {
   const tags = {};
 
   for (const post of posts) {
-    for (const tag of post.attributes.tags || []) {
+    for (const tag of post.tags || []) {
       if (!tags[tag]) {
         tags[tag] = [];
       }
@@ -102,9 +102,10 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
 
   // Render the site map.
   const sitemapTxt = templates.sitemap({ posts, tags, notes, links });
+  const everything = [...posts, ...notes, ...links].sort((a, b) => b.timestamp - a.timestamp);
 
   // Render the atom feed.
-  const atomXML = templates.atom({ posts, updated: await gettingLastPostCommitTime });
+  const atomXML = templates.atom({ items: everything, updated: await gettingLastPostCommitTime });
 
   // Write the rendered templates to the public directory.
   await Promise.all([
