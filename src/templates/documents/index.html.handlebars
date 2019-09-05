@@ -3,19 +3,19 @@
 <head>
   {{> head }}
 </head>
-<body>
-  {{> hcard-basics }}
+<body class="h-feed">
+  {{> hcard-basics additionalClasses="p-author" }}
   <header>
-    <h1>Qubyte Codes</h1>
+    <h1 class="p-name">Qubyte Codes</h1>
     {{> nav }}
   </header>
   <main>
     {{#posts}}
-    <article>
+    <article class="h-entry">
       <header>
-        <h2><a href="{{localUrl}}">{{title}}</a></h2>
-        <time datetime="{{datetime}}">{{humanDate datetime}}</time>
-        <span class="tags">{{#each tags}}<a href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
+        <h2><a href="{{localUrl}}" class="u-url p-name">{{title}}</a></h2>
+        <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
+        <span class="tags">{{#each tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
       </header>
       {{{snippet}}}
     </article>
