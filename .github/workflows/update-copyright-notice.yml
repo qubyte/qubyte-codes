@@ -1,6 +1,6 @@
 name: Update Copyright Notice
 on:
-  schedules:
+  schedule:
   - cron: 0 0 1 1 *
 jobs:
   build:

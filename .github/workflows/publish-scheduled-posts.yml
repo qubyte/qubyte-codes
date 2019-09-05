@@ -1,6 +1,6 @@
 name: Publish Scheduled Posts
 on:
-  schedules:
+  schedule:
   - cron: 0/15 * * * *
 jobs:
   build:
