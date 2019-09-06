@@ -1,0 +1,8 @@
+{
+  "h": "entry",
+  "bookmark-of": "https://remysharp.com/2019/09/05/offline-listings",
+  "name": "Offline listings - Remy Sharp",
+  "content": "This is a extremely cool use of service workers. I also had no idea that DOMParser existed. Remy uses the service worker of his site to render an offline page with a list of cached posts whenever a browser is offline. It uses the cache managed by the service worker and parsing of responses in it to build a list of links.",
+  "category": [],
+  "mp-slug": "offline-listings-remy-sharp"
+}
