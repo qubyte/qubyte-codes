@@ -3,9 +3,9 @@
     <a href="/links/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
   </header>
   {{#if bookmarkOf}}
-  <p>{{content}}</p>
-  <a class="u-bookmark-of" href="{{bookmarkOf}}" target="_blank" rel="noopener">{{name}}</a>
+  <p class="p-content">{{content}}</p>
+  <a class="u-bookmark-of p-name" href="{{bookmarkOf}}" target="_blank" rel="noopener">{{name}}</a>
   {{else if repostOf}}
-  <a class="u-repost-of" href="{{repostOf}}" target="_blank" rel="noopener">{{name}}</a>
+  <a class="u-repost-of p-name" href="{{repostOf}}" target="_blank" rel="noopener">{{name}}</a>
   {{/if}}
 </article>
