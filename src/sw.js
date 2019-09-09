@@ -6,7 +6,7 @@
 /* eslint-env serviceworker */
 
 addEventListener('fetch', fetchEvent => {
-  'use strict'; // eslint-disable-line
+  'use strict';
 
   const cacheName = 'v1';
   const request = fetchEvent.request;
