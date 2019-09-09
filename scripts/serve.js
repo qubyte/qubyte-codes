@@ -2,7 +2,7 @@
 
 /* eslint no-console: off */
 
-const { readFile, rmdir } = require('fs').promises;
+const { createReadStream, promises: { rmdir } } = require('fs');
 const http = require('http');
 const path = require('path');
 const Toisu = require('toisu');
@@ -11,18 +11,15 @@ const chokidar = require('chokidar');
 const { EventEmitter, once } = require('events');
 const blogEngine = require('..');
 
+const notFoundPath = path.join(__dirname, '..', 'public', '404.html');
+const sourcePath = path.join(__dirname, '..', 'src');
+const contentPath = path.join(__dirname, '..', 'content');
 const buildEmitter = new EventEmitter();
 const port = 8000;
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
-const watcher = chokidar.watch([
-  path.join(__dirname, '..', 'src'),
-  path.join(__dirname, '..', 'content')
-]).once('ready', build);
-
-// Refreshes the build, and after alerts the browser to refresh itself.
-async function build() {
+const watcher = chokidar.watch([sourcePath, contentPath]).once('ready', async function build() {
   const d0 = Date.now();
 
   try {
@@ -34,15 +31,11 @@ async function build() {
     console.error(e);
   }
 
+  // Now the build is complete, listen for changes to trigger the build again.
   watcher.once('all', build);
-}
+});
 
 const app = new Toisu();
-
-// This route is for consumption by EventSource browser connections. In
-// development mode, templates insert a script which establishes an EventSource
-// connection. Whenever a build completes, a message is sent to the browser,
-// which then reloads.
 
 // In dev mode, the frontend uses server sent events to refresh itself.
 app.use(async (req, res) => {
@@ -53,22 +46,22 @@ app.use(async (req, res) => {
 
   // Sending back these headers and a newline is sufficient for the browser to
   // know that this endpoint is speaking in EventSource.
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive'
-  });
+  res
+    .writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive'
+    })
+    .write('\n');
 
-  res.write('\n');
-
-  // A function which pushes an event to the browser to notify it of a new
-  // build.
+  // Function which pushes an event to the browser to notify it of a new build.
   const write = () => res.write('event: new\ndata: new\n\n');
 
   // Heartbeats are sent to the browser at intervals to prevent the connection
   // from timing out.
   const interval = setInterval(() => res.write('event: heartbeat\ndata: heartbeat\n\n'), 1000);
 
+  // When a new build is generated, let the browser know.
   buildEmitter.on('new', write);
 
   // Unregister the listener on the buildEmitter when the connection closes.
@@ -80,15 +73,12 @@ app.use(async (req, res) => {
   clearInterval(interval);
 });
 
-// Mostly this server just hosts the public directory, resolving unsuffixed
-// addresses and / to their proper HTML files.
+// Host files from the public directory.
 app.use(serveStatic('public', { extensions: ['html'] }));
 
 // This middleware handles everything not handled before it (404).
-app.use(async (_req, res) => {
-  const html = await readFile(path.join(__dirname, '..', 'public', '404.html'));
-
-  res.writeHead(404, { 'Content-Type': 'text/html', 'Content-Length': html.length }).end(html);
+app.use((_req, res) => {
+  createReadStream(notFoundPath).pipe(res.writeHead(404, { 'Content-Type': 'text/html' }));
 });
 
 http
