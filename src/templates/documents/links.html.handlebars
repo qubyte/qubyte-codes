@@ -3,10 +3,10 @@
 <head>
   {{> head }}
 </head>
-<body>
-  {{> hcard-basics }}
+<body class="h-feed">
+  {{> hcard-basics additionalClasses="p-author" }}
   <header>
-    <h1><a href="/">Qubyte Codes</a></h1>
+    <h1 class="p-name"><a href="/">Qubyte Codes</a></h1>
     {{> nav }}
   </header>
   <main>
