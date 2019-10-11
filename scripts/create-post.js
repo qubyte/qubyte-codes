@@ -1,13 +1,14 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const tagsPath = '../tags.txt';
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const stat = promisify(fs.stat);
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
+
+const tagsPath = path.join(__dirname, '..', 'tags.txt');
 
 function pad(part) {
   return part.toString().padStart(2, '0');
@@ -35,7 +36,7 @@ async function cli() {
     description,
     tags
   }, null, 2);
-  const filePath = path.join(__dirname, 'content', 'posts', `${date}.md`);
+  const filePath = path.join(__dirname, '..', 'content', 'posts', `${date}.md`);
 
   let stats;
 
