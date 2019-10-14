@@ -261,7 +261,7 @@ article + article::before {
   }
 
   pre {
-    background: #000;
+    background-color: #000;
   }
 
   code {
