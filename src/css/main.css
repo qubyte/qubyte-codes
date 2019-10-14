@@ -260,7 +260,7 @@ article + article::before {
     filter: brightness(.8) contrast(1.2);
   }
 
-  pre {
+  pre, button, input {
     background-color: #000;
   }
 
