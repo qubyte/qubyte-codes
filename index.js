@@ -1,14 +1,18 @@
 'use strict';
 
+/* eslint max-statements: off */
+
 const path = require('path');
 const loadTemplates = require('./lib/templates');
 const generateCss = require('./lib/generate-css');
 const loadPostFiles = require('./lib/load-post-files');
 const loadNoteFiles = require('./lib/load-note-files');
 const loadLinkFiles = require('./lib/load-link-files');
+const loadLikeFiles = require('./lib/load-like-files');
 const renderPosts = require('./lib/render-posts');
 const renderNotes = require('./lib/render-notes');
 const renderLinks = require('./lib/render-links');
+const renderLikes = require('./lib/render-likes');
 const appendPostContent = require('./lib/append-post-content');
 const collateTags = require('./lib/collate-tags');
 const getLastCommitTime = require('./lib/get-last-commit-time');
@@ -28,6 +32,7 @@ async function copyFiles(source, target, content) {
     fs.mkdir(path.join(target, 'blog')),
     fs.mkdir(path.join(target, 'notes')),
     fs.mkdir(path.join(target, 'links')),
+    fs.mkdir(path.join(target, 'likes')),
     fs.mkdir(path.join(target, 'tags')),
     copy(source, 'icons'),
     copy(source, 'fonts'),
@@ -56,7 +61,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
 
   const gettingLastContentCommitTime = getLastCommitTime(path.join(content));
 
-  const [templates, posts, notes, links, cssPath] = await Promise.all([
+  const [templates, posts, notes, links, likes, cssPath] = await Promise.all([
     // Load and compile markdown template files into functions.
     loadTemplates(path.join(source, 'templates'), { baseTitle }),
     // Load markdown posts, render them to HTML content, and sort them by date descending.
@@ -65,6 +70,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
     loadNoteFiles(path.join(content, 'notes')),
     loadLinkFiles(path.join(content, 'links')),
+    loadLikeFiles(path.join(content, 'likes')),
     // After creating the target directory structure, compile CSS to a single file, with a unique filename.
     copyFiles(source, target, content)
       .then(() => generateCss(path.join(source, 'css'), target, 'entry.css', 'default'))
@@ -77,9 +83,11 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const renderedBlogs = renderPosts(posts, templates.blog, cssPath, dev);
   const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
   const renderedLinks = renderLinks(links, templates.link, cssPath, dev);
+  const renderedLikes = renderLikes(likes, templates.like, cssPath, dev);
   const blogsHtml = templates.blogs({ posts, cssPath, dev, localUrl: '/blog', title: 'Archive' });
   const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Notes' });
   const linksHtml = templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Links' });
+  const likesHtml = templates.likes({ likes, cssPath, dev, localUrl: '/likes', title: 'Likes' });
   const aboutHtml = templates.about({ cssPath, dev, localUrl: '/', title: 'About' });
   const publicationsHtml = templates.publications({ cssPath, dev, localUrl: '/publications', publications, title: 'Publications' });
   const fourOhFourHtml = templates[404]({ cssPath, dev, localUrl: '/404', title: 'Not Found' });
@@ -95,12 +103,14 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
     writePublicFile(blogsHtml, target, 'blog', 'index.html'),
     writePublicFile(notesHtml, target, 'notes', 'index.html'),
     writePublicFile(linksHtml, target, 'links', 'index.html'),
+    writePublicFile(likesHtml, target, 'likes', 'index.html'),
     writePublicFile(publicationsHtml, target, 'publications.html'),
     writePublicFile(webmentionHtml, target, 'webmention.html'),
     writePublicFile(fourOhFourHtml, target, '404.html'),
     ...renderedBlogs.map(post => writePublicFile(post.html, target, 'blog', post.filename)),
     ...renderedNotes.map(note => writePublicFile(note.html, target, 'notes', note.filename)),
     ...renderedLinks.map(link => writePublicFile(link.html, target, 'links', link.filename)),
+    ...renderedLikes.map(like => writePublicFile(like.html, target, 'likes', like.filename)),
     ...tags.map(tag => writePublicFile(tag.rendered, target, 'tags', tag.filename)),
     writePublicFile(sitemapTxt, target, 'sitemap.txt'),
     gettingLastContentCommitTime
