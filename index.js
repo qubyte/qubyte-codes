@@ -94,7 +94,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
   const webmentionHtml = templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Webmention' });
 
   // Render the site map.
-  const sitemapTxt = templates.sitemap({ posts, tags, notes, links });
+  const sitemapTxt = templates.sitemap({ posts, tags, notes, links, likes });
   const everything = [...posts, ...notes, ...links].sort((a, b) => b.timestamp - a.timestamp);
 
   // Write the rendered templates to the public directory.
