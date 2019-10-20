@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {{> head }}
+</head>
+<body class="h-feed">
+  {{> hcard-basics additionalClasses="p-author" }}
+  <header>
+    <h1 class="p-name"><a href="/">Qubyte Codes</a></h1>
+    {{> nav }}
+  </header>
+  <main>
+    {{#replies}}{{> reply }}{{/replies}}
+  </main>
+  <footer>
+    {{> copyright }}
+  </footer>
+</body>
+</html>
