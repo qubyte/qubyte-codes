@@ -1,0 +1,8 @@
+<article class="h-entry">
+  {{> hcard-basics additionalClasses="p-author" }}
+  <header>
+    <a class="u-url" href="/replies/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
+  </header>
+  <p class="p-content p-name">{{content}}</p>
+  <p>In reply to: <a class="u-in-reply-to" href="{{inReplyTo}}">{{inReplyTo}}</a></p>
+</article>
