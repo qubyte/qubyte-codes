@@ -37,12 +37,13 @@ async function copyFiles(source, target, content) {
     fs.mkdir(path.join(target, 'likes')),
     fs.mkdir(path.join(target, 'replies')),
     fs.mkdir(path.join(target, 'tags')),
+    fs.mkdir(path.join(target, 'images')),
     copy(source, 'icons'),
     copy(source, 'fonts'),
     copy(source, 'img'),
     copy(content, 'scripts'),
     copy(content, 'papers'),
-    copy(content, 'notes-media'),
+    copy(content, 'images'),
     cpy(
       ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(source, n)),
       target
