@@ -240,6 +240,11 @@ article + article::before {
   padding-bottom: 1rem;
 }
 
+img {
+  max-width: 800px;
+  border: 1px solid var(--standout-color-main);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color-main: #000;
