@@ -4,4 +4,7 @@
     <a class="u-url" href="/notes/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
   </header>
   <p class="p-content p-name">{{content}}</p>
+  {{#each photos}}
+    <img src="{{this}}">
+  {{/each}}
 </article>
