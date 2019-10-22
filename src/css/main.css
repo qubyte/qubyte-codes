@@ -241,6 +241,8 @@ article + article::before {
 }
 
 img {
+  display: block;
+  margin: 0 auto;
   max-width: 100%;
   border: 1px solid var(--standout-color-main);
 }
