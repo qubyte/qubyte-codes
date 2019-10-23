@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "I think it's time I started writing some tests for the static site generator."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["I think it's time I started writing some tests for the static site generator."]
+  }
 }

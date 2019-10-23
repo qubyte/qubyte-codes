@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "Testing alternative micropub server implementation."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Testing alternative micropub server implementation."]
+  }
 }

@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "Idea for later: I need to markup each publication in the publications page as an h-cite. http://microformats.org/wiki/h-cite"
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Idea for later: I need to markup each publication in the publications page as an h-cite. http://microformats.org/wiki/h-cite"]
+  }
 }

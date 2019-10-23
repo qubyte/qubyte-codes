@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "like-of": "https://adactio.com/notes/15986"
+  "type": ["h-entry"],
+  "properties": {
+    "like-of": ["https://adactio.com/notes/15986"]
+  }
 }

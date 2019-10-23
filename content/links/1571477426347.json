@@ -1,8 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://adactio.com/notes/15986",
-  "name": "Kicking off Indie Web Camp Brighton! - Adactio",
-  "content": "Getting started at IndieWebCamp Brighton 2019!",
-  "category": [],
-  "mp-slug": "kicking-off-indie-web-camp-brighton"
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://adactio.com/notes/15986"],
+    "name": ["Kicking off Indie Web Camp Brighton! - Adactio"],
+    "content": ["Getting started at IndieWebCamp Brighton 2019!"]
+  }
 }

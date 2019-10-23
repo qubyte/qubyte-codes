@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "I wrote a while back about how promises and event emitters in Node.js can play badly together. Since then, Node and JS have changed enough that I should write a follow up post."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["I wrote a while back about how promises and event emitters in Node.js can play badly together. Since then, Node and JS have changed enough that I should write a follow up post."]
+  }
 }

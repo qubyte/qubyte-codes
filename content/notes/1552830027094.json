@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "Tickets booked for the next trip to Japan. Our first with the little one. I can't wait for his grandparents to meet him!"
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Tickets booked for the next trip to Japan. Our first with the little one. I can't wait for his grandparents to meet him!"]
+  }
 }

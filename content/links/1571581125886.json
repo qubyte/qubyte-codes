@@ -1,6 +1,8 @@
 {
-  "content": "This is a test bookmark.",
-  "name": "This is a test bookmark.",
-  "bookmark-of": "https://webmention.rocks/test/1",
-  "h": "entry"
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["This is a test bookmark."],
+    "name": ["This is a test bookmark."],
+    "bookmark-of": ["https://webmention.rocks/test/1"]
+  }
 }

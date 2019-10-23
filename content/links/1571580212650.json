@@ -1,6 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://webmantion.rocks/test/1",
-  "name": "Bookmark with hcard test",
-  "content": "Some content."
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://webmantion.rocks/test/1"],
+    "name": ["Bookmark with hcard test"],
+    "content": ["Some content."]
+  }
 }

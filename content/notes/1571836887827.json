@@ -1,7 +1,9 @@
 {
-  "h": "entry",
-  "content": "Another nightmarish thing my partner bought.",
-  "photos": [
-    "/images/1571836886275.jpg"
-  ]
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Another nightmarish thing my partner bought."],
+    "photo": [
+      "/images/1571836886275.jpg"
+    ]
+  }
 }

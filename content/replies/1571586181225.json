@@ -1,6 +1,9 @@
 {
-  "content": "This is a demo reply. ",
-  "in-reply-to": "https://webmention.rocks/test/2",
-  "h": "entry",
-  "name": "Webmention Rocks!"
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["This is a demo reply."],
+    "in-reply-to": ["https://webmention.rocks/test/2"],
+    "category": [],
+    "name": ["Webmention Rocks!"]
+  }
 }

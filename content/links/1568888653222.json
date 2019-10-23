@@ -1,8 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://www.w3.org/TR/websub/",
-  "name": "WebSub - w3c",
-  "content": "I don't use WebSub, yet...",
-  "category": [],
-  "mp-slug": "websub-w3c"
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://www.w3.org/TR/websub/"],
+    "name": ["WebSub - w3c"],
+    "content": ["I don't use WebSub, yet..."]
+  }
 }
