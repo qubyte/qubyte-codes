@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "I think I'll work on putting some of the sharing stuff at the bottom of each post into a <details> element at the next homebrew website club. That might mean splitting the webmention stuff up from sharing links. I'm not sure yet..."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["I think I'll work on putting some of the sharing stuff at the bottom of each post into a <details> element at the next homebrew website club. That might mean splitting the webmention stuff up from sharing links. I'm not sure yet..."]
+  }
 }

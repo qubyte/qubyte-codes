@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "Notes are live! 👍"
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Notes are live! 👍"]
+  }
 }

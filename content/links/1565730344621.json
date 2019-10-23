@@ -1,8 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://xclacksoverhead.org/",
-  "name": "XClacksOverhead.org",
-  "content": "A custom response header to serve as a memorial. The name is inspired by The Clacks (semaphore towers) from Terry Pratchett's Discworld novels. His name is by far the most frequently memorialized with it.",
-  "category": [],
-  "mp-slug": "xclacksoverheadorg"
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://xclacksoverhead.org/"],
+    "name": ["XClacksOverhead.org"],
+    "content": ["A custom response header to serve as a memorial. The name is inspired by The Clacks (semaphore towers) from Terry Pratchett's Discworld novels. His name is by far the most frequently memorialized with it."]
+  }
 }

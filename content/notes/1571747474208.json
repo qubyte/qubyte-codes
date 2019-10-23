@@ -1,7 +1,9 @@
 {
-  "h": "entry",
-  "content": "The sea.",
-  "photos": [
-    "/images/1571747469674.jpg"
-  ]
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["The sea."],
+    "photo": [
+      "/images/1571747469674.jpg"
+    ]
+  }
 }

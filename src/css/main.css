@@ -268,7 +268,7 @@ img {
   }
 
   pre, button, input {
-    background-color: #000;
+    background-color: var(--background-color-main);
   }
 
   code {

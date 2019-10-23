@@ -1,5 +1,7 @@
 {
-  "h": "entry",
-  "repost-of": "https://www.sonniesedge.net/posts/real-dark-web/",
-  "name": "The Real Dark Web"
+  "type": ["h-entry"],
+  "properties": {
+    "repost-of": ["https://www.sonniesedge.net/posts/real-dark-web/"],
+    "name": ["The Real Dark Web"]
+  }
 }

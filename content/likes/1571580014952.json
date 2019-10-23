@@ -1,3 +1,6 @@
 {
-  "like-of": "https://webmention.rocks/test/1"
+  "type": ["h-entry"],
+  "properties": {
+    "like-of": ["https://webmention.rocks/test/1"]
+  }
 }

@@ -1,6 +1,9 @@
 {
-  "h": "entry",
-  "in-reply-to": "https://example.com",
-  "content": "Test reply again.",
-  "name": "Example Domain"
+  "type": ["h-entry"],
+  "properties": {
+    "in-reply-to": ["https://example.com"],
+    "content": ["Test reply again."],
+    "category": [],
+    "name": ["Example Domain"]
+  }
 }

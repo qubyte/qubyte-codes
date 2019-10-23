@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "I implemented #indieweb notes on my blog using a Netlify function and the GitHub content API. I'm using Keith J Grant's omnibear browser extension (in FireFox) to post. Not much to see yet, and it's a very basic implementation, but not bad for a couple of hours of work."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["I implemented #indieweb notes on my blog using a Netlify function and the GitHub content API. I'm using Keith J Grant's omnibear browser extension (in FireFox) to post. Not much to see yet, and it's a very basic implementation, but not bad for a couple of hours of work."]
+  }
 }

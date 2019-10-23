@@ -1,4 +1,6 @@
 {
-  "h": "entry",
-  "content": "Testing again, 456."
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Testing again, 456."]
+  }
 }

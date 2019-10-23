@@ -1,7 +1,9 @@
 {
-  "h": "entry",
-  "content": "Hideous gnome. ",
-  "photos": [
-    "/images/1571748845724.jpg"
-  ]
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Hideous gnome."],
+    "photo": [
+      "/images/1571748845724.jpg"
+    ]
+  }
 }

@@ -1,6 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "http://newadventuresconf.com/2019/coverage/jeremy/",
-  "name": "Building - Jeremy Keith",
-  "content": "I saw a preview of this talk back at the first edition of Codebar Brighton Talks."
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["http://newadventuresconf.com/2019/coverage/jeremy/"],
+    "name": ["Building - Jeremy Keith"],
+    "content": ["I saw a preview of this talk back at the first edition of Codebar Brighton Talks."]
+  }
 }

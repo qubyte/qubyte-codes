@@ -1,6 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://www.theatlantic.com/science/archive/2019/08/interlocking-puzzle-allowed-life-emerge/595945/",
-  "name": "A New Clue to the Origins of Life - The Atlantic",
-  "content": "\"I find that utterly magical. It means that two of the essential components of life, a protocell’s membrane and its proteins, provided the conditions for each other to exist. By sticking to the fatty acids, the amino acids gave them stability.\""
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://www.theatlantic.com/science/archive/2019/08/interlocking-puzzle-allowed-life-emerge/595945/"],
+    "name": ["A New Clue to the Origins of Life - The Atlantic"],
+    "content": ["\"I find that utterly magical. It means that two of the essential components of life, a protocell’s membrane and its proteins, provided the conditions for each other to exist. By sticking to the fatty acids, the amino acids gave them stability.\""]
+  }
 }

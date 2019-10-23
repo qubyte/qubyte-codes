@@ -1,4 +1,6 @@
 {
-  "like-of": "https://brid.gy/about#publish",
-  "h": "entry"
+  "type": ["h-entry"],
+  "properties": {
+    "like-of": ["https://brid.gy/about#publish"]
+  }
 }

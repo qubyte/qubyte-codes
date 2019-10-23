@@ -1,8 +1,8 @@
 {
-  "h": "entry",
-  "bookmark-of": "https://mcfunley.com/choose-boring-technology",
-  "name": "Choose Boring Technology - Dan McKinley",
-  "content": "A bit of a classic now. On rereading this, I found the links out particularly fascinating. I'd consider Node and (though I dislike it and reach for an even more boring SQL option when allowed) Mongo to be pretty boring these days. Of course, I agreed with the general message then and I still do. That's why this blog is served as plain old HTML and CSS!",
-  "category": [],
-  "mp-slug": "choose-boring-technology-dan-mckinley"
+  "type": ["h-entry"],
+  "properties": {
+    "bookmark-of": ["https://mcfunley.com/choose-boring-technology"],
+    "name": ["Choose Boring Technology - Dan McKinley"],
+    "content": ["A bit of a classic now. On rereading this, I found the links out particularly fascinating. I'd consider Node and (though I dislike it and reach for an even more boring SQL option when allowed) Mongo to be pretty boring these days. Of course, I agreed with the general message then and I still do. That's why this blog is served as plain old HTML and CSS!"]
+  }
 }
