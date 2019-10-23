@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "An interesting local mural."
+    ],
+    "photo": [
+      {
+        "value": "",
+        "alt": "The concrete front garden of a local house is a beautiful mural of fish."
+      }
+    ]
+  }
+}
