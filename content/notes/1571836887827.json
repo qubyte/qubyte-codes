@@ -3,7 +3,10 @@
   "properties": {
     "content": ["Another nightmarish thing my partner bought."],
     "photo": [
-      "/images/1571836886275.jpg"
+      {
+        "value": "/images/1571836886275.jpg",
+        "alt": "A nightmarish pair of felt jester shoes for a baby."
+      }
     ]
   }
 }
