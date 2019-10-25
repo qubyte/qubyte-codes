@@ -1,0 +1,10 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "like-of": [
+      "https://indieweb.org/this-week/2019-10-25.html"
+    ]
+  }
+}
