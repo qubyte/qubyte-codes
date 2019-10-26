@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Between Lewes and Newhaven by train."
+    ],
+    "photo": [
+      {
+        "value": "/images/1572097010283.jpg",
+        "alt": "A view of fields seen from the train between Lewes and Newhaven."
+      }
+    ]
+  }
+}
