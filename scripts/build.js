@@ -1,10 +1,14 @@
 'use strict';
 
 const blogEngine = require('..');
-const baseUrl = process.argv[2] || process.env.URL;
-const baseTitle =  process.argv[3] || process.env.BASE_TITLE;
+const baseUrl = process.env.URL;
+const baseTitle = process.env.BASE_TITLE;
+const syndications = {
+  mastodon: process.env.MASTODON_SYNDICATION,
+  twitter: process.env.TWITTER_SYNDICATION
+};
 
-blogEngine.build({ baseUrl, baseTitle }).catch(e => {
+blogEngine.build({ baseUrl, baseTitle, syndications }).catch(e => {
   console.error(e); // eslint-disable-line no-console
   process.exit(1);
 });

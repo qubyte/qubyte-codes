@@ -16,6 +16,10 @@ const sourcePath = path.join(__dirname, '..', 'src');
 const contentPath = path.join(__dirname, '..', 'content');
 const buildEmitter = new EventEmitter();
 const port = 8000;
+const syndications = {
+  mastodon: 'https://mastodon.social/@qubyte',
+  twitter: 'https://twitter.com/qubyte'
+};
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
@@ -24,7 +28,8 @@ const watcher = chokidar.watch([sourcePath, contentPath]).once('ready', async fu
 
   try {
     await rmdir(path.join(__dirname, '..', 'public'), { recursive: true });
-    await blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', dev: true });
+    console.log('Building...');
+    await blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
     console.log(`Build succeeded: ${Date.now() - d0}ms`);
     buildEmitter.emit('new');
   } catch (e) {
