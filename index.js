@@ -58,7 +58,7 @@ async function writePublicFile(content, ...pathParts) {
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
-exports.build = async function build({ baseUrl, baseTitle, dev }) {
+exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) {
   const source = path.join(__dirname, 'src');
   const target = path.join(__dirname, 'public');
   const content = path.join(__dirname, 'content');
@@ -72,8 +72,8 @@ exports.build = async function build({ baseUrl, baseTitle, dev }) {
     loadPostFiles(path.join(content, 'posts'))
       .then(posts => Promise.all(posts.map(p => appendPostContent(p, baseUrl)))),
     // Load short form notes, and reposts (links), render them to HTML content, and sort them by date descending.
-    loadNoteFiles(path.join(content, 'notes')),
-    loadLinkFiles(path.join(content, 'links')),
+    loadNoteFiles(path.join(content, 'notes'), syndications),
+    loadLinkFiles(path.join(content, 'links'), syndications),
     loadLikeFiles(path.join(content, 'likes')),
     loadReplyFiles(path.join(content, 'replies')),
     // After creating the target directory structure, compile CSS to a single file, with a unique filename.
