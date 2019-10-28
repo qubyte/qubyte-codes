@@ -4,11 +4,13 @@
     <a href="/links/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
   </header>
   {{#if bookmarkOf}}
-  <p class="e-content">{{content}}</p>
+  <p class="e-content">
+    {{content}}
+    {{#if syndications.twitter}}<a class="mention-of" href="https://brid.gy/publish/twitter"></a>{{/if}}
+    {{#if syndications.mastodon}}<a class="mention-of" href="https://brid.gy/publish/mastodon"></a>{{/if}}
+  </p>
   <a class="u-bookmark-of p-name" href="{{bookmarkOf}}" target="_blank" rel="noopener">{{name}}</a>
   {{else if repostOf}}
   <a class="u-repost-of p-name" href="{{repostOf}}" target="_blank" rel="noopener">{{name}}</a>
   {{/if}}
-  {{#if syndications.twitter}}<a class="mention-of" href="https://brid.gy/publish/twitter"></a>{{/if}}
-  {{#if syndications.mastodon}}<a class="mention-of" href="https://brid.gy/publish/mastodon"></a>{{/if}}
 </article>
