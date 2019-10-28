@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "日本語の最初のノート。"
+    ],
+    "category": [],
+    "mp-slug": [],
+    "mp-syndicate-to": [
+      "https://twitter.com/qubyte",
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
