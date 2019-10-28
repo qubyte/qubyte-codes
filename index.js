@@ -10,11 +10,6 @@ const loadNoteFiles = require('./lib/load-note-files');
 const loadLinkFiles = require('./lib/load-link-files');
 const loadLikeFiles = require('./lib/load-like-files');
 const loadReplyFiles = require('./lib/load-reply-files');
-const renderPosts = require('./lib/render-posts');
-const renderNotes = require('./lib/render-notes');
-const renderLinks = require('./lib/render-links');
-const renderLikes = require('./lib/render-likes');
-const renderReplies = require('./lib/render-replies');
 const appendPostContent = require('./lib/append-post-content');
 const collateTags = require('./lib/collate-tags');
 const getLastCommitTime = require('./lib/get-last-commit-time');
@@ -84,12 +79,16 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
   // Make a list of tags found in posts.
   const tags = collateTags(posts, cssPath, dev, templates.tag);
 
+  function renderResources(resources, template) {
+    return resources.map(resource => ({ html: template({ ...resource, cssPath, dev }), filename: resource.filename }));
+  }
+
   // Render various pages.
-  const renderedBlogs = renderPosts(posts, templates.blog, cssPath, dev);
-  const renderedNotes = renderNotes(notes, templates.note, cssPath, dev);
-  const renderedLinks = renderLinks(links, templates.link, cssPath, dev);
-  const renderedLikes = renderLikes(likes, templates.like, cssPath, dev);
-  const renderedReplies = renderReplies(replies, templates.reply, cssPath, dev);
+  const renderedBlogs = renderResources(posts, templates.blog);
+  const renderedNotes = renderResources(notes, templates.note);
+  const renderedLinks = renderResources(links, templates.link);
+  const renderedLikes = renderResources(likes, templates.like);
+  const renderedReplies = renderResources(replies, templates.reply);
   const blogsHtml = templates.blogs({ posts, cssPath, dev, localUrl: '/blog', title: 'Archive' });
   const notesHtml = templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Notes' });
   const linksHtml = templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Links' });
