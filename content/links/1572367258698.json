@@ -1,0 +1,24 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://richard.dallaway.com/2019/10/24/rust-embedded-1.html"
+    ],
+    "name": [
+      "Brighton Rust: Embedded systems, day 1 - Richard Dallaway"
+    ],
+    "content": [
+      "The Brighton (UK) Rust User Group is doing an embedded project to program Christmas tree lights in Rust. I had to leave a bit early, But Richard documented the session."
+    ],
+    "category": [],
+    "mp-slug": [
+      "brighton-rust-embedded-systems-day-1"
+    ],
+    "mp-syndicate-to": [
+      "https://twitter.com/qubyte",
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
