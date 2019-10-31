@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Work in progress."
+    ],
+    "photo": [
+      {
+        "value": "/images/1572525111247.jpg",
+        "alt": "A partly painted room."
+      }
+    ]
+  }
+}
