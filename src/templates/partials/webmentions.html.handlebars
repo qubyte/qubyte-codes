@@ -1,0 +1,10 @@
+{{#if webmentions}}
+<section>
+  <h3>Mentions</h3>
+  {{#webmentions}}
+  <p>
+    {{initialUpper kind}} from <a target="_blank" rel="noopener" href="{{author.url}}">{{author.name}}</a> on <a target="_blank" rel="noopener" class="webmention" href="{{source}}"><time datetime="{{published}}" class="dt-published">{{humanDate published}}</time></a>{{#if content}}: <em>{{content}}</em>{{/if}}
+  </p>
+  {{/webmentions}}
+</section>
+{{/if}}
