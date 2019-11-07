@@ -1,0 +1,6 @@
+{
+  "type": ["h-entry"],
+  "properties": {
+    "content": ["Reminder for later... Paths are predicable enough in my setup that I can improve the netlify config to apply headers only to HTML by batching routes with wildcards."]
+  }
+}
