@@ -4,7 +4,111 @@
   command = "npm run build"
 
 [[headers]]
-  for = "*"
+  for = ""
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/blog/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/likes/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/links/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/notes/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/papers/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/replies/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Xss-Protection = "1"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
+    X-Clacks-Overhead = 'GNU Terry Pratchett'
+
+[[headers]]
+  for = "/tags/*"
   [headers.values]
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     X-Frame-Options = "SAMEORIGIN"
