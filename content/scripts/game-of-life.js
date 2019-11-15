@@ -1,7 +1,4 @@
-const boxWidth = Math.min(400, parseInt(window.getComputedStyle(document.querySelector('.e-content')).width, 10));
-
-console.log('Canvas width and height will be:', boxWidth, 'computed width:', window.getComputedStyle(document.querySelector('.e-content')).width);
-
+const boxWidth = Math.min(400, document.querySelector('.e-content').clientWidth);
 const container = document.createElement('div');
 
 container.style.textAlign = 'center';
@@ -9,13 +6,13 @@ container.style.margin = '1rem 0';
 
 const canvas = document.createElement('canvas');
 
+canvas.width = boxWidth;
+canvas.height = boxWidth;
+
 container.appendChild(canvas);
 document.querySelector('.e-content').append(container);
 
 const context = canvas.getContext('2d');
-
-canvas.width = boxWidth;
-canvas.height = boxWidth;
 
 context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--standout-color-main');
 
