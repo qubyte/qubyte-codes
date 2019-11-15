@@ -9,10 +9,10 @@ const canvas = document.createElement('canvas');
 container.appendChild(canvas);
 document.querySelector('.e-content').append(container);
 
+const context = canvas.getContext('2d');
+
 canvas.width = boxWidth;
 canvas.height = boxWidth;
-
-const context = canvas.getContext('2d');
 
 context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--standout-color-main');
 
