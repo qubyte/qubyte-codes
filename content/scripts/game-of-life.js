@@ -18,9 +18,8 @@ context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(
 
 const nDivisions = 50;
 const cellLiveProb = 0.5;
-const { width, height } = canvas;
-const cellWidth = width / nDivisions;
-const cellHeight = height / nDivisions;
+const cellWidth = boxWidth / nDivisions;
+const cellHeight = boxWidth / nDivisions;
 
 function randomGrid() {
   return Uint8Array.from({ length: nDivisions ** 2 }, () => Math.random() < cellLiveProb ? 1 : 0);
@@ -69,7 +68,7 @@ function calculateNext(grid) {
 }
 
 function draw(grid) {
-  context.clearRect(0, 0, width, height);
+  context.clearRect(0, 0, boxWidth, boxWidth);
 
   for (let i = 0; i < nDivisions; i++) {
     for (let j = 0; j < nDivisions; j++) {
