@@ -14,7 +14,9 @@ document.querySelector('.e-content').append(container);
 
 const context = canvas.getContext('2d');
 
-context.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--standout-color-main');
+setTimeout(100, () => {
+  context.fillStyle = getComputedStyle(document.body).color;
+});
 
 const nDivisions = 50;
 const cellLiveProb = 0.5;
