@@ -13,11 +13,6 @@ container.appendChild(canvas);
 document.querySelector('.e-content').append(container);
 
 const context = canvas.getContext('2d');
-
-setTimeout(100, () => {
-  context.fillStyle = getComputedStyle(document.body).color;
-});
-
 const nDivisions = 50;
 const cellLiveProb = 0.5;
 const cellWidth = boxWidth / nDivisions;
@@ -71,6 +66,10 @@ function calculateNext(grid) {
 
 function draw(grid) {
   context.clearRect(0, 0, boxWidth, boxWidth);
+
+  if (context.fillStyle.indexOf('#000') !== -1) {
+    context.fillStyle = getComputedStyle(document.body).color;
+  }
 
   for (let i = 0; i < nDivisions; i++) {
     for (let j = 0; j < nDivisions; j++) {
