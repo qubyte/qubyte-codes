@@ -6,11 +6,11 @@ container.style.margin = '1rem 0';
 
 const canvas = document.createElement('canvas');
 
-canvas.width = boxWidth;
-canvas.height = boxWidth;
-
 container.appendChild(canvas);
 document.querySelector('.e-content').append(container);
+
+canvas.width = boxWidth;
+canvas.height = boxWidth;
 
 const context = canvas.getContext('2d');
 
