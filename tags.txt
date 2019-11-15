@@ -13,3 +13,4 @@ rust
 japanese
 weeknotes
 IndieWeb
+ffconf
