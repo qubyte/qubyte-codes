@@ -1,4 +1,7 @@
 const boxWidth = Math.min(400, parseInt(window.getComputedStyle(document.querySelector('.e-content')).width, 10));
+
+console.log('Canvas width and height will be:', boxWidth);
+
 const container = document.createElement('div');
 
 container.style.textAlign = 'center';
