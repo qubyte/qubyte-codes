@@ -1,6 +1,6 @@
 const boxWidth = Math.min(400, parseInt(window.getComputedStyle(document.querySelector('.e-content')).width, 10));
 
-console.log('Canvas width and height will be:', boxWidth);
+console.log('Canvas width and height will be:', boxWidth, 'computed width:', window.getComputedStyle(document.querySelector('.e-content')).width);
 
 const container = document.createElement('div');
 
