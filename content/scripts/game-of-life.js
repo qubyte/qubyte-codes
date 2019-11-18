@@ -67,10 +67,6 @@ function calculateNext(grid) {
 function draw(grid) {
   context.clearRect(0, 0, boxWidth, boxWidth);
 
-  if (context.fillStyle.indexOf('#000') !== -1) {
-    context.fillStyle = getComputedStyle(document.body).color;
-  }
-
   for (let i = 0; i < nDivisions; i++) {
     for (let j = 0; j < nDivisions; j++) {
       if (grid[i * nDivisions + j]) {
@@ -82,4 +78,9 @@ function draw(grid) {
   setTimeout(draw, 100, calculateNext(grid));
 }
 
-draw(randomGrid());
+// Necessary for CSS to have been applied. Deferred scripts and modules are
+// executed just before DOMContentLoaded, which is *before* style is applied.
+window.onload = function () {
+  context.fillStyle = getComputedStyle(document.body).color;
+  draw(randomGrid());
+};
