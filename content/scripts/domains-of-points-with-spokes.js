@@ -62,10 +62,10 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
       // Leave a gap between things.
       const gap = 5;
 
-      const x1 = x + gap * Math.cos(angle);
-      const y1 = y + gap * Math.sin(angle);
-      const x2 = x + (r - gap) * Math.cos(angle);
-      const y2 = y + (r - gap) * Math.sin(angle);
+      const x1 = x + gap * cos;
+      const y1 = y + gap * sin;
+      const x2 = x + (r - gap) * cos;
+      const y2 = y + (r - gap) * sin;
 
       spokes.push([[x1, y1], [x2, y2]]);
     }
