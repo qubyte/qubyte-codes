@@ -31,9 +31,10 @@ const nSpokes = 48;
 // cosine of this angle are used elsewhere this function takes precomputed
 // values.
 function calculateLengthToTangent([x0, y0], [x1, y1], sin, cos) {
-  const slope = (x1 - x0) / (y0 - y1);
+  const dy = y1 - y0;
+  const dx = x1 - x0;
 
-  return 0.5 * (y1 - y0 + slope * (x0 - x1)) / (sin - slope * cos);
+  return 0.5 * (dx * dx + dy * dy) / (dy * sin + dx * cos);
 }
 
 function calculateSpokes(points, nSpokes, xmax, ymax) {
