@@ -21,6 +21,7 @@ document.querySelector('.e-content').appendChild(container);
 
 const nPoints = 10;
 const nSpokes = 48;
+const gap = 5; // Leave a gap between things.
 
 // The half way line between two points is refered to as a tangent here, since
 // it is defined as a line half way between two points and perpendicular to the
@@ -42,7 +43,15 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
 
   for (const p0 of points) {
     const [x, y] = p0;
-    const otherPoints = points.filter(p => p !== p0);
+    const otherPoints = points.filter(p => p !== p0).map(p1 => {
+      // Make the point appear closer to avoid a bunch of awkward maths.
+      const dx = p1[0] - x;
+      const dy = p1[1] - y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      const factor = (d - gap) / d;
+
+      return [x + dx * factor, y + dy * factor];
+    });
 
     for (let spoke = 0; spoke < nSpokes; spoke++) {
       const angle = spoke * 2 * Math.PI / nSpokes;
@@ -51,8 +60,8 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
 
       // The length of the spoke from a point before it reaches a boundary.
       const lengths = [
-        // Lengths to canvas boundaries.
-        -x / cos, (xmax - x) / cos, -y / sin, (ymax - y) / sin,
+        // Lengths to canvas boundaries minus the gap.
+        (gap - x) / cos, (xmax - x - gap) / cos, (gap - y) / sin, (ymax - y - gap) / sin,
         // Lengths to tangents.
         ...otherPoints.map(p1 => calculateLengthToTangent(p0, p1, sin, cos))
       ];
@@ -60,13 +69,14 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
       // Find the minimum positive length (lines radiate away from points).
       const r = Math.min(...lengths.filter(r => r >= 0));
 
-      // Leave a gap between things.
-      const gap = 5;
-
       const x1 = x + gap * cos;
       const y1 = y + gap * sin;
-      const x2 = x + (r - gap) * cos;
-      const y2 = y + (r - gap) * sin;
+      const x2 = x + r * cos;
+      const y2 = y + r * sin;
+
+      // These were a mistake, but look cool so I'm keeping them.
+      // const x2 = x + r -gap * cos;
+      // const y2 = y + r -gap * sin;
 
       spokes.push([[x1, y1], [x2, y2]]);
     }
@@ -75,8 +85,12 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
   return spokes;
 }
 
+// Initialize points at least 2*gap from boundaries to avoid some glitching.
 function generatePoints(n, xmax, ymax) {
-  return Array.from({ length: n }, () => [Math.random() * xmax, Math.random() * ymax]);
+  return Array.from({ length: n }, () => [
+    gap * 2 + Math.random() * (xmax - 4 * gap),
+    gap * 2 + Math.random() * (ymax - 4 * gap)
+  ]);
 }
 
 function drawToSvg() {
