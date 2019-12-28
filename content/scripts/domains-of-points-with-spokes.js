@@ -9,6 +9,10 @@ function setAttributesNS(element, attributes) {
   return element;
 }
 
+function createSvgLine({ x1, y1, x2, y2 }) {
+  return setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'line'), { x1, y1, x2, y2 });
+}
+
 const svg = setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'svg'), {
   width: '600',
   height: '600',
@@ -106,9 +110,7 @@ function drawToSvg() {
 
   // Draw spokes.
   for (const [[x1, y1], [x2, y2]] of spokes) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    setAttributesNS(line, { x1, y1, x2, y2 });
-    svg.appendChild(line);
+    svg.appendChild(createSvgLine({ x1, y1, x2, y2 }));
   }
 }
 
