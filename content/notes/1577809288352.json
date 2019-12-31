@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Fox in the Pavilion Gardens."
+    ],
+    "photo": [
+      {
+        "value": "/images/1577809248447.jpg",
+        "alt": "Fox in the Pavilion Gardens"
+      }
+    ]
+  }
+}
