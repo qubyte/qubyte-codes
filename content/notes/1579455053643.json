@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Rainbow sunset with Venus."
+    ],
+    "photo": [
+      {
+        "value": "/images/1579455013882.jpg",
+        "alt": "Rainbow sunset with Venus visible."
+      }
+    ]
+  }
+}
