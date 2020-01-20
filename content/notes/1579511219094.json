@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "From yesterday: Vegan buckwheat pancakes with caramelised banana, chai spiced coconut cream, coconut chips, and cacao nibs. Eaten at Black Mocha in Brighton."
+    ],
+    "photo": [
+      {
+        "value": "/images/1579511116404.jpg",
+        "alt": "Vegan buckwheat pancakes with caramelised banana, chai spiced coconut cream, coconut chips, and cacao nibs."
+      }
+    ]
+  }
+}
