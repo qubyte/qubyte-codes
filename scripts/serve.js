@@ -50,7 +50,7 @@ async function watchForChanges(watcher, graph) {
       const t0 = Date.now();
       console.log('Rerunning Node:', name);
       await graph.rerunNode({ name });
-      console.log(`Build succeeded: ${Date.now() - t0}ms`);
+      console.log(`Build succeeded for ${name}: ${Date.now() - t0}ms`);
       buildEmitter.emit('new');
     } else {
       console.log('No node to rerun for changed path:', pathStr);
@@ -64,23 +64,22 @@ async function watchForChanges(watcher, graph) {
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
-const watcher = chokidar.watch([sourcePath, contentPath]).once('ready', async () => {
-  const d0 = Date.now();
+const watcher = chokidar.watch([sourcePath, contentPath]);
 
-  let graph;
+once(watcher, 'ready')
+  .then(() => {
+    console.log('No event or path, or a source file changed. Running initial build...');
+    console.time('Initial build');
 
-  try {
-    console.log('No event or path, or a source file changed. Rebuilding...');
-    graph = await blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
-    console.log(`Build succeeded: ${Date.now() - d0}ms`);
+    return blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
+  })
+  .then(graph => {
     buildEmitter.emit('new');
+    console.timeEnd('Initial build');
 
-    // Now the build is complete, listen for changes to trigger the build again.
     return watchForChanges(watcher, graph);
-  } catch (e) {
-    console.error(e);
-  }
-});
+  })
+  .catch(error => console.error(error));
 
 const app = new Toisu();
 
