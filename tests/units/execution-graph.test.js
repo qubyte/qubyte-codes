@@ -6,7 +6,7 @@ const { EventEmitter } = require('events');
 const crypto = require('crypto');
 const wait = require('util').promisify(setTimeout);
 
-describe.only('execution-graph', () => {
+describe('execution-graph', () => {
   let graph;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe.only('execution-graph', () => {
     assert.ok(graph instanceof EventEmitter);
   });
 
-  describe('adding nodes', () => {
+  describe('adding a node', () => {
     it('returns a promise', () => {
       assert.ok(graph.addNode({ name: 'a-name', action() {} }) instanceof Promise);
     });
@@ -152,6 +152,51 @@ describe.only('execution-graph', () => {
       });
 
       assert.deepEqual(passedIn, { a: 'result-a', b: 'result-b', c: 'result-c' });
+    });
+  });
+
+  describe('adding multiple nodes', () => {
+    it('returns a promise', () => {
+      assert.ok(graph.addNodes({ name: { action() {} } }) instanceof Promise);
+    });
+
+    it('resolves to a collection of results for the added nodes', async () => {
+      const results = await graph.addNodes({
+        a: {
+          async action() {
+            await wait(10);
+            return 'result-a';
+          }
+        },
+        b: {
+          dependencies: ['a'],
+          action({ a }) {
+            return `result-b: result-a is "${a}"`;
+          }
+        }
+      });
+
+      assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
+    });
+
+    it('does not include results of nodes not in the collection added', async () => {
+      await graph.addNode({
+        name: 'x',
+        action() {
+          return 3;
+        }
+      });
+
+      const results = await graph.addNodes({
+        a: {
+          dependencies: ['x'],
+          action({ x }) {
+            return x ** 2;
+          }
+        }
+      });
+
+      assert.deepEqual(results, { a: 9 });
     });
   });
 
