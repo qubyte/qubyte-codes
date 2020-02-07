@@ -1,7 +1,5 @@
 'use strict';
 
-/* eslint max-statements: off */
-
 const path = require('path');
 const loadTemplates = require('./lib/templates');
 const generateCss = require('./lib/generate-css');
@@ -21,107 +19,123 @@ async function writePublicFile(content, ...pathParts) {
   await fs.writeFile(path.join(...pathParts), content);
 }
 
+function renderResources(resources, template, cssPath, dev) {
+  return resources.map(resource => ({
+    html: template({ ...resource, cssPath, dev }),
+    filename: resource.filename
+  }));
+}
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 
-exports.build = function build({ baseUrl, baseTitle, dev, syndications }) {
-  const source = path.join(__dirname, 'src');
-  const target = path.join(__dirname, 'public');
-  const content = path.join(__dirname, 'content');
-
+exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) {
   const graph = new ExecutionGraph();
 
-  async function makeDirectory(...pathParts) {
-    const directory = path.join(target, ...pathParts);
-
-    await fs.rmdir(directory, { recursive: true });
-    await fs.mkdir(directory);
-  }
-
-  function renderResources(resources, template, cssPath) {
-    return resources.map(resource => ({ html: template({ ...resource, cssPath, dev }), filename: resource.filename }));
-  }
-
-  return graph.addNodes({
-    commitTime: {
+  await graph.addNodes({
+    paths: {
       action() {
+        const source = path.join(__dirname, 'src');
+        const target = path.join(__dirname, 'public');
+        const content = path.join(__dirname, 'content');
+
+        async function makeDirectory(...pathParts) {
+          const directory = path.join(target, ...pathParts);
+
+          await fs.rmdir(directory, { recursive: true });
+          await fs.mkdir(directory);
+        }
+
+        return { source, target, content, makeDirectory };
+      }
+    },
+    commitTime: {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return getLastCommitTime(content);
       }
     },
     templates: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { source } }) {
         return loadTemplates(path.join(source, 'templates'), { baseTitle });
       }
     },
     postFiles: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return loadPostFiles(path.join(content, 'posts'), baseUrl);
       }
     },
     noteFiles: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return loadNoteFiles(path.join(content, 'notes'), syndications);
       }
     },
     linkFiles: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return loadLinkFiles(path.join(content, 'links'), syndications);
       }
     },
     likeFiles: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return loadLikeFiles(path.join(content, 'likes'));
       }
     },
     replyFiles: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
         return loadReplyFiles(path.join(content, 'replies'));
       }
     },
     publicDirectory: {
-      action() {
+      dependencies: ['paths'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory();
       }
     },
     blogDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('blog');
       }
     },
     notesDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('notes');
       }
     },
     linksDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('links');
       }
     },
     likesDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('likes');
       }
     },
     repliesDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('replies');
       }
     },
     tagsDirectory: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
         return makeDirectory('tags');
       }
     },
     staticFiles: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { source, target, content } }) {
         function copy(directory, subDirectory) {
           return cpy(path.join(directory, subDirectory, '*'), path.join(target, subDirectory));
         }
@@ -141,8 +155,8 @@ exports.build = function build({ baseUrl, baseTitle, dev, syndications }) {
       }
     },
     css: {
-      dependencies: ['publicDirectory'],
-      action() {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { source, target } }) {
         return generateCss(path.join(source, 'css'), target, 'entry.css', 'default');
       }
     },
@@ -155,31 +169,31 @@ exports.build = function build({ baseUrl, baseTitle, dev, syndications }) {
     renderedPosts: {
       dependencies: ['css', 'templates', 'postFiles'],
       action({ postFiles, templates, css }) {
-        return renderResources(postFiles, templates.blog, css);
+        return renderResources(postFiles, templates.blog, css, dev);
       }
     },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles'],
       action({ noteFiles, templates, css }) {
-        return renderResources(noteFiles, templates.note, css);
+        return renderResources(noteFiles, templates.note, css, dev);
       }
     },
     renderedLinks: {
       dependencies: ['css', 'templates', 'linkFiles'],
       action({ linkFiles, templates, css }) {
-        return renderResources(linkFiles, templates.link, css);
+        return renderResources(linkFiles, templates.link, css, dev);
       }
     },
     renderedLikes: {
       dependencies: ['css', 'templates', 'likeFiles'],
       action({ likeFiles, templates, css }) {
-        return renderResources(likeFiles, templates.like, css);
+        return renderResources(likeFiles, templates.like, css, dev);
       }
     },
     renderedReplies: {
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles, templates, css }) {
-        return renderResources(replyFiles, templates.replies, css);
+        return renderResources(replyFiles, templates.replies, css, dev);
       }
     },
     renderedBlogIndex: {
@@ -260,106 +274,108 @@ exports.build = function build({ baseUrl, baseTitle, dev, syndications }) {
       }
     },
     writtenIndex: {
-      dependencies: ['renderedAbout'],
-      action({ renderedAbout }) {
+      dependencies: ['paths', 'renderedAbout'],
+      action({ paths: { target }, renderedAbout }) {
         writePublicFile(renderedAbout, target, 'index.html');
       }
     },
     writtenBlogIndex: {
-      dependencies: ['renderedBlogIndex'],
-      action({ renderedBlogIndex }) {
+      dependencies: ['paths', 'renderedBlogIndex'],
+      action({ paths: { target }, renderedBlogIndex }) {
         return writePublicFile(renderedBlogIndex, target, 'blog', 'index.html');
       }
     },
     writtenNotesIndex: {
-      dependencies: ['renderedNotesIndex'],
-      action({ renderedNotesIndex }) {
+      dependencies: ['paths', 'renderedNotesIndex'],
+      action({ paths: { target }, renderedNotesIndex }) {
         return writePublicFile(renderedNotesIndex, target, 'notes', 'index.html');
       }
     },
     writtenLinksIndex: {
-      dependencies: ['renderedLinksIndex'],
-      action({ renderedLinksIndex }) {
+      dependencies: ['paths', 'renderedLinksIndex'],
+      action({ paths: { target }, renderedLinksIndex }) {
         return writePublicFile(renderedLinksIndex, target, 'links', 'index.html');
       }
     },
     writtenLikesIndex: {
-      dependencies: ['renderedLikesIndex'],
-      action({ renderedLikesIndex }) {
+      dependencies: ['paths', 'renderedLikesIndex'],
+      action({ paths: { target }, renderedLikesIndex }) {
         return writePublicFile(renderedLikesIndex, target, 'likes', 'index.html');
       }
     },
     writtenRepliesIndex: {
-      dependencies: ['renderedRepliesIndex'],
-      action({ renderedRepliesIndex }) {
+      dependencies: ['paths', 'renderedRepliesIndex'],
+      action({ paths: { target }, renderedRepliesIndex }) {
         return writePublicFile(renderedRepliesIndex, target, 'replies', 'index.html');
       }
     },
     writtenPublications: {
-      dependencies: ['renderedPublications'],
-      action({ renderedPublications }) {
+      dependencies: ['paths', 'renderedPublications'],
+      action({ paths: { target }, renderedPublications }) {
         return writePublicFile(renderedPublications, target, 'publications.html');
       }
     },
     writtenWebmentionConfirmation: {
-      dependencies: ['renderedWebmentionConfirmation'],
-      action({ renderedWebmentionConfirmation }) {
+      dependencies: ['paths', 'renderedWebmentionConfirmation'],
+      action({ paths: { target }, renderedWebmentionConfirmation }) {
         return writePublicFile(renderedWebmentionConfirmation, target, 'webmention.html');
       }
     },
     writtenFourOhFour: {
-      dependencies: ['renderedFourOhFour'],
-      action({ renderedFourOhFour }) {
+      dependencies: ['paths', 'renderedFourOhFour'],
+      action({ paths: { target }, renderedFourOhFour }) {
         return writePublicFile(renderedFourOhFour, target, '404.html');
       }
     },
     writtenSitemap: {
-      dependencies: ['renderedSitemap'],
-      action({ renderedSitemap }) {
+      dependencies: ['paths', 'renderedSitemap'],
+      action({ paths: { target }, renderedSitemap }) {
         return writePublicFile(renderedSitemap, target, 'sitemap.txt');
       }
     },
     writtenAtomFeed: {
-      dependencies: ['renderedAtomFeed'],
-      action({ renderedAtomFeed }) {
+      dependencies: ['paths', 'renderedAtomFeed'],
+      action({ paths: { target }, renderedAtomFeed }) {
         return writePublicFile(renderedAtomFeed, target, 'atom.xml');
       }
     },
     writtenPosts: {
-      dependencies: ['renderedPosts'],
-      action({ renderedPosts }) {
+      dependencies: ['paths', 'renderedPosts'],
+      action({ paths: { target }, renderedPosts }) {
         return renderedPosts.map(post => writePublicFile(post.html, target, 'blog', post.filename));
       }
     },
     writtenNotes: {
-      dependencies: ['renderedNotes'],
-      action({ renderedNotes }) {
+      dependencies: ['paths', 'renderedNotes'],
+      action({ paths: { target }, renderedNotes }) {
         return renderedNotes.map(note => writePublicFile(note.html, target, 'notes', note.filename));
       }
     },
     writtenLinks: {
-      dependencies: ['renderedLinks'],
-      action({ renderedLinks }) {
+      dependencies: ['paths', 'renderedLinks'],
+      action({ paths: { target }, renderedLinks }) {
         return renderedLinks.map(note => writePublicFile(note.html, target, 'links', note.filename));
       }
     },
     writtenLikes: {
-      dependencies: ['renderedLikes'],
-      action({ renderedLikes }) {
+      dependencies: ['paths', 'renderedLikes'],
+      action({ paths: { target }, renderedLikes }) {
         return renderedLikes.map(note => writePublicFile(note.html, target, 'likes', note.filename));
       }
     },
     writtenReplies: {
-      dependencies: ['renderedReplies'],
-      action({ renderedReplies }) {
+      dependencies: ['paths', 'renderedReplies'],
+      action({ paths: { target }, renderedReplies }) {
         return renderedReplies.map(note => writePublicFile(note.html, target, 'replies', note.filename));
       }
     },
     writtenTags: {
-      dependencies: ['collatedTags'],
-      action({ collatedTags }) {
+      dependencies: ['paths', 'collatedTags'],
+      action({ paths: { target }, collatedTags }) {
         return collatedTags.map(note => writePublicFile(note.html, target, 'tags', note.filename));
       }
     }
   });
+
+  return graph;
 };
