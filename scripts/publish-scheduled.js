@@ -46,7 +46,7 @@ async function run() {
   const res = await fetch(process.env.NETLIFY_BUILD_HOOK_URL, { method: 'POST' });
 
   if (!res.ok) {
-    throw new Error(`Unexpected status from Netlify ${res.statys}: ${await res.text()}`);
+    throw new Error(`Unexpected status from Netlify ${res.status}: ${await res.text()}`);
   }
 
   console.log('Sent build hook request to Netlify to publish', shouldPublish.join(', '));
