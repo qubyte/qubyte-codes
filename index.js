@@ -19,9 +19,9 @@ async function writePublicFile(content, ...pathParts) {
   await fs.writeFile(path.join(...pathParts), content);
 }
 
-function renderResources(resources, template, cssPath, dev) {
+function renderResources({ resources, template, cssPath, baseUrl, dev }) {
   return resources.map(resource => ({
-    html: template({ ...resource, cssPath, dev }),
+    html: template({ ...resource, cssPath, baseUrl, dev }),
     filename: resource.filename
   }));
 }
@@ -162,92 +162,92 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     },
     collatedTags: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles, css, templates }) {
-        return collateTags(postFiles, css, dev, templates.tag);
+      action({ postFiles: posts, css: cssPath, templates: { tag: template } }) {
+        return collateTags({ posts, cssPath, baseUrl, dev, template });
       }
     },
     renderedPosts: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles, templates, css }) {
-        return renderResources(postFiles, templates.blog, css, dev);
+      action({ postFiles: resources, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles, templates, css }) {
-        return renderResources(noteFiles, templates.note, css, dev);
+      action({ noteFiles: resources, templates: { note: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLinks: {
       dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles, templates, css }) {
-        return renderResources(linkFiles, templates.link, css, dev);
+      action({ linkFiles: resources, templates: { link: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLikes: {
       dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles, templates, css }) {
-        return renderResources(likeFiles, templates.like, css, dev);
+      action({ likeFiles: resources, templates: { like: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedReplies: {
       dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles, templates, css }) {
-        return renderResources(replyFiles, templates.replies, css, dev);
+      action({ replyFiles: resources, templates: { replies: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedBlogIndex: {
       dependencies: ['css', 'templates', 'postFiles'],
       action({ postFiles: posts, templates, css: cssPath }) {
-        return templates.blogs({ posts, cssPath, dev, localUrl: '/blog', title: 'Archive' });
+        return templates.blogs({ posts, cssPath, dev, baseUrl, localUrl: '/blog', title: 'Archive' });
       }
     },
     renderedNotesIndex: {
       dependencies: ['css', 'templates', 'noteFiles'],
       action({ noteFiles: notes, templates, css: cssPath }) {
-        return templates.notes({ notes, cssPath, dev, localUrl: '/notes', title: 'Notes' });
+        return templates.notes({ notes, cssPath, dev, baseUrl, localUrl: '/notes', title: 'Notes' });
       }
     },
     renderedLinksIndex: {
       dependencies: ['css', 'templates', 'linkFiles'],
       action({ linkFiles: links, templates, css: cssPath }) {
-        return templates.links({ links, cssPath, dev, localUrl: '/links', title: 'Links' });
+        return templates.links({ links, cssPath, dev, baseUrl, localUrl: '/links', title: 'Links' });
       }
     },
     renderedLikesIndex: {
       dependencies: ['css', 'templates', 'likeFiles'],
       action({ likeFiles: likes, templates, css: cssPath }) {
-        return templates.likes({ likes, cssPath, dev, localUrl: '/likes', title: 'Likes' });
+        return templates.likes({ likes, cssPath, dev, baseUrl, localUrl: '/likes', title: 'Likes' });
       }
     },
     renderedRepliesIndex: {
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles: replies, templates, css: cssPath }) {
-        return templates.replies({ replies, cssPath, dev, localUrl: '/replies', title: 'Replies' });
+        return templates.replies({ replies, cssPath, dev, baseUrl, localUrl: '/replies', title: 'Replies' });
       }
     },
     renderedAbout: {
       dependencies: ['css', 'templates'],
       action({ templates, css: cssPath }) {
-        return templates.about({ cssPath, dev, localUrl: '/', title: 'About' });
+        return templates.about({ cssPath, dev, baseUrl, localUrl: '/', title: 'About' });
       }
     },
     renderedPublications: {
       dependencies: ['css', 'templates'],
       action({ templates, css: cssPath }) {
-        return templates.publications({ cssPath, dev, localUrl: '/publications', publications, title: 'Publications' });
+        return templates.publications({ cssPath, dev, baseUrl, localUrl: '/publications', publications, title: 'Publications' });
       }
     },
     renderedFourOhFour: {
       dependencies: ['css', 'templates'],
       action({ templates, css: cssPath }) {
-        return templates[404]({ cssPath, dev, localUrl: '/404', title: 'Not Found' });
+        return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found' });
       }
     },
     renderedWebmentionConfirmation: {
       dependencies: ['css', 'templates'],
       action({ templates, css: cssPath }) {
-        return templates.webmention({ cssPath, dev, localUrl: '/webmention', title: 'Webmention' });
+        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
       }
     },
     renderedSitemap: {
@@ -261,7 +261,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         likeFiles: likes,
         replyFiles: replies
       }) {
-        return templates.sitemap({ posts, tags, notes, links, likes, replies });
+        return templates.sitemap({ posts, tags, notes, links, likes, replies, baseUrl });
       }
     },
     renderedAtomFeed: {
@@ -270,7 +270,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         const items = [...postFiles, ...noteFiles, ...linkFiles, ...likeFiles, ...replyFiles]
           .sort((a, b) => b.timestamp - a.timestamp);
 
-        return templates.atom({ items, updated: commitTime });
+        return templates.atom({ items, baseUrl, updated: commitTime });
       }
     },
     writtenIndex: {
@@ -372,7 +372,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     writtenTags: {
       dependencies: ['paths', 'collatedTags'],
       action({ paths: { target }, collatedTags }) {
-        return collatedTags.map(note => writePublicFile(note.html, target, 'tags', note.filename));
+        return collatedTags.map(tag => writePublicFile(tag.html, target, 'tags', tag.filename));
       }
     }
   });
