@@ -2,7 +2,7 @@
 
 /* eslint no-console: off */
 
-const { createReadStream, promises: { rmdir } } = require('fs');
+const { createReadStream } = require('fs');
 const http = require('http');
 const path = require('path');
 const Toisu = require('toisu');
@@ -21,24 +21,65 @@ const syndications = {
   twitter: 'https://twitter.com/qubyte'
 };
 
-// This watches the content of the src directory for any changes, triggering a
-// build each time a change happens.
-const watcher = chokidar.watch([sourcePath, contentPath]).once('ready', async function build() {
-  const d0 = Date.now();
+// Maps base paths to associated node names to rerun on changes.
+const matchers = [
+  [path.join(contentPath, 'likes'), 'likeFiles'],
+  [path.join(contentPath, 'links'), 'linkFiles'],
+  [path.join(contentPath, 'notes'), 'noteFiles'],
+  [path.join(contentPath, 'images'), 'staticFiles'],
+  [path.join(contentPath, 'papers'), 'staticFiles'],
+  [path.join(contentPath, 'scripts'), 'staticFiles'],
+  [path.join(contentPath, 'posts'), 'postFiles'],
+  [path.join(contentPath, 'replies'), 'replyFiles'],
+  [path.join(sourcePath, 'css'), 'css'],
+  [path.join(sourcePath, 'fonts'), 'staticFiles'],
+  [path.join(sourcePath, 'icons'), 'staticFiles'],
+  [path.join(sourcePath, 'img'), 'staticFiles'],
+  [path.join(sourcePath, 'templates'), 'templates'],
+  [sourcePath, 'staticFiles']
+];
 
+// eslint-disable-next-line complexity, max-statements
+async function watchForChanges(watcher, graph) {
   try {
-    await rmdir(path.join(__dirname, '..', 'public'), { recursive: true });
-    console.log('Building...');
-    await blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
-    console.log(`Build succeeded: ${Date.now() - d0}ms`);
-    buildEmitter.emit('new');
+    const [, pathStr] = await once(watcher, 'all');
+    const matched = matchers.find(([path]) => pathStr.startsWith(path));
+    const name = matched && matched[1];
+
+    if (name) {
+      const t0 = Date.now();
+      console.log('Rerunning Node:', name);
+      await graph.rerunNode({ name });
+      console.log(`Build succeeded for ${name}: ${Date.now() - t0}ms`);
+      buildEmitter.emit('new');
+    } else {
+      console.log('No node to rerun for changed path:', pathStr);
+    }
   } catch (e) {
-    console.error(e);
+    console.error('BUILD ERROR:', e.stack);
   }
 
-  // Now the build is complete, listen for changes to trigger the build again.
-  watcher.once('all', build);
-});
+  return watchForChanges(watcher, graph);
+}
+
+// This watches the content of the src directory for any changes, triggering a
+// build each time a change happens.
+const watcher = chokidar.watch([sourcePath, contentPath]);
+
+once(watcher, 'ready')
+  .then(() => {
+    console.log('No event or path, or a source file changed. Running initial build...');
+    console.time('Initial build');
+
+    return blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
+  })
+  .then(graph => {
+    buildEmitter.emit('new');
+    console.timeEnd('Initial build');
+
+    return watchForChanges(watcher, graph);
+  })
+  .catch(error => console.error(error));
 
 const app = new Toisu();
 

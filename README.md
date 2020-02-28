@@ -7,21 +7,21 @@ https://qubyte.codes.
 
 ## The generator
 
-The generator is mostly contained in [index.js](./index.js).
-[build.js](./build.js) serves as an entry point, which is used by a build script
-in the `package.json` file. Most of the heavy lifting is done by
+The generator is mostly contained in [index.js](./index.js). Most of the heavy
+lifting is done by a custom graph build system and
 [marked](https://github.com/markedjs/marked), which takes markdown files and
 processes them into HTML content. It's not perfect though, and some monkey
 patching was necessary. The [lib/render.js](./lib/render.js) module does this
 patching, and adds syntax highlighting and formatting of mathematical formulae.
 
-[serve.js](./scripts/serve.js) is a development server. Any time a file in src changes
-it'll rebuild and refresh the browser.
+[serve.js](./scripts/serve.js) is a development server. When files change parts
+of the build graph are re-run to get updated output.
 
-Source files are contained in the [src](./src) directory. Upon build, a public
-directory is created, and some of these source files copied over (ones which
-need no compilation, such as the service worker). Other files must be generated
-and are placed in the public directory as they are created.
+Source files are contained in the [src](./src) and [content](./content)
+directories. Upon build, a public directory is created, and some of these source
+files copied over (ones which need no compilation, such as the service worker).
+Other files must be generated and are placed in the public directory as they are
+created.
 
 [create-post](./scripts/create-post) is a little CLI utility to create a new markdown
 post file with pre-populated metadata.
