@@ -26,7 +26,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles(path.join(__dirname, '..', 'content', 'posts'));
+  const shouldBePublished = await loadPostFiles(path.join(__dirname, '..', 'content', 'posts'), 'https://qubyte.codes');
 
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
