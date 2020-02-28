@@ -6,19 +6,22 @@ const path = require('path');
 const loadPostFiles = require('../lib/load-post-files');
 const fetch = require('node-fetch');
 
+const URL = 'https://qubyte.codes';
+const POST_FILES_PATH = path.join(__dirname, '..', 'content', 'posts');
+
 async function getPublishedBlogSlugs() {
-  const res = await fetch('https://qubyte.codes/sitemap.txt');
+  const res = await fetch(`${URL}/sitemap.txt`);
   const body = await res.text();
 
   if (!res.ok) {
     throw new Error(`Unexpected status from qubyte.codes ${res.status}: ${body}`);
   }
 
-  const blogEntryBaseUrl = 'https://qubyte.codes/blog/';
+  const blogEntryBaseUrl = `${URL}/blog/`;
 
   const slugs = body
     .split('\n')
-    .filter(url => url.startsWith('https://qubyte.codes/blog/'))
+    .filter(url => url.startsWith(blogEntryBaseUrl))
     .map(url => url.slice(blogEntryBaseUrl.length));
 
   return slugs;
@@ -26,7 +29,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles(path.join(__dirname, '..', 'content', 'posts'), 'https://qubyte.codes');
+  const shouldBePublished = await loadPostFiles(POST_FILES_PATH, URL);
 
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
