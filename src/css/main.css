@@ -48,6 +48,10 @@ h1, h2 {
   word-spacing: normal;
 }
 
+h2, h3 {
+  scroll-margin-top: 3rem;
+}
+
 h1 {
   padding: 1rem 0;
 }
