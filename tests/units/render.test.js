@@ -22,50 +22,6 @@ describe('render', () => {
     assert.equal(rendered.trim(), '<p>a paragraph</p>');
   });
 
-  it('does not append target="_blank" or rel="noopener" attributes to anchors for absolute URLs within the site', async () => {
-    const rendered = await render(`[a link within the site](${process.env.URL}a/path)`, URL);
-
-    const $ = cheerio.load(rendered);
-    const $a = $('a');
-
-    assert.equal($a.attr('href'), `${process.env.URL}a/path`);
-    assert.equal($a.attr('target'), undefined);
-    assert.equal($a.attr('rel'), undefined);
-  });
-
-  it('does not append target="_blank" or rel="noopener" attributes to anchors for local URLs', async () => {
-    const rendered = await render('[a link within the site](/a/path)', URL);
-
-    const $ = cheerio.load(rendered);
-    const $a = $('a');
-
-    assert.equal($a.attr('href'), '/a/path');
-    assert.equal($a.attr('target'), undefined);
-    assert.equal($a.attr('rel'), undefined);
-  });
-
-  it('does not append target="_blank" or rel="noopener" attributes to anchors for relative URLs', async () => {
-    const rendered = await render('[a link within the site](./a/path)', URL);
-
-    const $ = cheerio.load(rendered);
-    const $a = $('a');
-
-    assert.equal($a.attr('href'), './a/path');
-    assert.equal($a.attr('target'), undefined);
-    assert.equal($a.attr('rel'), undefined);
-  });
-
-  it('appends target="_blank" and rel="noopener" attributes to anchors for URLs to other sites', async () => {
-    const rendered = await render('[a link within the site](https://example.com/a/path)', URL);
-
-    const $ = cheerio.load(rendered);
-    const $a = $('a');
-
-    assert.equal($a.attr('href'), 'https://example.com/a/path');
-    assert.equal($a.attr('target'), '_blank');
-    assert.equal($a.attr('rel'), 'noopener');
-  });
-
   it('renders fenced blocks labelled as SVG in the img role and a title containing the original maths', async () => {
     const rendered = await render('```mathematics\na=b\n```', URL);
 
