@@ -50,7 +50,7 @@ describe('render', () => {
     const titles = $('svg title[id]');
 
     assert.equal(titles.length, 1);
-    assert.equal($(titles[0]).attr('id'), 'MathJax-SVG-3-Title');
+    assert.equal($(titles[0]).attr('id'), 'equation-1');
   });
 
   it('increments the title ID to avoid collisions', async () => {
@@ -60,8 +60,8 @@ describe('render', () => {
     const titles = $('svg title[id]');
 
     assert.equal(titles.length, 2);
-    assert.equal($(titles[0]).attr('id'), 'MathJax-SVG-4-Title');
-    assert.equal($(titles[1]).attr('id'), 'MathJax-SVG-5-Title');
+    assert.equal($(titles[0]).attr('id'), 'equation-1');
+    assert.equal($(titles[1]).attr('id'), 'equation-2');
   });
 
   it('sets aria-labelledby to the title element ID for each snipped', async () => {
@@ -70,7 +70,7 @@ describe('render', () => {
     const $ = cheerio.load(rendered);
     const svgs = $('svg');
 
-    assert.equal($(svgs[0]).attr('aria-labelledby'), 'MathJax-SVG-6-Title');
-    assert.equal($(svgs[1]).attr('aria-labelledby'), 'MathJax-SVG-7-Title');
+    assert.equal($(svgs[0]).attr('aria-labelledby'), 'equation-1');
+    assert.equal($(svgs[1]).attr('aria-labelledby'), 'equation-2');
   });
 });

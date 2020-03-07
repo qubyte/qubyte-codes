@@ -17,27 +17,27 @@
   "private": true,
   "dependencies": {
     "cheerio": "1.0.0-rc.3",
-    "cpy": "8.0.0",
+    "cpy": "8.1.0",
     "cssnano": "4.1.10",
     "handlebars": "4.7.3",
     "highlight.js": "9.18.1",
     "marked": "0.8.0",
-    "mathjax-node": "2.1.1",
+    "mathjax-full": "3.0.1",
     "node-fetch": "2.6.0",
     "postcss": "7.0.27",
     "postcss-calc": "7.0.2",
     "postcss-custom-properties": "9.1.1",
     "postcss-import": "12.0.1",
     "postcss-preset-env": "6.7.0",
-    "slugify": "1.3.6",
+    "slugify": "1.4.0",
     "xml2js": "0.4.23"
   },
   "devDependencies": {
     "chokidar": "3.3.1",
     "eslint": "6.8.0",
     "eslint-config-qubyte": "3.0.0",
-    "inquirer": "7.0.1",
-    "mocha": "6.2.2",
+    "inquirer": "7.0.6",
+    "mocha": "7.1.0",
     "toisu": "3.0.6",
     "toisu-static": "2.0.0"
   }
