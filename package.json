@@ -29,14 +29,13 @@
     "postcss-custom-properties": "9.1.1",
     "postcss-import": "12.0.1",
     "postcss-preset-env": "6.7.0",
-    "slugify": "1.4.0",
-    "xml2js": "0.4.23"
+    "slugify": "1.4.0"
   },
   "devDependencies": {
     "chokidar": "3.3.1",
     "eslint": "6.8.0",
     "eslint-config-qubyte": "3.0.0",
-    "inquirer": "7.0.6",
+    "inquirer": "7.1.0",
     "mocha": "7.1.0",
     "toisu": "3.0.6",
     "toisu-static": "2.0.0"
