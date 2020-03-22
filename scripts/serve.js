@@ -39,7 +39,6 @@ const matchers = [
   [sourcePath, 'staticFiles']
 ];
 
-// eslint-disable-next-line complexity, max-statements
 async function watchForChanges(watcher, graph) {
   try {
     const [, pathStr] = await once(watcher, 'all');
