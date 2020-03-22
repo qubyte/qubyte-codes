@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "After a day I’m supposed to discard half the sourdough and feed the remainder. This is the discard, and it’s already showing some signs of activity!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1584877105552.jpg",
+        "alt": "A discarded portion of the sourdough starter. Bubbles can be seen on the surface."
+      }
+    ]
+  }
+}
