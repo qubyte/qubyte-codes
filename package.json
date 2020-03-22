@@ -36,7 +36,7 @@
     "eslint": "6.8.0",
     "eslint-config-qubyte": "3.0.0",
     "inquirer": "7.1.0",
-    "mocha": "7.1.0",
+    "mocha": "7.1.1",
     "toisu": "3.0.6",
     "toisu-static": "2.0.0"
   }
