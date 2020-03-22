@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I began a sourdough starter yesterday. Due to a lack of whole wheat flour I used 50:50 very strong white flour and buckwheat flour. I’m hoping the latter will donate the yeast!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1584876886786.jpg",
+        "alt": "The beginnings of a sourdough starter in a jar."
+      }
+    ]
+  }
+}
