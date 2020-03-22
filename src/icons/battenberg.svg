@@ -1,6 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-  <rect width="500" height="500" style="fill: rgb(255, 217, 204);"/>
-  <rect x="247.137" y="247.137" width="252.863" height="252.863" style="fill: rgb(255, 242, 204);"/>
-  <rect width="252.863" height="252.863" style="fill: rgb(255, 242, 204);"/>
+<svg width="50px" height="50px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .background {
+      fill: rgb(255, 217, 204);
+    }
+
+    .foreground {
+      fill: rgb(255, 242, 204);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .background {
+        fill: rgb(255, 242, 204);
+      }
+
+      .foreground {
+        fill: black;
+      }
+    }
+  </style>
+  <rect class="background" width="50" height="50"/>
+  <rect class="foreground" x="24.7137" y="24.7137" width="25.2863" height="25.2863"/>
+  <rect class="foreground" width="25.2863" height="25.2863"/>
 </svg>
