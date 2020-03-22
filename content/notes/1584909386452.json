@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "First batch of white chocolate and macadamia nut cookies!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1584909313900.JPG",
+        "alt": "A batch of home cooked white chocolate and macadamia nut cookies cooling on a baking tray."
+      }
+    ]
+  }
+}
