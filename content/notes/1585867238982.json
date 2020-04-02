@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "My first sourdough loaf!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1585867200330.jpg",
+        "alt": "A dome shaped sourdough loaf o. A cooling rack."
+      }
+    ]
+  }
+}
