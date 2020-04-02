@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "It’s good! I got lucky!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1585867264039.jpg",
+        "alt": "A slice of my first sourdough loaf. It has good structure and a fine crust."
+      }
+    ]
+  }
+}
