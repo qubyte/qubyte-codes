@@ -22,7 +22,7 @@
     "handlebars": "4.7.6",
     "highlight.js": "9.18.1",
     "marked": "0.8.2",
-    "mathjax-full": "3.0.4",
+    "mathjax-full": "3.0.5",
     "node-fetch": "2.6.0",
     "postcss": "7.0.27",
     "postcss-calc": "7.0.2",
