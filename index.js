@@ -67,6 +67,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         return loadPostFiles(path.join(content, 'posts'), baseUrl);
       }
     },
+    japaneseNotesFiles: {
+      dependencies: ['paths'],
+      action({ paths: { content } }) {
+        return loadPostFiles(path.join(content, 'japanese-notes'), baseUrl, 'japanese-notes');
+      }
+    },
     noteFiles: {
       dependencies: ['paths'],
       action({ paths: { content } }) {
@@ -101,6 +107,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['paths', 'publicDirectory'],
       action({ paths: { makeDirectory } }) {
         return makeDirectory('blog');
+      }
+    },
+    japaneseNotesDirectory: {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
+        return makeDirectory('japanese-notes');
       }
     },
     notesDirectory: {
@@ -172,6 +184,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
+    renderedJapaneseNotes: {
+      dependencies: ['css', 'templates', 'japaneseNotesFiles'],
+      action({ japaneseNotesFiles: resources, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      }
+    },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles'],
       action({ noteFiles: resources, templates: { note: template }, css: cssPath }) {
@@ -200,6 +218,20 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['css', 'templates', 'postFiles'],
       action({ postFiles: posts, templates, css: cssPath }) {
         return templates.blogs({ posts, cssPath, dev, baseUrl, localUrl: '/blog', title: 'Archive' });
+      }
+    },
+    renderedJapaneseNotesIndex: {
+      dependencies: ['css', 'templates', 'japaneseNotesFiles'],
+      action({ japaneseNotesFiles: posts, templates, css: cssPath }) {
+        return templates.blogs({
+          blurb: 'This is a collection of my notes taken as I learn to use the Japanese language.',
+          posts,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/japanese-notes',
+          title: 'Archive'
+        });
       }
     },
     renderedNotesIndex: {
@@ -285,6 +317,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         return writePublicFile(renderedBlogIndex, target, 'blog', 'index.html');
       }
     },
+    writtenJapaneseNotesIndex: {
+      dependencies: ['paths', 'renderedJapaneseNotesIndex'],
+      action({ paths: { target }, renderedJapaneseNotesIndex }) {
+        return writePublicFile(renderedJapaneseNotesIndex, target, 'japanese-notes', 'index.html');
+      }
+    },
     writtenNotesIndex: {
       dependencies: ['paths', 'renderedNotesIndex'],
       action({ paths: { target }, renderedNotesIndex }) {
@@ -343,6 +381,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['paths', 'renderedPosts'],
       action({ paths: { target }, renderedPosts }) {
         return renderedPosts.map(post => writePublicFile(post.html, target, 'blog', post.filename));
+      }
+    },
+    writtenJapaneseNotes: {
+      dependencies: ['paths', 'renderedJapaneseNotes'],
+      action({ paths: { target }, renderedJapaneseNotes }) {
+        return renderedJapaneseNotes.map(post => writePublicFile(post.html, target, 'japanese-notes', post.filename));
       }
     },
     writtenNotes: {

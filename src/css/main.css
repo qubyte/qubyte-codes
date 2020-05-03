@@ -48,6 +48,10 @@ h1, h2 {
   word-spacing: normal;
 }
 
+:lang(ja) {
+  font-family : 'ヒラギノ角ゴ ProN' , 'Hiragino Kaku Gothic ProN' , '游ゴシック' , '游ゴシック体' , YuGothic , 'Yu Gothic' , 'メイリオ' , Meiryo , 'ＭＳ ゴシック' , 'MS Gothic' , HiraKakuProN-W3 , 'TakaoExゴシック' , TakaoExGothic , 'MotoyaLCedar' , 'Droid Sans Japanese' , sans-serif;
+}
+
 h2, h3 {
   scroll-margin-top: 3rem;
 }
@@ -249,10 +253,6 @@ img {
   margin: 0 auto;
   max-width: 100%;
   border: 1px solid var(--standout-color-main);
-}
-
-ruby {
-  font-family : 'ヒラギノ角ゴ ProN' , 'Hiragino Kaku Gothic ProN' , '游ゴシック' , '游ゴシック体' , YuGothic , 'Yu Gothic' , 'メイリオ' , Meiryo , 'ＭＳ ゴシック' , 'MS Gothic' , HiraKakuProN-W3 , 'TakaoExゴシック' , TakaoExGothic , 'MotoyaLCedar' , 'Droid Sans Japanese' , sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
