@@ -251,6 +251,10 @@ img {
   border: 1px solid var(--standout-color-main);
 }
 
+ruby {
+  font-family : 'ヒラギノ角ゴ ProN' , 'Hiragino Kaku Gothic ProN' , '游ゴシック' , '游ゴシック体' , YuGothic , 'Yu Gothic' , 'メイリオ' , Meiryo , 'ＭＳ ゴシック' , 'MS Gothic' , HiraKakuProN-W3 , 'TakaoExゴシック' , TakaoExGothic , 'MotoyaLCedar' , 'Droid Sans Japanese' , sans-serif;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color-main: #000;
