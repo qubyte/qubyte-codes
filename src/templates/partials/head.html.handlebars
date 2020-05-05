@@ -24,6 +24,9 @@
 {{#if localUrl}}
 <link href={{baseUrl}}{{localUrl}} rel="canonical">
 {{/if}}
+{{#if description}}
+<meta name="description" content="{{description}}">
+{{/if}}
 {{#isBlogEntry}}
 {{#if prevLink}}
 <link href="{{prevLink}}" rel="prev">
@@ -31,7 +34,6 @@
 {{#if nextLink}}
 <link href="{{nextLink}}" rel="next">
 {{/if}}
-<meta name="description" content="{{description}}">
 <meta name="twitter:card" content="summary">
 <meta property="og:type" content="blog">
 <meta name="twitter:site" content="@qubyte">

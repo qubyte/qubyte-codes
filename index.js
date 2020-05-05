@@ -261,7 +261,14 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     renderedAbout: {
       dependencies: ['css', 'templates'],
       action({ templates, css: cssPath }) {
-        return templates.about({ cssPath, dev, baseUrl, localUrl: '/', title: 'About' });
+        return templates.about({
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/',
+          title: 'About',
+          description: 'The personal site of Mark Stanley Everitt.'
+        });
       }
     },
     renderedPublications: {
