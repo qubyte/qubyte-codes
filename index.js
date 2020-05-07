@@ -44,6 +44,8 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
 
           await fs.rmdir(directory, { recursive: true });
           await fs.mkdir(directory);
+
+          return directory;
         }
 
         return { source, target, content, makeDirectory };
@@ -101,6 +103,12 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['paths'],
       action({ paths: { makeDirectory } }) {
         return makeDirectory();
+      }
+    },
+    cssDirectory: {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { makeDirectory } }) {
+        return makeDirectory('css');
       }
     },
     blogDirectory: {
@@ -212,6 +220,17 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles: resources, templates: { replies: template }, css: cssPath }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
+      }
+    },
+    extraCssFiles: {
+      dependencies: ['postFiles', 'cssDirectory'],
+      async action({ postFiles, cssDirectory }) {
+        await Promise.all(postFiles.map(post => {
+          return post.styles && post.styles.length && fs.writeFile(
+            path.join(cssDirectory, `${post.slug}.css`),
+            post.styles.join('\n')
+          );
+        }));
       }
     },
     renderedBlogIndex: {
