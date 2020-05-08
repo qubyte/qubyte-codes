@@ -226,9 +226,9 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
       dependencies: ['postFiles', 'cssDirectory'],
       async action({ postFiles, cssDirectory }) {
         await Promise.all(postFiles.map(post => {
-          return post.styles && post.styles.length && fs.writeFile(
-            path.join(cssDirectory, `${post.slug}.css`),
-            post.styles.join('\n')
+          return post.extraStyleFile && fs.writeFile(
+            path.join(cssDirectory, `${post.extraStyleFile.slug}.css`),
+            post.extraStyleFile.content
           );
         }));
       }
