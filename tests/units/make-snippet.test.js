@@ -1,22 +1,22 @@
 'use strict';
 
 const assert = require('assert').strict;
-const cheerio = require('cheerio');
+const { JSDOM } = require('jsdom');
 const makeSnippet = require('../../lib/make-snippet');
 
 describe('make-snippet', () => {
-  let $;
+  let document;
 
   beforeEach(() => {
     const snippet = makeSnippet(`
       <article>
-        <p>I'm the first paragraph.</p>
+        <p>僕は the first paragraph.</p>
         <p>I'm the second paragraph.</p>
         <p>I'm the third paragraph.</p>
       </article>
     `);
 
-    $ = cheerio.load(snippet);
+    ({ window: { document } } = new JSDOM(snippet));
   });
 
   it('is a function', () => {
@@ -24,10 +24,14 @@ describe('make-snippet', () => {
   });
 
   it('returns a single paragraph', () => {
-    assert($('p').length, 1);
+    assert.equal(document.querySelectorAll('p').length, 1);
+  });
+
+  it('gives the returned paragraph a "p-summary" class', () => {
+    assert.equal(document.querySelector('p').className, 'p-summary');
   });
 
   it('removes the final character within the paragraph and replaces it with an elipses', () => {
-    assert($('p').text(), 'I\'m the first paragraph…');
+    assert.equal(document.querySelector('p').innerHTML, '僕は the first paragraph…');
   });
 });
