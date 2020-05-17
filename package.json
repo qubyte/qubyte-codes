@@ -16,11 +16,11 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "dependencies": {
-    "cheerio": "1.0.0-rc.3",
     "cpy": "8.1.0",
     "cssnano": "4.1.10",
     "handlebars": "4.7.6",
     "highlight.js": "10.0.3",
+    "jsdom": "16.2.2",
     "marked": "1.0.0",
     "mathjax-full": "3.0.5",
     "node-fetch": "2.6.0",
