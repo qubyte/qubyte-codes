@@ -10,7 +10,9 @@
     "build": "node scripts/clean.js && node scripts/build.js",
     "start": "node scripts/serve.js",
     "create-post": "node scripts/create-post.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "Mark Stanley Everitt",
   "license": "AGPL-3.0-only",
@@ -29,7 +31,8 @@
     "postcss-custom-properties": "9.1.1",
     "postcss-import": "12.0.1",
     "postcss-preset-env": "6.7.0",
-    "slugify": "1.4.0"
+    "slugify": "1.4.0",
+    "snyk": "^1.321.0"
   },
   "devDependencies": {
     "chokidar": "3.4.0",
@@ -39,5 +42,6 @@
     "mocha": "7.1.2",
     "toisu": "3.0.6",
     "toisu-static": "2.0.0"
-  }
+  },
+  "snyk": true
 }
