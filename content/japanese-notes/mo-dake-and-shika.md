@@ -42,5 +42,5 @@ Example:
 - <span lang="ja">マークさんはペンを一つ<mark>しか</mark>r[持,も]って<mark>いません</mark>。</span>
 
 I'd entirely forgotten how to use <span lang="ja">しか</span> since early on I'd
-learnt about <span lang="ja">だけ</span>, which doesn't negate the very (making
+learnt about <span lang="ja">だけ</span>, which doesn't negate the verb (making
 it easier for me to remember).
