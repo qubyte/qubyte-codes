@@ -175,6 +175,7 @@ nav > ul > li {
 article ul {
   list-style: disc inside none;
   line-height: 1.5em;
+  margin: 1rem 0;
 }
 
 pre {
@@ -253,6 +254,14 @@ img {
   margin: 0 auto;
   max-width: 100%;
   border: 1px solid var(--standout-color-main);
+}
+
+.ruby-hide rt, .ruby-hide rp {
+  display: none;
+}
+
+.ruby-position-under ruby {
+  ruby-position: under;
 }
 
 @media (prefers-color-scheme: dark) {
