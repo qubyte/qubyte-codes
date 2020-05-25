@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Sourdough brioche. About 25cm in diameter.‬"
+    ],
+    "photo": [
+      {
+        "value": "/images/1590366098815.jpg",
+        "alt": "Freshly baked sourdough brioche. About 25cm in diameter.‬"
+      }
+    ]
+  }
+}
