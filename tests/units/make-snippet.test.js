@@ -8,13 +8,13 @@ describe('make-snippet', () => {
   let document;
 
   beforeEach(() => {
-    const snippet = makeSnippet(`
+    const snippet = makeSnippet(new JSDOM(`
       <article>
         <p>僕は the first paragraph.</p>
         <p>I'm the second paragraph.</p>
         <p>I'm the third paragraph.</p>
       </article>
-    `);
+    `).window.document);
 
     ({ window: { document } } = new JSDOM(snippet));
   });

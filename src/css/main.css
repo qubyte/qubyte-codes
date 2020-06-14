@@ -256,12 +256,40 @@ img {
   border: 1px solid var(--standout-color-main);
 }
 
-.ruby-hide rt, .ruby-hide rp {
+.ruby-position-off rt, .ruby-position-off rp {
   display: none;
 }
 
 .ruby-position-under ruby {
   ruby-position: under;
+}
+
+dialog {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0 auto;
+}
+
+dialog > * {
+  margin: 0;
+}
+
+dialog > *:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+dialog label {
+  display: block;
+  margin: 0.25rem 0;
+}
+
+dialog button {
+  margin-top: 1rem;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(0.25rem);
 }
 
 @media (prefers-color-scheme: dark) {
