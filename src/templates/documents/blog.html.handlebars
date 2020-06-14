@@ -10,6 +10,7 @@
     {{> nav }}
   </header>
   <main>
+    {{#if hasRuby}}{{> ruby-options }}{{/if}}
     <article class="h-entry">
       <header>
         <h2><a href="{{{canonical}}}" class="u-url p-name">{{title}}</a></h2>
