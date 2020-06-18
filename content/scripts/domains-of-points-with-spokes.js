@@ -13,10 +13,11 @@ function createSvgLine({ x1, y1, x2, y2 }) {
   return setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'line'), { x1, y1, x2, y2 });
 }
 
+const width = 600;
+const height = 600;
+
 const svg = setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'svg'), {
-  width: '600',
-  height: '600',
-  viewBox: '0 0 600 600'
+  viewBox: `0 0 ${width} ${height}`
 });
 
 container.appendChild(svg);
@@ -98,8 +99,8 @@ function generatePoints(n, xmax, ymax) {
 }
 
 function drawToSvg() {
-  const points = generatePoints(nPoints, svg.clientWidth, svg.clientHeight);
-  const spokes = calculateSpokes(points, nSpokes, svg.clientWidth, svg.clientHeight);
+  const points = generatePoints(nPoints, width, height);
+  const spokes = calculateSpokes(points, nSpokes, width, height);
 
   // Draw points.
   // for (const [cx, cy] of points) {

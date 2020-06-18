@@ -9,10 +9,11 @@ function setAttributesNS(element, attributes) {
   return element;
 }
 
+const width = 500;
+const height = 500;
+
 const svg = setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'svg'), {
-  width: '600',
-  height: '600',
-  viewBox: '0 0 600 600'
+  viewBox: `0 0 ${width} ${height}`
 });
 
 container.appendChild(svg);
@@ -53,8 +54,8 @@ function generatePoints(n, xmax, ymax) {
 }
 
 function drawToSvg() {
-  const points = generatePoints(nPoints, svg.clientWidth, svg.clientHeight);
-  const circles = calculateCircles(points, svg.clientWidth, svg.clientHeight);
+  const points = generatePoints(nPoints, width, height);
+  const circles = calculateCircles(points, width, height);
 
   circles.forEach(drawCircle);
 }
