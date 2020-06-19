@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://mxb.dev/blog/the-return-of-the-90s-web/"
+    ],
+    "name": [
+      "The Return of the 90s Web - Max Böck"
+    ],
+    "content": [
+      "A nice discussion about how old techniques like server rendering are coming back into fashion, and personal websites and communities."
+    ],
+    "category": [],
+    "mp-slug": [
+      "the-return-of-the-90s-web"
+    ],
+    "mp-syndicate-to": [
+      "https://twitter.com/qubyte"
+    ]
+  }
+}
