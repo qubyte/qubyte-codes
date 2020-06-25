@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://www.cassie.codes/"
+    ],
+    "name": [
+      "Cassie Evans's Blog"
+    ],
+    "content": [
+      "Cassie's new blog looks great!"
+    ],
+    "category": [],
+    "mp-slug": [
+      "cassie-evanss-blog"
+    ]
+  }
+}
