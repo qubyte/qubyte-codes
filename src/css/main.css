@@ -104,7 +104,6 @@ body > footer {
 }
 
 nav {
-  padding: 0.5rem;
   border-color: var(--standout-color-main);
   border-style: solid;
   border-bottom-width: 1px;
@@ -167,8 +166,12 @@ th, td {
   padding: 0.5rem;
 }
 
+nav > ul {
+  display: flex;
+  justify-content: center;
+}
+
 nav > ul > li {
-  display: inline;
   margin: 0.5rem;
 }
 
