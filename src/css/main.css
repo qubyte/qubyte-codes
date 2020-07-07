@@ -204,6 +204,15 @@ button {
   padding-top: 1px;
   padding-bottom: 2px;
   color: var(--standout-color-main);
+  font-family: inherit;
+}
+
+button.party {
+  border: 0px;
+  padding: 0;
+  background-color: inherit;
+  font-size: inherit;
+  cursor: help;
 }
 
 input {
