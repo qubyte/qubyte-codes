@@ -1,26 +1,10 @@
-const container = document.createElement('div');
-container.className = 'experiment';
-
-function setAttributesNS(element, attributes) {
-  for (const [key, val] of Object.entries(attributes)) {
-    element.setAttributeNS(null, key, val);
-  }
-
-  return element;
-}
-
-function createSvgLine({ x1, y1, x2, y2 }) {
-  return setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'line'), { x1, y1, x2, y2 });
-}
+import createContainedSvg from './create-contained-svg.js';
+import createSvgElement from './create-svg-element.js';
 
 const width = 600;
 const height = 600;
 
-const svg = setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'svg'), {
-  viewBox: `0 0 ${width} ${height}`
-});
-
-container.appendChild(svg);
+const { container, svg } = createContainedSvg({ className: 'experiment', width, height });
 
 document.querySelector('.e-content').appendChild(container);
 
@@ -111,7 +95,7 @@ function drawToSvg() {
 
   // Draw spokes.
   for (const [[x1, y1], [x2, y2]] of spokes) {
-    svg.appendChild(createSvgLine({ x1, y1, x2, y2 }));
+    svg.appendChild(createSvgElement('line', { x1, y1, x2, y2 }));
   }
 }
 
