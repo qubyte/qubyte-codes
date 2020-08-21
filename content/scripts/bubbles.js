@@ -1,22 +1,10 @@
-const container = document.createElement('div');
-container.className = 'experiment';
-
-function setAttributesNS(element, attributes) {
-  for (const [key, val] of Object.entries(attributes)) {
-    element.setAttributeNS(null, key, val);
-  }
-
-  return element;
-}
+import createContainedSvg from './create-contained-svg.js';
+import createSvgElement from './create-svg-element.js';
 
 const width = 500;
 const height = 500;
 
-const svg = setAttributesNS(document.createElementNS('http://www.w3.org/2000/svg', 'svg'), {
-  viewBox: `0 0 ${width} ${height}`
-});
-
-container.appendChild(svg);
+const { container, svg } = createContainedSvg({ className: 'experiment', width, height });
 
 document.querySelector('.e-content').appendChild(container);
 
@@ -44,9 +32,7 @@ function calculateCircles(points/*, xmax, ymax*/) {
 }
 
 function drawCircle({ cx, cy, r, strokeWidth }) {
-  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  setAttributesNS(circle, { cx, cy, r, 'stroke-width': strokeWidth, fill: 'none' });
-  svg.appendChild(circle);
+  svg.appendChild(createSvgElement('circle', { cx, cy, r, 'stroke-width': strokeWidth, fill: 'none' }));
 }
 
 function generatePoints(n, xmax, ymax) {
