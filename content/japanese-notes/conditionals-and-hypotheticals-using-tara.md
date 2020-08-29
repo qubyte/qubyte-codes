@@ -27,7 +27,7 @@ Noun example:
 
 Verb example:
 
-- <span lang="ja">このキノコをr「食、た」べたら、r「背、せい」がr「高、たか」くなります。</span>
+- <span lang="ja">このキノコをr「食、た」べたら、r「背、せ」がr「高、たか」くなります。</span>
 - Literal: If you eat this mushroom, you will become taller.
 - Natural: Eating this mushroom will make you taller.
 
