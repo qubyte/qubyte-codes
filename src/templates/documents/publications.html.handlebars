@@ -16,10 +16,10 @@
       {{#publications}}
       <article class="h-cite">
       {{#if doi}}
-      <a href={{doi}} class="u-url u-uid"><h3 class="p-name">{{title}}</h3></a>
-      <p>{{ref}}, <time class="dt-published">{{published}}</time>, <a href={{preprint}}>preprint</a></p>
+      <a href="{{doi}}" class="u-url u-uid"><h3 class="p-name">{{title}}</h3></a>
+      <p>{{ref}}, <time class="dt-published">{{published}}</time>, <a href="{{preprint}}">preprint</a></p>
       {{else}}
-      <a href={{preprint}} class="u-url"><h3 class="p-name">{{title}}</h3></a>
+      <a href="{{preprint}}" class="u-url"><h3 class="p-name">{{title}}</h3></a>
       <p>{{ref}}, <time class="dt-published">{{published}}</time></p>
       {{/if}}
       </article>
