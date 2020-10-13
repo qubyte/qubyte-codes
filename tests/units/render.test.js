@@ -68,4 +68,23 @@ describe('render', () => {
       assert.equal(svgs[1].getAttribute('aria-labelledby'), 'equation-2');
     });
   });
+
+  describe('inline ruby links', () => {
+    it('renders ruby elements', () => {
+      const rendered = render('[買,か,いに,,行,い,く,](r)', URL).trim();
+      const { window: { document } } = new JSDOM(rendered);
+      const $rubies = document.getElementsByTagName('ruby');
+
+      assert.equal($rubies.length, 1);
+
+      assert.equal($rubies[0].outerHTML, [
+        '<ruby lang="ja">',
+        '買<rp>(</rp><rt>か</rt><rp>)</rp>',
+        'いに<rt></rt>',
+        '行<rp>(</rp><rt>い</rt><rp>)</rp>',
+        'く<rt></rt>',
+        '</ruby>'
+      ].join(''));
+    });
+  });
 });
