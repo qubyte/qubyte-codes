@@ -16,7 +16,7 @@ nuance that the speaker feels that the quantity is large.
 Example:
 
 - Mark has _ten_ cars.
-- <span lang="ja">マークさんはr[車,くるま]を十台<mark>も</mark>r[持,も]っています。</span>
+- <span lang="ja">マークさんは[車,くるま](r)を十台<mark>も</mark>[持,も](r)っています。</span>
 
 ## Not many using <span lang="ja">だけ</span>
 
@@ -27,7 +27,7 @@ the speaker feels the quantity is low.
 Example:
 
 - Mark _only_ has one pen.
-- <span lang="ja">マークさんはペンを一つ<mark>だけ</mark>r[持,も]っています。</span>
+- <span lang="ja">マークさんはペンを一つ<mark>だけ</mark>[持,も](r)っています。</span>
 
 ## Not many using <span lang="ja">しか</span>
 
@@ -39,7 +39,7 @@ that the verb used is in its negative form.
 Example:
 
 - Mark _only_ has one pen.
-- <span lang="ja">マークさんはペンを一つ<mark>しか</mark>r[持,も]って<mark>いません</mark>。</span>
+- <span lang="ja">マークさんはペンを一つ<mark>しか</mark>[持,も](r)って<mark>いません</mark>。</span>
 
 I'd entirely forgotten how to use <span lang="ja">しか</span> since early on I'd
 learnt about <span lang="ja">だけ</span>, which doesn't negate the verb (making
