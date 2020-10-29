@@ -255,7 +255,7 @@ input {
 }
 
 article + article::before {
-  content: '⁂';
+  content: attr(light-emoji);
   display: block;
   text-align: center;
   padding-bottom: 1rem;
@@ -331,5 +331,9 @@ dialog::backdrop {
 
   code {
     filter: invert();
+  }
+
+  article + article::before {
+    content: attr(dark-emoji);
   }
 }
