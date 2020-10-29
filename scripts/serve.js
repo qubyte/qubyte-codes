@@ -15,7 +15,7 @@ const notFoundPath = path.join(__dirname, '..', 'public', '404.html');
 const sourcePath = path.join(__dirname, '..', 'src');
 const contentPath = path.join(__dirname, '..', 'content');
 const buildEmitter = new EventEmitter();
-const port = 8000;
+const port = 8080;
 const syndications = {
   mastodon: 'https://mastodon.social/@qubyte',
   twitter: 'https://twitter.com/qubyte'
@@ -124,7 +124,7 @@ app.use(serveStatic('public', { extensions: ['html'] }));
 
 // This middleware handles everything not handled before it (404).
 app.use((_req, res) => {
-  createReadStream(notFoundPath).pipe(res.writeHead(404, { 'Content-Type': 'text/html' }));
+  createReadStream(notFoundPath).pipe(res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' }));
 });
 
 http
