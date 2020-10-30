@@ -2,6 +2,7 @@
 {
   "datetime": "2020-05-04T22:11Z",
   "title": "Expressing many and not many with も, しか, and だけ",
+  "slug": "expressing-many-and-not-many-with-mo-shika-and-dake",
   "description": "Using しか, だけ, and も can add nuance to amounts of things."
 }
 ---

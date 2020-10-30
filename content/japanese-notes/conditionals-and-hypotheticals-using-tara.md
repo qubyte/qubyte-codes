@@ -2,6 +2,7 @@
 {
   "datetime": "2020-08-28T20:40Z",
   "title": "Conditionals and hypotheticals using たら",
+  "slug": "conditionals-and-hypotheticals-using-tara",
   "description": "Using しか, だけ, and も can add nuance to amounts of things."
 }
 ---
