@@ -1,7 +1,7 @@
 ---
 {
   "datetime": "2020-10-30T12:21Z",
-  "title": "not yet or still with まだ",
+  "title": "Not yet or still with まだ",
   "slug": "not-yet-or-still-with-mada",
   "description": "まだ can be used to express when something is not yet the case, or is still the case."
 }

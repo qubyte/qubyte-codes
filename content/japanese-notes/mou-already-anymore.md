@@ -1,7 +1,7 @@
 ---
 {
   "datetime": "2020-10-30T12:20Z",
-  "title": "already or anymore with もう",
+  "title": "Already or anymore with もう",
   "slug": "already-or-anymore-with-mou",
   "description": "もう can be used to express when something is already the case, or will not be the case again."
 }
