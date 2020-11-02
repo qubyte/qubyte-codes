@@ -16,6 +16,11 @@
     X-Clacks-Overhead = 'GNU Terry Pratchett'
 
 [[headers]]
+  for = "/japanese-notes*"
+  [headers.values]
+    X-Robots-Tag = "none"
+
+[[headers]]
   for = "*.css"
   [headers.values]
     Cache-Control = "max-age=315360000, public, immutable"
