@@ -6,14 +6,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@master
-    - name: use node 14
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
-    - run: npm ci
     - name: trigger build
-      env:
-        NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
-      run: node scripts/trigger-build
+      run: curl -X POST ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
