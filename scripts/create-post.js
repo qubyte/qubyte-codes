@@ -1,12 +1,8 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
-const { promisify } = require('util');
-const stat = promisify(fs.stat);
-const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
 
 const tagsPath = path.join(__dirname, '..', 'tags.txt');
 
@@ -21,7 +17,7 @@ async function cli() {
     {
       type: 'checkbox',
       name: 'tags',
-      choices: (await readFile(tagsPath, 'utf8')).trim().split('\n'),
+      choices: (await fs.readFile(tagsPath, 'utf8')).trim().split('\n'),
       message: 'Tag:'
     }
   ]);
@@ -41,7 +37,7 @@ async function cli() {
   let stats;
 
   try {
-    stats = await stat(filePath);
+    stats = await fs.stat(filePath);
   } catch (e) {
     if (e.code !== 'ENOENT') {
       throw e;
@@ -50,10 +46,10 @@ async function cli() {
 
   if (stats) {
     console.error(`File already exists: ${filePath}\n${details}`); // eslint-disable-line no-console
-    return process.exit(1);
+    return process.exit(1); // eslint-disable-line no-process-exit
   }
 
-  await writeFile(filePath, `---\n${details}\n---\n`);
+  await fs.writeFile(filePath, `---\n${details}\n---\n`);
 
   console.log('Created:', filePath); // eslint-disable-line no-console
 }
