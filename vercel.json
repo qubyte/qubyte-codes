@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*)",
+      "source": ".*",
       "headers": [
         {
           "key": "Strict-Transport-Security",
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "source": "/japanese-notes*",
+      "source": "/japanese-notes(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -48,25 +48,7 @@
       ]
     },
     {
-      "source": "/(.*).css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=315360000, public, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).woff",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "max-age=315360000, public, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).woff2",
+      "source": "(.*).(css|woff|woff2)",
       "headers": [
         {
           "key": "Cache-Control",
