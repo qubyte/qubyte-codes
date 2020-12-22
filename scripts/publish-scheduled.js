@@ -46,7 +46,7 @@ async function run() {
     return console.log('Nothing to publish right now.');
   }
 
-  const res = await fetch(process.env.NETLIFY_BUILD_HOOK_URL, { method: 'POST' });
+  const res = await fetch(process.env.BUILD_HOOK_URL, { method: 'POST' });
 
   if (!res.ok) {
     throw new Error(`Unexpected status from Netlify ${res.status}: ${await res.text()}`);
