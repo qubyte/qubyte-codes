@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@main
     - name: use node 14
-      uses: actions/setup-node@master
+      uses: actions/setup-node@main
       with:
         node-version: '14.x'
     - run: npm ci
     - name: publish scheduled
       env:
-        NETLIFY_BUILD_HOOK_URL: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        BUILD_HOOK_URL: ${{ secrets.BUILD_HOOK_URL }}
       run: node scripts/publish-scheduled.js
