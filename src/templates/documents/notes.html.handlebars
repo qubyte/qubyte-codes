@@ -10,6 +10,9 @@
     {{> nav }}
   </header>
   <main>
+    {{#if blurb}}
+    <p>{{{blurb}}}</p>
+    {{/if}}
     {{#notes}}{{> note }}{{/notes}}
   </main>
   <footer>
