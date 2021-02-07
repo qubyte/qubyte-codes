@@ -26,29 +26,36 @@ function renderResources({ resources, template, cssPath, baseUrl, dev }) {
   }));
 }
 
+function makeWriteEntries({ renderedDependencies, pathFragment }) {
+  return {
+    dependencies: ['paths', renderedDependencies],
+    action({ paths: { target }, [renderedDependencies]: rendered }) {
+      return rendered.map(({ html, filename }) => writePublicFile(html, target, pathFragment, filename));
+    }
+  };
+}
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-
 exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) {
   const graph = new ExecutionGraph();
 
   await graph.addNodes({
     paths: {
       action() {
-        const source = path.join(__dirname, 'src');
-        const target = path.join(__dirname, 'public');
-        const content = path.join(__dirname, 'content');
+        return {
+          source: path.join(__dirname, 'src'),
+          target: path.join(__dirname, 'public'),
+          content: path.join(__dirname, 'content'),
+          async makeDirectory(...pathParts) {
+            const directory = path.join(__dirname, 'public', ...pathParts);
 
-        async function makeDirectory(...pathParts) {
-          const directory = path.join(target, ...pathParts);
+            await fs.rmdir(directory, { recursive: true });
+            await fs.mkdir(directory);
 
-          await fs.rmdir(directory, { recursive: true });
-          await fs.mkdir(directory);
-
-          return directory;
-        }
-
-        return { source, target, content, makeDirectory };
+            return directory;
+          }
+        };
       }
     },
     commitTime: {
@@ -156,9 +163,7 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     staticFiles: {
       dependencies: ['paths', 'publicDirectory'],
       action({ paths: { source, target, content } }) {
-        function copy(directory, subDirectory) {
-          return cpy(path.join(directory, subDirectory, '*'), path.join(target, subDirectory));
-        }
+        const copy = (dir, subDir) => cpy(path.join(dir, subDir, '*'), path.join(target, subDir));
 
         return Promise.all([
           copy(source, 'icons'),
@@ -236,7 +241,15 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     renderedBlogIndex: {
       dependencies: ['css', 'templates', 'postFiles'],
       action({ postFiles: posts, templates, css: cssPath }) {
-        return templates.blogs({ posts, cssPath, dev, baseUrl, localUrl: '/blog', title: 'Archive' });
+        return templates.blogs({
+          blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
+          posts,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/blog',
+          title: 'Archive'
+        });
       }
     },
     renderedJapaneseNotesIndex: {
@@ -256,25 +269,57 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
     renderedNotesIndex: {
       dependencies: ['css', 'templates', 'noteFiles'],
       action({ noteFiles: notes, templates, css: cssPath }) {
-        return templates.notes({ notes, cssPath, dev, baseUrl, localUrl: '/notes', title: 'Notes' });
+        return templates.notes({
+          blurb: 'This is a collection of my notes. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!',
+          notes,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/notes',
+          title: 'Notes'
+        });
       }
     },
     renderedLinksIndex: {
       dependencies: ['css', 'templates', 'linkFiles'],
       action({ linkFiles: links, templates, css: cssPath }) {
-        return templates.links({ links, cssPath, dev, baseUrl, localUrl: '/links', title: 'Links' });
+        return templates.links({
+          blurb: 'This is a collection of links I find interesting. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
+          links,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/links',
+          title: 'Links'
+        });
       }
     },
     renderedLikesIndex: {
       dependencies: ['css', 'templates', 'likeFiles'],
       action({ likeFiles: likes, templates, css: cssPath }) {
-        return templates.likes({ likes, cssPath, dev, baseUrl, localUrl: '/likes', title: 'Likes' });
+        return templates.likes({
+          blurb: 'This is a collection of things I like on the web. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
+          likes,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/likes',
+          title: 'Likes'
+        });
       }
     },
     renderedRepliesIndex: {
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles: replies, templates, css: cssPath }) {
-        return templates.replies({ replies, cssPath, dev, baseUrl, localUrl: '/replies', title: 'Replies' });
+        return templates.replies({
+          blurb: 'This is a collection of things on the web I have replied to. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
+          replies,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/replies',
+          title: 'Replies'
+        });
       }
     },
     renderedAbout: {
@@ -322,13 +367,22 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         return templates.sitemap({ posts, tags, notes, links, likes, replies, baseUrl });
       }
     },
-    renderedAtomFeed: {
+    renderedAtomFeeds: {
       dependencies: ['templates', 'commitTime', 'postFiles', 'noteFiles', 'linkFiles', 'likeFiles', 'replyFiles'],
       action({ templates, commitTime, postFiles, noteFiles, linkFiles, likeFiles, replyFiles }) {
-        const items = [...postFiles, ...noteFiles, ...linkFiles, ...likeFiles, ...replyFiles]
-          .sort((a, b) => b.timestamp - a.timestamp);
+        function descending(a, b) {
+          return a.timestamp - b.timestamp;
+        }
 
-        return templates.atom({ items, baseUrl, updated: commitTime });
+        const social = [...noteFiles, ...linkFiles, ...likeFiles, ...replyFiles].sort(descending);
+        const posts = [...postFiles].sort(descending);
+        const all = [...posts, ...social].sort(descending);
+
+        return {
+          all: templates.atom({ name: 'atom', items: all, baseUrl, updated: commitTime }),
+          posts: templates.atom({ name: 'blog.atom', items: posts, baseUrl, updated: commitTime }),
+          social: templates.atom({ name: 'social.atom', items: social, baseUrl, updated: commitTime })
+        };
       }
     },
     writtenIndex: {
@@ -397,54 +451,23 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
         return writePublicFile(renderedSitemap, target, 'sitemap.txt');
       }
     },
-    writtenAtomFeed: {
-      dependencies: ['paths', 'renderedAtomFeed'],
-      action({ paths: { target }, renderedAtomFeed }) {
-        return writePublicFile(renderedAtomFeed, target, 'atom.xml');
+    writtenAtomFeeds: {
+      dependencies: ['paths', 'renderedAtomFeeds'],
+      action({ paths: { target }, renderedAtomFeeds: { all, posts, social } }) {
+        return Promise.all([
+          writePublicFile(all, target, 'atom.xml'),
+          writePublicFile(posts, target, 'blog.atom.xml'),
+          writePublicFile(social, target, 'social.atom.xml')
+        ]);
       }
     },
-    writtenPosts: {
-      dependencies: ['paths', 'renderedPosts'],
-      action({ paths: { target }, renderedPosts }) {
-        return renderedPosts.map(post => writePublicFile(post.html, target, 'blog', post.filename));
-      }
-    },
-    writtenJapaneseNotes: {
-      dependencies: ['paths', 'renderedJapaneseNotes'],
-      action({ paths: { target }, renderedJapaneseNotes }) {
-        return renderedJapaneseNotes.map(post => writePublicFile(post.html, target, 'japanese-notes', post.filename));
-      }
-    },
-    writtenNotes: {
-      dependencies: ['paths', 'renderedNotes'],
-      action({ paths: { target }, renderedNotes }) {
-        return renderedNotes.map(note => writePublicFile(note.html, target, 'notes', note.filename));
-      }
-    },
-    writtenLinks: {
-      dependencies: ['paths', 'renderedLinks'],
-      action({ paths: { target }, renderedLinks }) {
-        return renderedLinks.map(note => writePublicFile(note.html, target, 'links', note.filename));
-      }
-    },
-    writtenLikes: {
-      dependencies: ['paths', 'renderedLikes'],
-      action({ paths: { target }, renderedLikes }) {
-        return renderedLikes.map(note => writePublicFile(note.html, target, 'likes', note.filename));
-      }
-    },
-    writtenReplies: {
-      dependencies: ['paths', 'renderedReplies'],
-      action({ paths: { target }, renderedReplies }) {
-        return renderedReplies.map(note => writePublicFile(note.html, target, 'replies', note.filename));
-      }
-    },
-    writtenTags: {
-      dependencies: ['paths', 'collatedTags'],
-      action({ paths: { target }, collatedTags }) {
-        return collatedTags.map(tag => writePublicFile(tag.html, target, 'tags', tag.filename));
-      }
-    }
+    writtenPosts: makeWriteEntries({ renderedDependencies: 'renderedPosts', pathFragment: 'blog' }),
+    writtenJapaneseNotes: makeWriteEntries({ renderedDependencies: 'renderedJapaneseNotes', pathFragment: 'japanese-notes' }),
+    writtenNotes: makeWriteEntries({ renderedDependencies: 'renderedNotes', pathFragment: 'notes' }),
+    writtenLinks: makeWriteEntries({ renderedDependencies: 'renderedLinks', pathFragment: 'links' }),
+    writtenLikes: makeWriteEntries({ renderedDependencies: 'renderedLikes', pathFragment: 'likes' }),
+    writtenReplies: makeWriteEntries({ renderedDependencies: 'renderedReplies', pathFragment: 'replies' }),
+    writtenTags: makeWriteEntries({ renderedDependencies: 'collatedTags', pathFragment: 'tags' })
   });
 
   return graph;
