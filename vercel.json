@@ -66,7 +66,7 @@
       ]
     },
     {
-      "source": "/atom.xml",
+      "source": "(.*)atom.xml",
       "headers": [
         {
           "key": "Content-Type",
