@@ -1,8 +1,7 @@
-'use strict';
+import { strict as assert } from 'assert';
+import { JSDOM } from 'jsdom';
+import render from '../../lib/render.js';
 
-const assert = require('assert').strict;
-const { JSDOM } = require('jsdom');
-const render = require('../../lib/render');
 const URL = process.env.URL;
 
 describe('render', () => {

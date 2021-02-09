@@ -1,10 +1,7 @@
-'use strict';
+import inquirer from 'inquirer';
+import { promises as fs } from 'fs';
 
-const inquirer = require('inquirer');
-const fs = require('fs').promises;
-const path = require('path');
-
-const tagsPath = path.join(__dirname, '..', 'tags.txt');
+const tagsPath = new URL('../tags.txt', import.meta.url);
 
 function pad(part) {
   return part.toString().padStart(2, '0');
@@ -32,7 +29,7 @@ async function cli() {
     description,
     tags
   }, null, 2);
-  const filePath = path.join(__dirname, '..', 'content', 'posts', `${date}.md`);
+  const filePath = new URL(`../content/posts/${date}.md`, import.meta.url);
 
   let stats;
 
@@ -51,7 +48,7 @@ async function cli() {
 
   await fs.writeFile(filePath, `---\n${details}\n---\n`);
 
-  console.log('Created:', filePath); // eslint-disable-line no-console
+  console.log('Created:', filePath.href); // eslint-disable-line no-console
 }
 
 cli();

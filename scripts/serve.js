@@ -1,16 +1,16 @@
-'use strict';
-
 /* eslint no-console: off */
 
-const { createReadStream } = require('fs');
-const http = require('http');
-const path = require('path');
-const Toisu = require('toisu');
-const serveStatic = require('toisu-static');
-const chokidar = require('chokidar');
-const { EventEmitter, once } = require('events');
-const blogEngine = require('..');
+import { createReadStream } from 'fs';
+import http from 'http';
+import path from 'path';
+import url from 'url';
+import Toisu from 'toisu';
+import serveStatic from 'toisu-static';
+import chokidar from 'chokidar';
+import { EventEmitter, once } from 'events';
+import { build } from '../index.js';
 
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const notFoundPath = path.join(__dirname, '..', 'public', '404.html');
 const sourcePath = path.join(__dirname, '..', 'src');
 const contentPath = path.join(__dirname, '..', 'content');
@@ -71,7 +71,7 @@ once(watcher, 'ready')
     console.log('No event or path, or a source file changed. Running initial build...');
     console.time('Initial build');
 
-    return blogEngine.build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
+    return build({ baseUrl: `http://localhost:${port}`, baseTitle: 'DEV MODE', syndications, dev: true });
   })
   .then(graph => {
     buildEmitter.emit('new');

@@ -1,12 +1,11 @@
-'use strict';
-
 /* eslint no-console: off */
 
 console.log('Cleaning build artefacts...');
 console.time('Done cleaning.');
 
-const { rmdir } = require('fs').promises;
-const { join } = require('path');
+import { promises as fs } from 'fs';
 
-rmdir(join(__dirname, '..', 'public'), { recursive: true })
+const publidDir = new URL('../public', import.meta.url);
+
+fs.rmdir(publidDir, { recursive: true })
   .then(() => console.timeEnd('Done cleaning.'));

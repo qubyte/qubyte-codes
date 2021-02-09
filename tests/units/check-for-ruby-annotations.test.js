@@ -1,8 +1,6 @@
-'use strict';
-
-const assert = require('assert').strict;
-const { JSDOM } = require('jsdom');
-const checkForRubyAnnotations = require('../../lib/check-for-ruby-annotations');
+import { strict as assert } from 'assert';
+import { JSDOM } from 'jsdom';
+import checkForRubyAnnotations from '../../lib/check-for-ruby-annotations.js';
 
 describe('check-for-ruby-annotations', () => {
   it('is a function', () => {

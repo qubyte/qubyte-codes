@@ -1,10 +1,10 @@
-'use strict';
+import { strict as assert } from 'assert';
+import ExecutionGraph from '../../lib/execution-graph.js';
+import { EventEmitter } from 'events';
+import crypto from 'crypto';
+import { promisify } from 'util';
 
-const assert = require('assert').strict;
-const ExecutionGraph = require('../../lib/execution-graph');
-const { EventEmitter } = require('events');
-const crypto = require('crypto');
-const wait = require('util').promisify(setTimeout);
+const wait = promisify(setTimeout);
 
 describe('execution-graph', () => {
   let graph;

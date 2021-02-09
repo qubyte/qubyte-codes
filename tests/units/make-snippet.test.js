@@ -1,8 +1,6 @@
-'use strict';
-
-const assert = require('assert').strict;
-const { JSDOM } = require('jsdom');
-const makeSnippet = require('../../lib/make-snippet');
+import { strict as assert } from 'assert';
+import { JSDOM } from 'jsdom';
+import makeSnippet from '../../lib/make-snippet.js';
 
 describe('make-snippet', () => {
   let document;

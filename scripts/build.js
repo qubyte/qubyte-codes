@@ -1,6 +1,5 @@
-'use strict';
+import { build } from '../index.js';
 
-const blogEngine = require('..');
 const baseUrl = process.env.URL;
 const baseTitle = process.env.BASE_TITLE;
 const syndications = {
@@ -8,7 +7,7 @@ const syndications = {
   twitter: process.env.TWITTER_SYNDICATION
 };
 
-blogEngine.build({ baseUrl, baseTitle, syndications }).catch(e => {
+build({ baseUrl, baseTitle, syndications }).catch(e => {
   console.error(e); // eslint-disable-line no-console
   process.exit(1);
 });
