@@ -2,6 +2,7 @@
   "name": "qubyte-codes",
   "version": "1.0.0",
   "description": "qubyte.codes website",
+  "type": "module",
   "main": "index.js",
   "repository": "github:qubyte/qubyte-codes",
   "scripts": {
@@ -10,11 +11,15 @@
     "build": "node scripts/clean.js && node scripts/build.js",
     "start": "node scripts/clean.js && node scripts/serve.js",
     "create-post": "node scripts/create-post.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "publish-scheduled": "node scripts/publish-scheduled.js"
   },
   "author": "Mark Stanley Everitt",
   "license": "AGPL-3.0-only",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "cpy": "8.1.1",
     "cssnano": "4.1.10",

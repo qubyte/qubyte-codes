@@ -1,19 +1,19 @@
-'use strict';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { promises as fs } from 'fs';
+import cpy from 'cpy';
 
-const path = require('path');
-const loadTemplates = require('./lib/templates');
-const generateCss = require('./lib/generate-css');
-const loadPostFiles = require('./lib/load-post-files');
-const loadNoteFiles = require('./lib/load-note-files');
-const loadLinkFiles = require('./lib/load-link-files');
-const loadLikeFiles = require('./lib/load-like-files');
-const loadReplyFiles = require('./lib/load-reply-files');
-const collateTags = require('./lib/collate-tags');
-const getLastCommitTime = require('./lib/get-last-commit-time');
-const ExecutionGraph = require('./lib/execution-graph');
-const fs = require('fs').promises;
-const cpy = require('cpy');
-const publications = require('./src/publications');
+import loadTemplates from './lib/templates.js';
+import generateCss from './lib/generate-css.js';
+import loadPostFiles from './lib/load-post-files.js';
+import loadNoteFiles from './lib/load-note-files.js';
+import loadLinkFiles from './lib/load-link-files.js';
+import loadLikeFiles from './lib/load-like-files.js';
+import loadReplyFiles from './lib/load-reply-files.js';
+import collateTags from './lib/collate-tags.js';
+import getLastCommitTime from './lib/get-last-commit-time.js';
+import ExecutionGraph from './lib/execution-graph.js';
+import publications from './content/publications.js';
 
 async function writePublicFile(content, ...pathParts) {
   await fs.writeFile(path.join(...pathParts), content);
@@ -35,9 +35,11 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
   };
 }
 
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) {
+export async function build({ baseUrl, baseTitle, dev, syndications }) {
   const graph = new ExecutionGraph();
 
   await graph.addNodes({
@@ -471,4 +473,4 @@ exports.build = async function build({ baseUrl, baseTitle, dev, syndications }) 
   });
 
   return graph;
-};
+}

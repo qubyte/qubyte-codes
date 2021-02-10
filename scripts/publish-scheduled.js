@@ -1,23 +1,21 @@
-'use strict';
-
 /* eslint-disable no-console */
 
-const path = require('path');
-const loadPostFiles = require('../lib/load-post-files');
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+import loadPostFiles from '../lib/load-post-files.js';
+import { fileURLToPath } from 'url';
 
-const URL = 'https://qubyte.codes';
-const POST_FILES_PATH = path.join(__dirname, '..', 'content', 'posts');
+const BASE_URL = 'https://qubyte.codes';
+const POST_FILES_PATH = fileURLToPath(new URL('../content/posts', import.meta.url));
 
 async function getPublishedBlogSlugs() {
-  const res = await fetch(`${URL}/sitemap.txt`);
+  const res = await fetch(`${BASE_URL}/sitemap.txt`);
   const body = await res.text();
 
   if (!res.ok) {
     throw new Error(`Unexpected status from qubyte.codes ${res.status}: ${body}`);
   }
 
-  const blogEntryBaseUrl = `${URL}/blog/`;
+  const blogEntryBaseUrl = `${BASE_URL}/blog/`;
 
   const slugs = body
     .split('\n')
@@ -29,7 +27,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles(POST_FILES_PATH, URL);
+  const shouldBePublished = await loadPostFiles(POST_FILES_PATH, BASE_URL);
 
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 
