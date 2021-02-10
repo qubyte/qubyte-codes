@@ -32,6 +32,8 @@ const matchers = [
   [path.join(contentPath, 'posts'), 'postFiles'],
   [path.join(contentPath, 'japanese-notes'), 'japaneseNotesFiles'],
   [path.join(contentPath, 'replies'), 'replyFiles'],
+  [path.join(contentPath, 'feeds'), 'feeds'],
+  [path.join(contentPath, 'publications'), 'publications'],
   [path.join(sourcePath, 'css'), 'css'],
   [path.join(sourcePath, 'fonts'), 'staticFiles'],
   [path.join(sourcePath, 'icons'), 'staticFiles'],

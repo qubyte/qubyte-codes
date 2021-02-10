@@ -73,6 +73,15 @@
           "value": "application/atom+xml; charset=utf-8"
         }
       ]
+    },
+    {
+      "source": "/feeds.opml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     }
   ]
 }

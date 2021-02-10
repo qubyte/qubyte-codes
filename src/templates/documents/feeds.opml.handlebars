@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+<head>
+  <title>Feed Subscriptions</title>
+</head>
+<body>
+  {{#feeds}}
+  <outline text="{{name}}" title="{{name}}" xmlUrl="{{feedUrl}}" htmlUrl="{{htmlUrl}}"/>
+  {{/feeds}}
+</body>
+</opml>

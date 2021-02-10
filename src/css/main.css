@@ -111,6 +111,10 @@ nav {
   background-color: var(--background-color-alt);
 }
 
+dd {
+  margin: 1rem;
+}
+
 article {
   padding: 0.5rem 0;
 }
@@ -254,7 +258,7 @@ input {
   font-size: 3rem;
 }
 
-article + article::before {
+article + article::before, dd + dt::before {
   content: attr(light-emoji);
   display: block;
   text-align: center;
@@ -333,7 +337,7 @@ dialog::backdrop {
     filter: invert();
   }
 
-  article + article::before {
+  article + article::before, dd + dt::before {
     content: attr(dark-emoji);
   }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "feedUrl": "https://cassie.codes/feed.xml",
+    "htmlUrl": "https://cassie.codes/",
+    "name": "cassie.codes",
+    "description": "Cassie is an SVG and animation wizard!"
+  },
+  {
+    "feedUrl": "https://sallylait.com/blog/index.xml",
+    "htmlUrl": "https://sallylait.com/",
+    "name": "Sally Lait - blog",
+    "description": "Sally Lait blogs about engineering leadership, and also has some interesting side projects."
+  },
+  {
+    "feedUrl": "https://ohhelloana.blog/feed.xml",
+    "htmlUrl": "https://ohhelloana.blog/",
+    "name": "Oh Hello Ana",
+    "description": "Ana Rodrigues blogs about a variety of things, and is a fellow IndieWeb enthusiast."
+  }
+]
