@@ -287,7 +287,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'noteFiles'],
       action({ noteFiles: notes, templates, css: cssPath }) {
         return templates.notes({
-          blurb: 'This is a collection of my notes. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!',
           notes,
           cssPath,
           dev,
@@ -301,7 +300,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'linkFiles'],
       action({ linkFiles: links, templates, css: cssPath }) {
         return templates.links({
-          blurb: 'This is a collection of links I find interesting. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
           links,
           cssPath,
           dev,
@@ -315,7 +313,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'likeFiles'],
       action({ likeFiles: likes, templates, css: cssPath }) {
         return templates.likes({
-          blurb: 'This is a collection of things I like on the web. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
           likes,
           cssPath,
           dev,
@@ -329,7 +326,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles: replies, templates, css: cssPath }) {
         return templates.replies({
-          blurb: 'This is a collection of things on the web I have replied to. If you use a feed reader, <a href="/social.atom.xml">you can subscribe</a>!', // eslint-disable-line max-len
           replies,
           cssPath,
           dev,
@@ -489,7 +485,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'paths', 'templates', 'feeds'],
       action({ css: cssPath, paths: { target }, templates, feeds }) {
         const content = templates.blogroll({
-          blurb: 'This is a collection of sites with RSS feeds I subscribe to. If you use a feed reader, <a href="/social.atom.xml">you can subscribe to these subscriptions</a>! You can also download this collection to import into your feed reader as an <a href="/feeds.opml">OPML file</a>.', // eslint-disable-line max-len
           feeds,
           cssPath,
           dev,
