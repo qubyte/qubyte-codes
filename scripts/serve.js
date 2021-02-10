@@ -81,7 +81,7 @@ once(watcher, 'ready')
 
     return watchForChanges(watcher, graph);
   })
-  .catch(error => console.error(error));
+  .catch(error => console.error(error.stack));
 
 const app = new Toisu();
 
