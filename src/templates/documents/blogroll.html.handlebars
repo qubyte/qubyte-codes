@@ -4,17 +4,21 @@
   {{> head }}
 </head>
 <body>
-  {{> hcard-basics }}
+  {{> hcard-basics additionalClasses="p-author" }}
   <header>
     <h1><a href="/">Qubyte Codes</a></h1>
     {{> nav }}
   </header>
   <main>
-    <article>
-      <h2>Blogroll</h2>
-      <p><a href="http://2ality.com/">2ality</a> - The blog of Axel Rauschmayer</p>
-      <p><a href="https://adactio.com/">adactio</a> - The blog of Jeremy Keith</p>
-    </article>
+    {{#if blurb}}
+    <p>{{{blurb}}}</p>
+    {{/if}}
+    <dl>
+      {{#feeds}}
+      <dt class="h-card"  light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}"><a href="{{htmlUrl}}" class="u-url p-name">{{name}}</a></dt>
+      <dd class="p-note">{{description}}</dd>
+      {{/feeds}}
+    </dl>
   </main>
   <footer>
     {{> copyright }}

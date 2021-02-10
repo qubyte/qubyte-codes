@@ -1,3 +1,5 @@
+/* eslint max-lines: off */
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
@@ -13,7 +15,6 @@ import loadReplyFiles from './lib/load-reply-files.js';
 import collateTags from './lib/collate-tags.js';
 import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
-import publications from './content/publications.js';
 
 async function writePublicFile(content, ...pathParts) {
   await fs.writeFile(path.join(...pathParts), content);
@@ -70,6 +71,20 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       action({ paths: { source } }) {
         return loadTemplates(path.join(source, 'templates'), { baseTitle });
+      }
+    },
+    feeds: {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
+        const json = await fs.readFile(path.join(content, 'feeds.json'));
+        return JSON.parse(json);
+      }
+    },
+    publications: {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
+        const json = await fs.readFile(path.join(content, 'publications.json'));
+        return JSON.parse(json);
       }
     },
     postFiles: {
@@ -338,8 +353,8 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       }
     },
     renderedPublications: {
-      dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'publications'],
+      action({ templates, css: cssPath, publications }) {
         return templates.publications({ cssPath, dev, baseUrl, localUrl: '/publications', publications, title: 'Publications' });
       }
     },
@@ -461,6 +476,28 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
           writePublicFile(posts, target, 'blog.atom.xml'),
           writePublicFile(social, target, 'social.atom.xml')
         ]);
+      }
+    },
+    writtenOpml: {
+      dependencies: ['paths', 'templates', 'feeds'],
+      action({ paths: { target }, templates, feeds }) {
+        const content = templates.feeds({ feeds });
+        return writePublicFile(content, target, 'feeds.opml');
+      }
+    },
+    writtenBlogroll: {
+      dependencies: ['css', 'paths', 'templates', 'feeds'],
+      action({ css: cssPath, paths: { target }, templates, feeds }) {
+        const content = templates.blogroll({
+          blurb: 'This is a collection of sites with RSS feeds I subscribe to. If you use a feed reader, <a href="/social.atom.xml">you can subscribe to these subscriptions</a>! You can also download this collection to import into your feed reader as an <a href="/feeds.opml">OPML file</a>.', // eslint-disable-line max-len
+          feeds,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/blogroll',
+          title: 'Blogroll'
+        });
+        return writePublicFile(content, target, 'blogroll.html');
       }
     },
     writtenPosts: makeWriteEntries({ renderedDependencies: 'renderedPosts', pathFragment: 'blog' }),
