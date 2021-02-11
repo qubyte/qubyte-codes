@@ -2,38 +2,17 @@
   --base-background-hue: 45;
   --base-background-sat: 100%;
   --base-background-lum: 90%;
-
   --base-foreground-hue: calc(var(--base-background-hue) + 180);
   --base-foreground-sat: 100%;
   --base-foreground-lum: 30%;
-
-  --background-color-main: hsl(
-    var(--base-background-hue),
-    var(--base-background-sat),
-    var(--base-background-lum)
-  );
-
-  --background-color-alt: hsl(
-    calc(var(--base-background-hue) - 30),
-    var(--base-background-sat),
-    var(--base-background-lum)
-  );
-
-  --standout-color-main: hsl(
-    var(--base-foreground-hue),
-    var(--base-foreground-sat),
-    var(--base-foreground-lum)
-  );
-
-  --standout-color-alt: hsl(
-    calc(var(--base-foreground-hue) - 30),
-    var(--base-foreground-sat),
-    var(--base-foreground-lum)
-  );
+  --background-color-main: hsl(var(--base-background-hue), var(--base-background-sat), var(--base-background-lum));
+  --background-color-alt: hsl(calc(var(--base-background-hue) - 30), var(--base-background-sat), var(--base-background-lum));
+  --standout-color-main: hsl(var(--base-foreground-hue), var(--base-foreground-sat), var(--base-foreground-lum));
+  --standout-color-alt: hsl(calc(var(--base-foreground-hue) - 30), var(--base-foreground-sat), var(--base-foreground-lum));
 }
 
 body {
-  font-family: 'Titillium Web' sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   text-align: left;
   overscroll-behavior-y: none;
   background-color: var(--background-color-main);
@@ -42,17 +21,19 @@ body {
   word-spacing: 0.15em;
 }
 
-h1, h2 {
-  font-family: 'Chakra Petch' sans-serif;
+h1,
+h2 {
+  font-family: 'Chakra Petch', sans-serif;
   font-size: 2rem;
   word-spacing: normal;
 }
 
 :lang(ja) {
-  font-family : 'ヒラギノ角ゴ ProN' , 'Hiragino Kaku Gothic ProN' , '游ゴシック' , '游ゴシック体' , YuGothic , 'Yu Gothic' , 'メイリオ' , Meiryo , 'ＭＳ ゴシック' , 'MS Gothic' , HiraKakuProN-W3 , 'TakaoExゴシック' , TakaoExGothic , 'MotoyaLCedar' , 'Droid Sans Japanese' , sans-serif;
+  font-family: 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', '游ゴシック', '游ゴシック体', YuGothic, 'Yu Gothic', 'メイリオ', Meiryo, 'ＭＳ ゴシック', 'MS Gothic', HiraKakuProN-W3, 'TakaoExゴシック', TakaoExGothic, 'MotoyaLCedar', 'Droid Sans Japanese', sans-serif;
 }
 
-h2, h3 {
+h2,
+h3 {
   scroll-margin-top: 3rem;
 }
 
@@ -69,9 +50,14 @@ h3 {
   margin: 1rem 0;
 }
 
-p, summary {
+p,
+summary {
   margin: 1rem 0;
   line-height: 1.5em;
+}
+
+header {
+  margin: 1rem 0;
 }
 
 body > header {
@@ -115,16 +101,13 @@ dd {
   margin-top: 1rem;
 }
 
-article, dl > div {
+article,
+dl > div {
   padding: 0.5rem 0;
 }
 
 .share {
   border-top: 1px solid var(--standout-color-main);
-}
-
-header {
-  margin: 1rem 0;
 }
 
 .tags {
@@ -166,7 +149,8 @@ thead {
   border-bottom: solid 1px;
 }
 
-th, td {
+th,
+td {
   padding: 0.5rem;
 }
 
@@ -204,7 +188,6 @@ sup {
 button {
   border: 1px solid var(--standout-color-main);
   background-color: #fff;
-  padding-bottom: 2px;
   padding-top: 1px;
   padding-bottom: 2px;
   color: var(--standout-color-main);
@@ -233,7 +216,9 @@ input {
   max-width: 100%;
 }
 
-.embed-container iframe, .embed-container object, .embed-container embed {
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
   position: absolute;
   top: 0;
   left: 0;
@@ -258,7 +243,8 @@ input {
   font-size: 3rem;
 }
 
-article + article::before, dl > div + div::before {
+article + article::before,
+dl > div + div::before {
   content: attr(light-emoji);
   display: block;
   text-align: center;
@@ -272,7 +258,8 @@ img {
   border: 1px solid var(--standout-color-main);
 }
 
-.ruby-position-off rt, .ruby-position-off rp {
+.ruby-position-off rt,
+.ruby-position-off rp {
   display: none;
 }
 
@@ -312,23 +299,17 @@ dialog::backdrop {
   :root {
     --background-color-main: #000;
     --background-color-alt: #000;
-    --standout-color-main: hsl(
-      var(--base-background-hue),
-      var(--base-background-sat),
-      var(--base-background-lum)
-    );
-    --standout-color-alt: hsl(
-      calc(var(--base-background-hue) - 30),
-      var(--base-background-sat),
-      var(--base-background-lum)
-    );
+    --standout-color-main: hsl(var(--base-background-hue), var(--base-background-sat), var(--base-background-lum));
+    --standout-color-alt: hsl(calc(var(--base-background-hue) - 30), var(--base-background-sat), var(--base-background-lum));
   }
 
   img:not([src*=".svg"]) {
-    filter: brightness(.8) contrast(1.2);
+    filter: brightness(0.8) contrast(1.2);
   }
 
-  pre, button, input {
+  pre,
+  button,
+  input {
     background-color: var(--background-color-main);
     color: var(--standout-color-main);
   }
@@ -337,7 +318,8 @@ dialog::backdrop {
     filter: invert();
   }
 
-  article + article::before, dl > div + div::before {
+  article + article::before,
+  dl > div + div::before {
     content: attr(dark-emoji);
   }
 }
