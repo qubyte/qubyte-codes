@@ -3,6 +3,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
+import { once } from 'events';
 import cpy from 'cpy';
 
 import loadTemplates from './lib/templates.js';
@@ -41,17 +42,29 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 export async function build({ baseUrl, baseTitle, dev, syndications }) {
-  const graph = new ExecutionGraph();
+  const sourcePath = path.join(__dirname, 'src');
+  const contentPath = path.join(__dirname, 'content');
+  const targetPath = path.join(__dirname, 'public');
+
+  let watcher = null;
+
+  if (dev) {
+    const { watch } = await import('chokidar');
+    watcher = watch([sourcePath, contentPath]);
+    await once(watcher, 'ready');
+  }
+
+  const graph = new ExecutionGraph({ watcher });
 
   await graph.addNodes({
     paths: {
       action() {
         return {
-          source: path.join(__dirname, 'src'),
-          target: path.join(__dirname, 'public'),
-          content: path.join(__dirname, 'content'),
+          source: sourcePath,
+          target: targetPath,
+          content: contentPath,
           async makeDirectory(...pathParts) {
-            const directory = path.join(__dirname, 'public', ...pathParts);
+            const directory = path.join(targetPath, ...pathParts);
 
             await fs.rmdir(directory, { recursive: true });
             await fs.mkdir(directory);
@@ -69,58 +82,104 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     },
     templates: {
       dependencies: ['paths'],
-      action({ paths: { source } }) {
-        return loadTemplates(path.join(source, 'templates'), { baseTitle });
+      async action({ paths: { source } }) {
+        const templatesPath = path.join(source, 'templates');
+        const templates = await loadTemplates(templatesPath, { baseTitle });
+
+        return ExecutionGraph.createWatchableResult({
+          path: templatesPath,
+          result: templates
+        });
       }
     },
     feeds: {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
-        const json = await fs.readFile(path.join(content, 'feeds.json'));
-        return JSON.parse(json);
+        const feedsPath = path.join(content, 'feeds.json');
+        const json = await fs.readFile(feedsPath, 'utf8');
+
+        return ExecutionGraph.createWatchableResult({
+          path: feedsPath,
+          result: JSON.parse(json)
+        });
       }
     },
     publications: {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
-        const json = await fs.readFile(path.join(content, 'publications.json'));
-        return JSON.parse(json);
+        const publicationsPath = path.join(content, 'publications.json');
+        const json = await fs.readFile(publicationsPath, 'utf8');
+
+        return ExecutionGraph.createWatchableResult({
+          path: publicationsPath,
+          result: JSON.parse(json)
+        });
       }
     },
     postFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadPostFiles(path.join(content, 'posts'), baseUrl);
+      async action({ paths: { content } }) {
+        const postsPath = path.join(content, 'posts');
+
+        return ExecutionGraph.createWatchableResult({
+          path: postsPath,
+          result: await loadPostFiles(postsPath, baseUrl)
+        });
       }
     },
     japaneseNotesFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadPostFiles(path.join(content, 'japanese-notes'), baseUrl, 'japanese-notes');
+      async action({ paths: { content } }) {
+        const notesPath = path.join(content, 'japanese-notes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: notesPath,
+          result: await loadPostFiles(notesPath, baseUrl, 'japanese-notes')
+        });
       }
     },
     noteFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadNoteFiles(path.join(content, 'notes'), syndications);
+      async action({ paths: { content } }) {
+        const notesPath = path.join(content, 'notes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: notesPath,
+          result: await loadNoteFiles(notesPath, syndications)
+        });
       }
     },
     linkFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadLinkFiles(path.join(content, 'links'), syndications);
+      async action({ paths: { content } }) {
+        const linksPath = path.join(content, 'links');
+
+        return ExecutionGraph.createWatchableResult({
+          path: linksPath,
+          result: await loadLinkFiles(linksPath, syndications)
+        });
       }
     },
     likeFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadLikeFiles(path.join(content, 'likes'));
+      async action({ paths: { content } }) {
+        const likesPath = path.join(content, 'likes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: likesPath,
+          result: await loadLikeFiles(likesPath, syndications)
+        });
       }
     },
     replyFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadReplyFiles(path.join(content, 'replies'));
+      async action({ paths: { content } }) {
+        const repliesPath = path.join(content, 'replies');
+
+        return ExecutionGraph.createWatchableResult({
+          path: repliesPath,
+          result: await loadReplyFiles(repliesPath)
+        });
       }
     },
     publicDirectory: {
@@ -179,6 +238,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     },
     staticFiles: {
       dependencies: ['paths', 'publicDirectory'],
+      // TODO: Split these up and watch them.
       action({ paths: { source, target, content } }) {
         const copy = (dir, subDir) => cpy(path.join(dir, subDir, '*'), path.join(target, subDir));
 
@@ -198,8 +258,13 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     },
     css: {
       dependencies: ['paths', 'publicDirectory'],
-      action({ paths: { source, target } }) {
-        return generateCss(path.join(source, 'css'), target, 'entry.css', 'default');
+      async action({ paths: { source, target } }) {
+        const cssPath = path.join(source, 'css');
+
+        return ExecutionGraph.createWatchableResult({
+          path: cssPath,
+          result: await generateCss(cssPath, target, 'entry.css', 'default')
+        });
       }
     },
     collatedTags: {
