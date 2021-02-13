@@ -4,7 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
 import { once } from 'events';
-import cpy from 'cpy';
 
 import loadTemplates from './lib/templates.js';
 import generateCss from './lib/generate-css.js';
@@ -236,24 +235,226 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return makeDirectory('tags');
       }
     },
-    staticFiles: {
+    iconsTarget: {
       dependencies: ['paths', 'publicDirectory'],
-      // TODO: Split these up and watch them.
-      action({ paths: { source, target, content } }) {
-        const copy = (dir, subDir) => cpy(path.join(dir, subDir, '*'), path.join(target, subDir));
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'icons'),
+          result: await makeDirectory('icons')
+        });
+      }
+    },
+    icons: {
+      dependencies: ['paths', 'iconsTarget'],
+      async action({ paths: { source }, iconsTarget }) {
+        const directory = path.join(source, 'icons');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.png') || i.endsWith('.svg'));
 
-        return Promise.all([
-          copy(source, 'icons'),
-          copy(source, 'fonts'),
-          copy(source, 'img'),
-          copy(content, 'scripts'),
-          copy(content, 'papers'),
-          copy(content, 'images'),
-          cpy(
-            ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(source, n)),
-            target
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(iconsTarget, item)
+            )
           )
-        ]);
+        );
+      }
+    },
+    fontsTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'fonts'),
+          result: await makeDirectory('fonts')
+        });
+      }
+    },
+    fonts: {
+      dependencies: ['paths', 'fontsTarget'],
+      async action({ paths: { source }, fontsTarget }) {
+        const directory = path.join(source, 'fonts');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.woff') || i.endsWith('.woff2'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(fontsTarget, item)
+            )
+          )
+        );
+      }
+    },
+    imgTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'img'),
+          result: await makeDirectory('img')
+        });
+      }
+    },
+    img: {
+      dependencies: ['paths', 'imgTarget'],
+      async action({ paths: { source }, imgTarget }) {
+        const directory = path.join(source, 'img');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.jpg'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(imgTarget, item)
+            )
+          )
+        );
+      }
+    },
+    scriptsTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'scripts'),
+          result: await makeDirectory('scripts')
+        });
+      }
+    },
+    scripts: {
+      dependencies: ['paths', 'scriptsTarget'],
+      async action({ paths: { content }, scriptsTarget }) {
+        const directory = path.join(content, 'scripts');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(scriptsTarget, item)
+            )
+          )
+        );
+      }
+    },
+    papersTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'papers'),
+          result: await makeDirectory('papers')
+        });
+      }
+    },
+    papers: {
+      dependencies: ['paths', 'papersTarget'],
+      async action({ paths: { content }, papersTarget }) {
+        const directory = path.join(content, 'papers');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.pdf'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(papersTarget, item)
+            )
+          )
+        );
+      }
+    },
+    imagesTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'images'),
+          result: await makeDirectory('images')
+        });
+      }
+    },
+    images: {
+      dependencies: ['paths', 'imagesTarget'],
+      async action({ paths: { content }, imagesTarget }) {
+        const directory = path.join(content, 'images');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(imagesTarget, item)
+            )
+          )
+        );
+      }
+    },
+    googleSiteVerification: {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { target } }) {
+        const name = 'google91826e4f943d9ee9.html';
+        return fs.writeFile(path.join(target, name), `google-site-verification: ${name}\n`);
+      }
+    },
+    keybaseVerification: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'keybase.txt');
+
+        await fs.copyFile(verificationPath, path.join(target, 'keybase.txt'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    robotsFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'robots.txt');
+
+        await fs.copyFile(verificationPath, path.join(target, 'robots.txt'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    indexJsFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'index.js');
+
+        await fs.copyFile(verificationPath, path.join(target, 'index.js'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    serviceWorkerFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'sw.js');
+
+        await fs.copyFile(verificationPath, path.join(target, 'sw.js'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    manifestFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'manifest.json');
+
+        await fs.copyFile(verificationPath, path.join(target, 'manifest.json'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
       }
     },
     css: {

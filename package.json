@@ -21,7 +21,6 @@
     "node": "14.x"
   },
   "dependencies": {
-    "cpy": "8.1.1",
     "cssnano": "4.1.10",
     "handlebars": "4.7.6",
     "highlight.js": "10.4.1",
