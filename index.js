@@ -3,7 +3,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
-import cpy from 'cpy';
+import { once } from 'events';
 
 import loadTemplates from './lib/templates.js';
 import generateCss from './lib/generate-css.js';
@@ -41,17 +41,29 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 export async function build({ baseUrl, baseTitle, dev, syndications }) {
-  const graph = new ExecutionGraph();
+  const sourcePath = path.join(__dirname, 'src');
+  const contentPath = path.join(__dirname, 'content');
+  const targetPath = path.join(__dirname, 'public');
+
+  let watcher = null;
+
+  if (dev) {
+    const { watch } = await import('chokidar');
+    watcher = watch([sourcePath, contentPath]);
+    await once(watcher, 'ready');
+  }
+
+  const graph = new ExecutionGraph({ watcher });
 
   await graph.addNodes({
     paths: {
       action() {
         return {
-          source: path.join(__dirname, 'src'),
-          target: path.join(__dirname, 'public'),
-          content: path.join(__dirname, 'content'),
+          source: sourcePath,
+          target: targetPath,
+          content: contentPath,
           async makeDirectory(...pathParts) {
-            const directory = path.join(__dirname, 'public', ...pathParts);
+            const directory = path.join(targetPath, ...pathParts);
 
             await fs.rmdir(directory, { recursive: true });
             await fs.mkdir(directory);
@@ -69,58 +81,104 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     },
     templates: {
       dependencies: ['paths'],
-      action({ paths: { source } }) {
-        return loadTemplates(path.join(source, 'templates'), { baseTitle });
+      async action({ paths: { source } }) {
+        const templatesPath = path.join(source, 'templates');
+        const templates = await loadTemplates(templatesPath, { baseTitle });
+
+        return ExecutionGraph.createWatchableResult({
+          path: templatesPath,
+          result: templates
+        });
       }
     },
     feeds: {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
-        const json = await fs.readFile(path.join(content, 'feeds.json'));
-        return JSON.parse(json);
+        const feedsPath = path.join(content, 'feeds.json');
+        const json = await fs.readFile(feedsPath, 'utf8');
+
+        return ExecutionGraph.createWatchableResult({
+          path: feedsPath,
+          result: JSON.parse(json)
+        });
       }
     },
     publications: {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
-        const json = await fs.readFile(path.join(content, 'publications.json'));
-        return JSON.parse(json);
+        const publicationsPath = path.join(content, 'publications.json');
+        const json = await fs.readFile(publicationsPath, 'utf8');
+
+        return ExecutionGraph.createWatchableResult({
+          path: publicationsPath,
+          result: JSON.parse(json)
+        });
       }
     },
     postFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadPostFiles(path.join(content, 'posts'), baseUrl);
+      async action({ paths: { content } }) {
+        const postsPath = path.join(content, 'posts');
+
+        return ExecutionGraph.createWatchableResult({
+          path: postsPath,
+          result: await loadPostFiles(postsPath, baseUrl)
+        });
       }
     },
     japaneseNotesFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadPostFiles(path.join(content, 'japanese-notes'), baseUrl, 'japanese-notes');
+      async action({ paths: { content } }) {
+        const notesPath = path.join(content, 'japanese-notes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: notesPath,
+          result: await loadPostFiles(notesPath, baseUrl, 'japanese-notes')
+        });
       }
     },
     noteFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadNoteFiles(path.join(content, 'notes'), syndications);
+      async action({ paths: { content } }) {
+        const notesPath = path.join(content, 'notes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: notesPath,
+          result: await loadNoteFiles(notesPath, syndications)
+        });
       }
     },
     linkFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadLinkFiles(path.join(content, 'links'), syndications);
+      async action({ paths: { content } }) {
+        const linksPath = path.join(content, 'links');
+
+        return ExecutionGraph.createWatchableResult({
+          path: linksPath,
+          result: await loadLinkFiles(linksPath, syndications)
+        });
       }
     },
     likeFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadLikeFiles(path.join(content, 'likes'));
+      async action({ paths: { content } }) {
+        const likesPath = path.join(content, 'likes');
+
+        return ExecutionGraph.createWatchableResult({
+          path: likesPath,
+          result: await loadLikeFiles(likesPath, syndications)
+        });
       }
     },
     replyFiles: {
       dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return loadReplyFiles(path.join(content, 'replies'));
+      async action({ paths: { content } }) {
+        const repliesPath = path.join(content, 'replies');
+
+        return ExecutionGraph.createWatchableResult({
+          path: repliesPath,
+          result: await loadReplyFiles(repliesPath)
+        });
       }
     },
     publicDirectory: {
@@ -177,29 +235,237 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return makeDirectory('tags');
       }
     },
-    staticFiles: {
+    iconsTarget: {
       dependencies: ['paths', 'publicDirectory'],
-      action({ paths: { source, target, content } }) {
-        const copy = (dir, subDir) => cpy(path.join(dir, subDir, '*'), path.join(target, subDir));
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'icons'),
+          result: await makeDirectory('icons')
+        });
+      }
+    },
+    icons: {
+      dependencies: ['paths', 'iconsTarget'],
+      async action({ paths: { source }, iconsTarget }) {
+        const directory = path.join(source, 'icons');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.png') || i.endsWith('.svg'));
 
-        return Promise.all([
-          copy(source, 'icons'),
-          copy(source, 'fonts'),
-          copy(source, 'img'),
-          copy(content, 'scripts'),
-          copy(content, 'papers'),
-          copy(content, 'images'),
-          cpy(
-            ['google*', 'keybase.txt', 'robots.txt', 'index.js', 'sw.js', 'manifest.json'].map(n => path.join(source, n)),
-            target
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(iconsTarget, item)
+            )
           )
-        ]);
+        );
+      }
+    },
+    fontsTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'fonts'),
+          result: await makeDirectory('fonts')
+        });
+      }
+    },
+    fonts: {
+      dependencies: ['paths', 'fontsTarget'],
+      async action({ paths: { source }, fontsTarget }) {
+        const directory = path.join(source, 'fonts');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.woff') || i.endsWith('.woff2'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(fontsTarget, item)
+            )
+          )
+        );
+      }
+    },
+    imgTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'img'),
+          result: await makeDirectory('img')
+        });
+      }
+    },
+    img: {
+      dependencies: ['paths', 'imgTarget'],
+      async action({ paths: { source }, imgTarget }) {
+        const directory = path.join(source, 'img');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.jpg'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(imgTarget, item)
+            )
+          )
+        );
+      }
+    },
+    scriptsTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'scripts'),
+          result: await makeDirectory('scripts')
+        });
+      }
+    },
+    scripts: {
+      dependencies: ['paths', 'scriptsTarget'],
+      async action({ paths: { content }, scriptsTarget }) {
+        const directory = path.join(content, 'scripts');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(scriptsTarget, item)
+            )
+          )
+        );
+      }
+    },
+    papersTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'papers'),
+          result: await makeDirectory('papers')
+        });
+      }
+    },
+    papers: {
+      dependencies: ['paths', 'papersTarget'],
+      async action({ paths: { content }, papersTarget }) {
+        const directory = path.join(content, 'papers');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.pdf'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(papersTarget, item)
+            )
+          )
+        );
+      }
+    },
+    imagesTarget: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: path.join(source, 'images'),
+          result: await makeDirectory('images')
+        });
+      }
+    },
+    images: {
+      dependencies: ['paths', 'imagesTarget'],
+      async action({ paths: { content }, imagesTarget }) {
+        const directory = path.join(content, 'images');
+        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+
+        await Promise.all(
+          items.map(
+            item => fs.copyFile(
+              path.join(directory, item),
+              path.join(imagesTarget, item)
+            )
+          )
+        );
+      }
+    },
+    googleSiteVerification: {
+      dependencies: ['paths', 'publicDirectory'],
+      action({ paths: { target } }) {
+        const name = 'google91826e4f943d9ee9.html';
+        return fs.writeFile(path.join(target, name), `google-site-verification: ${name}\n`);
+      }
+    },
+    keybaseVerification: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'keybase.txt');
+
+        await fs.copyFile(verificationPath, path.join(target, 'keybase.txt'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    robotsFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'robots.txt');
+
+        await fs.copyFile(verificationPath, path.join(target, 'robots.txt'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    indexJsFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'index.js');
+
+        await fs.copyFile(verificationPath, path.join(target, 'index.js'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    serviceWorkerFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'sw.js');
+
+        await fs.copyFile(verificationPath, path.join(target, 'sw.js'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
+      }
+    },
+    manifestFile: {
+      dependencies: ['paths', 'publicDirectory'],
+      async action({ paths: { source, target } }) {
+        const verificationPath = path.join(source, 'manifest.json');
+
+        await fs.copyFile(verificationPath, path.join(target, 'manifest.json'));
+
+        return ExecutionGraph.createWatchableResult({
+          path: verificationPath,
+          result: null
+        });
       }
     },
     css: {
       dependencies: ['paths', 'publicDirectory'],
-      action({ paths: { source, target } }) {
-        return generateCss(path.join(source, 'css'), target, 'entry.css', 'default');
+      async action({ paths: { source, target } }) {
+        const cssPath = path.join(source, 'css');
+
+        return ExecutionGraph.createWatchableResult({
+          path: cssPath,
+          result: await generateCss(cssPath, target, 'entry.css', 'default')
+        });
       }
     },
     collatedTags: {
