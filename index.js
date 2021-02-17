@@ -6,7 +6,7 @@ import { promises as fs } from 'fs';
 import { once } from 'events';
 
 import loadTemplates from './lib/templates.js';
-import generateCss from './lib/generate-css.js';
+import { generateMainCss, generateSpecificCss } from './lib/generate-css.js';
 import loadPostFiles from './lib/load-post-files.js';
 import loadNoteFiles from './lib/load-note-files.js';
 import loadLinkFiles from './lib/load-link-files.js';
@@ -116,13 +116,13 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       }
     },
     postFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'extraCss'],
+      async action({ paths: { content }, extraCss }) {
         const postsPath = path.join(content, 'posts');
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles(postsPath, baseUrl)
+          result: await loadPostFiles(postsPath, baseUrl, 'blog', extraCss)
         });
       }
     },
@@ -187,10 +187,10 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return makeDirectory();
       }
     },
-    cssDirectory: {
+    stylesDirectory: {
       dependencies: ['paths', 'publicDirectory'],
       action({ paths: { makeDirectory } }) {
-        return makeDirectory('css');
+        return makeDirectory('styles');
       }
     },
     blogDirectory: {
@@ -464,7 +464,18 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return ExecutionGraph.createWatchableResult({
           path: cssPath,
-          result: await generateCss(cssPath, target, 'entry.css', 'default')
+          result: await generateMainCss(cssPath, target, 'entry.css', 'default')
+        });
+      }
+    },
+    extraCss: {
+      dependencies: ['paths', 'stylesDirectory'],
+      async action({ paths: { content }, stylesDirectory }) {
+        const cssPath = path.join(content, 'styles');
+
+        return ExecutionGraph.createWatchableResult({
+          path: cssPath,
+          result: await generateSpecificCss(cssPath, stylesDirectory)
         });
       }
     },
@@ -508,17 +519,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'replyFiles'],
       action({ replyFiles: resources, templates: { replies: template }, css: cssPath }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
-      }
-    },
-    extraCssFiles: {
-      dependencies: ['postFiles', 'cssDirectory'],
-      async action({ postFiles, cssDirectory }) {
-        await Promise.all(postFiles.map(post => {
-          return post.extraStyleFile && fs.writeFile(
-            path.join(cssDirectory, `${post.extraStyleFile.slug}.css`),
-            post.extraStyleFile.content
-          );
-        }));
       }
     },
     renderedBlogIndex: {

@@ -1,0 +1,19 @@
+.experiment {
+  text-align: center;
+  margin: 1rem;
+}
+
+.experiment svg {
+  background-color: black;
+  border: 1px solid var(--standout-color-main);
+  stroke-width: 0.5;
+  fill: none
+}
+
+.experiment .red {
+  stroke: red;
+}
+
+.experiment .blue {
+  stroke: blue;
+}
