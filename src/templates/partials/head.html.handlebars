@@ -7,9 +7,9 @@
 <title>{{baseTitle}}{{#if title}} - {{title}}{{/if}}</title>
 <script src="/index.js" async></script>
 <link href="{{cssPath}}" rel="stylesheet">
-{{#extraStyleFile}}
-<link href="/css/{{slug}}.css" rel="stylesheet">
-{{/extraStyleFile}}
+{{#styles}}
+<link href="{{src}}" rel="stylesheet">
+{{/styles}}
 <link href="/manifest.json" rel="manifest">
 <link rel="apple-touch-icon" href="/icons/icon-64.png">
 <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144.png">

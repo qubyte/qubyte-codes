@@ -1,0 +1,17 @@
+.diagram,
+.experiment {
+  text-align: center;
+  margin: 1rem
+}
+
+.diagram svg {
+  stroke: var(--standout-color-main);
+  stroke-width: 1;
+  fill: var(--standout-color-main);
+}
+
+.experiment svg {
+  stroke: var(--standout-color-main);
+  stroke-width: 1;
+  border: 1px solid var(--standout-color-main)
+}
