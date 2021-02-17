@@ -27,7 +27,7 @@ async function getPublishedBlogSlugs() {
 
 async function checkNeedsPublish() {
   const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles(POST_FILES_PATH, BASE_URL);
+  const shouldBePublished = await loadPostFiles({ path: POST_FILES_PATH, baseUrl: BASE_URL });
 
   const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
 

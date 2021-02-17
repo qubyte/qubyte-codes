@@ -122,7 +122,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles(postsPath, baseUrl, 'blog', extraCss)
+          result: await loadPostFiles({ path: postsPath, baseUrl, extraCss })
         });
       }
     },
@@ -133,7 +133,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles(notesPath, baseUrl, 'japanese-notes')
+          result: await loadPostFiles({ path: notesPath, baseUrl, type: 'japanese-notes' })
         });
       }
     },
