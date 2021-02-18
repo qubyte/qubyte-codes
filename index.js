@@ -138,13 +138,13 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       }
     },
     noteFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'images'],
+      async action({ paths: { content, target } }) {
         const notesPath = path.join(content, 'notes');
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadNoteFiles(notesPath, syndications)
+          result: await loadNoteFiles(notesPath, syndications, target)
         });
       }
     },
@@ -373,7 +373,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'imagesTarget'],
       async action({ paths: { content }, imagesTarget }) {
         const directory = path.join(content, 'images');
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+        const items = (await fs.readdir(directory)).filter(i => !i.startsWith('.'));
 
         await Promise.all(
           items.map(
