@@ -767,7 +767,13 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     writtenLinks: makeWriteEntries({ renderedDependencies: 'renderedLinks', pathFragment: 'links' }),
     writtenLikes: makeWriteEntries({ renderedDependencies: 'renderedLikes', pathFragment: 'likes' }),
     writtenReplies: makeWriteEntries({ renderedDependencies: 'renderedReplies', pathFragment: 'replies' }),
-    writtenTags: makeWriteEntries({ renderedDependencies: 'collatedTags', pathFragment: 'tags' })
+    writtenTags: makeWriteEntries({ renderedDependencies: 'collatedTags', pathFragment: 'tags' }),
+    lastBuild: {
+      dependencies: ['publicDirectory', 'writtenSitemap'],
+      action({ publicDirectory }) {
+        return fs.writeFile(path.join(publicDirectory, 'last-build.txt'), `${new Date().toISOString()}\n`);
+      }
+    }
   });
 
   return graph;
