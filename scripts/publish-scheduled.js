@@ -1,59 +1,69 @@
 /* eslint-disable no-console */
 
+import { promises as fs } from 'fs';
 import fetch from 'node-fetch';
-import loadPostFiles from '../lib/load-post-files.js';
-import { fileURLToPath } from 'url';
+import { parseFrontMatter } from '../lib/load-post-files.js';
 
-const BASE_URL = 'https://qubyte.codes';
-const POST_FILES_PATH = fileURLToPath(new URL('../content/posts', import.meta.url));
+const LAST_BUILD_URL = 'https://qubyte.codes/last-build.txt';
+const POST_FILES_DIR = new URL('../content/posts/', import.meta.url);
+const BUILD_HOOK_URL = process.env.BUILD_HOOK_URL;
 
-async function getPublishedBlogSlugs() {
-  const res = await fetch(`${BASE_URL}/sitemap.txt`);
+async function getLastBuildTime() {
+  const res = await fetch(LAST_BUILD_URL);
   const body = await res.text();
 
   if (!res.ok) {
-    throw new Error(`Unexpected status from qubyte.codes ${res.status}: ${body}`);
+    throw new Error(`Unexpected response from ${LAST_BUILD_URL} ${body}`);
   }
 
-  const blogEntryBaseUrl = `${BASE_URL}/blog/`;
-
-  const slugs = body
-    .split('\n')
-    .filter(url => url.startsWith(blogEntryBaseUrl))
-    .map(url => url.slice(blogEntryBaseUrl.length));
-
-  return slugs;
+  return Date.parse(body.trim());
 }
 
-async function checkNeedsPublish() {
-  const publishedNowSlugs = await getPublishedBlogSlugs();
-  const shouldBePublished = await loadPostFiles({ path: POST_FILES_PATH, baseUrl: BASE_URL });
-
-  const shouldBePublishedSlugs = shouldBePublished.map(meta => meta.slug);
-
-  console.log('current:', publishedNowSlugs.length, publishedNowSlugs.sort());
-  console.log('next:', shouldBePublishedSlugs.length, shouldBePublishedSlugs.sort());
-
-  return shouldBePublishedSlugs.filter(slug => !publishedNowSlugs.includes(slug));
-}
-
-async function run() {
-  const shouldPublish = await checkNeedsPublish();
-
-  if (!shouldPublish.length) {
-    return console.log('Nothing to publish right now.');
+async function isPublished(filename) {
+  if (filename[0] === '.' || !filename.endsWith('.md')) {
+    return { filename, published: false };
   }
 
-  const res = await fetch(process.env.BUILD_HOOK_URL, { method: 'POST' });
+  const content = await fs.readFile(new URL(filename, POST_FILES_DIR), 'utf8');
+  const { attributes: { datetime, draft } } = parseFrontMatter(content);
+
+  return { filename, published: !draft && Date.parse(datetime) };
+}
+
+async function triggerBuild() {
+  const res = await fetch(BUILD_HOOK_URL, { method: 'POST' });
 
   if (!res.ok) {
-    throw new Error(`Unexpected status from Netlify ${res.status}: ${await res.text()}`);
+    throw new Error(`Unexpected status from vercel: ${res.status} ${await res.text()}`);
   }
-
-  console.log('Sent build hook request to Netlify to publish', shouldPublish.join(', '));
 }
 
-run()
+async function checkShouldTriggerBuild() {
+  const lastBuildTime = await getLastBuildTime();
+
+  console.log('Last build time:', lastBuildTime);
+
+  const fileNames = await fs.readdir(POST_FILES_DIR);
+  const published = await Promise.all(fileNames.map(isPublished));
+
+  console.log('Files should be published:', published);
+
+  const now = Date.now();
+  const shouldTrigger = published.filter(p => p && p > lastBuildTime && p < now);
+
+  if (!shouldTrigger.length) {
+    console.log('No new files to publish.');
+    return;
+  }
+
+  console.log('New files to publish:', shouldTrigger);
+
+  await triggerBuild();
+
+  console.log('Build triggered.');
+}
+
+checkShouldTriggerBuild()
   .catch(error => {
     console.error(error);
     process.exit(1);
