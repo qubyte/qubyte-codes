@@ -3,6 +3,7 @@
 import { promises as fs } from 'fs';
 import fetch from 'node-fetch';
 import { parseFrontMatter } from '../lib/load-post-files.js';
+import retry from 'p-retry';
 
 const LAST_BUILD_URL = 'https://qubyte.codes/last-build.txt';
 const POST_FILES_DIR = new URL('../content/posts/', import.meta.url);
@@ -39,7 +40,7 @@ async function triggerBuild() {
 }
 
 async function checkShouldTriggerBuild() {
-  const lastBuildTime = await getLastBuildTime();
+  const lastBuildTime = await retry(getLastBuildTime, { retries: 5 });
 
   console.log('Last build time:', lastBuildTime);
 
@@ -58,7 +59,7 @@ async function checkShouldTriggerBuild() {
 
   console.log('New files to publish:', shouldTrigger);
 
-  await triggerBuild();
+  await retry(triggerBuild, { retries: 5 });
 
   console.log('Build triggered.');
 }
