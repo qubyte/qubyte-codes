@@ -3,19 +3,13 @@
 import { createReadStream } from 'fs';
 import { once } from 'events';
 import http from 'http';
-import path from 'path';
-import url from 'url';
 
 import Toisu from 'toisu';
 import serveStatic from 'toisu-static';
-import chokidar from 'chokidar';
 
 import { build } from '../index.js';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const notFoundPath = path.join(__dirname, '..', 'public', '404.html');
-const sourcePath = path.join(__dirname, '..', 'src');
-const contentPath = path.join(__dirname, '..', 'content');
+const notFoundUrl = new URL('../public/404.html', import.meta.url);
 const port = 8080;
 const syndications = {
   mastodon: 'https://mastodon.social/@qubyte',
@@ -24,9 +18,8 @@ const syndications = {
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
-const watcher = chokidar.watch([sourcePath, contentPath]);
 
-once(watcher, 'ready').then(async () => {
+(async () => {
   console.log('No event or path, or a source file changed. Running initial build...');
   console.time('Initial build');
 
@@ -36,7 +29,8 @@ once(watcher, 'ready').then(async () => {
     graph = await build({
       baseUrl: `http://localhost:${port}`,
       baseTitle: 'DEV MODE',
-      syndications, dev: true
+      syndications,
+      dev: true
     });
   } catch (error) {
     console.error(error.stack);
@@ -87,10 +81,10 @@ once(watcher, 'ready').then(async () => {
 
   // This middleware handles everything not handled before it (404).
   app.use((_req, res) => {
-    createReadStream(notFoundPath).pipe(res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' }));
+    createReadStream(notFoundUrl).pipe(res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' }));
   });
 
   http
     .createServer(app.requestHandler)
     .listen(port, () => console.log(`listening on http://localhost:${port}`));
-});
+})();
