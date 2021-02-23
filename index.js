@@ -49,6 +49,10 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
   const graph = new ExecutionGraph({ watcher });
 
+  // This stores a reference to the exitsing css so it can be cleaned up on
+  // change. Eventually I'd like to build this into the execution graph.
+  let cssUrl;
+
   await graph.addNodes({
     paths: {
       async action() {
@@ -453,9 +457,22 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     css: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
+        if (cssUrl) {
+          await fs.unlink(cssUrl);
+        }
+
+        const { url, htmlPath } = await generateMainCss({
+          entry: new URL('css/entry.css', source),
+          targetDirectory: target,
+          codeStyle: 'default',
+          dev
+        });
+
+        cssUrl = url;
+
         return ExecutionGraph.createWatchableResult({
           path: new URL('css/', source),
-          result: await generateMainCss(new URL('css/entry.css', source), target, 'default')
+          result: htmlPath
         });
       }
     },
@@ -466,7 +483,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return ExecutionGraph.createWatchableResult({
           path: cssPath,
-          result: await generateSpecificCss(cssPath, stylesDirectory)
+          result: await generateSpecificCss(cssPath, stylesDirectory, dev)
         });
       }
     },
