@@ -2,6 +2,9 @@
   publish = "public"
   command = "npm run build"
 
+[[plugins]]
+  package = "/plugins/netlify-plugin-dispatch-webmentions"
+
 [[headers]]
   for = "*"
   [headers.values]
@@ -41,6 +44,11 @@
     Content-Security-Policy = "connect-src *;"
 
 [[headers]]
-  for = "/atom.xml"
+  for = "*atom.xml"
   [headers.values]
     Content-Type = "application/atom+xml; charset=utf-8"
+
+[[headers]]
+  for = "/feeds.opml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
