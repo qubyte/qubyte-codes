@@ -2,3 +2,6 @@ node_modules
 npm-cache
 .DS_Store
 public
+
+# Local Netlify folder
+.netlify
