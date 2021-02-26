@@ -11,51 +11,52 @@ const dispatchWebmentionsForUrl = require('./dispatch-webmentions-for-url');
 const oldUrlsForBuild = new Map();
 const pageRegex = new RegExp('^https://qubyte.codes/(blog|links|likes|replies|notes)/.+');
 
-exports.onPreBuild = async function onPreBuild({ utils }) {
-  if (process.env.CONTEXT !== 'production') {
+const nonProd = {
+  onPreBuild({ utils }) {
     console.log('Skipping for non-production build.');
     utils.status.show({ summary: 'Skipped for non-production build.' });
-    return;
   }
-
-  const feedUrl = `${process.env.URL}/atom.xml`;
-
-  try {
-    oldUrlsForBuild.set(process.env.BUILD_ID, await fetchOldFeedToUrls(feedUrl));
-  } catch (error) {
-    return utils.build.failPlugin('Error making sitemap request.', { error, feedUrl });
-  }
-
-  console.log('Old urls:', oldUrlsForBuild.get(process.env.BUILD_ID));
 };
 
-exports.onSuccess = async function onSuccess({ constants }) {
-  if (process.env.CONTEXT !== 'production') {
-    console.log('Skipping for non-production build.');
-    return;
-  }
+const prod = {
+  async onPreBuild({ utils }) {
+    const feedUrl = `${process.env.URL}/atom.xml`;
 
-  const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
-  const newUrls = await readNewSitemapToUrls(path.join('.', constants.PUBLISH_DIR, 'atom.xml'));
-
-  // URLs are checked and mentions dispatched in sequence deliberately to make
-  // logs more comprehensible. It will be uncommon for more than one URL to be
-  // new at a time anyway.
-  for (const url of newUrls) {
-    if (pageRegex.test(url) && !oldUrls.has(url)) {
-      console.log('Dispatching webmentions for:', url);
-
-      try {
-        await dispatchWebmentionsForUrl(url);
-      } catch (error) {
-        console.error(`Error dispatching webmentions for ${url}: ${error.stack || error.message}`);
-      }
-
-      console.log('Done dispatching webmentions for:', url);
+    try {
+      const oldUrls = await fetchOldFeedToUrls(feedUrl);
+      oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
+      console.log('Number of old URLs:', oldUrls.size);
+    } catch (error) {
+      utils.build.failPlugin('Error making sitemap request.', { error, feedUrl });
     }
+  },
+
+  async onSuccess({ constants }) {
+    const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
+    const newUrls = await readNewSitemapToUrls(path.join('.', constants.PUBLISH_DIR, 'atom.xml'));
+
+    console.log('Number of new URLs:', newUrls.size);
+
+    // URLs are checked and mentions dispatched in sequence deliberately to make
+    // logs more comprehensible. It will be uncommon for more than one URL to be
+    // new at a time anyway.
+    for (const url of newUrls) {
+      if (pageRegex.test(url) && !oldUrls.has(url)) {
+        console.log('Dispatching webmentions for:', url);
+
+        try {
+          await dispatchWebmentionsForUrl(url);
+          console.log('Done dispatching webmentions for:', url);
+        } catch (error) {
+          console.error(`Error dispatching webmentions for ${url}: ${error.stack || error.message}`);
+        }
+      }
+    }
+  },
+
+  onEnd() {
+    oldUrlsForBuild.delete(process.env.BUILD_ID);
   }
 };
 
-exports.onEnd = function onEnd() {
-  oldUrlsForBuild.delete(process.env.BUILD_ID);
-};
+module.exports = () => process.env.CONTEXT === 'production' ? prod : nonProd;
