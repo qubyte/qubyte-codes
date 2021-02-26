@@ -1,12 +1,15 @@
 'use strict';
 
-const { readFile } = require('fs').promises;
 const path = require('path');
 
-const fetchOldSitemap = require('./fetch-old-sitemap');
-const compareSitemapsAndDispatchWebmentions = require('./compare-sitemaps-and-dispatch-mentions');
+const fetchOldFeedToUrls = require('./fetch-old-feed-to-urls');
+const readNewSitemapToUrls = require('./read-new-feed-to-urls');
+const dispatchWebmentionsForUrl = require('./dispatch-webmentions-for-url');
 
-let oldSitemap;
+// This is probably unnecessary since each method in this module will only be
+// invoked once (and even then only in sequence).
+const oldUrlsForBuild = new Map();
+const pageRegex = new RegExp('^https://qubyte.codes/(blog|links|likes|replies|notes)/.+');
 
 exports.onPreBuild = async function onPreBuild({ utils }) {
   if (process.env.CONTEXT !== 'production') {
@@ -16,12 +19,12 @@ exports.onPreBuild = async function onPreBuild({ utils }) {
   }
 
   try {
-    oldSitemap = await fetchOldSitemap();
+    oldUrlsForBuild.set(process.env.BUILD_ID, await fetchOldFeedToUrls(`${process.env.URL}/atom.xml`));
   } catch (error) {
     return utils.build.failPlugin('Error making sitemap request.', { error });
   }
 
-  console.log('Old sitemap:', oldSitemap);
+  console.log('Old urls:', oldUrlsForBuild.get(process.env.BUILD_ID));
 };
 
 exports.onSuccess = async function onSuccess({ constants }) {
@@ -30,7 +33,27 @@ exports.onSuccess = async function onSuccess({ constants }) {
     return;
   }
 
-  const newSitemap = await readFile(path.join(constants.PUBLISH_DIR, 'sitemap.txt'), 'utf8');
+  const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
+  const newUrls = await readNewSitemapToUrls(path.join(constants.PUBLISH_DIR, 'sitemap.txt'));
 
-  await compareSitemapsAndDispatchWebmentions({ oldSitemap, newSitemap });
+  // URLs are checked and mentions dispatched in sequence deliberately to make
+  // logs more comprehensible. It will be uncommon for more than one URL to be
+  // new at a time anyway.
+  for (const url of newUrls) {
+    if (pageRegex.test(url) && !oldUrls.has(url)) {
+      console.log('Dispatching webmentions for:', url);
+
+      try {
+        await dispatchWebmentionsForUrl(url);
+      } catch (error) {
+        console.error(`Error dispatching webmentions for ${url}: ${error.stack || error.message}`);
+      }
+
+      console.log('Done dispatching webmentions for:', url);
+    }
+  }
+};
+
+exports.onEnd = function onEnd() {
+  oldUrlsForBuild.delete(process.env.BUILD_ID);
 };

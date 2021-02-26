@@ -23,6 +23,7 @@
   "dependencies": {
     "@remy/webmention": "1.4.5",
     "cssnano": "4.1.10",
+    "feedme": "2.0.2",
     "handlebars": "4.7.6",
     "highlight.js": "10.4.1",
     "image-size": "0.9.3",
