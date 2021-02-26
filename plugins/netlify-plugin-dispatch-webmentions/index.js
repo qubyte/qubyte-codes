@@ -18,10 +18,12 @@ exports.onPreBuild = async function onPreBuild({ utils }) {
     return;
   }
 
+  const feedUrl = `${process.env.URL}/atom.xml`;
+
   try {
-    oldUrlsForBuild.set(process.env.BUILD_ID, await fetchOldFeedToUrls(`${process.env.URL}/atom.xml`));
+    oldUrlsForBuild.set(process.env.BUILD_ID, await fetchOldFeedToUrls(feedUrl));
   } catch (error) {
-    return utils.build.failPlugin('Error making sitemap request.', { error });
+    return utils.build.failPlugin('Error making sitemap request.', { error, feedUrl });
   }
 
   console.log('Old urls:', oldUrlsForBuild.get(process.env.BUILD_ID));
