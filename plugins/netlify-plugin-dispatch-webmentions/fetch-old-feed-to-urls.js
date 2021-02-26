@@ -14,4 +14,4 @@ async function fetchOldFeed(url) {
   return parseFeedToUrls(res.body);
 }
 
-module.exports = () => retry(fetchOldFeed, { retries: 5 });
+module.exports = url => retry(() => fetchOldFeed(url), { retries: 5 });

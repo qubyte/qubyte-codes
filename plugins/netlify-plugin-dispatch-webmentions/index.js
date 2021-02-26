@@ -20,8 +20,6 @@ exports.onPreBuild = async function onPreBuild({ utils }) {
 
   const feedUrl = `${process.env.URL}/atom.xml`;
 
-  console.log('Fetching feed from:', feedUrl);
-
   try {
     oldUrlsForBuild.set(process.env.BUILD_ID, await fetchOldFeedToUrls(feedUrl));
   } catch (error) {
