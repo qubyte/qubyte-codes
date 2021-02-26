@@ -36,7 +36,7 @@ exports.onSuccess = async function onSuccess({ constants }) {
   }
 
   const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
-  const newUrls = await readNewSitemapToUrls(path.join(constants.PUBLISH_DIR, 'sitemap.txt'));
+  const newUrls = await readNewSitemapToUrls(path.join('.', constants.PUBLISH_DIR, 'atom.xml'));
 
   // URLs are checked and mentions dispatched in sequence deliberately to make
   // logs more comprehensible. It will be uncommon for more than one URL to be
