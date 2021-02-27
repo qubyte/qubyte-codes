@@ -3,7 +3,10 @@
   command = "npm run build"
 
 [[plugins]]
-  package = "/plugins/netlify-plugin-dispatch-webmentions"
+  package = "/plugins/dispatch-webmentions"
+
+[[plugins]]
+  package = "/plugins/tweet-new-blog-posts"
 
 [[headers]]
   for = "*"
