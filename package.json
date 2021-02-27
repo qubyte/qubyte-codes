@@ -37,7 +37,8 @@
     "postcss-custom-properties": "10.0.0",
     "postcss-import": "13.0.0",
     "postcss-preset-env": "6.7.0",
-    "slugify": "1.4.5"
+    "slugify": "1.4.5",
+    "twitter-lite": "1.1.0"
   },
   "devDependencies": {
     "chokidar": "3.4.3",

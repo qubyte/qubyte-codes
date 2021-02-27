@@ -2,8 +2,8 @@
 
 const path = require('path');
 
-const fetchOldFeedToUrls = require('./fetch-old-feed-to-urls');
-const readNewSitemapToUrls = require('./read-new-feed-to-urls');
+const fetchOldFeedToUrls = require('../fetch-old-feed-to-urls');
+const readNewFeedToUrls = require('../read-new-feed-to-urls');
 const dispatchWebmentionsForUrl = require('./dispatch-webmentions-for-url');
 
 // This is probably unnecessary since each method in this module will only be
@@ -27,13 +27,13 @@ const prod = {
       oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
       console.log('Number of old URLs:', oldUrls.size);
     } catch (error) {
-      utils.build.failPlugin('Error making sitemap request.', { error, feedUrl });
+      utils.build.failPlugin('Error making feed request.', { error, feedUrl });
     }
   },
 
   async onSuccess({ constants }) {
     const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
-    const newUrls = await readNewSitemapToUrls(path.join('.', constants.PUBLISH_DIR, 'atom.xml'));
+    const newUrls = await readNewFeedToUrls(path.join('.', constants.PUBLISH_DIR, 'atom.xml'));
 
     console.log('Number of new URLs:', newUrls.size);
 
