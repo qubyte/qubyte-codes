@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://alvin.codes/writing/digital-gardens"
+    ],
+    "name": [
+      "Digital Gardens | Alvin Bryan"
+    ],
+    "content": [
+      "I really like the idea of a digital garden. I think I'd still keep some content as dated blog posts as a sort of snapshot of knowledge, and maybe add a garden tab for timeless items which I maintain and grow."
+    ],
+    "category": [],
+    "mp-slug": [
+      "digital-gardens-alvin-bryan"
+    ],
+    "mp-syndicate-to": [
+      "https://twitter.com/qubyte"
+    ]
+  }
+}
