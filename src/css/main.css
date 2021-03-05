@@ -233,7 +233,6 @@ input {
 
 .profile-pic {
   border: 1px solid var(--standout-color-main);
-  width: 150px;
   margin: 0 0 1rem 1rem;
   float: right;
 }

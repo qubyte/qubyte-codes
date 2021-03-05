@@ -17,7 +17,7 @@ if (document.readyState !== 'complete') {
 function applySettings() {
   'use strict';
 
-  // Hide or show ruby test.
+  // Hide or show ruby text.
   if (localStorage.getItem('ruby-hide')) {
     document.body.classList.add('ruby-hide');
   }

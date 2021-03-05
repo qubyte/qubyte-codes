@@ -21,7 +21,11 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
+    {{#if feedItem}}
+    <content type="html">{{feedItem}}</content>
+    {{else}}
     <content type="html">{{content}}</content>
+    {{/if}}
   </entry>
   {{/items}}
 
