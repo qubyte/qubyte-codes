@@ -6,8 +6,5 @@
   },
   "env": {
     "node": true
-  },
-  "rules": {
-    "no-underscore-dangle": ["error", { "allow": ["__dirname"] }]
   }
 }

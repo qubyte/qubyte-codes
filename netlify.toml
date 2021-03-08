@@ -2,6 +2,24 @@
   publish = "public"
   command = "npm run build"
 
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
+
+[build.processing.css]
+  bundle = false
+  minify = false
+
+[build.processing.js]
+  bundle = false
+  minify = false
+
+[build.environment]
+  NODE_ENV = "production"
+  BASE_TITLE = "Qubyte Codes"
+
 [[plugins]]
   package = "/plugins/dispatch-webmentions"
 
@@ -42,11 +60,6 @@
     Cache-Control = "max-age=315360000, public, immutable"
 
 [[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Content-Security-Policy = "connect-src *;"
-
-[[headers]]
   for = "*atom.xml"
   [headers.values]
     Content-Type = "application/atom+xml; charset=utf-8"
@@ -55,3 +68,8 @@
   for = "/feeds.opml"
   [headers.values]
     Content-Type = "application/xml; charset=utf-8"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Content-Security-Policy = "connect-src *;"
