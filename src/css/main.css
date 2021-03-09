@@ -131,7 +131,7 @@ a {
   text-decoration: underline;
 }
 
-header a {
+header a:not(:hover) {
   text-decoration: none;
 }
 
