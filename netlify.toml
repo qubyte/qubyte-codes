@@ -36,8 +36,7 @@
     Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "no-cache"
-    Feature-Policy = "accelerometer 'self'; ambient-light-sensor 'self'; autoplay 'none'; camera 'self'; fullscreen 'self'; gyroscope 'self'; magnetometer 'self'; microphone 'self'; midi 'self'; picture-in-picture 'none'; sync-xhr 'none'; usb 'self';"
-    X-Clacks-Overhead = 'GNU Terry Pratchett'
+    Permissions-Policy = "accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self) midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self)"
 
 [[headers]]
   for = "/japanese-notes*"
