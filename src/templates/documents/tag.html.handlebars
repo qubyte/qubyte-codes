@@ -12,11 +12,7 @@
   <main>
   {{#posts}}
     <article>
-      <header>
-        <h2><a href="{{localUrl}}">{{title}}</a></h2>
-        <time datetime="{{datetime}}">{{humanDate datetime}}</time>
-        <span class="tags">{{#each tags}}<a href="/tags/{{this}}">#{{this}}</a> {{/each}}</span>
-      </header>
+      {{> blog-entry-header }}
       {{{snippet}}}
     </article>
   {{/posts}}
