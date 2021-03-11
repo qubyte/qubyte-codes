@@ -60,6 +60,10 @@ header {
   margin: 1rem 0;
 }
 
+header p:not(.tags) {
+  margin: 0;
+}
+
 body > header {
   text-align: center;
   margin: 0;
@@ -108,11 +112,6 @@ dl > div {
 
 .share {
   border-top: 1px solid var(--standout-color-main);
-}
-
-.tags {
-  display: block;
-  margin-top: 0.5rem;
 }
 
 blockquote {

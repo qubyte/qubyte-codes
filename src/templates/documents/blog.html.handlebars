@@ -12,14 +12,7 @@
   <main>
     {{#if hasRuby}}{{> ruby-options }}{{/if}}
     <article class="h-entry">
-      <header>
-        <h2><a href="{{{canonical}}}" class="u-url p-name">{{title}}</a></h2>
-        <time datetime="{{datetime}}" class="dt-published">{{humanDate datetime}}</time>
-        {{#updatedAt}}
-        <time datetime="{{@this}}" class="dt-updated" hidden>{{humanDate @this}}</time>
-        {{/updatedAt}}
-        <span class="tags">{{#each tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</span>
-      </header>
+      {{> blog-entry-header }}
       <div class="e-content">
         {{{content}}}
       </div>

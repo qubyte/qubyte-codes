@@ -1,0 +1,10 @@
+<header>
+  <h2><a href="{{{canonical}}}" class="u-url p-name">{{title}}</a></h2>
+  {{#datetime}}
+  <p>Published <time datetime="{{@this}}" class="dt-published">{{humanDate @this}}</time></p>
+  {{/datetime}}
+  {{#updatedAt}}
+  <p>Last updated <time datetime="{{@this}}" class="dt-updated">{{humanDate @this}}</time></p>
+  {{/updatedAt}}
+  <p class="tags">{{#each tags}}<a class="p-category" href="/tags/{{this}}" rel="tag">#{{this}}</a> {{/each}}</p>
+</header>
