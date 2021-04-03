@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I made some sourdough hot cross buns!"
+    ],
+    "photo": [
+      {
+        "value": "/images/1617467594766.heic",
+        "alt": "A plate with some freshly made sourdough hot cross buns on."
+      }
+    ]
+  }
+}
