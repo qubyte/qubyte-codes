@@ -1,9 +1,6 @@
 {
   "root": true,
-  "extends": "qubyte/ES2018",
-  "parserOptions": {
-    "sourceType": "module"
-  },
+  "extends": "qubyte/ES2021-module",
   "env": {
     "browser": true
   },
