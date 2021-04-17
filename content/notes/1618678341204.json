@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Feels good to wander around Brighton."
+    ],
+    "photo": [
+      {
+        "value": "/images/1618678281927.jpeg",
+        "alt": "A view of the ocean between some houses and a church in the Montpelier area of Brighton."
+      }
+    ]
+  }
+}
