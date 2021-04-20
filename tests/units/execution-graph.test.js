@@ -2,9 +2,7 @@ import { strict as assert } from 'assert';
 import ExecutionGraph from '../../lib/execution-graph.js';
 import { EventEmitter } from 'events';
 import crypto from 'crypto';
-import { promisify } from 'util';
-
-const wait = promisify(setTimeout);
+import { setTimeout as wait } from 'timers/promises';
 
 describe('execution-graph', () => {
   let graph;
