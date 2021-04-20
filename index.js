@@ -56,7 +56,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
   await graph.addNodes({
     paths: {
       async action() {
-        await fs.rmdir(targetPath, { recursive: true });
+        await fs.rm(targetPath, { recursive: true, force: true });
         await fs.mkdir(targetPath);
 
         return {
@@ -66,7 +66,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
           async makeDirectory(path) {
             const directory = new URL(path, targetPath);
 
-            await fs.rmdir(directory, { recursive: true });
+            await fs.rm(directory, { recursive: true, force: true });
             await fs.mkdir(directory);
 
             return directory;

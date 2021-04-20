@@ -7,5 +7,5 @@ import { promises as fs } from 'fs';
 
 const publidDir = new URL('../public', import.meta.url);
 
-fs.rmdir(publidDir, { recursive: true })
+fs.rm(publidDir, { recursive: true, force: true })
   .then(() => console.timeEnd('Done cleaning'));
