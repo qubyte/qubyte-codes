@@ -22,5 +22,11 @@
     "htmlUrl": "https://maggieappleton.com/",
     "name": "Maggie Appleton",
     "description": "Maggie Appleton's site is packed full of interesting stuff. I particularly like the digital garden."
+  },
+  {
+    "feedUrl": "https://wattenberger.com/feed/",
+    "htmlUrl": "https://wattenberger.com/",
+    "name": "Amelia Wattenberger",
+    "description": "Amelia Wattenberger creates lots of interesting visualisations and has lots of good content about d3 (amongst other things)."
   }
 ]
