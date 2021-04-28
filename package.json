@@ -21,32 +21,32 @@
     "node": "16.x"
   },
   "dependencies": {
-    "@remy/webmention": "1.4.5",
-    "cssnano": "^4.1.11",
+    "@remy/webmention": "^1.4.5",
+    "cssnano": "^5.0.2",
     "feedme": "^2.0.2",
     "handlebars": "^4.7.7",
     "highlight.js": "^10.7.2",
-    "image-size": "^0.9.7",
-    "jsdom": "^16.5.2",
-    "marked": "^2.0.1",
-    "mathjax-full": "^3.1.2",
+    "image-size": "^1.0.0",
+    "jsdom": "^16.5.3",
+    "marked": "^2.0.3",
+    "mathjax-full": "^3.1.4",
     "node-fetch": "^2.6.1",
     "p-retry": "^4.5.0",
-    "postcss": "^8.2.9",
+    "postcss": "8.2.14",
     "postcss-calc": "^8.0.0",
     "postcss-custom-properties": "^11.0.0",
     "postcss-import": "^14.0.1",
     "postcss-preset-env": "^6.7.0",
-    "slugify": "^1.5.0",
+    "slugify": "1.5.2",
     "twitter-lite": "^1.1.0"
   },
   "devDependencies": {
+    "@toisu/static": "^4.0.1",
+    "@toisu/toisu": "^4.0.2",
     "chokidar": "^3.5.1",
-    "eslint": "^7.23.0",
+    "eslint": "7.26.0",
     "eslint-config-qubyte": "^4.1.0",
     "inquirer": "^8.0.0",
-    "mocha": "^8.3.2",
-    "toisu": "^3.0.6",
-    "toisu-static": "^3.0.0"
+    "mocha": "8.4.0"
   }
 }

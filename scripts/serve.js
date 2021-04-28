@@ -4,8 +4,8 @@ import { createReadStream } from 'node:fs';
 import { once } from 'node:events';
 import { createServer } from 'node:http';
 
-import Toisu from 'toisu';
-import serveStatic from 'toisu-static';
+import Toisu from '@toisu/toisu';
+import serveStatic from '@toisu/static';
 
 import { build } from '../index.js';
 
