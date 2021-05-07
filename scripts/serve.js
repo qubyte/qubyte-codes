@@ -1,8 +1,8 @@
 /* eslint no-console: off */
 
-import { createReadStream } from 'fs';
-import { once } from 'events';
-import http from 'http';
+import { createReadStream } from 'node:fs';
+import { once } from 'node:events';
+import { createServer } from 'node:http';
 
 import Toisu from 'toisu';
 import serveStatic from 'toisu-static';
@@ -84,7 +84,7 @@ const syndications = {
     createReadStream(notFoundUrl).pipe(res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' }));
   });
 
-  http
-    .createServer(app.requestHandler)
-    .listen(port, () => console.log(`listening on http://localhost:${port}`));
+  createServer(app.requestHandler).listen(port, () => {
+    console.log(`listening on http://localhost:${port}`);
+  });
 })();
