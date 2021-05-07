@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { promises as fs } from 'fs';
+import fs from 'node:fs/promises';
 import fetch from 'node-fetch';
 import { parseFrontMatter } from '../lib/load-post-files.js';
 import retry from 'p-retry';

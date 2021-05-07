@@ -1,8 +1,9 @@
 /* eslint max-lines: off */
 
-import { fileURLToPath } from 'url';
-import { promises as fs } from 'fs';
-import { once } from 'events';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs/promises';
+import { once } from 'node:events';
+
 import getImageSize from 'image-size';
 
 import loadTemplates from './lib/templates.js';

@@ -1,5 +1,5 @@
+import fs from 'node:fs/promises';
 import inquirer from 'inquirer';
-import { promises as fs } from 'fs';
 
 const tagsPath = new URL('../tags.txt', import.meta.url);
 
