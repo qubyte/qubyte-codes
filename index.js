@@ -465,8 +465,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         const { url, htmlPath } = await generateMainCss({
           entry: new URL('css/entry.css', source),
           targetDirectory: target,
-          codeStyle: 'default',
-          dev
+          codeStyle: 'default'
         });
 
         cssUrl = url;
@@ -484,7 +483,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return ExecutionGraph.createWatchableResult({
           path: cssPath,
-          result: await generateSpecificCss(cssPath, stylesDirectory, dev)
+          result: await generateSpecificCss(cssPath, stylesDirectory)
         });
       }
     },
