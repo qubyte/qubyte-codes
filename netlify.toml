@@ -72,3 +72,9 @@
   for = "/sw.js"
   [headers.values]
     Content-Security-Policy = "connect-src *;"
+
+[[redirects]]
+  from = "/s/r"
+  to = "/"
+  status = 302
+  edge_handler = "random-blog-post"
