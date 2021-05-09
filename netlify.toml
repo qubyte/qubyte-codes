@@ -72,3 +72,15 @@
   for = "/sw.js"
   [headers.values]
     Content-Security-Policy = "connect-src *;"
+
+[[redirects]]
+  from = "/s/gh"
+  to = "https://github.com/qubyte/"
+
+[[redirects]]
+  from = "/s/tw"
+  to = "https://twitter.com/qubyte"
+
+[[redirects]]
+  from = "/s/npm"
+  to = "https://www.npmjs.com/~qubyte"
