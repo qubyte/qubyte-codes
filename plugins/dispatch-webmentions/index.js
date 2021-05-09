@@ -1,10 +1,8 @@
-'use strict';
+import path from 'path';
 
-const path = require('path');
-
-const fetchOldFeedToUrls = require('../fetch-old-feed-to-urls');
-const readNewFeedToUrls = require('../read-new-feed-to-urls');
-const dispatchWebmentionsForUrl = require('./dispatch-webmentions-for-url');
+import fetchOldFeedToUrls from '../fetch-old-feed-to-urls';
+import readNewFeedToUrls from '../read-new-feed-to-urls';
+import dispatchWebmentionsForUrl from './dispatch-webmentions-for-url';
 
 // This is probably unnecessary since each method in this module will only be
 // invoked once (and even then only in sequence).
@@ -59,4 +57,4 @@ const prod = {
   }
 };
 
-module.exports = () => process.env.CONTEXT === 'production' ? prod : nonProd;
+export default () => process.env.CONTEXT === 'production' ? prod : nonProd;
