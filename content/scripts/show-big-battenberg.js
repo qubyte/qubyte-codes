@@ -1,4 +1,4 @@
-import Battenberg from '/scripts/battenberg.js';
+import Battenberg from './battenberg.js';
 
 let isActive = false;
 let t = null;
