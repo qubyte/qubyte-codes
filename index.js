@@ -17,9 +17,9 @@ import collateTags from './lib/collate-tags.js';
 import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
 
-function renderResources({ resources, template, cssPath, baseUrl, dev }) {
+function renderResources({ resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
   return resources.map(resource => ({
-    html: template({ ...resource, cssPath, baseUrl, dev }),
+    html: template({ ...resource, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
     filename: resource.filename
   }));
 }
@@ -493,16 +493,37 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return collateTags({ posts, cssPath, baseUrl, dev, template });
       }
     },
+    backlinks: {
+      dependencies: ['japaneseNotesFiles', 'postFiles'],
+      action({ japaneseNotesFiles, postFiles }) {
+        const backlinks = {};
+
+        for (const { title, localUrl, localLinks, timestamp } of japaneseNotesFiles.concat(postFiles)) {
+          for (const href of localLinks) {
+            if (!backlinks[href]) {
+              backlinks[href] = [];
+            }
+            backlinks[href].push({ title, href: localUrl, timestamp });
+          }
+        }
+
+        for (const links of Object.values(backlinks)) {
+          links.sort((a, b) => a.timestamp - b.timestamp);
+        }
+
+        return backlinks;
+      }
+    },
     renderedPosts: {
-      dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: resources, templates: { blog: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
+      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedJapaneseNotes: {
-      dependencies: ['css', 'templates', 'japaneseNotesFiles'],
-      action({ japaneseNotesFiles: resources, templates: { blog: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks'],
+      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedNotes: {
