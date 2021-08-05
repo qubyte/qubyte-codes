@@ -13,6 +13,7 @@ import loadNoteFiles from './lib/load-note-files.js';
 import loadLinkFiles from './lib/load-link-files.js';
 import loadLikeFiles from './lib/load-like-files.js';
 import loadReplyFiles from './lib/load-reply-files.js';
+import buildBacklinks from './lib/build-backlinks.js';
 import collateTags from './lib/collate-tags.js';
 import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
@@ -496,22 +497,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     backlinks: {
       dependencies: ['japaneseNotesFiles', 'postFiles'],
       action({ japaneseNotesFiles, postFiles }) {
-        const backlinks = {};
-
-        for (const { title, localUrl, localLinks, timestamp } of japaneseNotesFiles.concat(postFiles)) {
-          for (const href of localLinks) {
-            if (!backlinks[href]) {
-              backlinks[href] = [];
-            }
-            backlinks[href].push({ title, href: localUrl, timestamp });
-          }
-        }
-
-        for (const links of Object.values(backlinks)) {
-          links.sort((a, b) => a.timestamp - b.timestamp);
-        }
-
-        return backlinks;
+        return buildBacklinks([...japaneseNotesFiles, ...postFiles]);
       }
     },
     renderedPosts: {
