@@ -1,7 +1,7 @@
 <article class="h-entry" light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
   {{> hcard-basics additionalClasses="p-author" }}
   <header>
-    <a href="/links/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime}}</time></a>
+    <a href="/links/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime timezone}}</time></a>
   </header>
   {{#if bookmarkOf}}
   <p class="e-content">
