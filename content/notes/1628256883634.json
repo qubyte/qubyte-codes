@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "An interesting path close to home."
+    ],
+    "latitude": 50.84033246606199,
+    "longitude": -0.113888962365236,
+    "photo": [
+      {
+        "value": "/images/1628256856626.jpeg",
+        "alt": "Steps in the shade between houses."
+      }
+    ]
+  }
+}
