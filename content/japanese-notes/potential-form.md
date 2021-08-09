@@ -17,8 +17,8 @@ Remove the trailing <span lang="ja">る</span> and replace it with
 in the <span lang="ja">られる</span> can be dropped so the appended part becomes
 <span lang="ja">れる</span>.
 
-- <span lang="ja">[食,た](r)る</span>: to eat
-- <span lang="ja">[食,た](r)べれる</span>: can eat
+- <span lang="ja">[食,た](r)べ<mark>る</mark></span>: to eat
+- <span lang="ja">[食,た](r)べ<mark>られる</mark></span>: can eat
 
 ### [五,ご,段,だん](r) verbs
 
@@ -41,12 +41,10 @@ after.
 
 ### <span lang="ja">ある</span>
 
-<span lang="ja">ある</span> is irregular for this conjugation and becomes both
-(note the furigana here):
+<span lang="ja">ある</span> is irregular for this conjugation and becomes:
 
 - <span lang="ja">ある</span>: to be (inanimate)
-- <span lang="ja">あり[得,う](r)る</span>: can be (is possible)
 - <span lang="ja">あり[得,え](r)る</span>: can be (is possible)
 
-Where <span lang="ja">得る</span> means _to gain_, which is
+Where <span lang="ja">[得,え](r)る</span> means _to gain_, which is
 interesting!
