@@ -6,9 +6,10 @@
   "description": "Hub for the potential form of verbs."
 }
 ---
-This page is a hub for the potential form. It describes how to conjugate verbs
-to their potential form, and links out to other articles about its use. See
-backlinks at the bottom for notes linking to this one.
+This page is a hub for the potential form, or [可,か,能,のう,形,けい](r). It
+describes how to conjugate verbs to their potential form, and links out to other
+articles about its use. See backlinks at the bottom for notes linking to this
+one.
 
 ### [一,いち,段,だん](r) verbs
 

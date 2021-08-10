@@ -23,5 +23,6 @@ In the linked notes, I use the terminology:
 Conjugations of verbs documented here:
 
 - The dictionary form (verbs are catalogued in this form).
-- The [potential form](potential-form).
-- The [volitional form](volitional-form).
+- The [te form](te-form), <span lang="ja">て[形,けい](r)</span>.
+- The [potential form](potential-form), [可,か,能,のう,形,けい](r).
+- The [volitional form](volitional-form), [意,い,向,こう,形,けい](r).
