@@ -6,9 +6,10 @@
   "description": "Hub for the volitional form of verbs."
 }
 ---
-This page is a hub for the volitional form. It describes how to conjugate verbs
-to their volitional form, and links out to other articles about its use. See
-backlinks at the bottom for notes linking to this one.
+This page is a hub for the volitional form [意,い,向,こう,形,けい](r). It
+describes how to conjugate verbs to their volitional form, and links out to
+other articles about its use. See backlinks at the bottom for notes linking to
+this one.
 
 ## [一,いち,段,だん](r) verbs
 
