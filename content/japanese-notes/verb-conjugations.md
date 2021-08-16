@@ -6,9 +6,9 @@
   "description": "Hub for the conjugations of verbs."
 }
 ---
-This page is a hub for the potential form. It describes how to conjugate verbs
-to their potential form, and links out to other articles about its use. See
-backlinks at the bottom for notes linking to this one.
+This page is a hub for the verb conjugations. This document is a brief explainer
+for the names I use for verb types. See links at the bottom for notes about
+specific conjugations.
 
 In the linked notes, I use the terminology:
 
