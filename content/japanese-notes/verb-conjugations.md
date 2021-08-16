@@ -7,8 +7,8 @@
 }
 ---
 This page is a hub for the verb conjugations. This document is a brief explainer
-for the names I use for verb types. See backlinks at the bottom for notes
-linking to this one, including links to specific conjugations.
+for the names I use for verb types. See links at the bottom for notes about
+specific conjugations.
 
 In the linked notes, I use the terminology:
 
