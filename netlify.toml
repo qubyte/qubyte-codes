@@ -84,3 +84,11 @@
 [[redirects]]
   from = "/s/npm"
   to = "https://www.npmjs.com/~qubyte"
+
+[[redirects]]
+  from = "/s/pw"
+  to = "https://www.polywork.com/qubyte"
+
+[[redirects]]
+  from = "/s/ln"
+  to = "https://www.linkedin.com/in/markseveritt/"
