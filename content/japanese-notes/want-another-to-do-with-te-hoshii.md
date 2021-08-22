@@ -10,8 +10,8 @@ When you want to express a desire for another to perform some action, use the
 <span lang="ja">て</span> form of a verb and append
 <span lang="ja">ほしい</span> to it.
 
-- [息,むす,子,こ](r)にもっと[野,や,菜,さい](r)を<mark>[食,た](r)べてほしい</mark>です。
-- (I) <mark>want</mark> my son <mark>to eat</mark> more vegetables.
+- [息,むす,子,こ](r)にもっと[野,や,菜,さい](r)を==[食,た](r)べてほしい==です。
+- (I) ==want== my son ==to eat== more vegetables.
 
 When mentioning the person the desire is directed toward explicitly, use the
 <span lang="ja">に</span> particle as above.

@@ -11,13 +11,13 @@ case, or will not be the case again.
 
 Consider this famous line from Fist of the North Star:
 
-- <span lang="ja">お[前,まえ](r)は<mark>もう</mark>[死,し](r)んでいる。</span>
-- You are <mark>already</mark> dead.
+- <span lang="ja">お[前,まえ](r)は==もう==[死,し](r)んでいる。</span>
+- You are ==already== dead.
 
 When used with negative form verbs, <span lang="ja">もう</span> means _anymore_. Example:
 
-- <span lang="ja"><mark>もう</mark>[行,い](r)かない</span>
-- I won't go <mark>anymore</mark>.
+- <span lang="ja">==もう==[行,い](r)かない</span>
+- I won't go ==anymore==.
 
 <span lang="ja">もう</span> is often contrasted with <span lang="ja">まだ</span>.
 See the [notes on <span lang="ja">まだ</span>](not-yet-or-still-with-mada).
