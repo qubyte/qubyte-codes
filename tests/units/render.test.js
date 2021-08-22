@@ -86,4 +86,24 @@ describe('render', () => {
       ].join(''));
     });
   });
+
+  describe('highlighted text', () => {
+    it('renders text surrounded by pairs of == in mark tags', () => {
+      const rendered = render('==start==, ==middle== and ==end==.').trim();
+
+      assert.equal(rendered, '<p><mark>start</mark>, <mark>middle</mark> and <mark>end</mark>.</p>');
+    });
+
+    it('renders highlighted text inside another inline element', () => {
+      const rendered = render('_==text==_').trim();
+
+      assert.equal(rendered, '<p><em><mark>text</mark></em></p>');
+    });
+
+    it('renders highlighted text with another inline element within', () => {
+      const rendered = render('==_text_==').trim();
+
+      assert.equal(rendered, '<p><mark><em>text</em></mark></p>');
+    });
+  });
 });
