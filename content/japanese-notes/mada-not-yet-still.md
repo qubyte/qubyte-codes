@@ -11,13 +11,13 @@
 For affirmative forms of verbs <span lang="ja">まだ</span> means _still_.
 Example:
 
-- <span lang="ja">==まだ==[日,に,本,ほん,語,ご](r)を[勉,べん,強,きょう](r)してるの？</span>
+- <span lang="ja">==まだ==^日,に,本,ほん,語,ご^を^勉,べん,強,きょう^してるの？</span>
 - Are you ==still== studying Japanese?
 
 For negative forms of verbs <span lang="ja">まだ</span> means _not yet_. That
 said, it still means _still_ when you think about it!
 
-- <span lang="ja">まだエディンバラに[行,い](r)きません。</span>
+- <span lang="ja">まだエディンバラに^行,い^きません。</span>
 - I haven't been to Edinburgh yet.
 - I still haven't been to Edinburgh.
 

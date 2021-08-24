@@ -8,13 +8,11 @@
 It's about time I started keeping notes again! I've engineered in just enough
 to make it fun rather than an hindrance. For example, I can how write furigana
 in a way that doesn't look out of place in markdown. For example,
-`[私,わたし](r)` renders as [私,わたし](r). It also works on
+`^私,わたし^` renders as ^私,わたし^. It also works on
 words with multiple ruby components. For example
-`[振,ふ,り,,仮名,がな](r)` renders as [振,ふ,り,,仮名,がな](r).
+`^振,ふ,り,,仮名,がな^` renders as ^振,ふ,り,,仮名,がな^.
 The comma separated list is paired groups of characters (which is why the
-<span lang="ja">り</span> is followed by an empty element). I'm abusing markdown
-links to do this, but since `r` is not a valid URL it's an acceptable tradeoff
-in my opinion.
+<span lang="ja">り</span> is followed by an empty element).
 
 At this time I use spans with a language attribute to wrap segments of Japanese
 text. No special markdown syntax. This allows me to apply a font stack using

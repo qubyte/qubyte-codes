@@ -70,7 +70,7 @@ describe('render', () => {
 
   describe('inline ruby links', () => {
     it('renders ruby elements', () => {
-      const rendered = render('[買,か,いに,,行,い,く,](r)', URL).trim();
+      const rendered = render('^買,か,いに,,行,い,く,^', URL).trim();
       const { window: { document } } = new JSDOM(rendered);
       const $rubies = document.getElementsByTagName('ruby');
 

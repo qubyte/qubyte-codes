@@ -10,7 +10,7 @@ When you want to express a desire for another to perform some action, use the
 <span lang="ja">て</span> form of a verb and append
 <span lang="ja">ほしい</span> to it.
 
-- [息,むす,子,こ](r)にもっと[野,や,菜,さい](r)を==[食,た](r)べてほしい==です。
+- ^息,むす,子,こ^にもっと^野,や,菜,さい^を==^食,た^べてほしい==です。
 - (I) ==want== my son ==to eat== more vegetables.
 
 When mentioning the person the desire is directed toward explicitly, use the

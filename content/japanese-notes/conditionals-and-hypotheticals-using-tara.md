@@ -22,13 +22,13 @@ this yet. It usually seems right to omit it.
 
 Noun example:
 
-- <span lang="ja">[僕,ぼく](r)だったら、[新,あたら](r)しいアパートを[探,さが](r)す。</span>
+- <span lang="ja">^僕,ぼく^だったら、^新,あたら^しいアパートを^探,さが^す。</span>
 - Literal: If it were me, I'd look for a new apartment.
 - Natural: I would look for a new apartment.
 
 Verb example:
 
-- <span lang="ja">このキノコを[食,た](r)べたら、[背,せ](r)が[高,たか](r)くなります。</span>
+- <span lang="ja">このキノコを^食,た^べたら、^背,せ^が^高,たか^くなります。</span>
 - Literal: If you eat this mushroom, you will become taller.
 - Natural: Eating this mushroom will make you taller.
 
