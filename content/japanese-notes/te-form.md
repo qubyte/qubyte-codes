@@ -56,17 +56,7 @@ kana with <span lang="ja">んで</span>.
 
 ### Irregular conjugations
 
-- <span lang="ja">==する==</span>: to do
-- <span lang="ja">==して==</span>
-
-
-- <span lang="ja">^来,く^==る==</span>: to come
-- <span lang="ja">^来,き^==て==</span>
-
-
-- <span lang="ja">^行,い^==く==</span>: to go
-- <span lang="ja">^行,い^==って==</span>
-
-
-- <span lang="ja">〜ま==す==</span>
-- <span lang="ja">〜ま==して==</span>
+- <span lang="ja">==する==</span> (to do): <span lang="ja">==して==</span>
+- <span lang="ja">^来,く^==る==</span> (to come): <span lang="ja">^来,き^==て==</span>
+- <span lang="ja">^行,い^==く==</span> (to go): <span lang="ja">^行,い^==って==</span>
+- <span lang="ja">〜ま==す==</span>: <span lang="ja">〜ま==して==</span>
