@@ -14,17 +14,17 @@ translation which feels a bit more natural to me without changing the meaning).
 
 A list of actions can be given in sequence.
 
-- <span lang="ja">[公,こう,園,えん](r)に[行,い](r)==って==[遊,あそ](r)びます。</span>
+- <span lang="ja">^公,こう,園,えん^に^行,い^==って==^遊,あそ^びます。</span>
 - I went to the park and (then) played.
 
 More than one verb may be chained up this way.
 
-## Using [前,まえ](r) (before)
+## Using ^前,まえ^ (before)
 
-The plain form of a very may be appended with <span lang=ja>[前,まえ](r)に</span>
+The plain form of a very may be appended with <span lang=ja>^前,まえ^に</span>
 to make it come after the action which follows.
 
-- <span lang="ja">[寝,ね](r)る==前に==、[歯,は](r)を[磨,みが](r)きます。
+- <span lang="ja">^寝,ね^る==前に==、^歯,は^を^磨,みが^きます。
   </span>
 - Literal: ==Before== going to bed, I brushed my teeth.
 - Natural: I brushed my teeth ==before== going to bed.
@@ -34,31 +34,31 @@ to make it come after the action which follows.
 The <span lang="ja">て</span> form may be appended with
 <span lang="ja">から</span> to indicate that it comes before the next verb.
 
-- <span lang="ja">[歯,は](r)を[磨,みが](r)い==てから==、[寝,ね](r)ます。
+- <span lang="ja">^歯,は^を^磨,みが^い==てから==、^寝,ね^ます。
   </span>
 - Literal: ==After== brushing my teeth, I went to bed.
 - Natural: I went to bed ==after== brushing my teeth.
 
-## Using [後,あと](r) (after)
+## Using ^後,あと^ (after)
 
 The <span lang="ja">た</span> form of a verb may be appended with
-<span lang="ja">[後,あと](r)で</span> to indicade that it comes before the
+<span lang="ja">^後,あと^で</span> to indicade that it comes before the
 next verb.
 
-- <span lang="ja">[歯,は](r)を[磨,みが](r)い==た後で==、[寝,ね](r)ます。
+- <span lang="ja">^歯,は^を^磨,みが^い==た後で==、^寝,ね^ます。
   </span>
 - Literal: ==After== brushing my teeth, I went to bed.
 - Natural: I went to bed ==after== brushing my teeth.
 
-## Using [時,とき](r) (before and after)</span>
+## Using ^時,とき^ (before and after)</span>
 
-[時,とき](r) can be used for both before and after, depending on the tense of
+^時,とき^ can be used for both before and after, depending on the tense of
 the verb it is appended to.
 
 When the verb is in the plain form, it happens _after_ the next verb. Note that
 the tense of the whole sentence is carried by the latter verb.
 
-- <span lang="ja">[寝,ね](r)る==時==、[歯,は](r)を[磨,みが](r)きました。
+- <span lang="ja">^寝,ね^る==時==、^歯,は^を^磨,みが^きました。
   </span>
 - Literal: When I went to bed, I brushed my teeth.
 - Natural: I brushed my teeth before I went to bed.
@@ -66,6 +66,6 @@ the tense of the whole sentence is carried by the latter verb.
 When the verb is in the past form, it happens before the next verb. Again, the
 tense of the whole sentence is carried by the latter verb.
 
-- <span lang="ja">[起,お](r)き==た時==、シャワーを[浴,あ](r)びます。</span>
+- <span lang="ja">^起,お^き==た時==、シャワーを^浴,あ^びます。</span>
 - Literal: After waking up I take take a shower.
 - Natural: I take a shower after waking up.
