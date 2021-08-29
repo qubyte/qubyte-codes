@@ -6,42 +6,42 @@
   "description": "Using しか, だけ, and も can add nuance to amounts of things."
 }
 ---
-Using <span lang="ja">も</span>, <span lang="ja">だけ</span>, and
-<span lang="ja">しか</span> can add nuance to amounts of things.
+Using {ja:も}, {ja:だけ}, and
+{ja:しか} can add nuance to amounts of things.
 
-## Many using <span lang="ja">も</span>
+## Many using {ja:も}
 
-By inserting <span lang="ja">も</span> after a number or counter, it adds the
+By inserting {ja:も} after a number or counter, it adds the
 nuance that the speaker feels that the quantity is large.
 
 Example:
 
 - Mark has _ten_ cars.
-- <span lang="ja">マークさんは^車,くるま^を十台==も==^持,も^っています。</span>
+- {ja:マークさんは^車,くるま^を十台==も==^持,も^っています。}
 
-## Not many using <span lang="ja">だけ</span>
+## Not many using {ja:だけ}
 
-Similar to <span lang="ja">も</span>, you can use <span lang="ja">だけ</span>
+Similar to {ja:も}, you can use {ja:だけ}
 after a number or counter to add nuance. In this case the nuance added is that
 the speaker feels the quantity is low.
 
 Example:
 
 - Mark _only_ has one pen.
-- <span lang="ja">マークさんはペンを一つ==だけ==^持,も^っています。</span>
+- {ja:マークさんはペンを一つ==だけ==^持,も^っています。}
 
-## Not many using <span lang="ja">しか</span>
+## Not many using {ja:しか}
 
-Similar to <span lang="ja">だけ</span>, you can use <span lang="ja">しか</span>
+Similar to {ja:だけ}, you can use {ja:しか}
 after a number or counter to add the nuance that the speaker feels the quantity
-is low. Unlike <span lang="ja">だけ</span>, <span lang="ja">しか</span> requires
+is low. Unlike {ja:だけ}, {ja:しか} requires
 that the verb used is in its negative form.
 
 Example:
 
 - Mark _only_ has one pen.
-- <span lang="ja">マークさんはペンを一つ==しか==^持,も^って==いません==。</span>
+- {ja:マークさんはペンを一つ==しか==^持,も^って==いません==。}
 
-I'd entirely forgotten how to use <span lang="ja">しか</span> since early on I'd
-learnt about <span lang="ja">だけ</span>, which doesn't negate the verb (making
+I'd entirely forgotten how to use {ja:しか} since early on I'd
+learnt about {ja:だけ}, which doesn't negate the verb (making
 it easier for me to remember).

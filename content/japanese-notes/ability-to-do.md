@@ -12,31 +12,31 @@ There are two major ways of expressing the ability to do something.
 
 A verb in the [potential form](potential-form) directly expresses ability:
 
-- <span lang="ja">^食,た^べる</span>: to eat
-- <span lang="ja">^食,た^べられる</span>: to be able to eat
+- {ja:^食,た^べる}: to eat
+- {ja:^食,た^べられる}: to be able to eat
 
-## Using <span lang="ja">^出,で,来,き^る</span>
+## Using {ja:^出,で,来,き^る}
 
 This pattern seems to be used in a more general sense of possibility rather than
 for particular events or peeople etc., though I'm not advanced enough to have a
 feel for it.
 
 The general pattern is to add
-<span lang="ja">^事,こと^が^出,で,来,き^る</span> to a verb in the dictionary
+{ja:^事,こと^が^出,で,来,き^る} to a verb in the dictionary
 form.
 
-- <span lang="ja">^食,た^べる</span>: to eat
-- <span lang="ja">^食,た^べる^事,こと^が^出,で,来,き^る</span>: to be able to eat
+- {ja:^食,た^べる}: to eat
+- {ja:^食,た^べる^事,こと^が^出,で,来,き^る}: to be able to eat
 
-For <span lang="ja">する</span> verbs this pattern can be added directly to the
+For {ja:する} verbs this pattern can be added directly to the
 noun:
 
-- <span lang="ja">テニスをする</span>: to play tennis
-- <span lang="ja">テニス^事,こと^が^出,で,来,き^る</span>: to be able to play tennis
+- {ja:テニスをする}: to play tennis
+- {ja:テニス^事,こと^が^出,で,来,き^る}: to be able to play tennis
 
 This fries my brain a bit when I remember that
-<span lang="ja">^出,で,来,き^る</span> is already the (irregular) potential
-form of <span lang="ja">する</span>.
+{ja:^出,で,来,き^る} is already the (irregular) potential
+form of {ja:する}.
 
-Remember, when in the negative form the <span lang="ja">が</span> may become a
-<span lang="ja">は</span> for emphasis!
+Remember, when in the negative form the {ja:が} may become a
+{ja:は} for emphasis!
