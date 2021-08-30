@@ -77,7 +77,7 @@ describe('render', () => {
       assert.equal($rubies.length, 1);
 
       assert.equal($rubies[0].outerHTML, [
-        '<ruby lang="ja">',
+        '<ruby>',
         '買<rp>(</rp><rt>か</rt><rp>)</rp>',
         'いに<rt></rt>',
         '行<rp>(</rp><rt>い</rt><rp>)</rp>',
@@ -104,6 +104,32 @@ describe('render', () => {
       const rendered = render('==_text_==').trim();
 
       assert.equal(rendered, '<p><mark><em>text</em></mark></p>');
+    });
+  });
+
+  describe('lang attributes', () => {
+    it('retains spans with a lang attribute when they have no child elements (only text nodes)', () => {
+      const rendered = render('{ab:xyz} def').trim();
+
+      assert.equal(rendered, '<p><span lang="ab">xyz</span> def</p>');
+    });
+
+    it('removes the span when the span has an element as its single child node and copies over the lang attribute', () => {
+      const rendered = render('{ab:*xyz*}').trim();
+
+      assert.equal(rendered, '<p><em lang="ab">xyz</em></p>');
+    });
+
+    it('retains spans with lang attributes when they have more than one node', () => {
+      const rendered = render('{ab:*xx* yy} zz').trim();
+
+      assert.equal(rendered, '<p><span lang="ab"><em>xx</em> yy</span> zz</p>');
+    });
+
+    it('moves the lang and children of the span to its parent element when the parent element has the span as its only child', () => {
+      const rendered = render('{ab:xyz *lmn*}').trim();
+
+      assert.equal(rendered, '<p lang="ab">xyz <em>lmn</em></p>');
     });
   });
 });

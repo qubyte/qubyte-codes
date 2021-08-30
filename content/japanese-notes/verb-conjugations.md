@@ -12,17 +12,17 @@ specific conjugations.
 
 In the linked notes, I use the terminology:
 
-- <span lang="ja">^五,ご,段,だん^</span> verbs, also known as
-  <span lang="ja">う</span>-verbs, group 1 verbs, and consonant-stem verbs.
-- <span lang="ja">^一,いち,段,だん^</span> verbs, also known as
-  <span lang="ja">る</span>-verbs, group 2 verbs, and vowel-stem verbs.
+- {ja:^五,ご,段,だん^} verbs, also known as
+  {ja:う}-verbs, group 1 verbs, and consonant-stem verbs.
+- {ja:^一,いち,段,だん^} verbs, also known as
+  {ja:る}-verbs, group 2 verbs, and vowel-stem verbs.
 - Irregular verbs. These very depending on the conjugation, but the two most
-  commonly seen are <span lang="ja">する</span> and
-  <span lang="ja">^来,く^る</span>. However, there are others!
+  commonly seen are {ja:する} and
+  {ja:^来,く^る}. However, there are others!
 
 Conjugations of verbs documented here:
 
 - The dictionary form (verbs are catalogued in this form).
-- The [te form](te-form), <span lang="ja">て^形,けい^</span>.
-- The [potential form](potential-form), ^可,か,能,のう,形,けい^.
-- The [volitional form](volitional-form), ^意,い,向,こう,形,けい^.
+- The [te form](te-form), {ja:て^形,けい^}.
+- The [potential form](potential-form), {ja:^可,か,能,のう,形,けい^}.
+- The [volitional form](volitional-form), {ja:^意,い,向,こう,形,けい^}.

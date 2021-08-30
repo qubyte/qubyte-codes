@@ -6,57 +6,57 @@
   "description": "Hub for the te form of verbs."
 }
 ---
-This page is a hub for the te form, or <span lang="ja">て^形,けい^</span>. It
+This page is a hub for the te form, or {ja:て^形,けい^}. It
 describes how to conjugate verbs to their te form, and links out to other
 articles about its use. See backlinks at the bottom for notes linking to this
 one.
 
-### ^一,いち,段,だん^ verbs
+### {ja:^一,いち,段,だん^} verbs
 
-Remove the trailing <span lang="ja">る</span> and replace it with a
-<span lang="ja">て</span>.
+Remove the trailing {ja:る} and replace it with a
+{ja:て}.
 
-- <span lang="ja">^食,た^べ==る==</span>: to eat
-- <span lang="ja">^食,た^べ==て==</span>
+- {ja:^食,た^べ==る==}: to eat
+- {ja:^食,た^べ==て==}
 
-### ^五,ご,段,だん^ verbs
+### {ja:^五,ご,段,だん^} verbs
 
 The conjugation depends on the final kana in the verb:
 
-When the verb ends in <span lang="ja">う</span>, <span lang="ja">つ</span>, or
-<span lang="ja">る</span>, replace the trailing kana with
-<span lang="ja">って</span>.
+When the verb ends in {ja:う}, {ja:つ}, or
+{ja:る}, replace the trailing kana with
+{ja:って}.
 
-- <span lang="ja">作==る==</span>: to make
-- <span lang="ja">作==って==</span>
+- {ja:作==る==}: to make
+- {ja:作==って==}
 
-When the verb ends with <span lang="ja">す</span> replace the trailing kana with
-<span lang="ja">して</span>.
+When the verb ends with {ja:す} replace the trailing kana with
+{ja:して}.
 
-- <span lang="ja">^話,はな^==す==</span>: to speak
-- <span lang="ja">^話,はな^==して==</span>
+- {ja:^話,はな^==す==}: to speak
+- {ja:^話,はな^==して==}
 
-When the verb ends with <span lang="ja">く</span> replace the trailing kana with
-<span lang="ja">いて</span>.
+When the verb ends with {ja:く} replace the trailing kana with
+{ja:いて}.
 
-- <span lang="ja">^履,は^==く==</span>: to put on (lower body)
-- <span lang="ja">^履,は^==いて==</span>
+- {ja:^履,は^==く==}: to put on (lower body)
+- {ja:^履,は^==いて==}
 
 Similarly, when a verb ends in a voiced kana, the te form is also voiced:
 
-- <span lang="ja">^急,いそ^==ぐ==</span>: to hurry
-- <span lang="ja">^急,いそ^==いで==</span>
+- {ja:^急,いそ^==ぐ==}: to hurry
+- {ja:^急,いそ^==いで==}
 
-Finally, when the verb ends in <span lang="ja">ぬ</span>,
-<span lang="ja">ぶ</span>, or <span lang="ja">む</span>, replace the trailing
-kana with <span lang="ja">んで</span>.
+Finally, when the verb ends in {ja:ぬ},
+{ja:ぶ}, or {ja:む}, replace the trailing
+kana with {ja:んで}.
 
-- <span lang="ja">^住,す^==む==</span>: to inhabit
-- <span lang="ja">^住,す^==んで==</span>
+- {ja:^住,す^==む==}: to inhabit
+- {ja:^住,す^==んで==}
 
 ### Irregular conjugations
 
-- <span lang="ja">==する==</span> (to do): <span lang="ja">==して==</span>
-- <span lang="ja">^来,く^==る==</span> (to come): <span lang="ja">^来,き^==て==</span>
-- <span lang="ja">^行,い^==く==</span> (to go): <span lang="ja">^行,い^==って==</span>
-- <span lang="ja">〜ま==す==</span>: <span lang="ja">〜ま==して==</span>
+- {ja:==する==} (to do): {ja:==して==}
+- {ja:^来,く^==る==} (to come): {ja:^来,き^==て==}
+- {ja:^行,い^==く==} (to go): {ja:^行,い^==って==}
+- {ja:〜ま==す==}: {ja:〜ま==して==}

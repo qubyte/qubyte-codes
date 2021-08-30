@@ -6,18 +6,18 @@
   "description": "もう can be used to express when something is already the case, or will not be the case again."
 }
 ---
-<span lang="ja">もう</span> can be used to express when something is already the
+{ja:もう} can be used to express when something is already the
 case, or will not be the case again.
 
 Consider this famous line from Fist of the North Star:
 
-- <span lang="ja">お^前,まえ^は==もう==^死,し^んでいる。</span>
+- {ja:お^前,まえ^は==もう==^死,し^んでいる。}
 - You are ==already== dead.
 
-When used with negative form verbs, <span lang="ja">もう</span> means _anymore_. Example:
+When used with negative form verbs, {ja:もう} means _anymore_. Example:
 
-- <span lang="ja">==もう==^行,い^かない</span>
+- {ja:==もう==^行,い^かない}
 - I won't go ==anymore==.
 
-<span lang="ja">もう</span> is often contrasted with <span lang="ja">まだ</span>.
-See the [notes on <span lang="ja">まだ</span>](not-yet-or-still-with-mada).
+{ja:もう} is often contrasted with {ja:まだ}.
+See the [notes on {ja:まだ}](not-yet-or-still-with-mada).
