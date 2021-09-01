@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/afcbe825-a1e6-445f-a48d-f59e83b739b7/deploy-status)](https://app.netlify.com/sites/festive-lamarr-73c7fe/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e38f5c44-2365-4afc-b698-5b10c4a87c3c/deploy-status)](https://app.netlify.com/sites/angry-noyce-0912e2/deploys)
 
 # Qubyte Codes
 
