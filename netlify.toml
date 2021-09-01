@@ -21,10 +21,10 @@
   BASE_TITLE = "Qubyte Codes"
 
 [[plugins]]
-  package = "/plugins/dispatch-webmentions"
+  package = "/plugins/dispatch-webmentions/index.mjs"
 
 [[plugins]]
-  package = "/plugins/tweet-new-blog-posts"
+  package = "/plugins/tweet-new-blog-posts/index.mjs"
 
 [[headers]]
   for = "*"

@@ -1,8 +1,6 @@
-'use strict';
-
-const fetch = require('node-fetch');
-const retry = require('p-retry');
-const parseFeedToUrls = require('./parse-feed-to-urls');
+import fetch from 'node-fetch';
+import retry from 'p-retry';
+import parseFeedToUrls from './parse-feed-to-urls.js';
 
 async function fetchOldFeed(url) {
   const res = await fetch(url);
@@ -14,4 +12,4 @@ async function fetchOldFeed(url) {
   return parseFeedToUrls(res.body);
 }
 
-module.exports = url => retry(() => fetchOldFeed(url), { retries: 5 });
+export default url => retry(() => fetchOldFeed(url), { retries: 5 });

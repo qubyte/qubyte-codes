@@ -1,9 +1,7 @@
-'use strict';
+import fetch from 'node-fetch';
+import { JSDOM } from 'jsdom';
 
-const fetch = require('node-fetch');
-const { JSDOM } = require('jsdom');
-
-module.exports = async function getTagsForUrl(url) {
+export default async function getTagsForUrl(url) {
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -15,4 +13,4 @@ module.exports = async function getTagsForUrl(url) {
   const $tags = document.querySelectorAll('[rel="tag"]');
 
   return Array.from($tags).map(el => el.textContent.trim());
-};
+}

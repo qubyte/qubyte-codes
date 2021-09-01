@@ -1,14 +1,12 @@
-'use strict';
-
-const events = require('events');
-const Webmention = require('@remy/webmention');
+import events from 'node:events';
+import Webmention from '@remy/webmention';
 
 const handleWmLog = (...args) => console.log('WM log:', ...args);
 const handleWmProgress = (...args) => console.log('WM progress:', ...args);
 const handleWmEndpoints = (...args) => console.log('WM endpoints:', ...args);
 const handleWmSent = (...args) => console.log('WM sent:', ...args);
 
-module.exports = async function dispatchWebmentionsForUrl(url) {
+export default async function dispatchWebmentionsForUrl(url) {
   const wm = new Webmention({ limit: 0, send: true });
 
   wm.on('log', handleWmLog);
@@ -25,4 +23,4 @@ module.exports = async function dispatchWebmentionsForUrl(url) {
     wm.off('endpoints', handleWmEndpoints);
     wm.off('sent', handleWmSent);
   }
-};
+}
