@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://georgefrancis.dev/writing/crafting-organic-patterns-with-voronoi-tessellations/"
+    ],
+    "name": [
+      "Crafting Organic Patterns With Voronoi Tessellations - George Francis"
+    ],
+    "content": [
+      "George does incredible things with Voronoi diagrams. I'll read this later to figure out how George does it..."
+    ],
+    "category": [],
+    "mp-slug": [
+      "crafting-organic-patterns-with-voronoi-tessellations"
+    ]
+  }
+}
