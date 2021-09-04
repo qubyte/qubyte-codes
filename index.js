@@ -500,6 +500,12 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return buildBacklinks([...japaneseNotesFiles, ...postFiles]);
       }
     },
+    renderedShortlinks: {
+      dependencies: ['templates', 'postFiles'],
+      action({ postFiles, templates }) {
+        return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl });
+      }
+    },
     renderedPosts: {
       dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
       action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
@@ -743,6 +749,12 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'renderedSitemap'],
       action({ paths: { target }, renderedSitemap }) {
         return fs.writeFile(new URL('sitemap.txt', target), renderedSitemap);
+      }
+    },
+    writtenShortlinks: {
+      dependencies: ['paths', 'renderedShortlinks'],
+      action({ paths: { target }, renderedShortlinks }) {
+        return fs.writeFile(new URL('shortlinks.txt', target), renderedShortlinks);
       }
     },
     writtenAtomFeeds: {
