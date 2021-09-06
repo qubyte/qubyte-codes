@@ -269,6 +269,19 @@ img {
   ruby-position: under;
 }
 
+mark:has(ruby) {
+  padding-top: 0.6rem;
+}
+
+.ruby-position-under mark:has(ruby) {
+  padding-top: inherit;
+  padding-bottom: 0.6rem;
+}
+
+.ruby-position-off mark:has(ruby) {
+  padding: inherit
+}
+
 dialog {
   position: absolute;
   top: 50%;
