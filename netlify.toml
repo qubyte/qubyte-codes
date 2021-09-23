@@ -36,7 +36,7 @@
     Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "no-cache"
-    Permissions-Policy = "accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self) midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()"
+    Permissions-Policy = "accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self), midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()"
 
 [[headers]]
   for = "/japanese-notes*"
