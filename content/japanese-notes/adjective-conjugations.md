@@ -32,3 +32,4 @@ conjugations (in contrast to {ja:^形,けい,容,よう,動,どう,詞,し^}, wh
 via the copula).
 
 - The [attributive form](attributive-form), {ja:^連,れん,体,たい,形,けい^}.
+- The [hypothetical form](hypothetical-form), {ja:^仮,か,定,てい,形,けい^}.
