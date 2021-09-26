@@ -22,31 +22,31 @@
   },
   "dependencies": {
     "@remy/webmention": "^1.4.5",
-    "cssnano": "5.0.5",
+    "cssnano": "^5.0.5",
     "feedme": "^2.0.2",
-    "geo-tz": "6.0.1",
+    "geo-tz": "^6.0.1",
     "handlebars": "^4.7.7",
-    "highlight.js": "11.0.0",
+    "highlight.js": "^11.0.0",
     "image-size": "^1.0.0",
-    "jsdom": "16.6.0",
-    "marked": "3.0.0",
+    "jsdom": "^17.0.0",
+    "marked": "^3.0.0",
     "mathjax-full": "^3.1.4",
     "node-fetch": "^2.6.1",
     "p-retry": "^4.5.0",
-    "postcss": "8.3.0",
+    "postcss": "8.3.8",
     "postcss-calc": "^8.0.0",
-    "postcss-custom-properties": "^11.0.0",
-    "postcss-import": "14.0.2",
-    "slugify": "1.5.3",
+    "postcss-custom-properties": "^12.0.0",
+    "postcss-import": "^14.0.2",
+    "slugify": "^1.6.0",
     "twitter-lite": "^1.1.0"
   },
   "devDependencies": {
     "@toisu/static": "^4.0.1",
     "@toisu/toisu": "^4.0.2",
     "chokidar": "^3.5.1",
-    "eslint": "7.27.0",
+    "eslint": "^7.27.0",
     "eslint-config-qubyte": "^4.1.0",
-    "inquirer": "8.1.0",
-    "mocha": "8.4.0"
+    "inquirer": "^8.1.0",
+    "mocha": "^9.1.2"
   }
 }
