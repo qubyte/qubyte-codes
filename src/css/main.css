@@ -244,6 +244,21 @@ input {
   font-size: 3rem;
 }
 
+.footnote-ref {
+  font-size: smaller;
+  text-decoration: none;
+}
+
+.footnotes li {
+  list-style: decimal inside;
+  margin: 1rem 0;
+  font-size: small;
+}
+
+.footnote-back-link {
+  text-decoration: none;
+}
+
 article + article::before,
 dl > div + div::before {
   content: attr(light-emoji);
