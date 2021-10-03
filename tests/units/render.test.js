@@ -132,4 +132,93 @@ describe('render', () => {
       assert.equal(rendered, '<p lang="ab">xyz <em>lmn</em></p>');
     });
   });
+
+  describe('footnotes', () => {
+    it('does not add a footnotes section when there are no footnotes', () => {
+      const rendered = render('abc def').trim();
+      const { window: { document } } = new JSDOM(rendered);
+
+      assert.equal(document.querySelector('.footnotes'), null);
+    });
+
+    it('places the text of a footnote in a footnotes section', () => {
+      const rendered = render('abc[^][a footnote] def').trim();
+      const { window: { document } } = new JSDOM(rendered);
+
+      assert.ok(document.querySelector('.footnotes li')?.textContent.includes('a footnote'));
+    });
+
+    it('renders inline markdown in footnote text', () => {
+      const rendered = render('abc[^][a _footnote_ with markdown] def');
+      const { window: { document } } = new JSDOM(rendered);
+
+      assert.ok(document.querySelector('.footnotes li')?.innerHTML.includes('a <em>footnote</em> with markdown'));
+    });
+
+    it('links the location of the footnote to the footnote text', () => {
+      const rendered = render('abc[^][a footnote] def').trim();
+      const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
+
+      const anchor = document.querySelector('p a');
+      const footnote = document.querySelector('.footnotes li');
+
+      assert.equal(footnote.id, 'footnote-1');
+      assert.equal(anchor.href, 'http://example.test/#footnote-1');
+    });
+
+    it('links the footnote text to the location of the footnote', () => {
+      const rendered = render('abc[^][a footnote] def').trim();
+      const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
+
+      const footnoteTextAnchor = document.querySelector('.footnotes li a');
+      const footnoteRefAnchor = document.querySelector('p a');
+
+      assert.equal(footnoteRefAnchor.id, 'footnote-ref-1');
+      assert.equal(footnoteTextAnchor.href, 'http://example.test/#footnote-ref-1');
+    });
+
+    it('renders the footnote ref as superscript with a number in square brackets', () => {
+      const rendered = render('abc[^][a footnote] def').trim();
+      const { window: { document } } = new JSDOM(rendered);
+      const content = document.querySelector('p').outerHTML;
+
+      assert.equal(content, '<p>abc<sup><a id="footnote-ref-1" class="footnote-ref" href="#footnote-1">[1]</a></sup> def</p>');
+    });
+
+    it('renders the footnote ref with a reverse link at the end', () => {
+      const rendered = render('abc[^][a footnote] def').trim();
+      const { window: { document } } = new JSDOM(rendered);
+      const content = document.querySelector('li').outerHTML;
+
+      assert.equal(content, '<li id="footnote-1">a footnote<a class="footnote-back-link" href="#footnote-ref-1">ꜛ</a></li>');
+    });
+
+    it('labels each ref sequentially', () => {
+      const rendered = render('abc[^][fn 1] def[^][fn 2] ghi').trim();
+      const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
+
+      const footnoteRefAnchors = document.querySelectorAll('p a');
+      const footnoteTexts = document.querySelectorAll('.footnotes ol li');
+      const footnoteTextAnchors = document.querySelectorAll('.footnotes ol li a');
+
+      assert.equal(footnoteRefAnchors.length, 2);
+      assert.equal(footnoteTexts.length, 2);
+      assert.equal(footnoteTextAnchors.length, 2);
+
+      assert.equal(footnoteRefAnchors[0].textContent, '[1]');
+      assert.equal(footnoteRefAnchors[1].textContent, '[2]');
+
+      assert.equal(footnoteRefAnchors[0].id, 'footnote-ref-1');
+      assert.equal(footnoteRefAnchors[1].id, 'footnote-ref-2');
+
+      assert.equal(footnoteTexts[0].id, 'footnote-1');
+      assert.equal(footnoteTexts[1].id, 'footnote-2');
+
+      assert.equal(footnoteRefAnchors[0].href, 'http://example.test/#footnote-1');
+      assert.equal(footnoteRefAnchors[1].href, 'http://example.test/#footnote-2');
+
+      assert.equal(footnoteTextAnchors[0].href, 'http://example.test/#footnote-ref-1');
+      assert.equal(footnoteTextAnchors[1].href, 'http://example.test/#footnote-ref-2');
+    });
+  });
 });
