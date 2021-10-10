@@ -8,8 +8,8 @@
 ---
 ## Nouns
 
-Nouns use the {ja:の} particle to attribute. In English it roughly corresponds
-to _of_, with the order reversed.
+Nouns use the [{ja:の}](particles-no) particle to attribute. In English it
+roughly corresponds to _of_, with the order reversed.
 
 - B {ja:==の==} A
 - A ==of== B
@@ -24,6 +24,14 @@ It's also used for possession.
 
 - {ja:それは^私,わたし^==の==^財,さい,布,ふ^です。}
 - That is ==my== wallet.
+
+When the context is clear, the attributive form can be terminated by the
+{ja:の}.
+
+- Q: {ja:これは^誰,だれ^の^財,さい,布,ふ^ですか。}
+- Q: Who's wallet is this?
+- A: {ja:^私,わたし^のです。}
+- A: It's mine.
 
 ## Adjectives
 ### {ja:^形,けい,容,よう,動,どう,詞,し^}
