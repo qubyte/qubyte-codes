@@ -1,3 +1,3 @@
-export default function pick(array) {
-  return array[Math.floor(array.length * Math.random())];
+export default function pick(array, random = Math.random) {
+  return array[Math.floor(array.length * random())];
 }
