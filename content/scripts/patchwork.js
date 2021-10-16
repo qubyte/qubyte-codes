@@ -1,6 +1,13 @@
 import createContainedSvg from './create-contained-svg.js';
 import createSvgElement from './create-svg-element.js';
 import pick from './pick.js';
+import mulberry32 from './mulberry32.js';
+import getSeed from './get-seed.js';
+
+const SEED = getSeed();
+const random = mulberry32(SEED);
+
+console.log('SEED:', SEED);
 
 const width = 600;
 const height = 600;
@@ -10,11 +17,7 @@ const { container, svg } = createContainedSvg({ className: 'experiment', width, 
 document.querySelector('.e-content').appendChild(container);
 
 function drawRect({ x, y, width, height, fill }) {
-  svg.appendChild(createSvgElement('rect', { x, y, width, height, 'stroke-width': 0, fill }));
-}
-
-function draw({ x, y, width, height, colors }) {
-  drawRect({ x, y, width, height, fill: pick(colors).toString() });
+  svg.appendChild(createSvgElement('rect', { x, y, width, height, fill }));
 }
 
 function drawPatch({ x: x0, y: y0, width, height, depth, colors }) {
@@ -30,8 +33,8 @@ function drawPatch({ x: x0, y: y0, width, height, depth, colors }) {
     for (let j = 0; j < rows; j++) {
       const y = y0 + j * cellHeight;
 
-      if (depth > 5 || Math.random() < 0.5) {
-        draw({ x, y, width: cellWidth, height: cellHeight, colors });
+      if (depth > 5 || random() < 0.5) {
+        drawRect({ x, y, width: cellWidth, height: cellHeight, fill: pick(colors, random) });
       } else {
         drawPatch({ x, y, width: cellWidth, height: cellHeight, depth: depth + 1, colors });
       }
@@ -39,10 +42,10 @@ function drawPatch({ x: x0, y: y0, width, height, depth, colors }) {
   }
 }
 
-const hue = Math.round(Math.random() * 360);
-const chroma = 60 + 75 * Math.random();
+const hue = Math.round(random() * 360);
+const chroma = 60 + 75 * random();
 const lightness = 100;
-const nColors = 1 + Math.random() * 5;
+const nColors = 1 + random() * 5;
 
 async function getMakeColor() {
   if (CSS.supports('color', 'lch(100% 0 0)')) {
