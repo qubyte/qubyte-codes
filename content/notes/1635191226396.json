@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "A little autumn weather isn’t putting folk off the sea."
+    ],
+    "latitude": 50.84039688224727,
+    "longitude": -0.1138633450659481,
+    "photo": [
+      {
+        "value": "/images/1635191135796.jpeg",
+        "alt": "Three people in coats sit on the beach facing the ocran. In the distance there are people boating, windmills on the horizon, and clear sky peaking through the cloud."
+      }
+    ]
+  }
+}
