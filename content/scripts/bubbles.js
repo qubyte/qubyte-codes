@@ -1,5 +1,12 @@
 import createContainedSvg from './create-contained-svg.js';
 import createSvgElement from './create-svg-element.js';
+import mulberry32 from './mulberry32.js';
+import getSeed from './get-seed.js';
+
+const SEED = getSeed();
+const random = mulberry32(SEED);
+
+console.log('SEED:', SEED);
 
 const width = 500;
 const height = 500;
@@ -21,7 +28,7 @@ function calculateCircles(points/*, xmax, ymax*/) {
       // .concat([ x0, xmax, y0, ymax ]); // distance to boundaries
 
     const r = Math.min(...distances);
-    const strokeWidth = Math.floor(Math.random() * 5) + 1;
+    const strokeWidth = Math.floor(random() * 5) + 1;
 
     if (r > 0) {
       circles.push({ cx: x0, cy: y0, r, strokeWidth });
@@ -36,7 +43,7 @@ function drawCircle({ cx, cy, r, strokeWidth }) {
 }
 
 function generatePoints(n, xmax, ymax) {
-  return Array.from({ length: n }, () => [Math.random() * xmax, Math.random() * ymax]);
+  return Array.from({ length: n }, () => [random() * xmax, random() * ymax]);
 }
 
 function drawToSvg() {
