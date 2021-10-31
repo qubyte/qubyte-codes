@@ -1,5 +1,12 @@
 import createContainedSvg from './create-contained-svg.js';
 import createSvgElement from './create-svg-element.js';
+import mulberry32 from './mulberry32.js';
+import getSeed from './get-seed.js';
+
+const SEED = getSeed();
+const random = mulberry32(SEED);
+
+console.log('SEED:', SEED);
 
 const width = 600;
 const height = 600;
@@ -77,8 +84,8 @@ function calculateSpokes(points, nSpokes, xmax, ymax) {
 // Initialize points at least 2*gap from boundaries to avoid some glitching.
 function generatePoints(n, xmax, ymax) {
   return Array.from({ length: n }, () => [
-    gap * 2 + Math.random() * (xmax - 4 * gap),
-    gap * 2 + Math.random() * (ymax - 4 * gap)
+    gap * 2 + random() * (xmax - 4 * gap),
+    gap * 2 + random() * (ymax - 4 * gap)
   ]);
 }
 
