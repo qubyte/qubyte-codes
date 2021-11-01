@@ -5,8 +5,8 @@
   font-weight: 400;
   font-display: fallback;
   src: local('Chakra Petch Regular'), local('ChakraPetch-Regular'),
-       url('/fonts/chakra-petch-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('/fonts/chakra-petch-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('/fonts/chakra-petch-v4-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/fonts/chakra-petch-v4-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 /* titillium-web-regular - latin */
