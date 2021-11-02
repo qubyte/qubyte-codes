@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "A caterpillar."
+    ],
+    "latitude": 0,
+    "longitude": -0.1156638333333333,
+    "photo": [
+      {
+        "alt": "A yellow and black caterpillar perched behind some purple flowers.",
+        "value": "/images/1635875054653.jpeg"
+      }
+    ]
+  }
+}
