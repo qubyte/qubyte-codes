@@ -257,31 +257,6 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         );
       }
     },
-    fontsTarget: {
-      dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('fonts/', source),
-          result: await makeDirectory('fonts/')
-        });
-      }
-    },
-    fonts: {
-      dependencies: ['paths', 'fontsTarget'],
-      async action({ paths: { source }, fontsTarget }) {
-        const directory = new URL('fonts/', source);
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.woff') || i.endsWith('.woff2'));
-
-        await Promise.all(
-          items.map(
-            item => fs.copyFile(
-              new URL(item, directory),
-              new URL(item, fontsTarget)
-            )
-          )
-        );
-      }
-    },
     imgTarget: {
       dependencies: ['paths'],
       async action({ paths: { source, makeDirectory } }) {
