@@ -35,3 +35,11 @@ Replace the trailing {ja:る} with {ja:れば}.
 
 - {ja:このキノコを^食,た^べ==れば==、^背,せ^が^高,たか^くなります。}
 - ==If== you ==eat== this mushroom, you'll become taller.
+
+## {ja:^五,ご,段,だん^} verbs
+
+Modify the last sound to the _e_ ending sound from the same row of the kana
+table.
+
+- {ja:また^日,に,本,ほん,人,じん^の^友,とも,達,だち^に^会,あ^==えば==^幸,しあわ^せになります。}
+- ==If== I ==meet== my Japanese friends again, I will be happy.
