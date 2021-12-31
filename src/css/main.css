@@ -297,32 +297,9 @@ mark:has(ruby) {
   padding: inherit
 }
 
-dialog {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  margin: 0 auto;
-}
-
-dialog > * {
-  margin: 0;
-}
-
-dialog > *:not(:last-child) {
-  margin-bottom: 1rem;
-}
-
-dialog label {
-  display: block;
-  margin: 0.25rem 0;
-}
-
-dialog button {
-  margin-top: 1rem;
-}
-
-dialog::backdrop {
-  backdrop-filter: blur(0.25rem);
+.furigana-button {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 @media (prefers-color-scheme: dark) {

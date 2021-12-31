@@ -1,44 +1,37 @@
-function setupRubyDialog() {
-  const dialog = window['ruby-options'];
-  const form = dialog.querySelector('form');
-  const initialPosition = localStorage.getItem('ruby-position') || 'over';
+let position = localStorage.getItem('ruby-position') || 'over';
 
-  if (!CSS.supports('ruby-position', 'under')) {
-    const radio = form.querySelector('[value="under"]');
+const options = [
+  { text: '↑', value: 'over' },
+  ...CSS.supports('ruby-position', 'under') ? [{ text: '↓', value: 'under' }] : [],
+  { text: 'X', value: 'off' }
+];
 
-    // The parent is the label containing the radio button.
-    radio.parentElement.remove();
+document.body.classList.add(`ruby-position-${position}`);
+
+const span = document.createElement('span');
+const button = document.createElement('button');
+span.append('ふりがな: ', button);
+
+button.setAttribute('lang', 'ja');
+button.className = 'furigana-button';
+button.textContent = options.find(option => option.value === position).text;
+button.onclick = () => {
+  const index = options.findIndex(option => option.value === position);
+  const { text, value } = options[(index + 1) % options.length];
+
+  button.textContent = text;
+  position = value;
+
+  localStorage.setItem('ruby-position', position);
+
+  for (const className of document.body.classList) {
+    if (className.startsWith('ruby-position-')) {
+      document.body.classList.remove(className);
+      break;
+    }
   }
 
-  form['ruby-position'].value = initialPosition;
-  document.body.classList.add(`ruby-position-${initialPosition}`);
+  document.body.classList.add(`ruby-position-${position}`);
+};
 
-  form.onchange = () => {
-    const position = dialog.querySelector('form')['ruby-position'].value;
-
-    localStorage.setItem('ruby-position', position);
-
-    for (const className of document.body.classList) {
-      if (className.startsWith('ruby-position-')) {
-        document.body.classList.remove(className);
-      }
-    }
-
-    document.body.classList.add(`ruby-position-${position}`);
-  };
-
-  const button = document.createElement('button');
-  button.textContent = 'ふりがな';
-  button.setAttribute('lang', 'ja');
-  button.onclick = () => {
-    (dialog.showModal || dialog.show).call(dialog);
-  };
-
-  document.querySelector('main time').after(' ', button);
-
-  dialog.hidden = false;
-}
-
-if (typeof HTMLDialogElement === 'function') {
-  setupRubyDialog();
-}
+document.querySelector('main time').after(' ', span);
