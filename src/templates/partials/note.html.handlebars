@@ -1,10 +1,16 @@
-<article class="h-entry" light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
+<article class={{hType}} light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
   {{> hcard-basics additionalClasses="p-author" }}
   <header>
-    <a class="u-url" href="/notes/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime timezone}}</time></a>
+    <a class="u-url" href="/notes/{{timestamp}}">
+    {{#ifeq hType "h-event"}}
+    <time datetime="{{datetime}}" class="dt-end">{{humanDateTime datetime timezone}}</time> for {{duration}} minutes.
+    {{else}}
+    <time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime timezone}}</time>
+    {{/ifeq}}
+    </a>
   </header>
   <p class="e-content p-name">
-    {{content}}
+    {{content}}{{#if categories}}:{{/if}}{{#categories}} <span class="p-category">{{@this}}</span>{{/categories}}
     {{#if syndications.twitter}}<a class="mention-of" href="https://brid.gy/publish/twitter"></a>{{/if}}
     {{#if syndications.mastodon}}<a class="mention-of" href="https://brid.gy/publish/mastodon"></a>{{/if}}
   </p>
