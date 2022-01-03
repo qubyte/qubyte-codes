@@ -1,7 +1,7 @@
 /* eslint max-lines: off */
 
 import { fileURLToPath } from 'node:url';
-import fs from 'node:fs/promises';
+import { readdir, writeFile, rm, mkdir, readFile, copyFile, unlink } from 'node:fs/promises';
 import { once } from 'node:events';
 
 import getImageSize from 'image-size';
@@ -29,7 +29,7 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
   return {
     dependencies: ['paths', renderedDependencies],
     action({ paths: { target }, [renderedDependencies]: rendered }) {
-      return rendered.map(({ html, filename }) => fs.writeFile(new URL(`${pathFragment}/${filename}`, target), html));
+      return rendered.map(({ html, filename }) => writeFile(new URL(`${pathFragment}/${filename}`, target), html));
     }
   };
 }
@@ -58,8 +58,8 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
   await graph.addNodes({
     paths: {
       async action() {
-        await fs.rm(targetPath, { recursive: true, force: true });
-        await fs.mkdir(targetPath);
+        await rm(targetPath, { recursive: true, force: true });
+        await mkdir(targetPath);
 
         return {
           source: sourcePath,
@@ -68,8 +68,8 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
           async makeDirectory(path) {
             const directory = new URL(path, targetPath);
 
-            await fs.rm(directory, { recursive: true, force: true });
-            await fs.mkdir(directory);
+            await rm(directory, { recursive: true, force: true });
+            await mkdir(directory);
 
             return directory;
           }
@@ -98,7 +98,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
         const feedsPath = new URL('feeds.json', content);
-        const json = await fs.readFile(feedsPath, 'utf8');
+        const json = await readFile(feedsPath, 'utf8');
 
         return ExecutionGraph.createWatchableResult({
           path: feedsPath,
@@ -110,7 +110,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
         const publicationsPath = new URL('publications.json', content);
-        const json = await fs.readFile(publicationsPath, 'utf8');
+        const json = await readFile(publicationsPath, 'utf8');
 
         return ExecutionGraph.createWatchableResult({
           path: publicationsPath,
@@ -245,11 +245,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'iconsTarget'],
       async action({ paths: { source }, iconsTarget }) {
         const directory = new URL('icons/', source);
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.png') || i.endsWith('.svg'));
+        const items = (await readdir(directory)).filter(i => i.endsWith('.png') || i.endsWith('.svg'));
 
         await Promise.all(
           items.map(
-            item => fs.copyFile(
+            item => copyFile(
               new URL(item, directory),
               new URL(item, iconsTarget)
             )
@@ -270,11 +270,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'imgTarget'],
       async action({ paths: { source }, imgTarget }) {
         const directory = new URL('img/', source);
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.jpg'));
+        const items = (await readdir(directory)).filter(i => i.endsWith('.jpg'));
 
         await Promise.all(
           items.map(
-            item => fs.copyFile(
+            item => copyFile(
               new URL(item, directory),
               new URL(item, imgTarget)
             )
@@ -295,11 +295,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'scriptsTarget'],
       async action({ paths: { content }, scriptsTarget }) {
         const directory = new URL('scripts/', content);
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.js'));
+        const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
 
         await Promise.all(
           items.map(
-            item => fs.copyFile(
+            item => copyFile(
               new URL(item, directory),
               new URL(item, scriptsTarget)
             )
@@ -320,11 +320,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'papersTarget'],
       async action({ paths: { content }, papersTarget }) {
         const directory = new URL('papers/', content);
-        const items = (await fs.readdir(directory)).filter(i => i.endsWith('.pdf'));
+        const items = (await readdir(directory)).filter(i => i.endsWith('.pdf'));
 
         await Promise.all(
           items.map(
-            item => fs.copyFile(
+            item => copyFile(
               new URL(item, directory),
               new URL(item, papersTarget)
             )
@@ -345,14 +345,14 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'imagesTarget'],
       async action({ paths: { content }, imagesTarget }) {
         const directory = new URL('images/', content);
-        const items = (await fs.readdir(directory)).filter(i => !i.startsWith('.'));
+        const items = (await readdir(directory)).filter(i => !i.startsWith('.'));
 
         return new Map(await Promise.all(
           items.map(async item => {
-            const sourceFile = await fs.readFile(new URL(item, directory));
+            const sourceFile = await readFile(new URL(item, directory));
             const dims = await getImageSize(sourceFile);
 
-            await fs.writeFile(new URL(item, imagesTarget), sourceFile);
+            await writeFile(new URL(item, imagesTarget), sourceFile);
 
             return [`/images/${item}`, dims];
           })
@@ -363,7 +363,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       action({ paths: { target } }) {
         const name = 'google91826e4f943d9ee9.html';
-        return fs.writeFile(new URL(name, target), `google-site-verification: ${name}\n`);
+        return writeFile(new URL(name, target), `google-site-verification: ${name}\n`);
       }
     },
     keybaseVerification: {
@@ -371,7 +371,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       async action({ paths: { source, target } }) {
         const verificationPath = new URL('keybase.txt', source);
 
-        await fs.copyFile(verificationPath, new URL('keybase.txt', target));
+        await copyFile(verificationPath, new URL('keybase.txt', target));
 
         return ExecutionGraph.createWatchableResult({
           path: verificationPath,
@@ -384,7 +384,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       async action({ paths: { source, target } }) {
         const verificationPath = new URL('robots.txt', source);
 
-        await fs.copyFile(verificationPath, new URL('robots.txt', target));
+        await copyFile(verificationPath, new URL('robots.txt', target));
 
         return ExecutionGraph.createWatchableResult({
           path: verificationPath,
@@ -397,7 +397,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       async action({ paths: { source, target } }) {
         const indexPath = new URL('index.js', source);
 
-        await fs.copyFile(indexPath, new URL('index.js', target));
+        await copyFile(indexPath, new URL('index.js', target));
 
         return ExecutionGraph.createWatchableResult({
           path: indexPath,
@@ -410,7 +410,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       async action({ paths: { source, target } }) {
         const swPath = new URL('sw.js', source);
 
-        await fs.copyFile(swPath, new URL('sw.js', target));
+        await copyFile(swPath, new URL('sw.js', target));
 
         return ExecutionGraph.createWatchableResult({
           path: swPath,
@@ -423,7 +423,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       async action({ paths: { source, target } }) {
         const manifestPath = new URL('manifest.json', source);
 
-        await fs.copyFile(manifestPath, new URL('manifest.json', target));
+        await copyFile(manifestPath, new URL('manifest.json', target));
 
         return ExecutionGraph.createWatchableResult({
           path: manifestPath,
@@ -435,7 +435,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
         if (cssUrl) {
-          await fs.unlink(cssUrl);
+          await unlink(cssUrl);
         }
 
         const { url, htmlPath } = await generateMainCss({
@@ -663,95 +663,95 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     writtenIndex: {
       dependencies: ['paths', 'renderedAbout'],
       action({ paths: { target }, renderedAbout }) {
-        return fs.writeFile(new URL('index.html', target), renderedAbout);
+        return writeFile(new URL('index.html', target), renderedAbout);
       }
     },
     writtenBlogIndex: {
       dependencies: ['paths', 'renderedBlogIndex'],
       action({ paths: { target }, renderedBlogIndex }) {
-        return fs.writeFile(new URL('blog/index.html', target), renderedBlogIndex);
+        return writeFile(new URL('blog/index.html', target), renderedBlogIndex);
       }
     },
     writtenJapaneseNotesIndex: {
       dependencies: ['paths', 'renderedJapaneseNotesIndex'],
       action({ paths: { target }, renderedJapaneseNotesIndex }) {
-        return fs.writeFile(new URL('japanese-notes/index.html', target), renderedJapaneseNotesIndex);
+        return writeFile(new URL('japanese-notes/index.html', target), renderedJapaneseNotesIndex);
       }
     },
     writtenNotesIndex: {
       dependencies: ['paths', 'renderedNotesIndex'],
       action({ paths: { target }, renderedNotesIndex }) {
-        return fs.writeFile(new URL('notes/index.html', target), renderedNotesIndex);
+        return writeFile(new URL('notes/index.html', target), renderedNotesIndex);
       }
     },
     writtenLinksIndex: {
       dependencies: ['paths', 'renderedLinksIndex'],
       action({ paths: { target }, renderedLinksIndex }) {
-        return fs.writeFile(new URL('links/index.html', target), renderedLinksIndex);
+        return writeFile(new URL('links/index.html', target), renderedLinksIndex);
       }
     },
     writtenLikesIndex: {
       dependencies: ['paths', 'renderedLikesIndex'],
       action({ paths: { target }, renderedLikesIndex }) {
-        return fs.writeFile(new URL('likes/index.html', target), renderedLikesIndex);
+        return writeFile(new URL('likes/index.html', target), renderedLikesIndex);
       }
     },
     writtenRepliesIndex: {
       dependencies: ['paths', 'renderedRepliesIndex'],
       action({ paths: { target }, renderedRepliesIndex }) {
-        return fs.writeFile(new URL('replies/index.html', target), renderedRepliesIndex);
+        return writeFile(new URL('replies/index.html', target), renderedRepliesIndex);
       }
     },
     writtenPublications: {
       dependencies: ['paths', 'renderedPublications'],
       action({ paths: { target }, renderedPublications }) {
-        return fs.writeFile(new URL('publications.html', target), renderedPublications);
+        return writeFile(new URL('publications.html', target), renderedPublications);
       }
     },
     writtenWebmentionConfirmation: {
       dependencies: ['paths', 'renderedWebmentionConfirmation'],
       action({ paths: { target }, renderedWebmentionConfirmation }) {
-        return fs.writeFile(new URL('webmention.html', target), renderedWebmentionConfirmation);
+        return writeFile(new URL('webmention.html', target), renderedWebmentionConfirmation);
       }
     },
     writtenFourOhFour: {
       dependencies: ['paths', 'renderedFourOhFour'],
       action({ paths: { target }, renderedFourOhFour }) {
-        return fs.writeFile(new URL('404.html', target), renderedFourOhFour);
+        return writeFile(new URL('404.html', target), renderedFourOhFour);
       }
     },
     writtenSitemap: {
       dependencies: ['paths', 'renderedSitemap'],
       action({ paths: { target }, renderedSitemap }) {
-        return fs.writeFile(new URL('sitemap.txt', target), renderedSitemap);
+        return writeFile(new URL('sitemap.txt', target), renderedSitemap);
       }
     },
     writtenShortlinks: {
       dependencies: ['paths', 'renderedShortlinks'],
       action({ paths: { target }, renderedShortlinks }) {
-        return fs.writeFile(new URL('shortlinks.txt', target), renderedShortlinks);
+        return writeFile(new URL('shortlinks.txt', target), renderedShortlinks);
       }
     },
     writtenAtomFeeds: {
       dependencies: ['paths', 'renderedAtomFeeds'],
       action({ paths: { target }, renderedAtomFeeds: { all, posts, social } }) {
         return Promise.all([
-          fs.writeFile(new URL('atom.xml', target), all),
-          fs.writeFile(new URL('blog.atom.xml', target), posts),
-          fs.writeFile(new URL('social.atom.xml', target), social)
+          writeFile(new URL('atom.xml', target), all),
+          writeFile(new URL('blog.atom.xml', target), posts),
+          writeFile(new URL('social.atom.xml', target), social)
         ]);
       }
     },
     writtenOpml: {
       dependencies: ['paths', 'templates', 'feeds'],
       action({ paths: { target }, templates, feeds }) {
-        return fs.writeFile(new URL('feeds.opml', target), templates.feeds({ feeds }));
+        return writeFile(new URL('feeds.opml', target), templates.feeds({ feeds }));
       }
     },
     writtenBlogroll: {
       dependencies: ['css', 'paths', 'templates', 'feeds'],
       action({ css: cssPath, paths: { target }, templates, feeds }) {
-        return fs.writeFile(new URL('blogroll.html', target), templates.blogroll({
+        return writeFile(new URL('blogroll.html', target), templates.blogroll({
           feeds,
           cssPath,
           dev,
@@ -771,7 +771,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     lastBuild: {
       dependencies: ['paths', 'writtenSitemap'],
       action({ paths: { target } }) {
-        return fs.writeFile(new URL('last-build.txt', target), `${new Date().toISOString()}\n`);
+        return writeFile(new URL('last-build.txt', target), `${new Date().toISOString()}\n`);
       }
     }
   });
