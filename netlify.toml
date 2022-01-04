@@ -23,10 +23,10 @@
 [functions]
   directory = "functions"
 
-[[plugins]]
+[[context.production.plugins]]
   package = "/plugins/dispatch-webmentions"
 
-[[plugins]]
+[[context.production.plugins]]
   package = "/plugins/tweet-new-blog-posts"
 
 [[headers]]
