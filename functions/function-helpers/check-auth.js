@@ -5,6 +5,7 @@ exports.checkAuth = async function checkAuth(headers) {
     if (headers.authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
       throw new Error(`Secret mismatch. Got: ${headers.authorization?.slice(0, 4)}`);
     }
+    return;
   }
 
   const res = await fetch('https://tokens.indieauth.com/token', {
