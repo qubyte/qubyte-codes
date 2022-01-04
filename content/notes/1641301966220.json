@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-event"
+  ],
+  "properties": {
+    "category": [
+      "flashcards"
+    ],
+    "duration": [
+      "30M"
+    ],
+    "description": [
+      "Vocab"
+    ],
+    "name": [
+      "Study session"
+    ]
+  }
+}
