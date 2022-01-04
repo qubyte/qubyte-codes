@@ -1,12 +1,12 @@
-const Busboy = require('busboy');
+const busboy = require('busboy');
 
 exports.parseMultipart = function parseMultipart(headers, body) {
   return new Promise((resolve, reject) => {
-    const busboy = new Busboy({ headers });
+    const bb = busboy({ headers });
     const files = {};
     const fields = {};
 
-    busboy.on('file', (fieldname, filestream, filename, _transferEncoding, mimeType) => { // eslint-disable-line max-params
+    bb.on('file', (fieldname, filestream, filename, _transferEncoding, mimeType) => { // eslint-disable-line max-params
       const chunks = [];
 
       filestream.on('data', chunk => chunks.push(chunk));
@@ -20,7 +20,7 @@ exports.parseMultipart = function parseMultipart(headers, body) {
       });
     });
 
-    busboy.on('field', (field, value) => {
+    bb.on('field', (field, value) => {
       const normalizedfield = field.endsWith('[]') ? field.slice(0, -2) : field;
 
       if (value && !Object.prototype.hasOwnProperty.call(fields, normalizedfield)) {
@@ -28,9 +28,9 @@ exports.parseMultipart = function parseMultipart(headers, body) {
       }
     });
 
-    busboy.on('error', reject);
-    busboy.on('finish', () => resolve({ files, ...fields }));
+    bb.on('error', reject);
+    bb.on('finish', () => resolve({ files, ...fields }));
 
-    busboy.write(body);
+    bb.end(body);
   });
 };
