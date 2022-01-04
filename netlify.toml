@@ -20,6 +20,9 @@
   NODE_ENV = "production"
   BASE_TITLE = "Qubyte Codes"
 
+[functions]
+  directory = "functions"
+
 [[plugins]]
   package = "/plugins/dispatch-webmentions"
 
