@@ -1,6 +1,6 @@
 const busboy = require('busboy');
 
-exports.parseMultipart = function parseMultipart(headers, body) {
+exports.parseMultipart = function parseMultipart(headers, body, isBase64Encoded) {
   return new Promise((resolve, reject) => {
     const bb = busboy({ headers });
     const files = {};
@@ -33,6 +33,6 @@ exports.parseMultipart = function parseMultipart(headers, body) {
 
     console.log(body);
 
-    bb.write(body);
+    bb.write(isBase64Encoded ? Buffer.from(body, 'base64') : body);
   });
 };

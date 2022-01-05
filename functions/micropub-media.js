@@ -15,7 +15,7 @@ exports.handler = async function handler(event) {
     return { statusCode: 401, body: 'Not authorized.' };
   }
 
-  const parsed = await parseMultipart(event.headers, event.body);
+  const parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
   console.log('parsed:', parsed);
 
   const fileKeys = Object.keys(parsed.files);

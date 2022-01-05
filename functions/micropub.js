@@ -75,11 +75,11 @@ async function createFile(message, type, data) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
-function parseBody(headers, body) {
+function parseBody(headers, body, isBase64Encoded) {
   const type = headers['content-type'];
 
   if (type.match(/multipart/)) {
-    return parseMultipart(headers, body);
+    return parseMultipart(headers, body, isBase64Encoded);
   }
 
   if (type.match(/json/)) {
@@ -122,7 +122,7 @@ exports.handler = async function handler(event) {
   let data;
 
   try {
-    data = await parseBody(event.headers, event.body);
+    data = await parseBody(event.headers, event.body, event.isBase64Encoded);
   } catch (e) {
     console.error(e);
     return { statusCode: 400, headers: responseHeaders(), body: '' };
