@@ -6,15 +6,15 @@ exports.parseMultipart = function parseMultipart(headers, body, isBase64Encoded)
     const files = {};
     const fields = {};
 
-    bb.on('file', (fieldname, filestream, filename, _transferEncoding, mimeType) => { // eslint-disable-line max-params
+    bb.on('file', (name, filestream, info) => { // eslint-disable-line max-params
       const chunks = [];
 
       filestream.on('data', chunk => chunks.push(chunk));
 
       filestream.on('close', () => {
-        files[fieldname] = {
-          filename,
-          type: mimeType,
+        files[name] = {
+          filename: info.filename,
+          type: info.mime,
           content: Buffer.concat(chunks)
         };
       });
