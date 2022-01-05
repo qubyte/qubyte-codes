@@ -31,6 +31,8 @@ exports.parseMultipart = function parseMultipart(headers, body) {
     bb.on('error', reject);
     bb.on('finish', () => resolve({ files, ...fields }));
 
-    bb.end(body);
+    console.log(body);
+
+    bb.write(body);
   });
 };
