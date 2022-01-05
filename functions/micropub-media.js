@@ -3,6 +3,7 @@ const { responseHeaders } = require('./function-helpers/response-headers');
 const { parseMultipart } = require('./function-helpers/parse-multipart');
 const { uploadImage } = require('./function-helpers/upload-image');
 
+// eslint-disable-next-line max-statements
 exports.handler = async function handler(event) {
   console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
 
@@ -14,6 +15,8 @@ exports.handler = async function handler(event) {
   }
 
   const parsed = await parseMultipart(event.headers, event.body);
+  console.log('parsed:', parsed);
+
   const fileKeys = Object.keys(parsed.files);
   fileKeys.sort();
 
@@ -25,8 +28,9 @@ exports.handler = async function handler(event) {
     console.warn(`Unexpected number of file keys: ${fileKeys}`);
   }
 
-  const media = fileKeys.flatMap(key => parsed.files[key]);
-  const photo = media[0];
+  const photo = parsed.files[fileKeys[0]];
+
+  console.log('photo:', photo);
 
   if (!photo) {
     console.error('No photo.');
@@ -34,6 +38,8 @@ exports.handler = async function handler(event) {
   }
 
   const path = await uploadImage(photo);
+
+  console.log('path', path);
 
   return {
     statusCode: 202,
