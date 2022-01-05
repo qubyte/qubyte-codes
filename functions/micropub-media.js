@@ -6,7 +6,6 @@ const { uploadImage } = require('./function-helpers/upload-image');
 // eslint-disable-next-line max-statements
 exports.handler = async function handler(event) {
   console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
-  console.log({ ...event, headers: undefined });
 
   try {
     await checkAuth(event.headers);
@@ -16,10 +15,7 @@ exports.handler = async function handler(event) {
   }
 
   const parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
-  console.log('parsed:', parsed);
-
   const fileKeys = Object.keys(parsed.files);
-  fileKeys.sort();
 
   if (!fileKeys.length) {
     return { statusCode: 400, body: 'No files found.' };
@@ -30,8 +26,6 @@ exports.handler = async function handler(event) {
   }
 
   const photo = parsed.files[fileKeys[0]];
-
-  console.log('photo:', photo);
 
   if (!photo) {
     console.error('No photo.');

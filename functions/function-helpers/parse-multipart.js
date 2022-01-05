@@ -31,8 +31,6 @@ exports.parseMultipart = function parseMultipart(headers, body, isBase64Encoded)
     bb.on('error', reject);
     bb.on('finish', () => resolve({ files, ...fields }));
 
-    console.log(body);
-
     bb.write(isBase64Encoded ? Buffer.from(body, 'base64') : body);
   });
 };
