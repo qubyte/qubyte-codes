@@ -11,14 +11,7 @@ const dispatchWebmentionsForUrl = require('./dispatch-webmentions-for-url');
 const oldUrlsForBuild = new Map();
 const pageRegex = new RegExp('^https://qubyte.codes/(blog|links|likes|replies|notes)/.+');
 
-const nonProd = {
-  onPreBuild({ utils }) {
-    console.log('Skipping for non-production build.');
-    utils.status.show({ summary: 'Skipped for non-production build.' });
-  }
-};
-
-const prod = {
+module.exports = {
   async onPreBuild({ utils }) {
     const feedUrl = `${process.env.URL}/atom.xml`;
 
@@ -59,5 +52,3 @@ const prod = {
     oldUrlsForBuild.delete(process.env.BUILD_ID);
   }
 };
-
-module.exports = () => process.env.CONTEXT === 'production' ? prod : nonProd;
