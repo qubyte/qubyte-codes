@@ -6,6 +6,7 @@ const { uploadImage } = require('./function-helpers/upload-image');
 // eslint-disable-next-line max-statements
 exports.handler = async function handler(event) {
   console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
+  console.log({ ...event, headers: undefined })
 
   try {
     await checkAuth(event.headers);
