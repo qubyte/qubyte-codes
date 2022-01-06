@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-event"
+  ],
+  "properties": {
+    "duration": [
+      "5M"
+    ],
+    "name": [
+      "Study session"
+    ],
+    "description": [
+      "Study session."
+    ],
+    "category": [
+      "listening"
+    ]
+  }
+}
