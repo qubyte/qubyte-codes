@@ -150,6 +150,10 @@ exports.handler = async function handler(event) {
     data.name = await getTitle(data.properties['in-reply-to'][0]);
     created = await createFile('New Reply.', 'replies', data);
   } else {
+    if (data.properties.name?.includes('Study session')) {
+      created = await createFile('New study session.', 'study-sessions', data);
+    }
+
     // The default is a note, which I allow to have images.
     if (data.files && data.files.photo && data.files.photo.length) { // quill uses a photo field
       const uploadedImage = await uploadImage(data.files.photo[0]);
