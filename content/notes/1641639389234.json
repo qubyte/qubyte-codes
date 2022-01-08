@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-event"
+  ],
+  "properties": {
+    "duration": [
+      "7M"
+    ],
+    "name": [
+      "Study session"
+    ],
+    "description": [
+      "Study session."
+    ],
+    "category": [
+      "flashcards"
+    ]
+  }
+}
