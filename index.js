@@ -10,6 +10,7 @@ import loadTemplates from './lib/templates.js';
 import { generateMainCss, generateSpecificCss } from './lib/generate-css.js';
 import loadPostFiles from './lib/load-post-files.js';
 import loadNoteFiles from './lib/load-note-files.js';
+import loadStudySessionsFiles from './lib/load-study-session-files.js';
 import loadLinkFiles from './lib/load-link-files.js';
 import loadLikeFiles from './lib/load-like-files.js';
 import loadReplyFiles from './lib/load-reply-files.js';
@@ -151,6 +152,17 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         });
       }
     },
+    studySessionFiles: {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
+        const studySessionsPath = new URL('study-sessions/', content);
+
+        return ExecutionGraph.createWatchableResult({
+          path: studySessionsPath,
+          result: await loadStudySessionsFiles(studySessionsPath)
+        });
+      }
+    },
     linkFiles: {
       dependencies: ['paths'],
       async action({ paths: { content } }) {
@@ -206,6 +218,12 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths'],
       action({ paths: { makeDirectory } }) {
         return makeDirectory('notes/');
+      }
+    },
+    studySessionsDirectory: {
+      dependencies: ['paths'],
+      action({ paths: { makeDirectory } }) {
+        return makeDirectory('study-sessions/');
       }
     },
     linksDirectory: {
@@ -499,6 +517,12 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
+    renderedStudySessions: {
+      dependencies: ['css', 'templates', 'studySessionFiles'],
+      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      }
+    },
     renderedLinks: {
       dependencies: ['css', 'templates', 'linkFiles'],
       action({ linkFiles: resources, templates: { link: template }, css: cssPath }) {
@@ -555,6 +579,19 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
           baseUrl,
           localUrl: '/notes',
           title: 'Notes'
+        });
+      }
+    },
+    renderedStudySessionsIndex: {
+      dependencies: ['css', 'templates', 'studySessionFiles'],
+      action({ studySessionFiles: studySessions, templates, css: cssPath }) {
+        return templates['study-sessions']({
+          studySessions,
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/study-sessions',
+          title: 'Study Sessions'
         });
       }
     },
@@ -684,6 +721,12 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return writeFile(new URL('notes/index.html', target), renderedNotesIndex);
       }
     },
+    writtenStudySessionsIndex: {
+      dependencies: ['paths', 'renderedStudySessionsIndex'],
+      action({ paths: { target }, renderedStudySessionsIndex }) {
+        return writeFile(new URL('study-sessions/index.html', target), renderedStudySessionsIndex);
+      }
+    },
     writtenLinksIndex: {
       dependencies: ['paths', 'renderedLinksIndex'],
       action({ paths: { target }, renderedLinksIndex }) {
@@ -764,6 +807,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     writtenPosts: makeWriteEntries({ renderedDependencies: 'renderedPosts', pathFragment: 'blog' }),
     writtenJapaneseNotes: makeWriteEntries({ renderedDependencies: 'renderedJapaneseNotes', pathFragment: 'japanese-notes' }),
     writtenNotes: makeWriteEntries({ renderedDependencies: 'renderedNotes', pathFragment: 'notes' }),
+    writtenStudySessions: makeWriteEntries({ renderedDependencies: 'renderedStudySessions', pathFragment: 'study-sessions' }),
     writtenLinks: makeWriteEntries({ renderedDependencies: 'renderedLinks', pathFragment: 'links' }),
     writtenLikes: makeWriteEntries({ renderedDependencies: 'renderedLikes', pathFragment: 'likes' }),
     writtenReplies: makeWriteEntries({ renderedDependencies: 'renderedReplies', pathFragment: 'replies' }),

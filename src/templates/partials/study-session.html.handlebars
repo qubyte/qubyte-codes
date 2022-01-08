@@ -1,0 +1,9 @@
+<article class={{hType}} light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
+  {{> hcard-basics additionalClasses="p-author" }}
+  <header>
+    <a class="u-url" href="/study-sessions/{{timestamp}}"><time datetime="{{datetime}}" class="dt-end">{{humanDateTime datetime timezone}}</time> for {{duration}} minutes.</a>
+  </header>
+  <p class="e-content p-name">
+    {{content}}{{#if categories}}:{{/if}}{{#categories}} <span class="p-category">{{@this}}</span>{{/categories}}
+  </p>
+</article>
