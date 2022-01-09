@@ -150,7 +150,7 @@ exports.handler = async function handler(event) {
     data.name = await getTitle(data.properties['in-reply-to'][0]);
     created = await createFile('New Reply.', 'replies', data);
   } else {
-    if (data.properties.name?.includes('Study session')) {
+    if (data.properties.name?.includes('Study session.')) {
       created = await createFile('New study session.', 'study-sessions', data);
     }
 
