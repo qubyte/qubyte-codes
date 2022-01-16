@@ -1,9 +1,8 @@
-'use strict';
-
-const fs = require('fs/promises');
-const { pathToFileURL } = require('url');
-const linkHeader = require('http-link-header');
-const { JSDOM } = require('jsdom');
+import { readFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+import linkHeader from 'http-link-header';
+import { JSDOM } from 'jsdom';
+import fetch from 'node-fetch';
 
 const IGNORED_HOSTNAMES = [
   'localhost',
@@ -44,7 +43,6 @@ function* getValidUrlsFromDocument(content, url) {
  * @param {URL} url
  */
 async function getEndpoint(url) {
-  const { default: fetch } = await import('node-fetch');
   const res = await fetch(url);
   const [webmention] = linkHeader.parse(res.headers.link || '').rel('webmention');
 
@@ -77,7 +75,6 @@ async function getEndpoint(url) {
  * @param {string|URL} target
  */
 async function dispatchMention(endpoint, source, target) {
-  const { default: fetch } = await import('node-fetch');
   const res = await fetch(endpoint, {
     method: 'POST',
     body: new URLSearchParams({ source, target })
@@ -103,7 +100,7 @@ function pathDirToUrl(path) {
  * @param {string} baseUrl
  * @param {string} publicDir Must end with a path separator!
  */
-module.exports = async function dispatchWebmentionsForUrl(url, baseUrl, publicDir) {
+export async function dispatchWebmentionsForUrl(url, baseUrl, publicDir) {
   if (!url.startsWith(baseUrl)) {
     throw new Error(`URL mismatch: ${url} - ${baseUrl}`);
   }
@@ -112,7 +109,7 @@ module.exports = async function dispatchWebmentionsForUrl(url, baseUrl, publicDi
   // The path must not start with a / because we want a relative resolution from
   // the public dir.
   const resolvedUrl = new URL(pathname.slice(1), pathDirToUrl(publicDir));
-  const content = await fs.readFile(resolvedUrl, 'utf8');
+  const content = await readFile(resolvedUrl, 'utf8');
 
   for (const targetUrl of getValidUrlsFromDocument(content, url)) {
     // Note; assumes that the targetUrl is the canonical URL.
@@ -138,4 +135,4 @@ module.exports = async function dispatchWebmentionsForUrl(url, baseUrl, publicDi
       console.error('FAILED:', e);
     }
   }
-};
+}

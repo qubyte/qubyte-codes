@@ -1,10 +1,8 @@
-'use strict';
+import { createReadStream } from 'node:fs';
+import parseFeedToUrls from './parse-feed-to-urls.js';
 
-const fs = require('fs');
-const parseFeedToUrls = require('./parse-feed-to-urls');
-
-module.exports = function readNewSitemap(path) {
-  const stream = fs.createReadStream(path, { encoding: 'utf8' });
+export default function readNewSitemap(path) {
+  const stream = createReadStream(path, { encoding: 'utf8' });
 
   return parseFeedToUrls(stream);
-};
+}
