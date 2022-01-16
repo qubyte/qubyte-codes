@@ -14,6 +14,6 @@ async function fetchOldFeed(url) {
 }
 
 module.exports = async url => {
-  const retry = await import('p-retry');
+  const { default: retry } = await import('p-retry');
   return retry(() => fetchOldFeed(url), { retries: 5 });
 };
