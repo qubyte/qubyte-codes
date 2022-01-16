@@ -1,9 +1,9 @@
 'use strict';
 
-const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 
 module.exports = async function getTagsForUrl(url) {
+  const fetch = await import('node-fetch');
   const res = await fetch(url);
 
   if (!res.ok) {
