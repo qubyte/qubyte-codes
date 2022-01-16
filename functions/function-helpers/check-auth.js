@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.checkAuth = async function checkAuth(headers) {
   if (headers['short-circuit-auth']) {
     if (headers.authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
@@ -7,6 +5,8 @@ exports.checkAuth = async function checkAuth(headers) {
     }
     return;
   }
+
+  const fetch = await import('node-fetch');
 
   const res = await fetch('https://tokens.indieauth.com/token', {
     headers: {
