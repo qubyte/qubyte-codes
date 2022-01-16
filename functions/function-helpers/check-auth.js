@@ -6,7 +6,7 @@ exports.checkAuth = async function checkAuth(headers) {
     return;
   }
 
-  const fetch = await import('node-fetch');
+  const { default: fetch } = await import('node-fetch');
 
   const res = await fetch('https://tokens.indieauth.com/token', {
     headers: {

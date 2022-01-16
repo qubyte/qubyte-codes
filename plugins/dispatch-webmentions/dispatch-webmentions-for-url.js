@@ -44,7 +44,7 @@ function* getValidUrlsFromDocument(content, url) {
  * @param {URL} url
  */
 async function getEndpoint(url) {
-  const fetch = await import('node-fetch');
+  const { default: fetch } = await import('node-fetch');
   const res = await fetch(url);
   const [webmention] = linkHeader.parse(res.headers.link || '').rel('webmention');
 
@@ -77,7 +77,7 @@ async function getEndpoint(url) {
  * @param {string|URL} target
  */
 async function dispatchMention(endpoint, source, target) {
-  const fetch = await import('node-fetch');
+  const { default: fetch } = await import('node-fetch');
   const res = await fetch(endpoint, {
     method: 'POST',
     body: new URLSearchParams({ source, target })

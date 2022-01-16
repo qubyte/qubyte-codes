@@ -3,7 +3,7 @@
 const parseFeedToUrls = require('./parse-feed-to-urls');
 
 async function fetchOldFeed(url) {
-  const fetch = await import('node-fetch');
+  const { default: fetch } = await import('node-fetch');
   const res = await fetch(url);
 
   if (!res.ok) {

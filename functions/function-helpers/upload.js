@@ -1,5 +1,5 @@
 exports.upload = async function upload(message, type, time, suffix, buffer) { // eslint-disable-line max-params
-  const fetch = await import('node-fetch');
+  const { default: fetch } = await import('node-fetch');
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
   const path = `content/${type}/${time}${suffix}`;
 
