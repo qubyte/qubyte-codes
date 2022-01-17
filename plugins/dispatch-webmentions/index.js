@@ -22,9 +22,8 @@ export async function onPreBuild({ utils }) {
 }
 
 export async function onSuccess({ constants }) {
-  const cwd = process.cwd();
   const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
-  const newUrls = await readNewFeedToUrls(pathJoin.join(cwd, constants.PUBLISH_DIR, 'atom.xml'));
+  const newUrls = await readNewFeedToUrls(pathJoin('.', constants.PUBLISH_DIR, 'atom.xml'));
 
   console.log('Number of new URLs:', newUrls.size);
 
@@ -36,7 +35,7 @@ export async function onSuccess({ constants }) {
       console.log('Dispatching webmentions for:', url);
 
       try {
-        await dispatchWebmentionsForUrl(url, process.env.URL, pathJoin.join(cwd, constants.PUBLISH_DIR, pathSep));
+        await dispatchWebmentionsForUrl(url, process.env.URL, pathJoin('.', constants.PUBLISH_DIR, pathSep));
         console.log('Done dispatching webmentions for:', url);
       } catch (error) {
         console.error(`Error dispatching webmentions for ${url}: ${error.stack || error.message}`);
