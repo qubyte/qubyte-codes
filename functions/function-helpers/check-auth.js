@@ -1,3 +1,5 @@
+'use strict';
+
 exports.checkAuth = async function checkAuth(headers) {
   if (headers['short-circuit-auth']) {
     if (headers.authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {

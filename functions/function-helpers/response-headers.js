@@ -1,3 +1,5 @@
+'use strict';
+
 exports.responseHeaders = function responseHeaders(extras) {
   return {
     'Access-Control-Allow-Origin': '*',

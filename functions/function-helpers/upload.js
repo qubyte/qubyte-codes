@@ -1,9 +1,11 @@
-exports.upload = async function upload(message, type, time, suffix, buffer) { // eslint-disable-line max-params
+'use strict';
+
+exports.upload = async function upload(message, type, filename, buffer) {
   const { default: fetch } = await import('node-fetch');
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
-  const path = `content/${type}/${time}${suffix}`;
+  const path = `content/${type}/${filename}`;
 
-  console.log('UPLOADING FILE:', path); // eslint-disable-line
+  console.log('UPLOADING FILE:', path);
 
   const url = `https://api.github.com/repos/qubyte/qubyte-codes/contents/${path}`;
   const res = await fetch(url, {

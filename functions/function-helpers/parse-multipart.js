@@ -1,3 +1,5 @@
+'use strict';
+
 const busboy = require('busboy');
 
 exports.parseMultipart = function parseMultipart(headers, body, isBase64Encoded) {

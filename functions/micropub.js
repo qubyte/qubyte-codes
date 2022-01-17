@@ -1,3 +1,5 @@
+'use strict';
+
 const { JSDOM } = require('jsdom');
 
 const { checkAuth } = require('./function-helpers/check-auth');
@@ -69,8 +71,9 @@ function convertQueryStringToObject(queryString) {
 async function createFile(message, type, data) {
   const time = Date.now();
   const buffer = Buffer.from(`${JSON.stringify(data, null, 2)}\n`);
+  const filename = `${time}.json`;
 
-  await upload(message, type, time, '.json', buffer);
+  await upload(message, type, filename, buffer);
 
   return `https://qubyte.codes/${type}/${time}`;
 }
@@ -107,7 +110,7 @@ exports.handler = async function handler(event) {
   }
 
   if (event.queryStringParameters.q === 'syndicate-to' || event.queryStringParameters.q === 'config') {
-    console.log(`Responding to ${event.queryStringParameters.q} query.`); // eslint-disable-line no-console
+    console.log(`Responding to ${event.queryStringParameters.q} query.`);
 
     return {
       statusCode: 200,
@@ -133,7 +136,7 @@ exports.handler = async function handler(event) {
   console.log(JSON.stringify({ data }, null, 2));
 
   if (!Object.keys(data).length) {
-    console.log('Responding to empty body.'); // eslint-disable-line no-console
+    console.log('Responding to empty body.');
     return { statusCode: 204, headers: responseHeaders(), body: '' };
   }
 
