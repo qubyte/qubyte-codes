@@ -1,10 +1,9 @@
-const { checkAuth } = require('./function-helpers/check-auth');
-const { responseHeaders } = require('./function-helpers/response-headers');
-const { parseMultipart } = require('./function-helpers/parse-multipart');
-const { uploadImage } = require('./function-helpers/upload-image');
+import { checkAuth } from './function-helpers/check-auth.js';
+import { responseHeaders } from './function-helpers/response-headers.js';
+import { parseMultipart } from './function-helpers/parse-multipart.js';
+import { uploadImage } from './function-helpers/upload-image.js';
 
-// eslint-disable-next-line max-statements
-exports.handler = async function handler(event) {
+export async function handler(event) {
   console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
 
   try {
@@ -44,4 +43,4 @@ exports.handler = async function handler(event) {
     }),
     body: JSON.stringify({ path })
   };
-};
+}

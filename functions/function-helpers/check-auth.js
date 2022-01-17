@@ -1,12 +1,12 @@
-exports.checkAuth = async function checkAuth(headers) {
+import fetch from 'node-fetch';
+
+export async function checkAuth(headers) {
   if (headers['short-circuit-auth']) {
     if (headers.authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
       throw new Error(`Secret mismatch. Got: ${headers.authorization?.slice(0, 4)}`);
     }
     return;
   }
-
-  const { default: fetch } = await import('node-fetch');
 
   const res = await fetch('https://tokens.indieauth.com/token', {
     headers: {
@@ -31,4 +31,4 @@ exports.checkAuth = async function checkAuth(headers) {
   }
 
   console.log('Authorized');
-};
+}

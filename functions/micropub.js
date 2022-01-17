@@ -1,10 +1,10 @@
-const { JSDOM } = require('jsdom');
+import { JSDOM } from 'jsdom';
 
-const { checkAuth } = require('./function-helpers/check-auth');
-const { parseMultipart } = require('./function-helpers/parse-multipart');
-const { upload } = require('./function-helpers/upload');
-const { uploadImage } = require('./function-helpers/upload-image');
-const { responseHeaders } = require('./function-helpers/response-headers');
+import { checkAuth } from './function-helpers/check-auth.js';
+import { parseMultipart } from './function-helpers/parse-multipart.js';
+import { upload } from './function-helpers/upload.js';
+import { uploadImage } from './function-helpers/upload-image.js';
+import { responseHeaders } from './function-helpers/response-headers.js';
 
 async function getTitle(url) {
   try {
@@ -69,8 +69,9 @@ function convertQueryStringToObject(queryString) {
 async function createFile(message, type, data) {
   const time = Date.now();
   const buffer = Buffer.from(`${JSON.stringify(data, null, 2)}\n`);
+  const filename = `${time}.json`;
 
-  await upload(message, type, time, '.json', buffer);
+  await upload(message, type, filename, buffer);
 
   return `https://qubyte.codes/${type}/${time}`;
 }
@@ -93,7 +94,7 @@ function parseBody(headers, body, isBase64Encoded) {
   throw new Error(`Unhandled MIME type: ${type}`);
 }
 
-exports.handler = async function handler(event) {
+export async function handler(event) {
   /* eslint max-statements: off */
   /* eslint complexity: off */
 
@@ -107,7 +108,7 @@ exports.handler = async function handler(event) {
   }
 
   if (event.queryStringParameters.q === 'syndicate-to' || event.queryStringParameters.q === 'config') {
-    console.log(`Responding to ${event.queryStringParameters.q} query.`); // eslint-disable-line no-console
+    console.log(`Responding to ${event.queryStringParameters.q} query.`);
 
     return {
       statusCode: 200,
@@ -133,7 +134,7 @@ exports.handler = async function handler(event) {
   console.log(JSON.stringify({ data }, null, 2));
 
   if (!Object.keys(data).length) {
-    console.log('Responding to empty body.'); // eslint-disable-line no-console
+    console.log('Responding to empty body.');
     return { statusCode: 204, headers: responseHeaders(), body: '' };
   }
 
@@ -164,4 +165,4 @@ exports.handler = async function handler(event) {
   }
 
   return { statusCode: 202, headers: responseHeaders({ location: created }), body: '' };
-};
+}
