@@ -1,7 +1,6 @@
-'use strict';
+import fetch from 'node-fetch';
 
-exports.upload = async function upload(message, type, filename, buffer) {
-  const { default: fetch } = await import('node-fetch');
+export async function upload(message, type, filename, buffer) {
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
   const path = `content/${type}/${filename}`;
 
@@ -27,4 +26,4 @@ exports.upload = async function upload(message, type, filename, buffer) {
   console.log('Uploaded', result.content.html_url);
 
   return result;
-};
+}

@@ -1,12 +1,10 @@
-'use strict';
+import { JSDOM } from 'jsdom';
 
-const { JSDOM } = require('jsdom');
-
-const { checkAuth } = require('./function-helpers/check-auth');
-const { parseMultipart } = require('./function-helpers/parse-multipart');
-const { upload } = require('./function-helpers/upload');
-const { uploadImage } = require('./function-helpers/upload-image');
-const { responseHeaders } = require('./function-helpers/response-headers');
+import { checkAuth } from './function-helpers/check-auth.js';
+import { parseMultipart } from './function-helpers/parse-multipart.js';
+import { upload } from './function-helpers/upload.js';
+import { uploadImage } from './function-helpers/upload-image.js';
+import { responseHeaders } from './function-helpers/response-headers.js';
 
 async function getTitle(url) {
   try {
@@ -96,7 +94,7 @@ function parseBody(headers, body, isBase64Encoded) {
   throw new Error(`Unhandled MIME type: ${type}`);
 }
 
-exports.handler = async function handler(event) {
+export async function handler(event) {
   /* eslint max-statements: off */
   /* eslint complexity: off */
 
@@ -167,4 +165,4 @@ exports.handler = async function handler(event) {
   }
 
   return { statusCode: 202, headers: responseHeaders({ location: created }), body: '' };
-};
+}

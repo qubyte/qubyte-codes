@@ -1,6 +1,4 @@
-'use strict';
-
-exports.responseHeaders = function responseHeaders(extras) {
+export function responseHeaders(extras) {
   return {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
@@ -9,4 +7,4 @@ exports.responseHeaders = function responseHeaders(extras) {
     'Access-Control-Allow-Credentials': 'true',
     ...extras
   };
-};
+}

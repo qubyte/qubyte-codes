@@ -22,6 +22,8 @@
 
 [functions]
   directory = "functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["jsdom"]
 
 [[context.production.plugins]]
   package = "/plugins/dispatch-webmentions"
