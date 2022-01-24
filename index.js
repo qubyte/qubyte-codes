@@ -565,7 +565,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
           dev,
           baseUrl,
           localUrl: '/japanese-notes',
-          title: 'Archive'
+          title: 'Japanese Study Notes'
         });
       }
     },
