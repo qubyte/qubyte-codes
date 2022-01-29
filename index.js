@@ -288,7 +288,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'imgTarget'],
       async action({ paths: { source }, imgTarget }) {
         const directory = new URL('img/', source);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.jpg'));
+        const items = (await readdir(directory)).filter(i => i.endsWith('.jpg') || i.endsWith('.webp') || i.endsWith('.avif'));
 
         await Promise.all(
           items.map(

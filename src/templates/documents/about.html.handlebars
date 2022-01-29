@@ -12,15 +12,26 @@
   <main>
     <article>
       <h2>About</h2>
-      <img
-        width="150"
-        height="150"
-        class="profile-pic"
-        srcset="/img/profile-300.jpg 300w,/img/profile-150.jpg 150w"
-        sizes="150px"
-        src="/img/profile-150.jpg"
-        alt="A profile picture."
-      >
+      <picture class="profile-pic">
+        <source
+          type="image/avif"
+          srcset="/img/profile-300.avif 300w, /img/profile-150.avif 150w"
+          sizes="150px"
+        >
+        <source
+          type="image/webp"
+          srcset="/img/profile-300.webp 300w, /img/profile-150.webp 150w"
+          sizes="150px"
+        >
+        <img
+          width="150"
+          height="150"
+          srcset="/img/profile-300.jpg 300w, /img/profile-150.jpg 150w"
+          sizes="150px"
+          src="/img/profile-150.jpg"
+          alt="A profile picture."
+        >
+      </picture>
       <p>
         Welcome to <a href="https://qubyte.codes">qubyte.codes</a>! The personal
         site of Mark Stanley Everitt. My pronouns are he/him.
