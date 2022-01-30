@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { readdir, writeFile, rm, mkdir, readFile, copyFile, unlink } from 'node:fs/promises';
 import { once } from 'node:events';
 
-import getImageSize from 'image-size';
+import sharp from 'sharp';
 
 import loadTemplates from './lib/templates.js';
 import { generateMainCss, generateSpecificCss } from './lib/generate-css.js';
@@ -368,11 +368,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         return new Map(await Promise.all(
           items.map(async item => {
             const sourceFile = await readFile(new URL(item, directory));
-            const dims = await getImageSize(sourceFile);
+            const { width, height } = await sharp(sourceFile).metadata();
 
             await writeFile(new URL(item, imagesTarget), sourceFile);
 
-            return [`/images/${item}`, dims];
+            return [`/images/${item}`, { width, height }];
           })
         ));
       }
