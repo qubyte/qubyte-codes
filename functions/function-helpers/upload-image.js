@@ -1,12 +1,17 @@
-import { extname } from 'node:path';
+import sharp from 'sharp';
 import { upload } from './upload.js';
 
 export async function uploadImage(photo) {
   const time = Date.now();
-  const suffix = extname(photo.filename);
-  const filename = `${time}${suffix}`;
+  const resized = sharp(photo.content).resize(800);
+  const [jpeg, avif, webp] = Promise.all([
+    resized.jpeg().toBuffer(),
+    resized.avif().toBuffer(),
+    resized.webp().toBuffer()
+  ]);
+  await upload('New photo (jpeg).\n\n[skip ci]', 'images', `${time}.jpeg`, jpeg);
+  await upload('New photo (avif).\n\n[skip ci]', 'images', `${time}.avif`, avif);
+  await upload('New photo (webp).\n\n[skip ci]', 'images', `${time}.webp`, webp);
 
-  await upload('New photo.\n\n[skip ci]', 'images', filename, photo.content);
-
-  return `/images/${time}${suffix}`;
+  return `/images/${time}.jpeg`;
 }
