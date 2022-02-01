@@ -77,7 +77,18 @@ const syndications = {
   });
 
   // Host files from the public directory.
-  app.use(serveStatic('public', { extensions: ['html'] }));
+  app.use(serveStatic('public', {
+    extensions: ['html'],
+    setHeaders(res, path) {
+      // The database behind serve-static doesn't understand these endings yet,
+      // so handle them manually.
+      if (path.endsWith('avif')) {
+        res.setHeader('Content-Type', 'image/avif');
+      } else if (path.endsWith('webp')) {
+        res.setHeader('Content-Type', 'image/webp');
+      }
+    }
+  }));
 
   // This middleware handles everything not handled before it (404).
   app.use((_req, res) => {
