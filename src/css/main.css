@@ -232,7 +232,6 @@ input {
 }
 
 .profile-pic {
-  border: 1px solid var(--standout-color-main);
   margin: 0 0 1rem 1rem;
   width: 150px;
   height: auto;
@@ -273,6 +272,7 @@ img {
   width: 100%;
   height: auto;
   border: 1px solid var(--standout-color-main);
+  box-sizing: border-box;
 }
 
 .ruby-position-off rt,
