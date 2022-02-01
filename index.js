@@ -145,10 +145,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['paths', 'images'],
       async action({ paths: { content }, images: imagesDimensions }) {
         const notesPath = new URL('notes/', content);
+        const imagesPath = new URL('images/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadNoteFiles(notesPath, syndications, imagesDimensions)
+          result: await loadNoteFiles(notesPath, imagesPath, syndications, imagesDimensions)
         });
       }
     },
