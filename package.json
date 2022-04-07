@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "busboy": "1.4.0",
-    "cssnano": "5.0.15",
+    "cssnano": "5.1.7",
     "feedme": "^2.0.2",
     "geo-tz": "7.0.1",
     "handlebars": "^4.7.7",
