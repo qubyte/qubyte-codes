@@ -29,9 +29,6 @@
 {{#if localUrl}}
 <link href={{baseUrl}}{{localUrl}} rel="canonical">
 {{/if}}
-{{#if description}}
-<meta name="description" content="{{description}}">
-{{/if}}
 {{#isBlogEntry}}
 {{#if prevLink}}
 <link href="{{prevLink}}" rel="prev">
@@ -39,14 +36,22 @@
 {{#if nextLink}}
 <link href="{{nextLink}}" rel="next">
 {{/if}}
-<meta name="twitter:card" content="summary">
+{{/isBlogEntry}}
 <meta property="og:type" content="blog">
+<meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@qubyte">
 <meta name="twitter:title" property="og:title" content="{{baseTitle}}{{#if title}} - {{title}}{{/if}}">
+{{#if description}}
+<meta name="description" content="{{description}}">
 <meta name="twitter:description" property="og:description" content="{{description}}">
-<meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
-<meta name="twitter:image:alt" content="The qubyte.codes site icon.">
-{{/isBlogEntry}}
+{{/if}}
+{{#if image}}
+  <meta name="twitter:image" property="og:image" content="{{baseUrl}}{{image.value}}">
+  <meta name="twitter:image:alt" content="{{image.alt}}">
+{{else}}
+  <meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
+  <meta name="twitter:image:alt" content="The qubyte.codes site icon.">
+{{/if}}
 <meta name="theme-color" content="#f1e7cd">
 {{#dev}}
 <script>
