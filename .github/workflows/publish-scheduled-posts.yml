@@ -9,7 +9,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@main
     - name: use node 18
-      uses: actions/setup-node@3
+      uses: actions/setup-node@v3
       with:
         node-version: '18.x'
     - run: npm ci
