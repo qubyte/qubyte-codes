@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 
 export default async function getTagsForUrl(url) {

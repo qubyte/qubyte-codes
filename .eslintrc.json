@@ -1,6 +1,9 @@
 {
-  "extends": "qubyte/ES2021-module",
+  "extends": "qubyte/ES2022-module",
   "env": {
     "node": true
+  },
+  "globals": {
+    "fetch": true
   }
 }

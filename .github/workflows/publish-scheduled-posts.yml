@@ -8,10 +8,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 16
-      uses: actions/setup-node@main
+    - name: use node 18
+      uses: actions/setup-node@3
       with:
-        node-version: '16.x'
+        node-version: '18.x'
     - run: npm ci
     - name: publish scheduled
       env:

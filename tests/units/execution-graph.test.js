@@ -1,7 +1,7 @@
-import { strict as assert } from 'assert';
+import assert from 'node:assert/strict';
+import { EventEmitter } from 'node:events';
+import crypto from 'node:crypto';
 import ExecutionGraph from '../../lib/execution-graph.js';
-import { EventEmitter } from 'events';
-import crypto from 'crypto';
 import { setTimeout as wait } from 'timers/promises';
 
 describe('execution-graph', () => {
