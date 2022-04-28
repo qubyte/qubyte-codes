@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import makeSnippet from '../../lib/make-snippet.js';
 
