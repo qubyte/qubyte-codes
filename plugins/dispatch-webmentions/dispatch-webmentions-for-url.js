@@ -2,7 +2,6 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import linkHeader from 'http-link-header';
 import { JSDOM } from 'jsdom';
-import fetch from 'node-fetch';
 
 const IGNORED_HOSTNAMES = [
   'localhost',
