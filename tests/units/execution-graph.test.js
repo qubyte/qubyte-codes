@@ -1,34 +1,33 @@
 import assert from 'node:assert/strict';
+import test from 'node:test';
 import { EventEmitter } from 'node:events';
 import crypto from 'node:crypto';
 import ExecutionGraph from '../../lib/execution-graph.js';
 import { setTimeout as wait } from 'timers/promises';
 
-describe('execution-graph', () => {
-  let graph;
-
-  beforeEach(() => {
-    graph = new ExecutionGraph();
-  });
-
-  it('is a function', () => {
+test('execution-graph', () => {
+  test('is a function', () => {
     assert.equal(typeof ExecutionGraph, 'function');
   });
 
-  it('creates execution graph instances', () => {
+  test('creates execution graph instances', () => {
+    const graph = new ExecutionGraph();
     assert.ok(graph instanceof ExecutionGraph);
   });
 
-  it('graphs are instances of EventEmitter', () => {
+  test('graphs are instances of EventEmitter', () => {
+    const graph = new ExecutionGraph();
     assert.ok(graph instanceof EventEmitter);
   });
 
-  describe('adding a node', () => {
-    it('returns a promise', () => {
+  test('adding a node', () => {
+    test('returns a promise', () => {
+      const graph = new ExecutionGraph();
       assert.ok(graph.addNode({ name: 'a-name', action() {} }) instanceof Promise);
     });
 
-    it('resolves the promise after a synchronous action is run when there are no dependencies', async () => {
+    test('resolves the promise after a synchronous action is run when there are no dependencies', async () => {
+      const graph = new ExecutionGraph();
       const order = [];
 
       graph.once('done:a-name', () => order.push('event'));
@@ -45,7 +44,8 @@ describe('execution-graph', () => {
       assert.deepEqual(order, ['action', 'event', 'promise']);
     });
 
-    it('resolves to the return value of a synchronous action to the node', async () => {
+    test('resolves to the return value of a synchronous action to the node', async () => {
+      const graph = new ExecutionGraph();
       const expected = crypto.randomBytes(8).toString('hex');
       const result = await graph.addNode({
         name: 'a-name',
@@ -57,7 +57,8 @@ describe('execution-graph', () => {
       assert.equal(result, expected);
     });
 
-    it('resolves the promise after an asynchronous action is run when there are no dependencies', async () => {
+    test('resolves the promise after an asynchronous action is run when there are no dependencies', async () => {
+      const graph = new ExecutionGraph();
       const order = [];
 
       graph.once('done:a-name', () => order.push('event'));
@@ -75,7 +76,8 @@ describe('execution-graph', () => {
       assert.deepEqual(order, ['action', 'event', 'promise']);
     });
 
-    it('resolves to the resulution value of an asynchronous action to the node', async () => {
+    test('resolves to the resulution value of an asynchronous action to the node', async () => {
+      const graph = new ExecutionGraph();
       const expected = crypto.randomBytes(8).toString('hex');
       const result = await graph.addNode({
         name: 'a-name',
@@ -87,7 +89,8 @@ describe('execution-graph', () => {
       assert.equal(result, expected);
     });
 
-    it('waits for dependencies which are not yet registered before resolving', async () => {
+    test('waits for dependencies which are not yet registered before resolving', async () => {
+      const graph = new ExecutionGraph();
       const order = [];
       const promises = [];
 
@@ -118,7 +121,9 @@ describe('execution-graph', () => {
       assert.deepEqual(order, ['c', 'b', 'a']);
     });
 
-    it('passes results from dependencies into an action', async () => {
+    test('passes results from dependencies into an action', async () => {
+      const graph = new ExecutionGraph();
+
       graph.addNode({
         name: 'a',
         action() {
@@ -153,12 +158,14 @@ describe('execution-graph', () => {
     });
   });
 
-  describe('adding multiple nodes', () => {
-    it('returns a promise', () => {
+  test('adding multiple nodes', () => {
+    test('returns a promise', () => {
+      const graph = new ExecutionGraph();
       assert.ok(graph.addNodes({ name: { action() {} } }) instanceof Promise);
     });
 
-    it('resolves to a collection of results for the added nodes', async () => {
+    test('resolves to a collection of results for the added nodes', async () => {
+      const graph = new ExecutionGraph();
       const results = await graph.addNodes({
         a: {
           async action() {
@@ -177,7 +184,8 @@ describe('execution-graph', () => {
       assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
     });
 
-    it('does not include results of nodes not in the collection added', async () => {
+    test('does not include results of nodes not in the collection added', async () => {
+      const graph = new ExecutionGraph();
       await graph.addNode({
         name: 'x',
         action() {
@@ -198,8 +206,10 @@ describe('execution-graph', () => {
     });
   });
 
-  describe('removing nodes', () => {
-    it('removes a node with no dependencies', async () => {
+  test('removing nodes', () => {
+    test('removes a node with no dependencies', async () => {
+      const graph = new ExecutionGraph();
+
       await graph.addNode({
         name: 'a',
         action() {}
@@ -210,7 +220,9 @@ describe('execution-graph', () => {
       assert.equal(graph.nodes.size, 0);
     });
 
-    it('throws when attempting to remove a node with dependencies', async () => {
+    test('throws when attempting to remove a node with dependencies', async () => {
+      const graph = new ExecutionGraph();
+
       await Promise.all([
         graph.addNode({
           name: 'a',
@@ -238,11 +250,10 @@ describe('execution-graph', () => {
     });
   });
 
-  describe('rerunning nodes', () => {
-    let nodesRerun;
-
-    beforeEach(async () => {
-      nodesRerun = [];
+  test('rerunning nodes', () => {
+    test('reruns leaf nodes', async () => {
+      const graph = new ExecutionGraph();
+      let nodesRerun = [];
 
       await Promise.all([
         graph.addNode({
@@ -271,23 +282,53 @@ describe('execution-graph', () => {
       ]);
 
       nodesRerun = [];
-    });
 
-    it('reruns leaf nodes', async () => {
       await graph.rerunNode({ name: 'c' });
 
       assert.deepEqual(nodesRerun, ['c']);
     });
 
-    it('reruns on-leaf nodes and their decendents in order', async () => {
+    test('reruns on-leaf nodes and their decendents in order', async () => {
+      const graph = new ExecutionGraph();
+      let nodesRerun = [];
+
+      await Promise.all([
+        graph.addNode({
+          name: 'a',
+          async action() {
+            await wait(10);
+            nodesRerun.push('a');
+          }
+        }),
+        graph.addNode({
+          name: 'b',
+          dependencies: ['a'],
+          async action() {
+            await wait(10);
+            nodesRerun.push('b');
+          }
+        }),
+        graph.addNode({
+          name: 'c',
+          dependencies: ['b'],
+          async action() {
+            await wait(10);
+            nodesRerun.push('c');
+          }
+        })
+      ]);
+
+      nodesRerun = [];
+
       await graph.rerunNode({ name: 'b' });
 
       assert.deepEqual(nodesRerun, ['b', 'c']);
     });
   });
 
-  describe('getting results', () => {
-    it('gets results of returned and resolved nodes', async () => {
+  test('getting results', () => {
+    test('gets results of returned and resolved nodes', async () => {
+      const graph = new ExecutionGraph();
       graph.addNode({
         name: 'a',
         action() {

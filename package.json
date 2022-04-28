@@ -7,7 +7,7 @@
   "repository": "github:qubyte/qubyte-codes",
   "scripts": {
     "postbuild": "if [ \"$NODE_ENV\" = \"production\" ]; then git clone --bare . public/qubyte-codes.git; cd public/qubyte-codes.git; git --bare update-server-info; fi",
-    "test": "URL=https://qubyte.codes.test/ mocha --recursive tests",
+    "test": "URL=https://qubyte.codes.test/ node tests",
     "build": "node scripts/clean.js && node scripts/build.js",
     "start": "node scripts/clean.js && node scripts/serve.js",
     "create-post": "node scripts/create-post.js",
@@ -47,7 +47,6 @@
     "chokidar": "3.5.3",
     "eslint": "8.14.0",
     "eslint-config-qubyte": "5.0.0",
-    "inquirer": "8.2.2",
-    "mocha": "9.2.2"
+    "inquirer": "8.2.2"
   }
 }
