@@ -33,7 +33,7 @@
     "marked": "^4.0.14",
     "mathjax-full": "^3.1.4",
     "node-fetch": "3.2.4",
-    "p-retry": "5.1.0",
+    "p-retry": "5.1.1",
     "postcss": "8.4.12",
     "postcss-calc": "8.2.4",
     "postcss-custom-properties": "12.1.7",
