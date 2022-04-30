@@ -3,6 +3,7 @@
 import fs from 'node:fs/promises';
 import { parseFrontMatter } from '../lib/load-post-files.js';
 import retry from 'p-retry';
+import { fetch } from 'undici';
 
 const LAST_BUILD_URL = 'https://qubyte.codes/last-build.txt';
 const POST_FILES_DIR = new URL('../content/posts/', import.meta.url);

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
+import { fetch } from 'undici';
 import linkHeader from 'http-link-header';
 import { JSDOM } from 'jsdom';
 

@@ -39,7 +39,8 @@
     "postcss-import": "^14.1.0",
     "sharp": "0.30.4",
     "slugify": "1.6.5",
-    "twitter-lite": "^1.1.0"
+    "twitter-lite": "^1.1.0",
+    "undici": "5.0.0"
   },
   "devDependencies": {
     "@toisu/static": "4.0.3",
