@@ -1,4 +1,5 @@
 import { Readable } from 'node:stream';
+import { fetch } from 'undici';
 import retry from 'p-retry';
 import parseFeedToUrls from './parse-feed-to-urls.js';
 

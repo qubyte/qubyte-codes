@@ -1,3 +1,4 @@
+import { fetch } from 'undici';
 import { JSDOM } from 'jsdom';
 
 export default async function getTagsForUrl(url) {
