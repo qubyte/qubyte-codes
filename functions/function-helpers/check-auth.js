@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 
 export async function checkAuth(headers) {
   if (headers['short-circuit-auth']) {

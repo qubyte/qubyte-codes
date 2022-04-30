@@ -1,5 +1,4 @@
-import { Readable } from 'node:stream';
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import retry from 'p-retry';
 import parseFeedToUrls from './parse-feed-to-urls.js';
 
@@ -10,7 +9,7 @@ async function fetchOldFeed(url) {
     throw new Error(`Unexpected response from ${url}: ${res.status} ${await res.text()}`);
   }
 
-  return parseFeedToUrls(Readable.fromWeb(res.body));
+  return parseFeedToUrls(res.body);
 }
 
 export default function (url) {

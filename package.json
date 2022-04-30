@@ -18,7 +18,7 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
   },
   "dependencies": {
     "busboy": "1.6.0",
@@ -32,6 +32,7 @@
     "jsdom": "19.0.0",
     "marked": "^4.0.14",
     "mathjax-full": "^3.1.4",
+    "node-fetch": "3.2.4",
     "p-retry": "5.1.0",
     "postcss": "8.4.12",
     "postcss-calc": "8.2.4",
@@ -39,8 +40,7 @@
     "postcss-import": "^14.1.0",
     "sharp": "0.30.4",
     "slugify": "1.6.5",
-    "twitter-lite": "^1.1.0",
-    "undici": "5.0.0"
+    "twitter-lite": "^1.1.0"
   },
   "devDependencies": {
     "@toisu/static": "4.0.3",
