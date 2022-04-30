@@ -5,11 +5,21 @@ import fetch from 'node-fetch';
 const IGNORED_SOURCES = [
   'https://www.jvt.me/mf2/2019/06/pmsth/'
 ];
+const validTargetRegex = new RegExp(`^${process.env.URL}/(blog|japanese-notes)/`);
 
-export async function handler(event) {
-  console.log('GOT REQUEST', { body: event.body });
+class HttpError extends Error {
+  constructor(message, { status = 400, ...options } = {}) {
+    super(message, options);
+    this.status = status;
+  }
 
-  const body = new URLSearchParams(event.body);
+  toResponseObject() {
+    return { statusCode: this.status, body: this.message };
+  }
+}
+
+function parseBodyAndPerformSimpleChecks(raw) {
+  const body = new URLSearchParams(raw);
 
   if (!body.has('source') || !body.has('target')) {
     return { statusCode: 400, body: 'Bad body format.' };
@@ -22,24 +32,29 @@ export async function handler(event) {
     source = new URL(body.get('source'));
     target = new URL(body.get('target'));
   } catch (e) {
-    return { statusCode: 400, body: 'Source and target must be valid, fully qualified URLs.' };
+    throw new HttpError('Source and target must be valid, fully qualified URLs.');
   }
 
-  if (!target.href.startsWith(process.env.URL)) {
-    return { statusCode: 400, body: 'Target URLs must be for this domain.' };
+  if (source.href.startsWith(process.env.URL)) {
+    throw new HttpError('Source cannot be from this domain.');
+  }
+
+  if (!validTargetRegex.test(target.href)) {
+    throw new HttpError('Target URLs must be to this domain and for an article.');
+  }
+
+  if (!/^https?/.test(source.protocol)) {
+    throw new HttpError('Source URL must be an HTTP or HTTPS address.');
   }
 
   if (IGNORED_SOURCES.includes(source)) {
-    return { statusCode: 429, body: 'Please don\'t send mentions more than once if they don\'t change.' };
+    throw new HttpError('Please don\'t send mentions more than once if they don\'t change.', { status: 429 });
   }
 
-  // This is an MVP. At the moment it will only send a source and a target to
-  // GitHub in a link. Manual steps afterward:
-  //
-  // - Check the source actually links to the target.
-  // - Get author details from the source.
-  // - Determine the kind of mention (note, like, repost, etc.)
+  return { source, target };
+}
 
+async function createIssue({ source, target }) {
   const res = await fetch('https://api.github.com/repos/qubyte/qubyte-codes/issues', {
     method: 'POST',
     headers: {
@@ -54,7 +69,46 @@ export async function handler(event) {
   });
 
   if (!res.ok) {
-    return { statusCode: 502, body: `Unexpected response status from GitHub: ${res.status}` };
+    throw new HttpError(`Unexpected response status from GitHub: ${res.status}`, { status: 502 });
+  }
+}
+
+// eslint-disable-next-line max-statements
+export async function handler(event) {
+  console.log('GOT REQUEST', { body: event.body });
+
+  let source;
+  let target;
+
+  try {
+    ({ source, target } = parseBodyAndPerformSimpleChecks(event.body));
+  } catch (e) {
+    if (e instanceof HttpError) {
+      return e.toResponseObject();
+    }
+
+    console.error('UNKNOWN ERROR PARSING REQUEST BODY:', e);
+
+    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+  }
+
+  // This is an MVP. At the moment it will only send a source and a target to
+  // GitHub in a link. Manual steps afterward:
+  //
+  // - Check the source actually links to the target.
+  // - Get author details from the source.
+  // - Determine the kind of mention (note, like, repost, etc.)
+
+  try {
+    await createIssue({ source, target });
+  } catch (e) {
+    if (e instanceof HttpError) {
+      return e.toResponseObject();
+    }
+
+    console.error('UNKNOWN ERROR CREATING ISSUE:', e);
+
+    return { statusCode: 502, body: `Unexpected error posting to GitHub: ${e.message}` };
   }
 
   return { statusCode: 202 };
