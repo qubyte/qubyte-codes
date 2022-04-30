@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "This afternoon I'm playing with webmentions again. I've decided to implement my own endpoint and migrate away from webmention.io (which is fine, I just want to build my own)."
+    ],
+    "category": [],
+    "mp-slug": [
+      "this-afternoon-im-playing-with-webmentions"
+    ],
+    "mp-syndicate-to": [
+      "https://mastodon.social/@qubyte",
+      "https://twitter.com/qubyte"
+    ]
+  }
+}
