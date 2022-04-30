@@ -2,8 +2,8 @@
 <section>
   <h3>Mentions</h3>
   {{#webmentions}}
-  <p>
-    {{initialUpper kind}} from <a href="{{author.url}}">{{author.name}}</a> on <a class="webmention" href="{{source}}"><time datetime="{{published}}" class="dt-published">{{humanDate published}}</time></a>{{#if content}}: <em>{{content}}</em>{{/if}}
+  <p class="{{#if content}}u-comment {{/if}}h-cite">
+    {{initialUpper kind}} from <a class="u-author" href="{{author.url}}">{{author.name}}</a> on <a class="webmention u-url" href="{{source}}"><time datetime="{{published}}" class="dt-published">{{humanDate published}}</time></a>{{#if content}}: <em class="p-content">{{content}}</em>{{/if}}
   </p>
   {{/webmentions}}
 </section>

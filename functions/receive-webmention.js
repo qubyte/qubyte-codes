@@ -1,10 +1,9 @@
+import { JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.
-const IGNORED_SOURCES = [
-  'https://www.jvt.me/mf2/2019/06/pmsth/'
-];
+const IGNORED_SOURCES = [];
 const validTargetRegex = new RegExp(`^${process.env.URL}/(blog|japanese-notes)/`);
 
 class HttpError extends Error {
@@ -54,7 +53,62 @@ function parseBodyAndPerformSimpleChecks(raw) {
   return { source, target };
 }
 
-async function createIssue({ source, target }) {
+// TODO: The source check should also determin the kind of mention. i.e. a like,
+//       note, or repost etc. based on microformats around the href.
+async function checkSource({ source, target }) {
+  const res = await fetch(source);
+
+  if (!res.ok) {
+    // The resource can't be found. It may indicate a removed mention.
+    return false;
+  }
+
+  const dom = new JSDOM(await res.text());
+
+  for (const { href } of dom.window.document.getElementsByTagName('a')) {
+    try {
+      if (new URL(href).href === target.href) {
+        return true;
+      }
+    } catch { /* */ }
+  }
+
+  return false;
+}
+
+async function checkTarget({ source, target }) {
+  const res = await fetch(target);
+
+  if (!res.ok) {
+    throw new HttpError('Invalid target URL.');
+  }
+
+  const dom = new JSDOM(await res.text());
+
+  for (const { href } of dom.window.document.querySelectorAll('.h-cite .u-url')) {
+    try {
+      if (new URL(href).href === source.href) {
+        return true;
+      }
+    } catch { /* */ }
+  }
+
+  return false;
+}
+
+async function createIssue({ source, target, sourceDoesMention, targetHasMention }) {
+  if (sourceDoesMention && targetHasMention) {
+    console.warn('Source and target are present on both.');
+    return;
+  }
+
+  if (!sourceDoesMention && !targetHasMention) {
+    console.warn('Source and target are absent on both.');
+    return;
+  }
+
+  const action = sourceDoesMention ? 'add' : 'remove';
+
   const res = await fetch('https://api.github.com/repos/qubyte/qubyte-codes/issues', {
     method: 'POST',
     headers: {
@@ -63,7 +117,7 @@ async function createIssue({ source, target }) {
     },
     body: JSON.stringify({
       title: `New webmention from ${source.hostname}!`,
-      body: `source: [${source}](${source})\ntarget: [${target}](${target})\n`,
+      body: `source: [${source}](${source})\ntarget: [${target}](${target})\naction: ${action}`,
       labels: ['webmention']
     })
   });
@@ -92,6 +146,34 @@ export async function handler(event) {
     return { statusCode: 500, body: `Unknown Error: ${e.message}` };
   }
 
+  let sourceDoesMention;
+
+  try {
+    sourceDoesMention = await checkSource(target);
+  } catch (e) {
+    if (e instanceof HttpError) {
+      return e.toResponseObject();
+    }
+
+    console.error('UNKNOWN ERROR VALIDATING TARGET:', e);
+
+    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+  }
+
+  let targetHasMention;
+
+  try {
+    targetHasMention = await checkTarget(source, target);
+  } catch (e) {
+    if (e instanceof HttpError) {
+      return e.toResponseObject();
+    }
+
+    console.error('UNKNOWN ERROR VALIDATING SOURCE:', e);
+
+    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+  }
+
   // This is an MVP. At the moment it will only send a source and a target to
   // GitHub in a link. Manual steps afterward:
   //
@@ -100,7 +182,7 @@ export async function handler(event) {
   // - Determine the kind of mention (note, like, repost, etc.)
 
   try {
-    await createIssue({ source, target });
+    await createIssue({ source, target, sourceDoesMention, targetHasMention });
   } catch (e) {
     if (e instanceof HttpError) {
       return e.toResponseObject();
@@ -108,7 +190,7 @@ export async function handler(event) {
 
     console.error('UNKNOWN ERROR CREATING ISSUE:', e);
 
-    return { statusCode: 502, body: `Unexpected error posting to GitHub: ${e.message}` };
+    return { statusCode: 500, body: `Unexpected error posting to GitHub: ${e.message}` };
   }
 
   return { statusCode: 202 };
