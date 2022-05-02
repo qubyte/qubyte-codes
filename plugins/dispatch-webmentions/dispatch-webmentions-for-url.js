@@ -108,7 +108,7 @@ export async function dispatchWebmentionsForUrl(url, baseUrl, publicDir) {
   const { pathname } = new URL(url);
   // The path must not start with a / because we want a relative resolution from
   // the public dir.
-  const resolvedUrl = new URL(pathname.slice(1), pathDirToUrl(publicDir));
+  const resolvedUrl = new URL(`${pathname.slice(1)}.html`, pathDirToUrl(publicDir));
   const content = await readFile(resolvedUrl, 'utf8');
 
   for (const targetUrl of getValidUrlsFromDocument(content, url)) {
