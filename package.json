@@ -30,7 +30,7 @@
     "http-link-header": "1.0.4",
     "iso8601-duration": "2.1.1",
     "jsdom": "19.0.0",
-    "marked": "^4.0.14",
+    "marked": "^4.0.15",
     "mathjax-full": "^3.1.4",
     "node-fetch": "3.2.4",
     "p-retry": "5.1.1",
