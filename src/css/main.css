@@ -51,6 +51,7 @@ h3 {
 }
 
 p,
+dd,
 summary {
   margin: 1rem 0;
   line-height: 1.5em;
@@ -99,10 +100,6 @@ nav {
   border-bottom-width: 1px;
   border-top-width: 1px;
   background-color: var(--background-color-alt);
-}
-
-dd {
-  margin-top: 1rem;
 }
 
 article,
