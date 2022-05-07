@@ -14,7 +14,7 @@ export async function handler(event) {
   try {
     await checkAuth(event.headers);
   } catch (e) {
-    console.error('Error checking auth:', e.stack);
+    console.log('Error checking auth:', e.stack);
     return { statusCode: 401, body: 'Not authorized.' };
   }
 
@@ -25,7 +25,7 @@ export async function handler(event) {
   try {
     parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
   } catch (e) {
-    console.error('Error parsing multipart body:', e.stack);
+    console.log('Error parsing multipart body:', e.stack);
     return { statusCode: 500, body: 'Multipart parsing failed.' };
   }
 
@@ -34,12 +34,12 @@ export async function handler(event) {
   console.log('PARSED:', fileKeys);
 
   if (!fileKeys.length) {
-    console.warn('No files found.');
+    console.log('No files found.');
     return { statusCode: 400, body: 'No files found.' };
   }
 
   if (fileKeys.length > 1) {
-    console.warn(`Unexpected number of file keys: ${fileKeys}`);
+    console.log('Unexpected number of file keys:', fileKeys);
   }
 
   const photo = parsed.files[fileKeys[0]];
