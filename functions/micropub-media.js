@@ -4,7 +4,11 @@ import { parseMultipart } from './function-helpers/parse-multipart.js';
 import { uploadImage } from './function-helpers/upload-image.js';
 
 export async function handler(event) {
-  console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
+  console.log('GOT REQUEST:', {
+    headers: { ...event.headers, authorization: '[redacted]' },
+    length: event.body.length,
+    isBase64Encoded: event.isBase64Encoded
+  });
 
   try {
     await checkAuth(event.headers);
@@ -16,7 +20,10 @@ export async function handler(event) {
   const parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
   const fileKeys = Object.keys(parsed.files);
 
+  console.log('PARSED:', fileKeys);
+
   if (!fileKeys.length) {
+    console.warn('No files found.');
     return { statusCode: 400, body: 'No files found.' };
   }
 
