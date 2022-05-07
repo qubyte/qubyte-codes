@@ -3,6 +3,7 @@ import { responseHeaders } from './function-helpers/response-headers.js';
 import { parseMultipart } from './function-helpers/parse-multipart.js';
 import { uploadImage } from './function-helpers/upload-image.js';
 
+// eslint-disable-next-line max-statements
 export async function handler(event) {
   console.log('GOT REQUEST:', {
     headers: { ...event.headers, authorization: '[redacted]' },
@@ -17,7 +18,15 @@ export async function handler(event) {
     return { statusCode: 401, body: 'Not authorized.' };
   }
 
-  const parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
+  let parsed;
+
+  try {
+    parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
+  } catch (e) {
+    console.error(e.stack);
+    return { statusCode: 500, body: 'Multipart parsing failed.' };
+  }
+
   const fileKeys = Object.keys(parsed.files);
 
   console.log('PARSED:', fileKeys);
