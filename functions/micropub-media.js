@@ -14,16 +14,18 @@ export async function handler(event) {
   try {
     await checkAuth(event.headers);
   } catch (e) {
-    console.error(e.stack);
+    console.error('Error checking auth:', e.stack);
     return { statusCode: 401, body: 'Not authorized.' };
   }
+
+  console.log('BEFORE PARSING.');
 
   let parsed;
 
   try {
     parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
   } catch (e) {
-    console.error(e.stack);
+    console.error('Error parsing multipart body:', e.stack);
     return { statusCode: 500, body: 'Multipart parsing failed.' };
   }
 
