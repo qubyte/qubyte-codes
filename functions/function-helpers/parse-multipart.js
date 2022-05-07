@@ -1,12 +1,16 @@
 import busboy from 'busboy';
 
 export function parseMultipart(headers, body, isBase64Encoded) {
+  console.log('In parseMultipart');
+
   return new Promise((resolve, reject) => {
     const bb = busboy({ headers });
     const files = {};
     const fields = {};
 
     bb.on('file', (name, filestream, info) => { // eslint-disable-line max-params
+      console.log('file:', name, info);
+
       const chunks = [];
 
       filestream.on('data', chunk => chunks.push(chunk));
@@ -21,6 +25,8 @@ export function parseMultipart(headers, body, isBase64Encoded) {
     });
 
     bb.on('field', (field, value) => {
+      console.log('field:', field, value);
+
       const normalizedfield = field.endsWith('[]') ? field.slice(0, -2) : field;
 
       if (value && !Object.prototype.hasOwnProperty.call(fields, normalizedfield)) {
@@ -29,8 +35,8 @@ export function parseMultipart(headers, body, isBase64Encoded) {
     });
 
     bb.on('error', reject);
-    bb.on('finish', () => resolve({ files, ...fields }));
+    bb.on('close', () => resolve({ files, ...fields }));
 
-    bb.write(isBase64Encoded ? Buffer.from(body, 'base64') : body);
+    bb.end(isBase64Encoded ? Buffer.from(body, 'base64') : body);
   });
 }

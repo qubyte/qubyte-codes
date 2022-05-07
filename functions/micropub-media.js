@@ -26,7 +26,6 @@ export async function handler(event) {
     parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
   } catch (e) {
     console.log('Error parsing multipart body:', e.stack);
-    await new Promise(r => setTimeout(r, 500));
     return { statusCode: 500, body: 'Multipart parsing failed.' };
   }
 
