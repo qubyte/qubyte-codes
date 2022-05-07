@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "We were treated to an excellent sky today in Brighton."
+    ],
+    "latitude": 0,
+    "longitude": -0.1161666666666667,
+    "photo": [
+      {
+        "alt": "A view downhill on a street, rounding a corner. The sky above is part blue and clear, but with some big fluffy clouds ranging from white to deep grey.",
+        "value": ""
+      }
+    ]
+  }
+}
