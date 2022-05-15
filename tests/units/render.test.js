@@ -182,7 +182,7 @@ describe('render', () => {
       const { window: { document } } = new JSDOM(rendered);
       const content = document.querySelector('p').outerHTML;
 
-      assert.equal(content, '<p>abc<sup><a id="footnote-ref-1" class="footnote-ref" href="#footnote-1">[1]</a></sup> def</p>');
+      assert.equal(content, '<p>abc<sup class="footnote-ref"><a id="footnote-ref-1" href="#footnote-1">[1]</a></sup> def</p>');
     });
 
     it('renders the footnote ref with a reverse link at the end', () => {
