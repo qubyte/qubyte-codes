@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I'm using Safari for personal use these days. I wanted to use omnibear for micropub stuff, so I compiled the JS (a normal build step for it), and then ran the command below. The only change I had to make was to add a description to the manifest.\n\nxcrun safari-web-extension-converter /path/to/my/extension/\n\nIn Safari, the Allow Unsigned Extensions option must be checked. Xcode generates a wrapper application for omnibear. After booting it, you can quit it and go to Safari -> Preferences -> Extensions to enable the extension. I'm posting this note using it!"
+    ],
+    "category": [],
+    "mp-slug": [
+      "im-using-safari-for-personal-use"
+    ],
+    "mp-syndicate-to": [
+      "https://twitter.com/qubyte",
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
