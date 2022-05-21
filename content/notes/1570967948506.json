@@ -1,6 +1,6 @@
 {
   "type": ["h-entry"],
   "properties": {
-    "content": ["I'm not a huge webpack fan, but I'm wondering if I might change my own mind my porting my static site generator to it. As it stands my generator tries to be as efficient as it can be, but only for a single shot compilation. It doesn't cache artefacts. It looks like webpack, with a  custom loader and plugins, might provide the necessary mechanics to make incremental builds while writing a blog post much faster."]
+    "content": ["I'm not a huge webpack fan, but I'm wondering if I might change my own mind my porting my static site generator to it. As it stands my generator tries to be as efficient as it can be, but only for a single shot compilation. It doesn't cache artefacts. It looks like webpack, with a custom loader and plugins, might provide the necessary mechanics to make incremental builds while writing a blog post much faster."]
   }
 }
