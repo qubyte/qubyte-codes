@@ -1,7 +1,9 @@
 import { join as pathJoin } from 'node:path';
 import fetchOldFeedToUrls from '../fetch-old-feed-to-urls.js';
 import readNewFeedToUrls from '../read-new-feed-to-urls.js';
-import tweetPost from './tweet-post.js';
+import getTagsForUrl from './get-tags-for-url.js';
+import tweetPost from './tweet.js';
+import tootPost from './toot.js';
 
 // This is probably unnecessary since each method in this module will only be
 // invoked once (and even then only in sequence).
@@ -33,12 +35,29 @@ export async function onSuccess({ constants }) {
     if (pageRegex.test(url) && !oldUrls.has(url)) {
       console.log('Dispatching tweet for:', url);
 
+      let tags;
+
       try {
-        await tweetPost(url);
-        console.log('Done dispatching tweet for:', url);
+        tags = await getTagsForUrl(url);
       } catch (error) {
-        console.error(`Error dispatching tweet for ${url}: ${error.stack || error.message}`);
+        console.error(`Error getting tags for ${url}: ${error.stack || error.message}`);
+        continue;
       }
+
+      const status =  `New blog post published! ${url} ${tags.join(' ')}`.trim();
+
+      await Promise.all([
+        tweetPost(status)
+          .then(
+            () => console.log('Done dispatching tweet for:', url),
+            error => console.error(`Error dispatching tweet for ${url}: ${error.stack || error.message}`)
+          ),
+        tootPost(status)
+          .then(
+            () => console.log('Done dispatching toot for:', url),
+            error => console.error(`Error dispatching toot for ${url}: ${error.stack || error.message}`)
+          )
+      ]);
     }
   }
 }
