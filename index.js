@@ -368,10 +368,10 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return new Map(await Promise.all(
           items.map(async item => {
-            const image = sharp(new URL(item, directory));
+            const image = sharp(fileURLToPath(new URL(item, directory)));
             const { width, height } = await image.metadata();
 
-            await image.toFile(new URL(item, imagesTarget));
+            await image.toFile(fileURLToPath(new URL(item, imagesTarget)));
 
             return [`/images/${item}`, { width, height }];
           })
