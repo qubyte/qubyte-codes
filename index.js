@@ -368,10 +368,11 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
 
         return new Map(await Promise.all(
           items.map(async item => {
-            const sourceFile = await readFile(new URL(item, directory));
+            const image = sharp(new URL(item, directory));
             const { width, height } = await sharp(sourceFile).metadata();
 
-            await writeFile(new URL(item, imagesTarget), sourceFile);
+            // Copies the file and strips metadata.
+            await image.toFile(new URL(item, imagesTarget));
 
             return [`/images/${item}`, { width, height }];
           })
