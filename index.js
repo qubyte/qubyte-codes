@@ -560,7 +560,8 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
       dependencies: ['css', 'templates', 'japaneseNotesFiles'],
       action({ japaneseNotesFiles: posts, templates, css: cssPath }) {
         return templates.blogs({
-          blurb: 'This is a collection of my notes taken as I learn to use the Japanese language.',
+          // eslint-disable-next-line
+          blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
           posts,
           cssPath,
           dev,
