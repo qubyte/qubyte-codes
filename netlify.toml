@@ -6,7 +6,7 @@
   pretty_urls = true
 
 [build.processing.images]
-  compress = true
+  compress = false
 
 [build.processing.css]
   bundle = false
