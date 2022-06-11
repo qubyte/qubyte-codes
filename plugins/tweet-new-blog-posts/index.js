@@ -31,7 +31,7 @@ export async function onSuccess({ constants }) {
   // URLs are checked and mentions dispatched in sequence deliberately to make
   // logs more comprehensible. It will be uncommon for more than one URL to be
   // new at a time anyway.
-  for (const url of newUrls) {
+  for (const [url] of newUrls) {
     if (pageRegex.test(url) && !oldUrls.has(url)) {
       console.log('Dispatching tweet for:', url);
 
