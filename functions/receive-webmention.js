@@ -42,7 +42,7 @@ function parseBodyAndPerformSimpleChecks(raw) {
     throw new HttpError('Target URLs must be to this domain and for an article.');
   }
 
-  if (!/^https?/.test(source.protocol)) {
+  if (source.protocol !== 'https:' && source.protocol !== 'http:') {
     throw new HttpError('Source URL must be an HTTP or HTTPS address.');
   }
 
@@ -53,9 +53,13 @@ function parseBodyAndPerformSimpleChecks(raw) {
   return { source, target };
 }
 
-// TODO: The source check should also determin the kind of mention. i.e. a like,
-//       note, or repost etc. based on microformats around the href.
-async function checkSource({ source, target }) {
+// TODO: The source check should also determine the kind of mention. i.e. a
+//       like, note, or repost etc. based on microformats around the href.
+/**
+ * @param {URL} source
+ * @param {URL} target
+ */
+async function checkSource(source, target) {
   const res = await fetch(source);
 
   if (!res.ok) {
@@ -63,7 +67,7 @@ async function checkSource({ source, target }) {
     return false;
   }
 
-  const dom = new JSDOM(await res.text());
+  const dom = new JSDOM(await res.text(), { contentType: res.headers.get('content-type'), url: res.url });
 
   for (const { href } of dom.window.document.getElementsByTagName('a')) {
     try {
@@ -76,14 +80,18 @@ async function checkSource({ source, target }) {
   return false;
 }
 
-async function checkTarget({ source, target }) {
+/**
+ * @param {URL} source
+ * @param {URL} target
+ */
+async function checkTarget(source, target) {
   const res = await fetch(target);
 
   if (!res.ok) {
     throw new HttpError('Invalid target URL.');
   }
 
-  const dom = new JSDOM(await res.text());
+  const dom = new JSDOM(await res.text(), { contentType: res.headers.get('content-type'), url: res.url });
 
   for (const { href } of dom.window.document.querySelectorAll('.h-cite .u-url')) {
     try {
@@ -98,6 +106,8 @@ async function checkTarget({ source, target }) {
 
 async function createIssue({ source, target, sourceDoesMention, targetHasMention }) {
   if (sourceDoesMention && targetHasMention) {
+    // TODO: This may indicate an updated mention. This could mean the author
+    //       details have changed, and I should handle that rather than ignore.
     console.warn('Source and target are present on both.');
     return;
   }
@@ -149,7 +159,7 @@ export async function handler(event) {
   let sourceDoesMention;
 
   try {
-    sourceDoesMention = await checkSource(target);
+    sourceDoesMention = await checkSource(source, target);
   } catch (e) {
     if (e instanceof HttpError) {
       return e.toResponseObject();
@@ -177,8 +187,8 @@ export async function handler(event) {
   // This is an MVP. At the moment it will only send a source and a target to
   // GitHub in a link. Manual steps afterward:
   //
-  // - Check the source actually links to the target.
   // - Get author details from the source.
+  // - When author details match those in a mention and it's present in both places, do nothing.
   // - Determine the kind of mention (note, like, repost, etc.)
 
   try {
