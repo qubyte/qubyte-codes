@@ -1,5 +1,5 @@
 <article class={{hType}} light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
-  {{> hcard-basics additionalClasses="p-author" }}
+  <a class="u-author" href="/" hidden></a>
   <header>
     <a class="u-url" href="/study-sessions/{{timestamp}}"><time datetime="{{datetime}}" class="dt-end">{{humanDateTime datetime timezone}}</time> for <time class="dt-duration" datetime={{isoDuration}}>{{duration}}</time>.</a>
   </header>

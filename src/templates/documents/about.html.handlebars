@@ -4,13 +4,12 @@
   {{> head }}
 </head>
 <body>
-  {{> hcard-basics }}
   <header>
     <h1><a href="/">Qubyte Codes</a></h1>
     {{> nav }}
   </header>
   <main>
-    <article>
+    <article class="h-card">
       <h2>About</h2>
       <picture class="profile-pic">
         <source
@@ -29,19 +28,30 @@
           srcset="/img/profile-300.jpg 300w, /img/profile-150.jpg 150w"
           sizes="150px"
           src="/img/profile-150.jpg"
-          alt="A profile picture."
+          alt="My profile picture."
+          class="u-photo"
         >
       </picture>
       <p>
-        Welcome to <a href="https://qubyte.codes">qubyte.codes</a>! The personal
-        site of Mark Stanley Everitt. My pronouns are he/him.
+        Welcome to
+        <a href="{{baseUrl}}/" class="u-url" rel="me">qubyte.codes</a>!
+        The personal site of
+        <span class="p-name"><span class="p-honorific-prefix">Dr.</span> <span class="p-given-name">Mark</span> <span class="p-additional-name">Stanley</span> <span class="p-family-name">Everitt</span></span>
+        (<span class="p-nickname">qubyte</span>). My pronouns are
+        <span class="p-x-pronoun-nominative">he</span>/<span class="p-x-pronoun-oblique">him</span>/<span class="p-x-pronoun-possessive">his</span>.
+        <a class="u-email" href="mailto:hello@qubyte.codes" hidden></a>
+        <a class="u-payment" href="https://paypal.me/qubyte" hidden></a>
       </p>
       <p>
-        I'm a programmer specialising in JavaScript, living and working in
-        Brighton, UK. This blog is a place for me to write about stuff I find
-        interesting or useful. Probably JavaScript for the most part, but
-        certainly not limited to it. By day I spend most of my programming time
-        writing Node.js applications, with a little browser stuff when I can.
+        <span class="p-note">I'm a server side web (mostly) software developer and one time quantum information scientist.</span>
+        I specialise in JavaScript, and these days I live in and work from
+        <span class="p-locality">Brighton</span>,
+        <span class="p-country-name">UK</span>. This site is a place for me to
+        write about stuff I find interesting or useful.
+      </p>
+      <p>
+        By day I spend much of my programming time writing Node.js, Ruby, and
+        Scala applications, with a little browser stuff when I can.
       </p>
       <p>
         I'm also interested in the social side and ethics of software
