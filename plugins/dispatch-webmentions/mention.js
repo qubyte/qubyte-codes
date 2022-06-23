@@ -1,4 +1,5 @@
 import { JSDOM } from 'jsdom';
+import fetch from 'node-fetch';
 import linkHeader from 'http-link-header';
 
 export class Mention {

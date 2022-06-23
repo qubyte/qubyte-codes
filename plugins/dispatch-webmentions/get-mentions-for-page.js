@@ -28,8 +28,8 @@ async function getMentionsFromPages(doms, ignoredHostnames) {
             mentions.push(mention);
           }
         }
-      } catch {
-        // Ignore errors here.
+      } catch (e) {
+        console.error("Failed to parse page:", e.stack || e.message);
       }
     }
   }
