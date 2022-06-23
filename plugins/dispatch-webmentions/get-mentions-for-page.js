@@ -29,7 +29,7 @@ async function getMentionsFromPages(doms, ignoredHostnames) {
           }
         }
       } catch (e) {
-        console.error("Failed to parse page:", e.stack || e.message);
+        console.error('Failed to parse page:', e.stack || e.message);
       }
     }
   }
