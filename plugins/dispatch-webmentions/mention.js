@@ -21,7 +21,7 @@ export class Mention {
     });
 
     if (!res.ok) {
-      throw new Error(`Unexpected status from webmention endpoint: ${res.status}, ${this}`);
+      throw new Error(`Unexpected status from webmention endpoint: ${res.status}`);
     }
   }
 
@@ -39,11 +39,7 @@ export class Mention {
 
     // Link header takes precedence.
     if (webmention) {
-      try {
-        return new Mention(source, target, new URL(webmention.uri, res.url).href);
-      } catch {
-        // Continue if this didn't work.
-      }
+      return new Mention(source, target, new URL(webmention.uri, res.url).href);
     }
 
     if (!res.ok) {
@@ -55,12 +51,9 @@ export class Mention {
     // If no webmention link header is discovered, the first webmention link or
     // anchor is picked (if any).
 
-    const endpoint = window.document.querySelector('link[href][rel~="webmention"], a[href][rel~="webmention"]')?.href;
+    /** @type HTMLLinkElement|HTMLAnchorElement|null */
+    const endpoint = window.document.querySelector('link[href][rel~="webmention"], a[href][rel~="webmention"]');
 
-    try {
-      return endpoint ? new Mention(source, target, new URL(endpoint).href) : null;
-    } catch {
-      return null;
-    }
+    return endpoint ? new Mention(source, target, endpoint.href) : null;
   }
 }
