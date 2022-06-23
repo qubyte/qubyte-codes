@@ -2,7 +2,10 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { Mention } from './mention.js';
 
-/** @param {JSDOM[]} doms */
+/**
+ * @param {JSDOM[]} doms
+ * @param {string[]} ignoredHostnames
+ */
 async function getMentionsFromPages(doms, ignoredHostnames) {
   const mentions = [];
   const checked = new Set();
