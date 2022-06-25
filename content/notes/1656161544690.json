@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "GitHub sent me a one-time donation as part of their [thank you](https://github.blog/2022-06-24-thank-you-to-our-maintainers/) to OS contributors to software GitHub uses (who have their sponsors dashboard set up). I originally set it up in hope that someone would send me the occasional buck or two for a coffee. That never happened (at least not yet), but $550 as a one off makes up for it!"
+    ],
+    "category": [],
+    "mp-slug": [
+      "github-sent-me-a-one-time"
+    ]
+  }
+}
