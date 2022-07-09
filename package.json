@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@toisu/static": "4.0.3",
-    "@toisu/toisu": "4.0.4",
+    "@toisu/toisu": "4.0.5",
     "chokidar": "3.5.3",
     "eslint": "8.19.0",
     "eslint-config-qubyte": "5.0.0",
