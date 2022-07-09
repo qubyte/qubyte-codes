@@ -43,7 +43,7 @@
     "twitter-lite": "^1.1.0"
   },
   "devDependencies": {
-    "@toisu/static": "4.0.3",
+    "@toisu/static": "4.1.0",
     "@toisu/toisu": "4.0.5",
     "chokidar": "3.5.3",
     "eslint": "8.19.0",
