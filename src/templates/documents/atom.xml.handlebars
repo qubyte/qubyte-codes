@@ -4,6 +4,7 @@
   <link href="https://qubyte.codes"/>
   <link type="application/atom+xml" rel="self" href="https://qubyte.codes/{{name}}.xml"/>
   <link href="https://paypal.me/qubyte" rel="payment" />
+  <link href="https://ko-fi.com/qubyte" rel="payment" />
   <updated>{{isoDate updated}}</updated>
   <id>https://qubyte.codes/</id>
   <author>
@@ -13,7 +14,7 @@
   {{#items}}
   <entry>
     <id>https://qubyte.codes{{localUrl}}</id>
-    <link type="text/html" rel="alternate" href="https://qubyte.codes{{localUrl}}"/>
+    <link type="text/html" rel="alternate" href="https://qubyte.codes{{localUrl}}" hreflang="{{language}}"/>
     <title>{{title}}</title>
     <published>{{isoDate datetime}}</published>
     <updated>{{#if updatedAt}}{{isoDate updatedAt}}{{else}}{{isoDate datetime}}{{/if}}</updated>

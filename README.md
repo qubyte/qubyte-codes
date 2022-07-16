@@ -64,6 +64,7 @@ a JSON preamble containing various metadata:
 | tags | A list of tags. These are displayed at the top of each entry, and are also used when sharing to twitter and mastodon via the links at the bottom of each post. |
 | webmentions | A list of [webmentions](https://indieweb.org/Webmention) from other blogs. |
 | scripts | A list of objects with an `href` field. These will be added as module type scripts to the head of the post. |
+| language | When specified (and not just `en`) this sets the language of the post. |
 
 ## Templates
 
