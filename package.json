@@ -32,6 +32,7 @@
     "jsdom": "20.0.0",
     "marked": "^4.0.17",
     "mathjax-full": "^3.2.2",
+    "microformats-parser": "1.4.1",
     "node-fetch": "3.2.6",
     "p-retry": "5.1.1",
     "postcss": "8.4.14",
