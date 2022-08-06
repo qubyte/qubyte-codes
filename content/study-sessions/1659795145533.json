@@ -1,0 +1,22 @@
+{
+  "type": [
+    "h-event"
+  ],
+  "properties": {
+    "category": [
+      "study-session",
+      "flashcards"
+    ],
+    "duration": [
+      "PT0H30M"
+    ],
+    "latitude": 50.83269022395325,
+    "name": [
+      "Study session"
+    ],
+    "longitude": -0.1289900784934212,
+    "description": [
+      "Study session."
+    ]
+  }
+}
