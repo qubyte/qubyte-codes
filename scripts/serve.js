@@ -28,6 +28,7 @@ const syndications = {
   try {
     graph = await build({
       baseUrl: `http://localhost:${port}`,
+      repoUrl: new URL('https://github.com/qubyte/qubyte-codes'),
       baseTitle: 'DEV MODE',
       syndications,
       dev: true
