@@ -37,7 +37,8 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-export async function build({ baseUrl, baseTitle, dev, syndications }) {
+export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) {
+  const basePath = new URL('./', import.meta.url);
   const sourcePath = new URL('./src/', import.meta.url);
   const contentPath = new URL('./content/', import.meta.url);
   const targetPath = new URL('./public/', import.meta.url);
@@ -63,6 +64,7 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
         await mkdir(targetPath);
 
         return {
+          base: basePath,
           source: sourcePath,
           target: targetPath,
           content: contentPath,
@@ -121,23 +123,23 @@ export async function build({ baseUrl, baseTitle, dev, syndications }) {
     },
     postFiles: {
       dependencies: ['paths', 'extraCss'],
-      async action({ paths: { content }, extraCss }) {
+      async action({ paths: { base, content }, extraCss }) {
         const postsPath = new URL('posts/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, baseUrl, extraCss })
+          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss })
         });
       }
     },
     japaneseNotesFiles: {
       dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      async action({ paths: { base, content } }) {
         const notesPath = new URL('japanese-notes/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, baseUrl, type: 'japanese-notes' })
+          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type: 'japanese-notes' })
         });
       }
     },
