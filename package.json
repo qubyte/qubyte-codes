@@ -46,7 +46,7 @@
     "@toisu/static": "4.1.0",
     "@toisu/toisu": "4.0.5",
     "chokidar": "3.5.3",
-    "eslint": "8.22.0",
+    "eslint": "8.24.0",
     "eslint-config-qubyte": "5.0.0",
     "inquirer": "9.1.0",
     "mocha": "10.0.0"
