@@ -271,6 +271,11 @@ img {
   box-sizing: border-box;
 }
 
+rp, rt {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .ruby-position-off rt,
 .ruby-position-off rp {
   display: none;
