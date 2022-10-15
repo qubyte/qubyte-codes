@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Testing 2x images in notes."
+    ],
+    "latitude": 50.84036333333334,
+    "longitude": -0.113875,
+    "photo": [
+      {
+        "alt": "Same as previous image.",
+        "value": ""
+      }
+    ]
+  }
+}
