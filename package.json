@@ -24,7 +24,7 @@
     "busboy": "1.6.0",
     "cssnano": "5.1.14",
     "feedme": "^2.0.2",
-    "geo-tz": "7.0.2",
+    "geo-tz": "7.0.3",
     "handlebars": "^4.7.7",
     "highlight.js": "11.6.0",
     "http-link-header": "1.0.5",
