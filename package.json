@@ -49,6 +49,6 @@
     "eslint": "8.26.0",
     "eslint-config-qubyte": "5.0.0",
     "inquirer": "9.1.4",
-    "mocha": "10.0.0"
+    "mocha": "10.1.0"
   }
 }
