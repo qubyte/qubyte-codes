@@ -72,7 +72,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
             const directory = new URL(path, targetPath);
 
             await rm(directory, { recursive: true, force: true });
-            await mkdir(directory);
+            await mkdir(directory, { recursive: true });
 
             return directory;
           }
@@ -251,6 +251,52 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       dependencies: ['paths'],
       action({ paths: { makeDirectory } }) {
         return makeDirectory('tags/');
+      }
+    },
+    activitypubTarget: {
+      dependencies: ['paths'],
+      async action({ paths: { source, makeDirectory } }) {
+        return ExecutionGraph.createWatchableResult({
+          path: new URL('activitypub/', source),
+          result: await makeDirectory('activitypub/')
+        });
+      }
+    },
+    activitypubDocuments: {
+      dependencies: ['paths', 'activitypubTarget'],
+      async action({ paths: { source }, activitypubTarget }) {
+        const directory = new URL('activitypub/', source);
+        const items = (await readdir(directory)).filter(i => i.endsWith('.json'));
+
+        await Promise.all(
+          items.map(
+            item => copyFile(
+              new URL(item, directory),
+              new URL(item, activitypubTarget)
+            )
+          )
+        );
+      }
+    },
+    fingerTarget: {
+      dependencies: ['paths'],
+      action({ paths: { makeDirectory } }) {
+        return makeDirectory('.well-known/');
+      }
+    },
+    fingerDocument: {
+      dependencies: ['fingerTarget'],
+      action({ fingerTarget }) {
+        return writeFile(new URL('webfinger', fingerTarget), JSON.stringify({
+          subject: 'acct:qubyte@qubyte.codes',
+          links: [
+            {
+              rel: 'self',
+              type: 'application/activity+json',
+              href: 'https://qubyte.codes/activitypub/actor.json'
+            }
+          ]
+        }));
       }
     },
     iconsTarget: {
