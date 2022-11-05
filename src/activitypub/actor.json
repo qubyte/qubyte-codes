@@ -6,7 +6,10 @@
   "id": "https://qubyte.codes/activitypub/actor.json",
   "type": "Person",
   "preferredUsername": "qubyte",
+  "summary": "Notes from qubyte's personal site.",
   "inbox": "https://qubyte.codes/activitypub/inbox",
+  "followers": "https://qubyte.codes/activitypub/followers.json",
+  "following": "https://qubyte.codes/activitypub/following.json",
   "publicKey": {
     "id": "https://qubyte.codes/activitypub/actor.json#main-key",
     "owner": "https://qubyte.codes/activitypub/actor.json",
