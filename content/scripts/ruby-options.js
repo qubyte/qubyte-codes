@@ -1,37 +1,29 @@
-let position = localStorage.getItem('ruby-position') || 'over';
+const select = document.createElement('select');
+select.className = 'furigana-position';
+select.name = 'furigana mode';
+select.onchange = e => localStorage.setItem('ruby-position', e.target.value);
 
-const options = [
-  { text: '↑', value: 'over' },
-  ...CSS.supports('ruby-position', 'under') ? [{ text: '↓', value: 'under' }] : [],
-  { text: 'X', value: 'off' }
-];
+const over = document.createElement('option');
+over.textContent = 'over';
+over.value = 'over';
+select.append(over);
 
-document.body.classList.add(`ruby-position-${position}`);
+if (CSS.supports('ruby-position', 'under')) {
+  const under = document.createElement('option');
+  under.textContent = 'under';
+  under.value = 'under';
+  select.append(under);
+}
 
-const span = document.createElement('span');
-const button = document.createElement('button');
-span.append('ふりがな: ', button);
+const off = document.createElement('option');
+off.textContent = 'off';
+off.value = 'off';
+select.append(off);
 
-button.setAttribute('lang', 'ja');
-button.className = 'furigana-button';
-button.textContent = options.find(option => option.value === position).text;
-button.onclick = () => {
-  const index = options.findIndex(option => option.value === position);
-  const { text, value } = options[(index + 1) % options.length];
+select.value = localStorage.getItem('ruby-position') || 'over';
 
-  button.textContent = text;
-  position = value;
+const label = document.createElement('span');
+label.lang = 'ja';
+label.textContent = 'ふりがな';
 
-  localStorage.setItem('ruby-position', position);
-
-  for (const className of document.body.classList) {
-    if (className.startsWith('ruby-position-')) {
-      document.body.classList.remove(className);
-      break;
-    }
-  }
-
-  document.body.classList.add(`ruby-position-${position}`);
-};
-
-document.querySelector('main time').after(' ', span);
+document.querySelector('main time').after(' ', label, ': ', select);
