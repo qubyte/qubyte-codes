@@ -1,0 +1,15 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    "https://w3id.org/security/v1"
+  ],
+  "id": "https://qubyte.codes/activitypub/actor.json",
+  "type": "Person",
+  "preferredUsername": "qubyte",
+  "inbox": "https://qubyte.codes/activitypub/inbox",
+  "publicKey": {
+    "id": "https://qubyte.codes/activitypub/actor.json#main-key",
+    "owner": "https://qubyte.codes/activitypub/actor.json",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwULei3QCtv50LL68R+tY\nSukbF5cpaGdQnGSUNCMcEibYSOR8XVLADf4Guvq4Di6RJHzbV7ebArZw2tRUbTru\njYjiCHUn8TcgWw09NiCQReLvv8gQTq+QSkPMq1v0VY2VNgOhug0S/QCaJQBHLVwg\ne7JAuW3WuaB3x77tCKpPsn7e6adWvAOXgDbaaYN2narVScVoyw6IUCgDfcQFrsiO\n/x5I+5O7jHRtOHTAV8Fm3HpoqGoUtXvL6wx52h7OAnTH8FIsrc4rC7dq5fxPexs5\nsZZ59HuGB8cYU1kieHjYHeRaBVaGd9MLEE2lsS0gpSlPla+gAv4zhuXzrztQDMpt\n1QIDAQAB\n-----END PUBLIC KEY-----"
+  }
+}
