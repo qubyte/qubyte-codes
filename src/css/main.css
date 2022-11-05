@@ -271,16 +271,29 @@ img {
   box-sizing: border-box;
 }
 
-.ruby-position-off rt,
-.ruby-position-off rp {
-  display: none;
+select {
+  background-color: var(--background-color-main);
+  color: var(--standout-color-main);
+  appearance: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  border-width: 0;
 }
 
-.ruby-position-under ruby {
+select:focus {
+  outline: none;
+}
+
+body:has(.furigana-position option[value="under"]:checked) {
   ruby-position: under;
 }
 
-mark:has(ruby) {
+body:has(.furigana-position option[value="off"]:checked) :is(rt, rp) {
+  display: none;
+}
+
+body:has(.furigana-position option:not([value="off"]):checked) mark:has(ruby) {
   padding-top: 0.6rem;
 }
 
@@ -289,15 +302,6 @@ mark:has(ruby) {
   padding-bottom: 0.6rem;
 }
 
-.ruby-position-off mark:has(ruby) {
-  padding: inherit
-}
-
-.furigana-button {
-  padding: 0;
-  width: 1.5rem;
-  height: 1.5rem;
-}
 
 @media (prefers-color-scheme: dark) {
   :root {
