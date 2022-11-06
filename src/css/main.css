@@ -292,6 +292,7 @@ mark {
 
 body:has(.furigana-position option[value="over"]:checked) {
   ruby-position: over;
+  -webkit-ruby-position: before;
 }
 
 body:has(.furigana-position option[value="over"]:checked) mark:has(ruby) {
@@ -300,6 +301,7 @@ body:has(.furigana-position option[value="over"]:checked) mark:has(ruby) {
 
 body:has(.furigana-position option[value="under"]:checked) {
   ruby-position: under;
+  -webkit-ruby-position: after;
 }
 
 body:has(.furigana-position option[value="under"]:checked) mark:has(ruby) {
