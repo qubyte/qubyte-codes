@@ -285,23 +285,30 @@ select:focus {
   outline: none;
 }
 
+mark {
+  padding: 0.1em;
+  border-radius: 0.1em;
+}
+
+body:has(.furigana-position option[value="over"]:checked) {
+  ruby-position: over;
+}
+
+body:has(.furigana-position option[value="over"]:checked) mark:has(ruby) {
+  padding-top: 0.7em;
+}
+
 body:has(.furigana-position option[value="under"]:checked) {
   ruby-position: under;
+}
+
+body:has(.furigana-position option[value="under"]:checked) mark:has(ruby) {
+  padding-bottom: 0.7em;
 }
 
 body:has(.furigana-position option[value="off"]:checked) :is(rt, rp) {
   display: none;
 }
-
-body:has(.furigana-position option:not([value="off"]):checked) mark:has(ruby) {
-  padding-top: 0.6rem;
-}
-
-.ruby-position-under mark:has(ruby) {
-  padding-top: inherit;
-  padding-bottom: 0.6rem;
-}
-
 
 @media (prefers-color-scheme: dark) {
   :root {
