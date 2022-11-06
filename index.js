@@ -595,7 +595,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       action({ postFiles: posts, templates, css: cssPath }) {
         return templates.blogs({
           blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
-          posts,
+          posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
           dev,
           baseUrl,
@@ -610,7 +610,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
-          posts,
+          posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
           dev,
           baseUrl,
