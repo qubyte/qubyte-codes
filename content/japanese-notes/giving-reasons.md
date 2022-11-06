@@ -65,4 +65,4 @@ reasons exist but are being omitted.
 
 - {ja:リンゴが^健,けん,康,こう^に==^良,よ^いし==、==^好,す^きだし==、^私,わたし^はよく^食,た^べます。}
 - Apples are ==good for you==, ==and== I ==like== them, ==so== I often eat them.
-- I eat a lot of apples ==because== they're ==healthy and== I ==like= them.
+- I eat a lot of apples ==because== they're ==healthy and== I ==like== them.
