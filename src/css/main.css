@@ -152,6 +152,10 @@ h4 {
   margin: 2rem 0 1em 0;
 }
 
+:is(h2, h3):has(ruby) {
+  line-height: 2em;
+}
+
 p,
 dd,
 summary {
@@ -272,6 +276,10 @@ article ol {
   list-style: decimal outside none;
   line-height: 1.5em;
   margin: 1em 0 1em 2em;
+}
+
+:is(p, dd, summary, ul):has(ruby) {
+  line-height: 2em;
 }
 
 pre {
