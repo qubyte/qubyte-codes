@@ -18,6 +18,7 @@ import buildBacklinks from './lib/build-backlinks.js';
 import collateTags from './lib/collate-tags.js';
 import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
+import hashCopy from './lib/hash-copy.js';
 
 function renderResources({ resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
   return resources.map(resource => ({
@@ -122,24 +123,24 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     postFiles: {
-      dependencies: ['paths', 'extraCss'],
-      async action({ paths: { base, content }, extraCss }) {
+      dependencies: ['paths', 'extraCss', 'hashedScripts'],
+      async action({ paths: { base, content }, extraCss, hashedScripts }) {
         const postsPath = new URL('posts/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss })
+          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts })
         });
       }
     },
     japaneseNotesFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { base, content } }) {
+      dependencies: ['paths', 'hashedScripts'],
+      async action({ paths: { base, content }, hashedScripts }) {
         const notesPath = new URL('japanese-notes/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type: 'japanese-notes' })
+          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type: 'japanese-notes', hashedScripts })
         });
       }
     },
@@ -372,6 +373,26 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
             )
           )
         );
+      }
+    },
+    hashedScripts: {
+      dependencies: ['paths', 'scriptsTarget'],
+      async action({ paths: { content }, scriptsTarget }) {
+        const directory = new URL('scripts/', content);
+        const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
+
+        const entries = await Promise.all(items.map(async item => {
+          const [originalFilename, { hashedFileName, dependencies }] = await hashCopy(new URL(item, directory), scriptsTarget);
+          return [
+            `/scripts/${originalFilename}`,
+            {
+              hashedFileName,
+              dependencies: dependencies.map(d => new URL(d, new URL('/scripts/', baseUrl)).pathname)
+            }
+          ];
+        }));
+
+        return Object.fromEntries(entries);
       }
     },
     papersTarget: {

@@ -41,6 +41,11 @@
     X-Robots-Tag = "none"
 
 [[headers]]
+  for = "/scripts/hashed-*"
+  [headers.values]
+    Cache-Control = "max-age=315360000, public, immutable"
+
+[[headers]]
   for = "*.css"
   [headers.values]
     Cache-Control = "max-age=315360000, public, immutable"
