@@ -53,6 +53,9 @@
   <meta name="twitter:image:alt" content="The qubyte.codes site icon.">
 {{/if}}
 <meta name="theme-color" content="#f1e7cd">
+{{#importMap}}
+<script type="importmap" nonce="%%NONCE%%">{{{this}}}</script>
+{{/importMap}}
 {{#dev}}
 <script>
   const source = new EventSource('/events');
