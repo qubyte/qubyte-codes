@@ -36,7 +36,7 @@
     "p-retry": "5.1.1",
     "postcss": "8.4.19",
     "postcss-calc": "8.2.4",
-    "postcss-custom-properties": "12.1.10",
+    "postcss-custom-properties": "13.0.0",
     "postcss-import": "^15.0.0",
     "sharp": "0.31.2",
     "slugify": "1.6.5",
