@@ -29,7 +29,7 @@
     "geo-tz": "7.0.5",
     "handlebars": "^4.7.7",
     "highlight.js": "11.6.0",
-    "http-link-header": "1.0.5",
+    "http-link-header": "1.1.0",
     "iso8601-duration": "2.1.1",
     "jsdom": "20.0.2",
     "marked": "^4.2.1",
