@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://localghost.dev/blog/building-a-website-like-it-s-1999-in-2022/"
+    ],
+    "name": [
+      "Building a website like it's 1999... in 2022 - localghost"
+    ],
+    "content": [
+      "Lots of tips here to help you give your site a nostalgic feel using modern browser features. I should probably use some to jazz this place up..."
+    ],
+    "category": [],
+    "mp-slug": [
+      "building-a-website-like-its-1999"
+    ]
+  }
+}
