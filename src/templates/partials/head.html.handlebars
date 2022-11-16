@@ -54,7 +54,8 @@
 {{/if}}
 <meta name="theme-color" content="#f1e7cd">
 {{#importMap}}
-<script type="importmap" nonce="%%NONCE%%">{{{this}}}</script>
+<meta name="script-src-hash" content="sha256-{{{hash this Infinity "base64"}}}">
+<script type="importmap">{{{this}}}</script>
 {{/importMap}}
 {{#dev}}
 <script>
