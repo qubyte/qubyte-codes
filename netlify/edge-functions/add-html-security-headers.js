@@ -1,3 +1,5 @@
+const scriptSrcHashRegex = /^\s*<meta name="script-src-hash" content="(.*)">$/m;
+
 /* eslint-env browser */
 export default async function addHtmlSecurityHeaders(_, context) {
   /** @type Response */
@@ -7,7 +9,7 @@ export default async function addHtmlSecurityHeaders(_, context) {
 
   if (!type || type.startsWith('text/html')) {
     const body = await response.text();
-    const nonce = crypto.randomUUID();
+    const match = body.match(scriptSrcHashRegex);
 
     headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains; preload');
     headers.set('x-frame-options', 'SAMEORIGIN');
@@ -15,7 +17,7 @@ export default async function addHtmlSecurityHeaders(_, context) {
     headers.set('x-content-type-options', 'nosniff');
     headers.set(
       'content-security-policy',
-      `default-src 'self'; script-src 'nonce-${nonce}' 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
+      `default-src 'self'; script-src${match ? ` '${match[1]}'` : ''} 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
     );
     headers.set('referrer-policy', 'strict-origin-when-cross-origin');
     headers.set('cache-control', 'no-cache');
@@ -24,7 +26,7 @@ export default async function addHtmlSecurityHeaders(_, context) {
       'accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self), midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()' // eslint-disable-line max-len
     );
 
-    return new Response(body.replace('%%NONCE%%', nonce), response);
+    return new Response(body, response);
   }
 
   return response;
