@@ -9,7 +9,7 @@
 Don't worry, apples are fine but I don't like them as much as this note makes
 out.
 
-## {ja:から}
+### {ja:から}
 
 When there is one reason for something, you can use {ja:から}.
 
@@ -19,14 +19,14 @@ When there is one reason for something, you can use {ja:から}.
 
 For adjectives, {ja:から} takes the adjective in a plain tense. That is,
 
-### {ja:^形,けい,容,よう,詞,し^}
+#### {ja:^形,けい,容,よう,詞,し^}
 
 Use the plain or plain past forms.
 
 - {ja:リンゴがお==いしいから==、よく^食,た^べます。}
 - I often eat apples ==because== they're ==tasty==.
 
-### {ja:^形,けい,容,よう,動,どう,詞,し^} and nouns
+#### {ja:^形,けい,容,よう,動,どう,詞,し^} and nouns
 
 Use the {ja:だ} or {ja:だった} to couple the adjective or noun to {ja:から} in
 the plain or past form respectively.
@@ -35,7 +35,7 @@ the plain or past form respectively.
 - I ==like== apples, ==so== I eat them often.
 - I eat apples a lot ==because== I ==like== them.
 
-### Verbs
+#### Verbs
 
 Use verbs in the plain or plain past form. (It would feel more natural to me to
 use {ja:^多,おお^かった} here, but the following is for demonstration.).
@@ -48,7 +48,7 @@ use {ja:^多,おお^かった} here, but the following is for demonstration.).
 {ja:ので} feels more polite than {ja:から}. {ja:ので} works like {ja:から} for
 {ja:^形,けい,容,よう,詞,し^} and verbs.
 
-### {ja:^形,けい,容,よう,動,どう,詞,し^} and nouns
+#### {ja:^形,けい,容,よう,動,どう,詞,し^} and nouns
 
 Couple the adjective or noun with a {ja:な}.
 
@@ -56,7 +56,7 @@ Couple the adjective or noun with a {ja:な}.
 - I ==like== apples, ==so== I eat them often.
 - I eat apples a lot ==because== I ==like== them.
 
-## {ja:し}
+### {ja:し}
 
 When there's more than one reason, {ja:し} can be used to give a complete or
 incomplete set of reasons. It couples to adjectives, nouns, and verbs in the

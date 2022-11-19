@@ -152,7 +152,12 @@ h4 {
   margin: 2rem 0 1em 0;
 }
 
-:is(h2, h3):has(ruby) {
+h4 {
+  font-size: 1.25rem;
+  margin: 1.5em 0 0.5em 0;
+}
+
+:is(h2, h3, h4):has(ruby) {
   line-height: 2em;
 }
 
@@ -161,6 +166,14 @@ dd,
 summary {
   margin: 1rem 0;
   line-height: 1.5em;
+}
+
+:is(p, dd, summary):has(ruby) {
+  line-height: 2em;
+}
+
+article ul:has(ruby) {
+  line-height: 2em;
 }
 
 header {
@@ -276,10 +289,6 @@ article ol {
   list-style: decimal outside none;
   line-height: 1.5em;
   margin: 1em 0 1em 2em;
-}
-
-:is(p, dd, summary, ul):has(ruby) {
-  line-height: 2em;
 }
 
 pre {
@@ -422,6 +431,14 @@ body:has(.furigana-position option[value="under"]:checked) {
 
 body:has(.furigana-position option[value="under"]:checked) mark:has(ruby) {
   padding-bottom: 0.7em;
+}
+
+body:has(.furigana-position option[value="hover"]:checked) :not(mark):has(ruby):not(:hover) :is(rt, rp) {
+  display: none;
+}
+
+body:has(.furigana-position option[value="hover"]:checked) mark:has(ruby) {
+  padding-top: 0.7em;
 }
 
 body:has(.furigana-position option[value="off"]:checked) :is(rt, rp) {
