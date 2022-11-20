@@ -1,0 +1,32 @@
+.flow-diagram {
+  font-family: monospace;
+  margin: 0 auto;
+  width: 100%;
+  fill: var(--background-color-alt);
+  stroke: var(--standout-color-main);
+  stroke-width: 1px;
+}
+
+.flow-diagram rect {
+  stroke: var(--standout-color-main);
+  stroke-width: 1px;
+}
+
+.flow-diagram text {
+  dominant-baseline: middle;
+  text-anchor: middle;
+  fill: var(--standout-color-main);
+  stroke: none;
+}
+
+.flow-diagram text.error {
+  fill: red;
+}
+
+.flow-diagram .arrow-path {
+  fill: none;
+}
+
+.flow-diagram marker {
+  fill: var(--standout-color-main);
+}
