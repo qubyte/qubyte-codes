@@ -5,6 +5,15 @@
 // (beware: the cache will grow and grow; there's no cleanup)
 /* eslint-env serviceworker */
 
+function isImmutable(req) {
+  'use strict';
+
+  return req.url
+    .split('/')
+    .pop()
+    .startsWith('hashed-');
+}
+
 addEventListener('fetch', fetchEvent => {
   'use strict';
 
@@ -13,6 +22,10 @@ addEventListener('fetch', fetchEvent => {
   const acceptHeader = request.headers.get('Accept');
 
   if (request.method !== 'GET' || acceptHeader.includes('text/event-stream')) {
+    return;
+  }
+
+  if (isImmutable(request)) {
     return;
   }
 

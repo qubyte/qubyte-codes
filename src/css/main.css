@@ -42,11 +42,13 @@ h1 {
 
 h2 {
   margin: 1rem 0;
+  line-height: 1.2em;
 }
 
-h3 {
+h3,
+h4 {
   font-size: 1.5rem;
-  margin: 1rem 0;
+  margin: 2rem 0 1em 0;
 }
 
 p,
@@ -160,9 +162,15 @@ nav > ul > li {
 }
 
 article ul {
-  list-style: disc inside none;
+  list-style: disc outside none;
   line-height: 1.5em;
-  margin: 1rem 0;
+  margin: 1em 0 1em 1.5em;
+}
+
+article ol {
+  list-style: decimal outside none;
+  line-height: 1.5em;
+  margin: 1em 0 1em 2em;
 }
 
 pre {
@@ -245,8 +253,7 @@ input {
 }
 
 .footnotes li {
-  list-style: decimal inside;
-  margin: 1rem 0;
+  margin: 1em 0;
   font-size: small;
 }
 

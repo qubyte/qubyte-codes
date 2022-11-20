@@ -87,6 +87,15 @@ app.use(serveStatic('public', {
     } else if (path.endsWith('webp')) {
       res.setHeader('Content-Type', 'image/webp');
     }
+
+    const isHashed = res.req.url
+      .split('/')
+      .pop()
+      .startsWith('hashed');
+
+    if (isHashed) {
+      res.setHeader('cache-control', 'max-age=315360000, public, immutable');
+    }
   }
 }));
 
