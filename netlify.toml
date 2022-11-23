@@ -51,16 +51,6 @@
     Cache-Control = "max-age=315360000, public, immutable"
 
 [[headers]]
-  for = "*.woff"
-  [headers.values]
-    Cache-Control = "max-age=315360000, public, immutable"
-
-[[headers]]
-  for = "*.woff2"
-  [headers.values]
-    Cache-Control = "max-age=315360000, public, immutable"
-
-[[headers]]
   for = "*atom.xml"
   [headers.values]
     Content-Type = "application/atom+xml; charset=utf-8"

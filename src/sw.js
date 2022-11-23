@@ -1,9 +1,13 @@
 // HTML files: try the network first, then the cache.
+// Files prefixed with "hashed-": ignore.
 // Other files: try the cache first, then the network.
 // Both: cache a fresh version if possible.
+// Ignore methods other than GET.
 // Ignore EventSource.
 // (beware: the cache will grow and grow; there's no cleanup)
 /* eslint-env serviceworker */
+
+const CACHE_NAME = 'v1';
 
 function isImmutable(req) {
   'use strict';
@@ -17,15 +21,19 @@ function isImmutable(req) {
 addEventListener('fetch', fetchEvent => {
   'use strict';
 
-  const cacheName = 'v1';
   const request = fetchEvent.request;
-  const acceptHeader = request.headers.get('Accept');
 
-  if (request.method !== 'GET' || acceptHeader.includes('text/event-stream')) {
+  if (request.method !== 'GET') {
     return;
   }
 
+  const acceptHeader = request.headers.get('Accept');
+
   if (isImmutable(request)) {
+    return;
+  }
+
+  if (acceptHeader.includes('text/event-stream')) {
     return;
   }
 
@@ -34,7 +42,7 @@ addEventListener('fetch', fetchEvent => {
   }
 
   const responseFromFetch = fetch(request);
-  const cachePromise = caches.open(cacheName);
+  const cachePromise = caches.open(CACHE_NAME);
   const clonedResponsePromise = responseFromFetch.then(res => res.clone());
   const cachedResponsePromise = Promise.all([cachePromise, clonedResponsePromise])
     .then(([cache, response]) => cache.put(request, response));
