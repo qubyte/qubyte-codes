@@ -123,80 +123,81 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     postFiles: {
-      dependencies: ['paths', 'extraCss', 'hashedScripts'],
-      async action({ paths: { base, content }, extraCss, hashedScripts }) {
+      dependencies: ['paths', 'extraCss', 'hashedScripts', 'indexJsFile'],
+      async action({ paths: { base, content }, extraCss, hashedScripts, indexJsFile }) {
         const postsPath = new URL('posts/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts })
+          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts, indexJsFile })
         });
       }
     },
     japaneseNotesFiles: {
-      dependencies: ['paths', 'hashedScripts'],
-      async action({ paths: { base, content }, hashedScripts }) {
+      dependencies: ['paths', 'hashedScripts', 'indexJsFile'],
+      async action({ paths: { base, content }, hashedScripts, indexJsFile }) {
         const notesPath = new URL('japanese-notes/', content);
+        const type = 'japanese-notes';
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type: 'japanese-notes', hashedScripts })
+          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type, hashedScripts, indexJsFile })
         });
       }
     },
     noteFiles: {
-      dependencies: ['paths', 'images'],
-      async action({ paths: { content }, images: imagesDimensions }) {
-        const notesPath = new URL('notes/', content);
-        const imagesPath = new URL('images/', content);
+      dependencies: ['paths', 'images', 'indexJsFile'],
+      async action({ paths: { content }, images: imagesDimensions, indexJsFile }) {
+        const dir = new URL('notes/', content);
+        const imagesDir = new URL('images/', content);
 
         return ExecutionGraph.createWatchableResult({
-          path: notesPath,
-          result: await loadNoteFiles(notesPath, imagesPath, syndications, imagesDimensions)
+          path: dir,
+          result: await loadNoteFiles({ dir, imagesDir, syndications, imagesDimensions, indexJsFile })
         });
       }
     },
     studySessionFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'indexJsFile'],
+      async action({ paths: { content }, indexJsFile }) {
         const studySessionsPath = new URL('study-sessions/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: studySessionsPath,
-          result: await loadStudySessionsFiles(studySessionsPath)
+          result: await loadStudySessionsFiles(studySessionsPath, indexJsFile)
         });
       }
     },
     linkFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'indexJsFile'],
+      async action({ paths: { content }, indexJsFile }) {
         const linksPath = new URL('links/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: linksPath,
-          result: await loadLinkFiles(linksPath, syndications)
+          result: await loadLinkFiles(linksPath, syndications, indexJsFile)
         });
       }
     },
     likeFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'indexJsFile'],
+      async action({ paths: { content }, indexJsFile }) {
         const likesPath = new URL('likes/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: likesPath,
-          result: await loadLikeFiles(likesPath, syndications)
+          result: await loadLikeFiles(likesPath, syndications, indexJsFile)
         });
       }
     },
     replyFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
+      dependencies: ['paths', 'indexJsFile'],
+      async action({ paths: { content }, indexJsFile }) {
         const repliesPath = new URL('replies/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: repliesPath,
-          result: await loadReplyFiles(repliesPath)
+          result: await loadReplyFiles(repliesPath, indexJsFile)
         });
       }
     },
@@ -377,20 +378,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
     },
     hashedScripts: {
       dependencies: ['paths', 'scriptsTarget'],
-      async action({ paths: { content }, scriptsTarget }) {
+      async action({ paths: { content, target }, scriptsTarget }) {
         const directory = new URL('scripts/', content);
         const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
-
-        const entries = await Promise.all(items.map(async item => {
-          const [originalFilename, { hashedFileName, dependencies }] = await hashCopy(new URL(item, directory), scriptsTarget);
-          return [
-            `/scripts/${originalFilename}`,
-            {
-              hashedFileName,
-              dependencies: dependencies.map(d => new URL(d, new URL('/scripts/', baseUrl)).pathname)
-            }
-          ];
-        }));
+        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, directory), scriptsTarget)));
 
         return Object.fromEntries(entries);
       }
@@ -483,13 +474,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
     indexJsFile: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
-        const indexPath = new URL('index.js', source);
-
-        await copyFile(indexPath, new URL('index.js', target));
+        const [, { hashedFilePath }] = await hashCopy(target, new URL('index.js', source), target);
 
         return ExecutionGraph.createWatchableResult({
-          path: indexPath,
-          result: null
+          path: hashedFilePath,
+          result: hashedFilePath
         });
       }
     },
@@ -564,60 +553,61 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedShortlinks: {
-      dependencies: ['templates', 'postFiles'],
-      action({ postFiles, templates }) {
-        return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl });
+      dependencies: ['templates', 'postFiles', 'indexJsFile'],
+      action({ postFiles, templates, indexJsFile }) {
+        return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl, indexJsFile });
       }
     },
     renderedPosts: {
-      dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
-      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
-        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'postFiles', 'backlinks', 'indexJsFile'],
+      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedJapaneseNotes: {
-      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks'],
-      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
-        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks', 'indexJsFile'],
+      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedNotes: {
-      dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: resources, templates: { note: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
+      action({ noteFiles: resources, templates: { note: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedStudySessions: {
-      dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
+      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedLinks: {
-      dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: resources, templates: { link: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'linkFiles', 'indexJsFile'],
+      action({ linkFiles: resources, templates: { link: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedLikes: {
-      dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: resources, templates: { like: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'likeFiles', 'indexJsFile'],
+      action({ likeFiles: resources, templates: { like: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedReplies: {
-      dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: resources, templates: { reply: template }, css: cssPath }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev });
+      dependencies: ['css', 'templates', 'replyFiles', 'indexJsFile'],
+      action({ replyFiles: resources, templates: { reply: template }, css: cssPath, indexJsFile }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedBlogIndex: {
-      dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: posts, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'postFiles', 'indexJsFile'],
+      action({ postFiles: posts, templates, css: cssPath, indexJsFile }) {
         return templates.blogs({
           blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
           posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/blog',
@@ -706,34 +696,43 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedAbout: {
-      dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'indexJsFile'],
+      action({ templates, css: cssPath, indexJsFile }) {
         return templates.about({
           cssPath,
           dev,
           baseUrl,
           localUrl: '/',
+          indexJsFile,
           title: 'About',
           description: 'The personal site of Mark Stanley Everitt.'
         });
       }
     },
     renderedPublications: {
-      dependencies: ['css', 'templates', 'publications'],
-      action({ templates, css: cssPath, publications }) {
-        return templates.publications({ cssPath, dev, baseUrl, localUrl: '/publications', publications, title: 'Publications' });
+      dependencies: ['css', 'templates', 'publications', 'indexJsFile'],
+      action({ templates, css: cssPath, publications, indexJsFile }) {
+        return templates.publications({
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/publications',
+          indexJsFile,
+          publications,
+          title: 'Publications'
+        });
       }
     },
     renderedFourOhFour: {
-      dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
-        return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found' });
+      dependencies: ['css', 'templates', 'indexJsFile'],
+      action({ templates, css: cssPath, indexJsFile }) {
+        return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found', indexJsFile });
       }
     },
     renderedWebmentionConfirmation: {
-      dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
-        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
+      dependencies: ['css', 'templates', 'indexJsFile'],
+      action({ templates, css: cssPath, indexJsFile }) {
+        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention', indexJsFile });
       }
     },
     renderedSitemap: {
