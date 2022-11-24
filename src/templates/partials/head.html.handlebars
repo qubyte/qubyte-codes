@@ -12,7 +12,10 @@
 {{#importMapObject}}
 {{#each imports}}<link rel="modulepreload" href="{{this}}">{{/each}}
 {{/importMapObject}}
-<script src="/index.js" async></script>
+<script src="{{indexJsFile}}" async></script>
+{{#scripts}}
+<script src="{{{href}}}" type="module"></script>
+{{/scripts}}
 <link href="{{cssPath}}" rel="stylesheet">
 {{#styles}}
 <link href="{{src}}" rel="stylesheet">
@@ -73,6 +76,3 @@
   window.onbeforeunload = () => source.close();
 </script>
 {{/dev}}
-{{#each scripts}}
-<script src="{{{href}}}" type="module"></script>
-{{/each}}
