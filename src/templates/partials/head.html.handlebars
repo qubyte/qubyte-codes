@@ -1,3 +1,4 @@
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src {{#importMap}}'sha256-{{hash this Infinity "base64"}}' {{/importMap}}'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';">
 <meta name="viewport" content="initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/icons/battenberg.svg">
 <link rel="icon" type="image/png" href="/icons/icon-64.png">
@@ -6,7 +7,6 @@
 <link href="/blog.atom.xml" type="application/atom+xml" rel="alternate" title="Blog Feed">
 <title>{{baseTitle}}{{#if title}} - {{title}}{{/if}}</title>
 {{#importMap}}
-<meta name="script-src-hash" content="sha256-{{{hash this Infinity "base64"}}}">
 <script type="importmap">{{{this}}}</script>
 {{/importMap}}
 {{#importMapObject}}
