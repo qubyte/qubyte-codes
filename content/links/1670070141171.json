@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://andy-bell.co.uk/working-on-my-personal-site-is-fun-actually/"
+    ],
+    "name": [
+      "Working on my personal site is fun actually - Andy Bell"
+    ],
+    "content": [
+      "I'm seeing more and more sites gain support for webmentions. ❤️"
+    ],
+    "category": [],
+    "mp-slug": [
+      "working-on-my-personal-site-is"
+    ]
+  }
+}
