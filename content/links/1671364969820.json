@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://paulrobertlloyd.com/articles/2022/12/indiekit/"
+    ],
+    "name": [
+      "Introducing Indiekit: The IndieWeb for Everyone - Paul Robert Lloyd"
+    ],
+    "content": [
+      "Figuring out bits of indie web interconnectivity is fun for folk like me, but if we want broader adoption then there needs to be a spectrum of tools for all which aren't a huge time sink. Indiekit looks great!"
+    ],
+    "category": [],
+    "mp-slug": [
+      "introducing-indiekit-the-indieweb-for-everyone"
+    ]
+  }
+}
