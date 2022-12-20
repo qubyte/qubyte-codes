@@ -383,7 +383,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
         const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
         const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, directory), scriptsTarget)));
 
-        return Object.fromEntries(entries);
+        return ExecutionGraph.createWatchableResult({
+          path: directory,
+          result: Object.fromEntries(entries)
+        });
       }
     },
     papersTarget: {
