@@ -1,3 +1,4 @@
+import { describe, beforeEach, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import crypto from 'node:crypto';
@@ -24,6 +25,12 @@ describe('execution-graph', () => {
   });
 
   describe('adding a node', () => {
+    // TODO: Remove this when beforeEach in nested describe are fixed.
+    //       https://github.com/nodejs/node/pull/45602
+    beforeEach(() => {
+      graph = new ExecutionGraph();
+    });
+
     it('returns a promise', () => {
       assert.ok(graph.addNode({ name: 'a-name', action() {} }) instanceof Promise);
     });
@@ -154,6 +161,12 @@ describe('execution-graph', () => {
   });
 
   describe('adding multiple nodes', () => {
+    // TODO: Remove this when beforeEach in nested describe are fixed.
+    //       https://github.com/nodejs/node/pull/45602
+    beforeEach(() => {
+      graph = new ExecutionGraph();
+    });
+
     it('returns a promise', () => {
       assert.ok(graph.addNodes({ name: { action() {} } }) instanceof Promise);
     });
@@ -199,6 +212,12 @@ describe('execution-graph', () => {
   });
 
   describe('removing nodes', () => {
+    // TODO: Remove this when beforeEach in nested describe are fixed.
+    //       https://github.com/nodejs/node/pull/45602
+    beforeEach(() => {
+      graph = new ExecutionGraph();
+    });
+
     it('removes a node with no dependencies', async () => {
       await graph.addNode({
         name: 'a',
@@ -242,6 +261,9 @@ describe('execution-graph', () => {
     let nodesRerun;
 
     beforeEach(async () => {
+      // TODO: Remove this when beforeEach in nested describe are fixed.
+      //       https://github.com/nodejs/node/pull/45602
+      graph = new ExecutionGraph();
       nodesRerun = [];
 
       await Promise.all([
@@ -287,6 +309,12 @@ describe('execution-graph', () => {
   });
 
   describe('getting results', () => {
+    // TODO: Remove this when beforeEach in nested describe are fixed.
+    //       https://github.com/nodejs/node/pull/45602
+    beforeEach(() => {
+      graph = new ExecutionGraph();
+    });
+
     it('gets results of returned and resolved nodes', async () => {
       graph.addNode({
         name: 'a',

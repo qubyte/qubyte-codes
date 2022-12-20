@@ -1,3 +1,4 @@
+import { describe, beforeEach, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import makeSnippet from '../../lib/make-snippet.js';
