@@ -40,7 +40,7 @@
     "postcss-calc": "8.2.4",
     "postcss-custom-properties": "13.0.0",
     "postcss-import": "^15.1.0",
-    "sharp": "0.31.2",
+    "sharp": "0.31.3",
     "slugify": "1.6.5",
     "twitter-lite": "^1.1.0"
   },
