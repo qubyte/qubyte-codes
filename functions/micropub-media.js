@@ -18,6 +18,28 @@ export async function handler(event) {
     return { statusCode: 401, body: 'Not authorized.' };
   }
 
+  const contentType = event.headers['content-type'] || '';
+
+  // This is not to spec, but Apple Shortcuts have broken support for multipart
+  // form uploads.
+  if (contentType.startsWith('image/')) {
+    console.log('PLAIN FILE UPLOAD OF ', contentType, event.isBase64Encoded);
+
+    const content = event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
+    const path = await uploadImage({ content });
+
+    console.log('path', path);
+
+    return {
+      statusCode: 202,
+      headers: responseHeaders({
+        location: `${process.env.URL}${path}`,
+        'content-type': 'application/json'
+      }),
+      body: JSON.stringify({ path })
+    };
+  }
+
   console.log('BEFORE PARSING.');
 
   let parsed;
