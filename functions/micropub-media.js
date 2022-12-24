@@ -26,7 +26,7 @@ export async function handler(event) {
     console.log('PLAIN FILE UPLOAD OF ', contentType, event.isBase64Encoded);
 
     const content = event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
-    const path = await uploadImage({ content });
+    const path = await uploadImage({ content, type: contentType });
 
     console.log('path', path);
 
