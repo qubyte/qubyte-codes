@@ -1,44 +1,28 @@
 import sharp from 'sharp';
 import { upload } from './upload.js';
 
+async function convertTo(sharp, format, width, name) {
+  const converted = await sharp
+    .resize(width)
+    .toFormat(format)
+    .toBuffer();
+
+  await upload(`New photo (${format}).\n\n[skip ci]`, 'images', name, converted);
+}
+
 export async function uploadImage(photo) {
   console.log('Converting image...', photo);
 
   const time = Date.now();
-  const jpeg = await sharp(photo.content)
-    .rotate()
-    .resize(800)
-    .jpeg()
-    .toBuffer();
-  await upload('New photo (jpeg).\n\n[skip ci]', 'images', `${time}.jpeg`, jpeg);
+  const s = sharp(photo.content).rotate();
 
-  const avif2x = await sharp(photo.content)
-    .rotate()
-    .resize(1600)
-    .avif()
-    .toBuffer();
-  await upload('New photo (avif).\n\n[skip ci]', 'images', `${time}-2x.avif`, avif2x);
-
-  const avif = await sharp(photo.content)
-    .rotate()
-    .resize(800)
-    .avif()
-    .toBuffer();
-  await upload('New photo (avif).\n\n[skip ci]', 'images', `${time}.avif`, avif);
-
-  const webp2x = await sharp(photo.content)
-    .rotate()
-    .resize(1600)
-    .webp()
-    .toBuffer();
-  await upload('New photo (webp).\n\n[skip ci]', 'images', `${time}-2x.webp`, webp2x);
-
-  const webp = await sharp(photo.content)
-    .rotate()
-    .resize(800)
-    .webp()
-    .toBuffer();
-  await upload('New photo (webp).\n\n[skip ci]', 'images', `${time}.webp`, webp);
+  await Promise.all([
+    convertTo(s.clone(), 'jpeg', 800, `${time}.jpeg`),
+    convertTo(s.clone(), 'avif', 1600, `${time}-2x.avif`),
+    convertTo(s.clone(), 'avif', 800, `${time}.avif`),
+    convertTo(s.clone(), 'webp', 1600, `${time}-2x.webp`),
+    convertTo(s.clone(), 'webp', 800, `${time}.webp`)
+  ]);
 
   return `/images/${time}.jpeg`;
 }
