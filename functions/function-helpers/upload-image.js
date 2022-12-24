@@ -1,28 +1,21 @@
-import sharp from 'sharp';
 import { upload } from './upload.js';
-import PQueue from 'p-queue';
 
 export async function uploadImage(photo) {
-  console.log(new Date().toISOString(), 'Converting image...', photo);
+  console.log('Pushing image...', photo);
 
-  // GitHub gets upset with concurrent use of the content API.
-  const queue = new PQueue({ concurrency: 1 });
   const time = Date.now();
+  const type = (photo.type || '').toLowerCase().split(';')[0].trim();
+  const suffix = type.startsWith('image/') ? type.slice(6) : '';
 
-  function convertTo(width, format, name) {
-    return sharp(photo.content, { sequentialRead: true })
-      .rotate()
-      .resize(width)
-      .toFormat(format, { effort: 3 })
-      .toBuffer()
-      .then(buffer => queue.add(() => upload(`New photo (${name}).\n\n[skip ci]`, 'images', name, buffer)));
+  if (!suffix) {
+    console.warn('Unknown file type. Not sending to GitHub:', photo.type);
+    return '';
   }
 
-  await Promise.all([
-    convertTo(1600, 'avif', `${time}-2x.avif`),
-    convertTo(800, 'jpeg', `${time}.jpeg`),
-    convertTo(800, 'avif', `${time}.avif`)
-  ]);
+  // A GitHub Actions workflow watches for changes to content/images/*-original.jpeg
+  const name = suffix.match(/jpg|jpeg/) ? `${time}-original.jpeg` : `${time}.${suffix}`;
 
-  return `/images/${time}.jpeg`;
+  await upload(`New photo (${name}).\n\n[skip netlify]`, 'images', name, photo.content);
+
+  return `/images/${time}.${suffix}`;
 }

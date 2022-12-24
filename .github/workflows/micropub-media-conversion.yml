@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'content/images/*-original.jpeg'
+jobs:
+  get-added-files:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@main
+      with:
+        fetch-depth: 2
+    - name: Get added JPEGs
+      run: echo "::set-output name=jpeg::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep original.jpeg$ | xargs)"
+  convert-jpegs:
+    needs: get-added-files
+    steps:
+    - name: checkout
+      uses: actions/checkout@main
+    - name: use node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    - run: npm ci
+    - name: Convert JPEGs
+      run: node scripts/convert-jpegs.js ${{needs.get-added-files.outputs.jpeg}}
+    - name: Push
+      run: |
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add content/images
+          git commit -m "Image conversions for ${{needs.get-added-files.outputs.jpeg}}\n\n[skip ci]"
+          git push
