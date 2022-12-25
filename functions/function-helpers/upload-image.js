@@ -2,10 +2,10 @@ import sharp from 'sharp';
 import { upload } from './upload.js';
 
 export async function uploadImage(photo) {
-  console.log('Converting image...', photo);
+  console.log(new Date().toISOString(), 'Converting image...', photo);
 
   const time = Date.now();
-  const s = sharp(photo.content).rotate();
+  const s = sharp(photo.content, { sequentialRead: true }).rotate();
 
   function convertTo(width, format) {
     return s.clone()
