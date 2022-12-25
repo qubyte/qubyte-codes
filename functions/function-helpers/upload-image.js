@@ -14,20 +14,16 @@ export async function uploadImage(photo) {
       .toBuffer();
   }
 
-  const [jpeg, avif2x, avif, webp2x, webp] = await Promise.all([
+  const [jpeg, avif2x, avif] = await Promise.all([
     convertTo(800, 'jpeg'),
     convertTo(1600, 'avif'),
-    convertTo(800, 'avif'),
-    convertTo(1600, 'webp'),
-    convertTo(800, 'webp')
+    convertTo(800, 'avif')
   ]);
 
   // I can't do these concurrently without upsetting GitHub.
   await upload('New photo (jpeg).\n\n[skip ci]', 'images', `${time}.jpeg`, jpeg);
   await upload('New photo (avif 2x).\n\n[skip ci]', 'images', `${time}-2x.avif`, avif2x);
   await upload('New photo (avif).\n\n[skip ci]', 'images', `${time}.avif`, avif);
-  await upload('New photo (webp 2x).\n\n[skip ci]', 'images', `${time}-2x.webp`, webp2x);
-  await upload('New photo (webp).\n\n[skip ci]', 'images', `${time}.webp`, webp);
 
   return `/images/${time}.jpeg`;
 }
