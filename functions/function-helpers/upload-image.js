@@ -1,28 +1,33 @@
 import sharp from 'sharp';
 import { upload } from './upload.js';
 
-async function convertTo(sharp, format, width, name) {
-  const converted = await sharp
-    .resize(width)
-    .toFormat(format)
-    .toBuffer();
-
-  await upload(`New photo (${format}).\n\n[skip ci]`, 'images', name, converted);
-}
-
 export async function uploadImage(photo) {
   console.log('Converting image...', photo);
 
   const time = Date.now();
   const s = sharp(photo.content).rotate();
 
-  await Promise.all([
-    convertTo(s.clone(), 'jpeg', 800, `${time}.jpeg`),
-    convertTo(s.clone(), 'avif', 1600, `${time}-2x.avif`),
-    convertTo(s.clone(), 'avif', 800, `${time}.avif`),
-    convertTo(s.clone(), 'webp', 1600, `${time}-2x.webp`),
-    convertTo(s.clone(), 'webp', 800, `${time}.webp`)
+  function convertTo(width, format) {
+    return s.clone()
+      .resize(width)
+      .toFormat(format)
+      .toBuffer();
+  }
+
+  const [jpeg, avif2x, avif, webp2x, webp] = await Promise.all([
+    convertTo(800, 'jpeg'),
+    convertTo(1600, 'avif'),
+    convertTo(800, 'avif'),
+    convertTo(1600, 'webp'),
+    convertTo(800, 'webp')
   ]);
+
+  // I can't do these concurrently without upsetting GitHub.
+  await upload('New photo (jpeg).\n\n[skip ci]', 'images', `${time}.jpeg`, jpeg);
+  await upload('New photo (avif 2x).\n\n[skip ci]', 'images', `${time}-2x.avif`, avif2x);
+  await upload('New photo (avif).\n\n[skip ci]', 'images', `${time}.avif`, avif);
+  await upload('New photo (webp 2x).\n\n[skip ci]', 'images', `${time}-2x.webp`, webp2x);
+  await upload('New photo (webp).\n\n[skip ci]', 'images', `${time}.webp`, webp);
 
   return `/images/${time}.jpeg`;
 }
