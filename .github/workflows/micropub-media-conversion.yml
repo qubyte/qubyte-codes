@@ -7,13 +7,16 @@ on:
 jobs:
   get-added-files:
     runs-on: ubuntu-latest
+    outputs:
+      jpeg: ${{ steps.added-jpegs.outputs.jpeg }}
     steps:
     - name: checkout
       uses: actions/checkout@main
       with:
         fetch-depth: 2
     - name: Get added JPEGs
-      run: echo "::set-output name=jpeg::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep original.jpeg$ | xargs)"
+      id: added-jpegs
+      run: echo "jpeg=$(git diff --name-only --diff-filter=ACMRT ${{ github.sha }}{^,} | grep original.jpeg$ | xargs)" > $GITHUB_OUTPUT
   convert-jpegs:
     needs: get-added-files
     runs-on: ubuntu-latest
@@ -33,5 +36,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add content/images
-          git commit -m "Image conversions for ${{needs.get-added-files.outputs.jpeg}}\n\n[skip ci]"
+          git commit -m "Image conversions for ${{needs.get-added-files.outputs.jpeg}}" -m "[skip ci]"
           git push
