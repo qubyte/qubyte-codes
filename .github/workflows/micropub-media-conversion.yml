@@ -16,6 +16,7 @@ jobs:
       run: echo "::set-output name=jpeg::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep original.jpeg$ | xargs)"
   convert-jpegs:
     needs: get-added-files
+    runs-on: ubuntu-latest
     steps:
     - name: checkout
       uses: actions/checkout@main
