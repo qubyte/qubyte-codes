@@ -8,10 +8,10 @@ export async function uploadImage(photo) {
   // GitHub gets upset with concurrent use of the content API.
   const queue = new PQueue({ concurrency: 1 });
   const time = Date.now();
-  const s = sharp(photo.content, { sequentialRead: true }).rotate();
 
   function convertTo(width, format, name) {
-    s.clone()
+    return sharp(photo.content, { sequentialRead: true })
+      .rotate()
       .resize(width)
       .toFormat(format, { effort: 3 })
       .toBuffer()
@@ -19,8 +19,8 @@ export async function uploadImage(photo) {
   }
 
   await Promise.all([
-    convertTo(800, 'jpeg', `${time}.jpeg`),
     convertTo(1600, 'avif', `${time}-2x.avif`),
+    convertTo(800, 'jpeg', `${time}.jpeg`),
     convertTo(800, 'avif', `${time}.avif`)
   ]);
 
