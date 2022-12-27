@@ -17,20 +17,27 @@ async function post(endpoint, body) {
   return res.json();
 }
 
-const { properties: { content, photo } } = JSON.parse(await readFile(path, 'utf8'));
+if (path) {
+  console.log('Processing:', path); // eslint-disable-line no-console
 
-let photoId = null;
+  const { properties: { content, photo } } = JSON.parse(await readFile(path, 'utf8'));
 
-if (photo && photo.length) {
-  const form = new FormData();
-  const file = await fileFrom(`content/${photo[0].value}`.replace('.jpeg', '-original.jpeg'), 'image/jpeg');
-  form.set('file', file);
-  form.set('description', photo[0].alt);
+  let photoId = null;
 
-  ({ id: photoId } = await post('/api/v2/media', form));
+  if (photo && photo.length) {
+    const form = new FormData();
+    const file = await fileFrom(`content/${photo[0].value}`.replace('.jpeg', '-original.jpeg'), 'image/jpeg');
+    form.set('file', file);
+    form.set('description', photo[0].alt);
+
+    ({ id: photoId } = await post('/api/v2/media', form));
+  }
+
+  await post('/api/v1/statuses', new URLSearchParams({
+    status: content[0],
+    ...(photoId ? { 'media_ids[]': photoId } : {})
+  }));
+} else {
+  console.log('No path given.'); // eslint-disable-line no-console
 }
 
-await post('/api/v1/statuses', new URLSearchParams({
-  status: content[0],
-  ...(photoId ? { 'media_ids[]': photoId } : {})
-}));
