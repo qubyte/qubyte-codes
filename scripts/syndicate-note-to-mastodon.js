@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import fetch, { FormData, fileFrom } from 'node-fetch';
 
-const path = process.argv[3];
+const path = process.argv[2];
 
 async function post(endpoint, body) {
   const res = await fetch(new URL(endpoint, process.env.MASTODON_BASE_URL), {
@@ -32,5 +32,5 @@ if (photo && photo.length) {
 
 await post('/api/v1/statuses', new URLSearchParams({
   status: content[0],
-  media_ids: photoId ? [photoId] : []
+  ...(photoId ? { 'media_ids[]': photoId } : {})
 }));
