@@ -17,7 +17,7 @@ async function post(endpoint, body) {
   return res.json();
 }
 
-const { properties: { content, photo } } = JSON.parse(readFile(path, 'utf8'));
+const { properties: { content, photo } } = JSON.parse(await readFile(path, 'utf8'));
 
 let photoId = null;
 
