@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Work in progress render of revision 2 of my custom split mechanical keyboard."
+    ],
+    "latitude": 0,
+    "longitude": 0,
+    "photo": [
+      {
+        "alt": "A 3D render of the PCBs for a revision of my custom split keyboard. The vertical column stagger is moved one key outward, so the pinky and index columns are lower than the middle and ring finder columns, but now the pinkies rest on the outer-most column. The thumb clusters are moved one key outward too. This revision also shows holes for per key LEDs.",
+        "value": "/images/1672233837072.jpeg"
+      }
+    ]
+  }
+}
