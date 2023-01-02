@@ -1,0 +1,36 @@
+.plot {
+  text-align: center;
+  margin: 1rem;
+}
+
+.plot svg {
+  stroke: var(--standout-color-main);
+  fill: none;
+  width: auto;
+  height: 300px;
+}
+
+.plot rect {
+  fill: var(--background-color-alt);
+}
+
+.plot text {
+  stroke: none;
+  fill: var(--standout-color-main);
+  text-anchor: middle;
+}
+
+@media (prefers-color-scheme: dark) {
+  .plot svg {
+    stroke: var(--standout-color-main);
+  }
+
+  .plot rect, .plot svg text {
+    stroke: none;
+    fill: var(--standout-color-main);
+  }
+
+  .plot g text {
+    fill: red;
+  }
+}
