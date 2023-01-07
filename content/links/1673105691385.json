@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://twitter.com/home"
+    ],
+    "name": [
+      "Never-before-seen Polaroids from the set of cult cyber classic Hackers - Dazed"
+    ],
+    "content": [
+      "I (a neckbeard) particularly like the bit on real life hackers at the time: \"And fucking hell, they were so boring. Dressed in black. Some of them were quite old, actually, and they'd obviously been into computers for a long time.\""
+    ],
+    "category": [],
+    "mp-slug": [
+      "never-before-seen-polaroids-from-the"
+    ],
+    "mp-syndicate-to": [
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
