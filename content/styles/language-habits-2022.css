@@ -6,8 +6,7 @@
 .plot svg {
   stroke: var(--standout-color-main);
   fill: none;
-  width: auto;
-  height: 300px;
+  max-width: min(100%, 500px);
 }
 
 .plot rect {
