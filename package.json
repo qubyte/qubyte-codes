@@ -36,7 +36,7 @@
     "mathjax-full": "^3.2.2",
     "node-fetch": "3.3.0",
     "p-retry": "5.1.2",
-    "postcss": "8.4.20",
+    "postcss": "8.4.21",
     "postcss-calc": "8.2.4",
     "postcss-custom-properties": "13.0.0",
     "postcss-import": "^15.1.0",
