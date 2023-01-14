@@ -35,6 +35,9 @@
 [[context.production.plugins]]
   package = "/plugins/tweet-new-blog-posts"
 
+[[context.production.plugins]]
+  package = "/plugins/update-shortlinks"
+
 [[headers]]
   for = "/japanese-notes*"
   [headers.values]
