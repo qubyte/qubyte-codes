@@ -2,8 +2,29 @@ import { join as pathJoin } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import fetch from 'node-fetch';
 
-async function fetchShortlinks() {
-  const res = await fetch(`${process.env.URL}/shortlinks.txt`);
+function buildShortlinksPath(publishDir) {
+  return pathJoin('.', publishDir, 'shortlinks.txt');
+}
+
+function buildShortlinksUrl(baseUrl) {
+  return `${baseUrl}/shortlinks.txt`;
+}
+
+async function fetchShortlinks({ constants, utils }) {
+  const shortlinksPath = buildShortlinksPath(constants.PUBLISH_DIR);
+
+  try {
+    await utils.cache.restore(shortlinksPath);
+    const content = await readFile(shortlinksPath, 'utf8');
+    console.log('Shortlinks retrieved from cache');
+    return content;
+  } catch {
+    console.error('Unable to shortlinks file from cache, falling back to network.');
+  }
+
+  // If we can't find the shortlinks file in the cache then get it from the
+  // site itself.
+  const res = await fetch(buildShortlinksUrl(process.env.URL));
 
   if (!res.ok) {
     throw new Error(`Unexpected status: ${res.status}`);
@@ -16,9 +37,9 @@ async function fetchShortlinks() {
 // invoked once (and even then only in sequence).
 const oldShortLinksForBuild = new Map();
 
-export async function onPreBuild({ utils }) {
+export async function onPreBuild({ constants, utils }) {
   try {
-    const oldShortlinks = (await fetchShortlinks()).trim();
+    const oldShortlinks = (await fetchShortlinks({ constants, utils })).trim();
     oldShortLinksForBuild.set(process.env.BUILD_ID, oldShortlinks);
     console.log('Size of old shortlinks:', Buffer.byteLength(oldShortlinks));
   } catch (error) {
@@ -29,13 +50,16 @@ export async function onPreBuild({ utils }) {
 
 export async function onSuccess({ constants, utils }) {
   const oldShortlinks = oldShortLinksForBuild.get(process.env.BUILD_ID);
-  const newShortlinks = (await readFile(pathJoin('.', constants.PUBLISH_DIR, 'shortlinks.txt'), 'utf8')).trim();
+  const shortlinksPath = buildShortlinksPath(constants.PUBLISH_DIR);
+  const newShortlinks = (await readFile(shortlinksPath, 'utf8')).trim();
 
   console.log('Size of new shortlinks:', Buffer.byteLength(newShortlinks));
 
   if (oldShortlinks === newShortlinks) {
     return console.log('No change to shortlinks.');
   }
+
+  await utils.cache.save(shortlinksPath);
 
   const res = await fetch(process.env.BUILD_SHORTLINKS_TRIGGER, { method: 'POST' });
 
