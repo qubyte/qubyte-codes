@@ -55,11 +55,11 @@ export async function onSuccess({ constants, utils }) {
 
   console.log('Size of new shortlinks:', Buffer.byteLength(newShortlinks));
 
+  await utils.cache.save(shortlinksPath);
+
   if (oldShortlinks === newShortlinks) {
     return console.log('No change to shortlinks.');
   }
-
-  await utils.cache.save(shortlinksPath);
 
   const res = await fetch(process.env.BUILD_SHORTLINKS_TRIGGER, { method: 'POST' });
 
