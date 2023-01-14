@@ -12,15 +12,15 @@ function buildShortlinksUrl(baseUrl) {
 
 async function fetchShortlinks({ constants, utils }) {
   const shortlinksPath = buildShortlinksPath(constants.PUBLISH_DIR);
+  const restored = await utils.cache.restore(shortlinksPath);
 
-  try {
-    await utils.cache.restore(shortlinksPath);
+  if (restored) {
     const content = await readFile(shortlinksPath, 'utf8');
     console.log('Shortlinks retrieved from cache');
     return content;
-  } catch {
-    console.error('Unable to shortlinks file from cache, falling back to network.');
   }
+
+  console.error('Unable to shortlinks file from cache, falling back to network.');
 
   // If we can't find the shortlinks file in the cache then get it from the
   // site itself.
