@@ -1,43 +1,29 @@
 import { readFile } from 'node:fs/promises';
-import fetch, { FormData, fileFrom } from 'node-fetch';
+import { FormData, fileFrom } from 'node-fetch';
+import postToMastodon from '../lib/post-to-mastodon.js';
 
 const path = process.argv[2];
 
-async function post(endpoint, body) {
-  const res = await fetch(new URL(endpoint, process.env.MASTODON_BASE_URL), {
-    headers: { authorization: `Bearer ${process.env.MASTODON_ACCESS_TOKEN}` },
-    method: 'POST',
-    body
-  });
-
-  if (!res.ok) {
-    throw new Error(`Unexpected status from mastodon: ${res.status}`);
-  }
-
-  return res.json();
-}
-
-if (path) {
-  console.log('Processing:', path); // eslint-disable-line no-console
-
-  const { properties: { content, photo } } = JSON.parse(await readFile(path, 'utf8'));
-
-  let photoId = null;
-
-  if (photo && photo.length) {
-    const form = new FormData();
-    const file = await fileFrom(`content/${photo[0].value}`.replace('.jpeg', '-original.jpeg'), 'image/jpeg');
-    form.set('file', file);
-    form.set('description', photo[0].alt);
-
-    ({ id: photoId } = await post('/api/v2/media', form));
-  }
-
-  await post('/api/v1/statuses', new URLSearchParams({
-    status: content[0],
-    ...(photoId ? { 'media_ids[]': photoId } : {})
-  }));
-} else {
+if (!path) {
   console.log('No path given.'); // eslint-disable-line no-console
+  process.exit(0);
 }
 
+console.log('Processing:', path); // eslint-disable-line no-console
+
+const { properties: { content: [status], photo } } = JSON.parse(await readFile(path, 'utf8'));
+const statusBody = new URLSearchParams({ status });
+
+if (photo && photo.length) {
+  const form = new FormData();
+  const filePath = `content/${photo[0].value}`.replace('.jpeg', '-original.jpeg');
+
+  form.set('file', await fileFrom(filePath, 'image/jpeg'));
+  form.set('description', photo[0].alt);
+
+  const { id } = await postToMastodon('/api/v2/media', form);
+
+  statusBody.set('media_ids[]', id);
+}
+
+await postToMastodon('/api/v1/statuses', statusBody);
