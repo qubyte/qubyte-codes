@@ -24,13 +24,13 @@ export async function onPreBuild({ constants, utils }) {
 
     if (restored) {
       const oldUrls = await readNewFeedToUrls(feedPath);
-      console.log('Shortlinks retrieved from cache. Number of old URLs:', oldUrls.size);
+      console.log('Feed retrieved from cache. Number of old URLs:', oldUrls.size);
       return oldUrls;
     }
 
     const oldUrls = await fetchOldFeedToUrls(buildFeedUrl());
     oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
-    console.log('Shortlinks retrieved from network fallback. Number of old URLs:', oldUrls.size);
+    console.log('Feed retrieved from network fallback. Number of old URLs:', oldUrls.size);
   } catch (error) {
     utils.build.failPlugin('Error making feed request.', { error });
   }
