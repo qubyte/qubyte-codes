@@ -33,7 +33,7 @@
   package = "/plugins/dispatch-webmentions"
 
 [[context.production.plugins]]
-  package = "/plugins/tweet-new-blog-posts"
+  package = "/plugins/toot-new-blog-posts"
 
 [[context.production.plugins]]
   package = "/plugins/update-shortlinks"
