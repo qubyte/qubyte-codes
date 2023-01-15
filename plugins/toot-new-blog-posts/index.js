@@ -25,6 +25,7 @@ export async function onPreBuild({ constants, utils }) {
     if (restored) {
       const oldUrls = await readNewFeedToUrls(feedPath);
       console.log('Feed retrieved from cache. Number of old URLs:', oldUrls.size);
+      oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
       return oldUrls;
     }
 
