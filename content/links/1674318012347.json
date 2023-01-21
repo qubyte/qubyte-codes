@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://github.com/qubyte/qubyte-codes/pull/720/files"
+    ],
+    "name": [
+      "Adds an actions workflow and a script to syndicate links to mastodon. by qubyte · Pull Request #720"
+    ],
+    "content": [
+      "I'm testing link (bookmarks really) syndication to mastodon using a link to the GitHub Actions workflow and script used to do the syndication. Like notes, links are stored as JSON encoded h-entry documents with a \"bookmark-of\" field."
+    ],
+    "category": [],
+    "mp-slug": [
+      "adds-an-actions-workflow-and-a"
+    ],
+    "mp-syndicate-to": [
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
