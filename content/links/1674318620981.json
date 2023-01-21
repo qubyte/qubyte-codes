@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-links-to-mastodon.yml"
+    ],
+    "name": [
+      "Link Syndication Workflow"
+    ],
+    "content": [
+      "I'm testing link (bookmarks really) syndication to mastodon using a link to the GitHub Actions workflow used to do the syndication."
+    ],
+    "category": [],
+    "mp-slug": [
+      "link-syndication-workflow"
+    ],
+    "mp-syndicate-to": [
+      "https://mastodon.social/@qubyte"
+    ]
+  }
+}
