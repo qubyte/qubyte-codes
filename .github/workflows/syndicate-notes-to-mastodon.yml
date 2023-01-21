@@ -17,6 +17,7 @@ jobs:
     - name: Get added notes
       id: added-notes
       run: echo "note=$(git diff --name-only --diff-filter=A ${{ github.sha }}{^,} | grep ^content/notes/ | xargs)" > $GITHUB_OUTPUT
+      run: echo $GITHUB_OUTPUT
   syndicate-to-mastodon:
     needs: get-added-files
     runs-on: ubuntu-latest
