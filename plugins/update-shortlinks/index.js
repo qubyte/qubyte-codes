@@ -1,6 +1,5 @@
 import { join as pathJoin } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import fetch from 'node-fetch';
 
 function buildShortlinksPath(publishDir) {
   return pathJoin('.', publishDir, 'shortlinks.txt');

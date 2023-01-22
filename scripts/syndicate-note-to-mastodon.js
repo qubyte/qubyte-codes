@@ -1,5 +1,6 @@
+/* global FormData, Blob */
+
 import { readFile } from 'node:fs/promises';
-import { FormData, fileFrom } from 'node-fetch';
 import postToMastodon from '../lib/post-to-mastodon.js';
 
 const path = process.argv[2];
@@ -17,8 +18,9 @@ const statusBody = new URLSearchParams({ status });
 if (photo && photo.length) {
   const form = new FormData();
   const filePath = `content/${photo[0].value}`.replace('.jpeg', '-original.jpeg');
+  const content = await readFile(filePath);
 
-  form.set('file', await fileFrom(filePath, 'image/jpeg'));
+  form.set('file', new Blob(content, { type: 'image/jpeg' }));
   form.set('description', photo[0].alt);
 
   const { id } = await postToMastodon('/api/v2/media', form);
