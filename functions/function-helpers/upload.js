@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export async function upload(message, type, filename, buffer) {
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
   const path = `content/${type}/${filename}`;

@@ -23,11 +23,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 16
+    - name: use node 18
       uses: actions/setup-node@v3
       with:
-        node-version: 16.x
-    - run: npm ci
+        node-version: 18.x
     - name: Dispatch mastodon API call
       env:
         MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}

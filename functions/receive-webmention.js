@@ -1,5 +1,4 @@
 import { JSDOM } from 'jsdom';
-import fetch from 'node-fetch';
 
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.

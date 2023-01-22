@@ -18,7 +18,7 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "engines": {
-    "node": ">=16"
+    "node": ">=18.13"
   },
   "dependencies": {
     "busboy": "1.6.0",
@@ -34,7 +34,6 @@
     "jsdom": "21.0.0",
     "marked": "^4.2.12",
     "mathjax-full": "^3.2.2",
-    "node-fetch": "3.3.0",
     "p-retry": "5.1.2",
     "postcss": "8.4.21",
     "postcss-calc": "8.2.4",
