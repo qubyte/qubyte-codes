@@ -20,7 +20,7 @@ if (photo && photo.length) {
   const filePath = `content/${photo[0].value}`.replace('.jpeg', '-original.jpeg');
   const content = await readFile(filePath);
 
-  form.set('file', new Blob(content, { type: 'image/jpeg' }));
+  form.set('file', new Blob([content], { type: 'image/jpeg' }), 'image.jpeg');
   form.set('description', photo[0].alt);
 
   const { id } = await postToMastodon('/api/v2/media', form);
