@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I may have a problem."
+    ],
+    "latitude": 50.840345,
+    "longitude": -0.1139361666666667,
+    "photo": [
+      {
+        "alt": "A display of my mechanical keyboard collection. There are five displayed. Two ortholinear, one compact ANSI layout. One full size ANSI layout, and two splits.",
+        "value": "/images/1674499084068.jpeg"
+      }
+    ]
+  }
+}
