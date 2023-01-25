@@ -1,6 +1,12 @@
 name: CI
 on:
   push:
+    paths:
+    - '.github/workflows/ci.yml'
+    - '**.js'
+    - '**.eslintrc.json'
+    - 'package.json'
+    - 'package-lock.json'
     branches:
     - main
   pull_request:
