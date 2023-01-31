@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "in-reply-to": [
+      "https://css-irl.info/scheduling-netlify-deployments-with-github-actions/"
+    ],
+    "content": [
+      "Yes! I do this too. I have one workflow on a 15 minute interval to check and deploy scheduled posts (which means some logic), but my favourite has to be the one which runs at midnight on Jan 1st every year. It's just a curl post like yours to trigger a build so all my copyright year footers get bumped."
+    ],
+    "category": [],
+    "mp-slug": [
+      "yes-i-do-this-too-i"
+    ]
+  },
+  "name": "CSS { In Real Life } | Scheduling Netlify Deployments with Github Actions"
+}
