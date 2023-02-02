@@ -22,9 +22,9 @@
       <uri>https://qubyte.codes</uri>
     </author>
     {{#if feedItem}}
-    <content type="html">{{feedItem}}</content>
+    <content type="html">{{feedItem}}{{#photos}}&lt;img src&#x3D;&quot;https://qubyte.codes{{value}}&quot; alt&#x3D;&quot;{{alt}}&quot;&gt;{{/photos}}</content>
     {{else}}
-    <content type="html">{{content}}</content>
+    <content type="html">{{content}}{{#photos}}&lt;img src&#x3D;&quot;https://qubyte.codes{{value}}&quot; alt&#x3D;&quot;{{alt}}&quot;&gt;{{/photos}}</content>
     {{/if}}
   </entry>
   {{/items}}
