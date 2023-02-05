@@ -14,6 +14,7 @@ function buildFeedUrl() {
 
 // This is probably unnecessary since each method in this module will only be
 // invoked once (and even then only in sequence).
+/** @type Map<string, Map<string, Date>> */
 const oldUrlsForBuild = new Map();
 const pageRegex = new RegExp('^https://qubyte.codes/blog/.+');
 
@@ -26,12 +27,11 @@ export async function onPreBuild({ constants, utils }) {
       const oldUrls = await readNewFeedToUrls(feedPath);
       console.log('Feed retrieved from cache. Number of old URLs:', oldUrls.size);
       oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
-      return oldUrls;
+    } else {
+      const oldUrls = await fetchOldFeedToUrls(buildFeedUrl());
+      oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
+      console.log('Feed retrieved from network fallback. Number of old URLs:', oldUrls.size);
     }
-
-    const oldUrls = await fetchOldFeedToUrls(buildFeedUrl());
-    oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
-    console.log('Feed retrieved from network fallback. Number of old URLs:', oldUrls.size);
   } catch (error) {
     utils.build.failPlugin('Error making feed request.', { error });
   }
@@ -62,7 +62,7 @@ export async function onSuccess({ constants, utils }) {
         continue;
       }
 
-      const status =  `New blog post published! ${url} ${tags.join(' ')}`.trim();
+      const status = `New blog post published! ${url} ${tags.join(' ')}`.trim();
 
       try {
         await postToMastodon('/api/v1/statuses', new URLSearchParams({ status }));
