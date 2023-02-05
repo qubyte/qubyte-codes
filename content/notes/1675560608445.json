@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "One pain in the ass thing about micropub is that there's no way to send photos and content together in a single request *and* include alt text. It can only be done with a multipart request to a media endpoint for the photo and a JSON request to the regular endpoint. Why not allow both in a multipart request? #indieweb"
+    ],
+    "category": [],
+    "mp-slug": [
+      "one-pain-in-the-ass-thing"
+    ]
+  }
+}
