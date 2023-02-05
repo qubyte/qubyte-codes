@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I get why microformats documents came to look like this. It comes from their roots as data embedded in HTML. But it's not very pragmatic. Why would a document have more than one name or content? Why would photo (singular) be used for a *plural* field. It's all out of whack. #indieweb."
+    ],
+    "category": [],
+    "mp-slug": [
+      "i-get-why-microformats-documents-came"
+    ]
+  }
+}
