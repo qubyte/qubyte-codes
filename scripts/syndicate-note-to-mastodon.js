@@ -12,20 +12,20 @@ if (!path) {
 
 console.log('Processing:', path); // eslint-disable-line no-console
 
-const { properties: { content: [status], photo } } = JSON.parse(await readFile(path, 'utf8'));
+const { properties: { content: [status], photo = [] } } = JSON.parse(await readFile(path, 'utf8'));
 const statusBody = new URLSearchParams({ status });
 
-if (photo && photo.length) {
+for (const { value, alt } of photo) {
   const form = new FormData();
-  const filePath = `content/${photo[0].value}`.replace('.jpeg', '-original.jpeg');
+  const filePath = `content/${value}`.replace('.jpeg', '-original.jpeg');
   const content = await readFile(filePath);
 
   form.set('file', new Blob([content], { type: 'image/jpeg' }), 'image.jpeg');
-  form.set('description', photo[0].alt);
+  form.set('description', alt);
 
   const { id } = await postToMastodon('/api/v2/media', form);
 
-  statusBody.set('media_ids[]', id);
+  statusBody.append('media_ids[]', id);
 }
 
 await postToMastodon('/api/v1/statuses', statusBody);
