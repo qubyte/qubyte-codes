@@ -1,6 +1,7 @@
 import { once } from 'node:events';
 import FeedMe from 'feedme';
 
+/** @param {import('stream').Readable} feedStream */
 export default async function parseFeedToUrls(feedStream) {
   const parser = new FeedMe();
 
