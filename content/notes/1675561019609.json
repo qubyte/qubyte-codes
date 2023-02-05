@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I love the #indieweb, but the aforementioned micropub thing isn't the only friction. JSON encoded microformats-2 documents are just plain weird. Everything is an array for some reason. Unnecessarily complex to consume. We can surely do better..."
+    ],
+    "category": [],
+    "mp-slug": [
+      "i-love-the-indieweb-but-the"
+    ]
+  }
+}
