@@ -13,7 +13,15 @@ if (!paths.length) {
 for (const path of paths) {
   console.log('Processing:', path); // eslint-disable-line no-console
 
-  const { properties: { content: [status], photo = [] } } = JSON.parse(await readFile(path, 'utf8'));
+  const {
+    properties: {
+      content: [content],
+      name: [name],
+      photo = [],
+      'bookmark-of': [url]
+    }
+  } = JSON.parse(await readFile(path, 'utf8'));
+  const status = (url && name) ? `${content}\n\n${name}: ${url}`.trim() : content;
   const statusBody = new URLSearchParams({ status });
 
   for (const { value, alt } of photo) {
