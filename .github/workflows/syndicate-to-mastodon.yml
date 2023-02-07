@@ -3,20 +3,21 @@ on:
     branches:
       - 'main'
     paths:
+      - 'content/notes/*.json'
       - 'content/links/*.json'
 jobs:
   get-added-files:
     runs-on: ubuntu-latest
     outputs:
-      link: ${{ steps.added-links.outputs.link }}
+      note: ${{ steps.added-documents.outputs.documents }}
     steps:
     - name: checkout
       uses: actions/checkout@main
       with:
         fetch-depth: 2
-    - name: Get added links
-      id: added-links
-      run: echo "link=$(git diff --name-only --diff-filter=A ${{ github.sha }}{^,} | grep ^content/links/ | xargs)" > $GITHUB_OUTPUT
+    - name: Get added documents
+      id: added-documents
+      run: echo "documents=$(git diff --name-only --diff-filter=A ${{ github.sha }}{^,} | grep -e ^content/notes/ -e ^content/links/ | xargs)" > $GITHUB_OUTPUT
   syndicate-to-mastodon:
     needs: get-added-files
     runs-on: ubuntu-latest
@@ -31,4 +32,4 @@ jobs:
       env:
         MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
         MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
-      run: node scripts/syndicate-link-to-mastodon.js ${{ needs.get-added-files.outputs.link }}
+      run: node scripts/syndicate-to-mastodon.js ${{ needs.get-added-files.outputs.documents }}
