@@ -1,12 +1,23 @@
 /* eslint-disable no-console */
 
 import fs from 'node:fs/promises';
-import { parseFrontMatter } from '../lib/load-post-files.js';
-import retry from 'p-retry';
+import parseFrontMatter from '../lib/parse-front-matter.js';
 
 const LAST_BUILD_URL = 'https://qubyte.codes/last-build.txt';
 const POST_FILES_DIR = new URL('../content/posts/', import.meta.url);
 const BUILD_HOOK_URL = process.env.BUILD_HOOK_URL;
+
+async function retry(fn, times) {
+  try {
+    return await fn();
+  } catch (e) {
+    if (times) {
+      console.error('Retrying after error:', e.stack || e.message);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      return retry(fn, times - 1);
+    }
+  }
+}
 
 async function getLastBuildTime() {
   const res = await fetch(LAST_BUILD_URL);
@@ -39,7 +50,7 @@ async function triggerBuild() {
 }
 
 async function checkShouldTriggerBuild() {
-  const lastBuildTime = await retry(getLastBuildTime, { retries: 5 });
+  const lastBuildTime = await retry(getLastBuildTime, 5);
 
   console.log('Last build time:', lastBuildTime);
 
