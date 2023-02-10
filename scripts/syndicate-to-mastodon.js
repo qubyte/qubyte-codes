@@ -15,10 +15,10 @@ for (const path of paths) {
 
   const {
     properties: {
-      content: [content],
-      name: [name],
+      content: [content] = [],
+      name: [name] = [],
       photo = [],
-      'bookmark-of': [url]
+      'bookmark-of': [url] = []
     }
   } = JSON.parse(await readFile(path, 'utf8'));
   const status = (url && name) ? `${content}\n\n${name}: ${url}`.trim() : content;
