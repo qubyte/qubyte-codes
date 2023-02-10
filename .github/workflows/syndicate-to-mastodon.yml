@@ -9,7 +9,7 @@ jobs:
   get-added-files:
     runs-on: ubuntu-latest
     outputs:
-      note: ${{ steps.added-documents.outputs.documents }}
+      documents: ${{ steps.added-documents.outputs.documents }}
     steps:
     - name: checkout
       uses: actions/checkout@main
