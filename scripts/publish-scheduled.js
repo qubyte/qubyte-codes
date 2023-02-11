@@ -69,7 +69,7 @@ async function checkShouldTriggerBuild() {
 
   console.log('New files to publish:', shouldTrigger);
 
-  await retry(triggerBuild, { retries: 5 });
+  await retry(triggerBuild, 5);
 
   console.log('Build triggered.');
 }
