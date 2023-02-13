@@ -619,13 +619,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedJapaneseNotesIndex: {
-      dependencies: ['css', 'templates', 'japaneseNotesFiles'],
-      action({ japaneseNotesFiles: posts, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'indexJsFile'],
+      action({ japaneseNotesFiles: posts, templates, css: cssPath, indexJsFile }) {
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
           posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/japanese-notes',
@@ -634,11 +635,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedNotesIndex: {
-      dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: notes, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
+      action({ noteFiles: notes, templates, css: cssPath, indexJsFile }) {
         return templates.notes({
           notes,
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/notes',
@@ -647,11 +649,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedStudySessionsIndex: {
-      dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: studySessions, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
+      action({ studySessionFiles: studySessions, templates, css: cssPath, indexJsFile }) {
         return templates['study-sessions']({
           studySessions,
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/study-sessions',
@@ -660,11 +663,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedLinksIndex: {
-      dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: links, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'linkFiles', 'indexJsFile'],
+      action({ linkFiles: links, templates, css: cssPath, indexJsFile }) {
         return templates.links({
           links,
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/links',
@@ -673,11 +677,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedLikesIndex: {
-      dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: likes, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'likeFiles', 'indexJsFile'],
+      action({ likeFiles: likes, templates, css: cssPath, indexJsFile }) {
         return templates.likes({
           likes,
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/likes',
@@ -686,11 +691,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     renderedRepliesIndex: {
-      dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: replies, templates, css: cssPath }) {
+      dependencies: ['css', 'templates', 'replyFiles', 'indexJsFile'],
+      action({ replyFiles: replies, templates, css: cssPath, indexJsFile }) {
         return templates.replies({
           replies,
           cssPath,
+          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/replies',
