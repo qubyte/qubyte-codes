@@ -10,13 +10,13 @@ function convertTo(fullPath, width, format, name) {
     .resize(width)
     .toFormat(format)
     .toFile(name)
-    .then(() => console.log('generated', name)); // eslint-disable-line no-console
+    .then(() => console.log('generated', name));
 }
 
 for (const path of paths) {
   const fullPath = join(process.cwd(), path);
 
-  console.log('Converting:', fullPath); // eslint-disable-line no-console
+  console.log('Converting:', fullPath);
 
   results.push(
     convertTo(fullPath, 1600, 'avif', fullPath.replace('-original.jpeg', '-2x.avif')),
