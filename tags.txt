@@ -15,3 +15,5 @@ weeknotes
 IndieWeb
 ffconf
 GenerativeArt
+ruby
+sorbet
