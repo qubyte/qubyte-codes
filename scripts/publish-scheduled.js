@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import fs from 'node:fs/promises';
 import parseFrontMatter from '../lib/parse-front-matter.js';
 import retry from '../lib/linear-retry.js';

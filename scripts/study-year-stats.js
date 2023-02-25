@@ -1,5 +1,3 @@
-/* eslint no-console: 0 */
-
 import { readdir, readFile } from 'node:fs/promises';
 import { parse as parseDuration, toSeconds } from 'iso8601-duration';
 import { JSDOM } from 'jsdom';
@@ -21,7 +19,6 @@ function setAttributesNS(element, attributes) {
 
   return element;
 }
-
 
 for (const filename of await readdir(directory)) {
   const path = new URL(filename, directory);

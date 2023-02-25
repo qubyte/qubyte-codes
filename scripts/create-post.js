@@ -42,13 +42,13 @@ async function cli() {
   }
 
   if (stats) {
-    console.error(`File already exists: ${filePath}\n${details}`); // eslint-disable-line no-console
-    return process.exit(1); // eslint-disable-line no-process-exit
+    console.error(`File already exists: ${filePath}\n${details}`);
+    return process.exit(1);
   }
 
   await fs.writeFile(filePath, `---\n${details}\n---\n`);
 
-  console.log('Created:', filePath.href); // eslint-disable-line no-console
+  console.log('Created:', filePath.href);
 }
 
 cli();

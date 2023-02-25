@@ -7,11 +7,11 @@ import postToMastodon from '../lib/post-to-mastodon.js';
 const { positionals: paths } = parseArgs({ allowPositionals: true });
 
 if (!paths.length) {
-  console.log('No path given.'); // eslint-disable-line no-console
+  console.log('No path given.');
 }
 
 for (const path of paths) {
-  console.log('Processing:', path); // eslint-disable-line no-console
+  console.log('Processing:', path);
 
   const {
     properties: {

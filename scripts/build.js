@@ -8,7 +8,9 @@ const syndications = {
   twitter: process.env.TWITTER_SYNDICATION
 };
 
-build({ baseUrl, baseTitle, repoUrl, syndications }).catch(e => {
-  console.error(e); // eslint-disable-line no-console
+try {
+  await build({ baseUrl, baseTitle, repoUrl, syndications });
+} catch (e) {
+  console.error(e);
   process.exit(1);
-});
+}

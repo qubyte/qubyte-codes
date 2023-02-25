@@ -1,5 +1,3 @@
-/* eslint no-console: off */
-
 import { createReadStream } from 'node:fs';
 import { once } from 'node:events';
 import { createServer } from 'node:http';
