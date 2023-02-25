@@ -1,17 +1,17 @@
 import { Readable } from 'node:stream';
-import retry from 'p-retry';
 import parseFeedToUrls from './parse-feed-to-urls.js';
+import retry from '../lib/linear-retry.js';
 
-async function fetchOldFeed(url) {
-  const res = await fetch(url);
+export default function fetchOldFeedToUrls(url) {
+  async function fetchOldFeed() {
+    const res = await fetch(url);
 
-  if (!res.ok) {
-    throw new Error(`Unexpected response from ${url}: ${res.status} ${await res.text()}`);
+    if (!res.ok) {
+      throw new Error(`Unexpected response from ${url}: ${res.status} ${await res.text()}`);
+    }
+
+    return parseFeedToUrls(Readable.fromWeb(res.body));
   }
 
-  return parseFeedToUrls(Readable.fromWeb(res.body));
-}
-
-export default function (url) {
-  return retry(() => fetchOldFeed(url), { retries: 5 });
+  return retry(fetchOldFeed, 5);
 }
