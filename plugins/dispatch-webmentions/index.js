@@ -12,7 +12,7 @@ const ignoredHostnames = [
   'twitter.com',
   'github.com',
   'www.w3.org',
-  'paypal.me'
+  'ko-fi.com'
 ];
 
 /** @type Map<string, import('./mention.js').Mention[]*/
