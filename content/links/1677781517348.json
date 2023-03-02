@@ -1,0 +1,20 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "bookmark-of": [
+      "https://charlottedann.com/article/magical-vector-fields"
+    ],
+    "name": [
+      "Magical vector fields - Charlotte Dann"
+    ],
+    "content": [
+      "A really nice deep dive on noise and vector fields with inline demos to play with!"
+    ],
+    "category": [],
+    "mp-slug": [
+      "magical-vector-fields-charlotte-dann"
+    ]
+  }
+}
