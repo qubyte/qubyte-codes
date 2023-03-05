@@ -1,4 +1,4 @@
-/* global FormData, Blob */
+/* global Blob */
 
 import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
