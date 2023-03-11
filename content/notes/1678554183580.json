@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I should probably make some sequence diagrams. My setup is a bit of a Rube Goldberg machine, but it's surprisingly robust and really convenient to use. For example, sharing photos happens right in the iOS photos app because shortcuts integrates into sharesheets. #indieweb"
+    ],
+    "category": [],
+    "mp-slug": [
+      "i-should-probably-make-some-sequence"
+    ]
+  }
+}
