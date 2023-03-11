@@ -1,0 +1,14 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I'm really enjoying my POSSE setup. I publish to my micropub endpoint using my own iOS shortcuts for photos or study sessions (as events). For plain notes and bookmarks I typically use Omnibear.\n\nThe micropub endpoint pushes to a repository on GitHub, and an Actions workflow picks them up and syndicates photos, notes, and bookmarks to Mastodon. The workflow is fast enough that stuff frequently reaches Mastodon before Netlify has finished building my site. #indieweb"
+    ],
+    "category": [],
+    "mp-slug": [
+      "im-really-enjoying-my-posse-setup"
+    ]
+  }
+}
