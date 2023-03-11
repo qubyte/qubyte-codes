@@ -1,3 +1,4 @@
+name: Syndicate to Mastodon
 on:
   push:
     branches:
