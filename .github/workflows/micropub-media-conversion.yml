@@ -1,3 +1,4 @@
+name: Micropub media conversion
 on:
   push:
     branches:
