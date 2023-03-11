@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Word gets around…"
+    ],
+    "latitude": 50.84041666666667,
+    "longitude": -0.114025,
+    "photo": [
+      {
+        "alt": "Four white doves huddled together, eating seed scattered on a wall.",
+        "value": "/images/1678552387050.jpeg"
+      }
+    ]
+  }
+}
