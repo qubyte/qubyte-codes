@@ -20,9 +20,9 @@ import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
 import hashCopy from './lib/hash-copy.js';
 
-function renderResources({ resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
+function renderResources({ resources, template, cssPath, baseUrl, backlinks = {}, dev, indexJsFile }) {
   return resources.map(resource => ({
-    html: template({ ...resource, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
+    html: template({ ...resource, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev, indexJsFile }),
     filename: resource.filename
   }));
 }
@@ -123,81 +123,81 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
       }
     },
     postFiles: {
-      dependencies: ['paths', 'extraCss', 'hashedScripts', 'indexJsFile'],
-      async action({ paths: { base, content }, extraCss, hashedScripts, indexJsFile }) {
+      dependencies: ['paths', 'extraCss', 'hashedScripts'],
+      async action({ paths: { base, content }, extraCss, hashedScripts }) {
         const postsPath = new URL('posts/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts, indexJsFile })
+          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts })
         });
       }
     },
     japaneseNotesFiles: {
-      dependencies: ['paths', 'hashedScripts', 'indexJsFile'],
-      async action({ paths: { base, content }, hashedScripts, indexJsFile }) {
+      dependencies: ['paths', 'hashedScripts'],
+      async action({ paths: { base, content }, hashedScripts }) {
         const notesPath = new URL('japanese-notes/', content);
         const type = 'japanese-notes';
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type, hashedScripts, indexJsFile })
+          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type, hashedScripts })
         });
       }
     },
     noteFiles: {
-      dependencies: ['paths', 'images', 'indexJsFile'],
-      async action({ paths: { content }, images: imagesDimensions, indexJsFile }) {
+      dependencies: ['paths', 'images'],
+      async action({ paths: { content }, images: imagesDimensions }) {
         const dir = new URL('notes/', content);
         const imagesDir = new URL('images/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: dir,
-          result: await loadNoteFiles({ dir, imagesDir, syndications, imagesDimensions, indexJsFile })
+          result: await loadNoteFiles({ dir, imagesDir, syndications, imagesDimensions })
         });
       }
     },
     studySessionFiles: {
-      dependencies: ['paths', 'indexJsFile'],
-      async action({ paths: { content }, indexJsFile }) {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
         const studySessionsPath = new URL('study-sessions/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: studySessionsPath,
-          result: await loadStudySessionsFiles(studySessionsPath, indexJsFile)
+          result: await loadStudySessionsFiles(studySessionsPath)
         });
       }
     },
     linkFiles: {
-      dependencies: ['paths', 'indexJsFile'],
-      async action({ paths: { content }, indexJsFile }) {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
         const linksPath = new URL('links/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: linksPath,
-          result: await loadLinkFiles(linksPath, syndications, indexJsFile)
+          result: await loadLinkFiles(linksPath, syndications)
         });
       }
     },
     likeFiles: {
-      dependencies: ['paths', 'indexJsFile'],
-      async action({ paths: { content }, indexJsFile }) {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
         const likesPath = new URL('likes/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: likesPath,
-          result: await loadLikeFiles(likesPath, syndications, indexJsFile)
+          result: await loadLikeFiles(likesPath, syndications)
         });
       }
     },
     replyFiles: {
-      dependencies: ['paths', 'indexJsFile'],
-      async action({ paths: { content }, indexJsFile }) {
+      dependencies: ['paths'],
+      async action({ paths: { content } }) {
         const repliesPath = new URL('replies/', content);
 
         return ExecutionGraph.createWatchableResult({
           path: repliesPath,
-          result: await loadReplyFiles(repliesPath, indexJsFile)
+          result: await loadReplyFiles(repliesPath)
         });
       }
     },
@@ -379,14 +379,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
     hashedScripts: {
       dependencies: ['paths', 'scriptsTarget'],
       async action({ paths: { content, target }, scriptsTarget }) {
-        const directory = new URL('scripts/', content);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
-        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, directory), scriptsTarget)));
+        const path = new URL('scripts/', content);
+        const items = (await readdir(path)).filter(i => i.endsWith('.js'));
+        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, path), scriptsTarget)));
+        const result = Object.fromEntries(entries);
 
-        return ExecutionGraph.createWatchableResult({
-          path: directory,
-          result: Object.fromEntries(entries)
-        });
+        return ExecutionGraph.createWatchableResult({ path, result });
       }
     },
     papersTarget: {
