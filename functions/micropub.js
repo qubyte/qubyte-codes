@@ -18,19 +18,6 @@ async function getTitle(url) {
 function syndications() {
   return [
     {
-      uid: 'https://twitter.com/qubyte',
-      name: 'qubyte on twitter',
-      service: {
-        name: 'Twitter',
-        url: 'https://twitter.com/'
-      },
-      user: {
-        name: 'qubyte',
-        url: 'https://twitter.com/qubyte',
-        photo: 'https://pbs.twimg.com/profile_images/958386895037267968/K7X2jWDU.jpg'
-      }
-    },
-    {
       uid: 'https://mastodon.social/@qubyte',
       name: 'qubyte on mastodon.social',
       service: {

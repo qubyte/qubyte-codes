@@ -9,10 +9,6 @@ import { build } from '../index.js';
 
 const notFoundUrl = new URL('../public/404.html', import.meta.url);
 const port = 8080;
-const syndications = {
-  mastodon: 'https://mastodon.social/@qubyte',
-  twitter: 'https://twitter.com/qubyte'
-};
 
 // This watches the content of the src directory for any changes, triggering a
 // build each time a change happens.
@@ -26,7 +22,6 @@ try {
     baseUrl: `http://localhost:${port}`,
     repoUrl: new URL('https://github.com/qubyte/qubyte-codes'),
     baseTitle: 'DEV MODE',
-    syndications,
     dev: true
   });
 } catch (error) {

@@ -38,7 +38,7 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
-export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) {
+export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   const basePath = new URL('./', import.meta.url);
   const sourcePath = new URL('./src/', import.meta.url);
   const contentPath = new URL('./content/', import.meta.url);
@@ -89,13 +89,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
     templates: {
       dependencies: ['paths'],
       async action({ paths: { source } }) {
-        const templatesPath = new URL('templates/', source);
-        const templates = await loadTemplates(templatesPath, { baseTitle });
+        const path = new URL('templates/', source);
+        const result = await loadTemplates(path, { baseTitle });
 
-        return ExecutionGraph.createWatchableResult({
-          path: templatesPath,
-          result: templates
-        });
+        return ExecutionGraph.createWatchableResult({ path, result });
       }
     },
     feeds: {
@@ -153,7 +150,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
 
         return ExecutionGraph.createWatchableResult({
           path: dir,
-          result: await loadNoteFiles({ dir, imagesDir, syndications, imagesDimensions })
+          result: await loadNoteFiles({ dir, imagesDir, imagesDimensions })
         });
       }
     },
@@ -175,7 +172,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
 
         return ExecutionGraph.createWatchableResult({
           path: linksPath,
-          result: await loadLinkFiles(linksPath, syndications)
+          result: await loadLinkFiles(linksPath)
         });
       }
     },
@@ -186,7 +183,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
 
         return ExecutionGraph.createWatchableResult({
           path: likesPath,
-          result: await loadLikeFiles(likesPath, syndications)
+          result: await loadLikeFiles(likesPath)
         });
       }
     },
@@ -462,12 +459,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev, syndications }) 
     robotsFile: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
-        const verificationPath = new URL('robots.txt', source);
+        const robotsPath = new URL('robots.txt', source);
 
-        await copyFile(verificationPath, new URL('robots.txt', target));
+        await copyFile(robotsPath, new URL('robots.txt', target));
 
         return ExecutionGraph.createWatchableResult({
-          path: verificationPath,
+          path: robotsPath,
           result: null
         });
       }
