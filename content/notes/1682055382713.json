@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I’m at my in-laws, and the place is wonderfully remote after a week spent in Tokyo."
+    ],
+    "latitude": 36.60508,
+    "longitude": 140.54193,
+    "photo": [
+      {
+        "alt": "The upstairs view from a house in the Japanese countryside. It’s a sunny day with a mostly clear sky. A small polytunnel can be seen in the foreground with some other small plots prepared for crops. In the background are green mountains covered with trees.",
+        "value": "/images/1682055207191.jpeg"
+      }
+    ]
+  }
+}
