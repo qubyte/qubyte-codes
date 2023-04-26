@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Absolute scenes."
+    ],
+    "latitude": 36.605755,
+    "longitude": 140.5396883333333,
+    "photo": [
+      {
+        "alt": "A photo of a steep (downward), narrow alley in the rain. A red-leafed tree is in the foreground on the left, and houses either side. In the background are green mountains and mist.",
+        "value": "/images/1682480592906.jpeg"
+      }
+    ]
+  }
+}
