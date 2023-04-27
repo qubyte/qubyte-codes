@@ -36,7 +36,7 @@
     "mathjax-full": "^3.2.2",
     "postcss": "8.4.21",
     "postcss-import": "^15.1.0",
-    "sharp": "0.32.0",
+    "sharp": "0.32.1",
     "slugify": "1.6.6"
   },
   "devDependencies": {
