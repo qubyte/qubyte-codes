@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Next up, Kanda Matsuya. This is a highly regarded soba restaurant which I walked past every weekday for two and a half years and never got around to trying. Very tasty."
+    ],
+    "latitude": 35.69588,
+    "longitude": 139.7688133333333,
+    "photo": [
+      {
+        "alt": "The ceiling lamp of the restaurant. It’s large and rectangular, dominating the ceiling. It’s composed of a square, dark wooden lattice and white paper reminiscent of traditional Japanese sliding doors. Some patrons can be seen below.",
+        "value": "/images/1682763354485.jpeg"
+      }
+    ]
+  }
+}
