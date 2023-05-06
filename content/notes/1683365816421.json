@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I’m on a BA flight, somewhere over the Bearing Sea, and BA have decided to enable free streaming of the coronation over Wi-Fi. Also they gave me a packet of Etonian Mess flavour popcorn."
+    ],
+    "latitude": 35.54582,
+    "longitude": 139.7683866666667,
+    "photo": [
+      {
+        "alt": "A small packet of Eton Mess popcorn. The design sports a union flag.",
+        "value": "/images/1683365741497.jpeg"
+      }
+    ]
+  }
+}
