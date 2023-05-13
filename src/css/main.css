@@ -269,6 +269,13 @@ dl > div + div::before {
   padding-bottom: 1rem;
 }
 
+blockquote + blockquote::before {
+  content: "---";
+  display: block;
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
 img {
   display: block;
   margin: 0 auto;
