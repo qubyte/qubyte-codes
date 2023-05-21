@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I’ve been trying to get a photo of our local rook for months. It doesn’t stay put for long, and the light is usually all wrong. Finally I got this while eating breakfast just now."
+    ],
+    "latitude": 50.840345,
+    "longitude": -0.1138888333333333,
+    "photo": [
+      {
+        "alt": "A picture of a rook perched on a house roof. The sky is clear. The white face of the rook is obvious.",
+        "value": "/images/1684656271905.jpeg"
+      }
+    ]
+  }
+}
