@@ -28,7 +28,7 @@
     "feedme": "^2.0.2",
     "geo-tz": "7.0.7",
     "handlebars": "^4.7.7",
-    "highlight.js": "11.7.0",
+    "highlight.js": "11.8.0",
     "http-link-header": "1.1.1",
     "iso8601-duration": "2.1.1",
     "jsdom": "22.1.0",
