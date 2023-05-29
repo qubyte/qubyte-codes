@@ -319,6 +319,27 @@ body:has(.furigana-position option[value="off"]:checked) :is(rt, rp) {
   display: none;
 }
 
+@keyframes party-animation {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+html:has(input#party-time:checked) {
+  animation: party-animation 3s infinite;
+}
+
+input#party-time {
+  display: none;
+}
+
+input#party-time + label:after {
+  content: "🥳🦜";
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color-main: #000;
