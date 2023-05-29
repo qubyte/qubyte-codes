@@ -31,7 +31,7 @@
     "highlight.js": "11.7.0",
     "http-link-header": "1.1.1",
     "iso8601-duration": "2.1.1",
-    "jsdom": "21.1.1",
+    "jsdom": "22.1.0",
     "marked": "^4.3.0",
     "mathjax-full": "^3.2.2",
     "postcss": "8.4.23",
