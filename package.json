@@ -32,7 +32,7 @@
     "http-link-header": "1.1.1",
     "iso8601-duration": "2.1.1",
     "jsdom": "21.1.1",
-    "marked": "^4.3.0",
+    "marked": "^5.0.4",
     "mathjax-full": "^3.2.2",
     "postcss": "8.4.23",
     "postcss-import": "^15.1.0",
