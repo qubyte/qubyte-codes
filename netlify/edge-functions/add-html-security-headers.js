@@ -3,7 +3,13 @@ const scriptSrcHashRegex = /^\s*<meta name="script-src-hash" content="(.*)">$/m;
 /* eslint-env browser */
 export default async function addHtmlSecurityHeaders(_, context) {
   /** @type Response */
-  const response = await context.next();
+  const response = await context.next({ sendConditionalRequest: true });
+
+  // No need to do any work if the response cached by the client hasn't changed.
+  if (response.status === 304) {
+    return response;
+  }
+
   const { headers } = response;
   const type = headers.get('content-type');
 
@@ -31,3 +37,8 @@ export default async function addHtmlSecurityHeaders(_, context) {
 
   return response;
 }
+
+export const config = {
+  path: '/*',
+  excludedPath: ['/**/hashed-*', '/icons/*', '/images/*', '/img/*', '/**/*.xml']
+};
