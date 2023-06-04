@@ -13,6 +13,8 @@ export default async function addHtmlSecurityHeaders(_, context) {
   const { headers } = response;
   const type = headers.get('content-type');
 
+  console.log('MIME:', type); // eslint-disable-line
+
   if (!type || type.startsWith('text/html')) {
     const body = await response.text();
     const match = body.match(scriptSrcHashRegex);
@@ -40,5 +42,5 @@ export default async function addHtmlSecurityHeaders(_, context) {
 
 export const config = {
   path: '/*',
-  excludedPath: ['/**/hashed-*', '/icons/*', '/images/*', '/img/*', '/**/*.xml']
+  excludedPath: '/*.{json,xml,opml,css,js,pdf,svg,png,avif,webp,jpeg,jpg,txt}'
 };
