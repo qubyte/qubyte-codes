@@ -16,17 +16,15 @@ describe('render', () => {
     assert.equal(rendered.trim(), '<p>a paragraph</p>');
   });
 
-  it('renders $$ delimited blocks labelled as SVG in the img role and a title containing the original maths', () => {
+  it('renders $$ delimited blocks labelled as math with an annotation containing original maths', () => {
     const rendered = render('$$\na=b\n$$', URL);
 
     const { window: { document } } = new JSDOM(rendered);
-    const $svg = document.querySelector('svg');
+    const $math = document.querySelector('math');
 
-    assert.equal($svg.getAttribute('role'), 'img');
+    const $original = $math.querySelector('annotation[encoding="application/x-tex"]');
 
-    const $title = $svg.querySelector('title');
-
-    assert.equal($title.textContent, 'a=b');
+    assert.equal($original.textContent, 'a=b');
   });
 
   describe('mathematics with dollar delimiters', () => {
@@ -35,37 +33,36 @@ describe('render', () => {
 
       const { window: { document } } = new JSDOM(rendered);
 
-      assert.equal(document.querySelectorAll('svg[style]').length, 0);
+      assert.equal(document.querySelectorAll('math[style]').length, 0);
     });
 
     it('updates the ID of the title of the rendered mathematics', () => {
       const rendered = render('$$\na=b\n$$', URL);
 
       const { window: { document } } = new JSDOM(rendered);
-      const titles = document.querySelectorAll('svg title[id]');
+      const math = document.querySelector('math');
 
-      assert.equal(titles.length, 1);
-      assert.equal(titles[0].id, 'equation-1');
+      assert.equal(math.id, 'equation-1');
     });
 
     it('increments the title ID to avoid collisions', () => {
       const rendered = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
       const { window: { document } } = new JSDOM(rendered);
-      const titles = document.querySelectorAll('svg title[id]');
+      const maths = document.querySelectorAll('math');
 
-      assert.equal(titles.length, 2);
-      assert.equal(titles[0].id, 'equation-1');
-      assert.equal(titles[1].id, 'equation-2');
+      assert.equal(maths.length, 2);
+      assert.equal(maths[0].id, 'equation-1');
+      assert.equal(maths[1].id, 'equation-2');
     });
 
-    it('sets aria-labelledby to the title element ID for each snipped', () => {
+    it('sets aria-label to the original math for each snipped', () => {
       const rendered = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
 
       const { window: { document } } = new JSDOM(rendered);
-      const svgs = document.querySelectorAll('svg');
+      const maths = document.querySelectorAll('math');
 
-      assert.equal(svgs[0].getAttribute('aria-labelledby'), 'equation-1');
-      assert.equal(svgs[1].getAttribute('aria-labelledby'), 'equation-2');
+      assert.equal(maths[0].getAttribute('aria-label'), 'a=b');
+      assert.equal(maths[1].getAttribute('aria-label'), 'c=d');
     });
   });
 
