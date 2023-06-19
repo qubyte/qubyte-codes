@@ -66,6 +66,12 @@ describe('render', () => {
     });
   });
 
+  describe('inline mathematics with single dollar delimiters', () => {
+    const rendered = render('hello $a$ world', URL);
+
+    assert.equal(rendered.trim(), '<p>hello <math><mi>a</mi></math> world</p>');
+  });
+
   describe('inline ruby links', () => {
     it('renders ruby elements', () => {
       const rendered = render('^買,か,いに,,行,い,く,^', URL).trim();
