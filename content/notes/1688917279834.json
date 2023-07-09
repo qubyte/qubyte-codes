@@ -1,0 +1,16 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Text should be hidden behind a warning."
+    ],
+    "latitude": 50.84036826941387,
+    "longitude": -0.1138831408495977,
+    "spoiler": [
+      "Testing syndicated posting to mastodon with spoiler text."
+    ]
+  },
+  "spoiler": []
+}
