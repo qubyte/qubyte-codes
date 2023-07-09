@@ -18,11 +18,16 @@ for (const path of paths) {
       content: [content] = [],
       name: [name] = [],
       photo = [],
+      spoiler: [spoiler] = [],
       'bookmark-of': [url] = []
     }
   } = JSON.parse(await readFile(path, 'utf8'));
   const status = (url && name) ? `${content}\n\n${name}: ${url}`.trim() : content;
   const statusBody = new URLSearchParams({ status });
+
+  if (spoiler) {
+    statusBody.append('spoiler_text', spoiler);
+  }
 
   for (const { value, alt } of photo) {
     const form = new FormData();
