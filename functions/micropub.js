@@ -78,7 +78,7 @@ async function parseBody(headers, body, isBase64Encoded) {
     throw new Error(`Unhandled MIME type: ${type}`);
   }
 
-  parsed.spoiler = [].concat(parsed.spoiler || [])
+  parsed.properties.spoiler = [].concat(parsed.properties.spoiler || [])
     .map(s => s.trim())
     .filter(Boolean);
 
