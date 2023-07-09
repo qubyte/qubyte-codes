@@ -21,11 +21,14 @@
       <name>qubyte</name>
       <uri>https://qubyte.codes</uri>
     </author>
-    {{#if feedItem}}
-    <content type="html">{{feedItem}}{{#photos}}&lt;img src&#x3D;&quot;https://qubyte.codes{{value}}&quot; alt&#x3D;&quot;{{alt}}&quot;&gt;{{/photos}}</content>
+    <content type="html">
+    {{#if spoiler}}
+    &lt;p&gt;⚠︎ {{spoiler}} ⚠︎&lt;/p&gt;&lt;p&gt;Follow the link to reveal.&lt;/p&gt;
     {{else}}
-    <content type="html">{{content}}{{#photos}}&lt;img src&#x3D;&quot;https://qubyte.codes{{value}}&quot; alt&#x3D;&quot;{{alt}}&quot;&gt;{{/photos}}</content>
+    {{#if feedItem}}{{feedItem}}{{else}}{{content}}{{/if}}
+    {{#photos}}&lt;img src&#x3D;&quot;https://qubyte.codes{{value}}&quot; alt&#x3D;&quot;{{alt}}&quot;&gt;{{/photos}}
     {{/if}}
+    </content>
   </entry>
   {{/items}}
 

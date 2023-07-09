@@ -3,6 +3,7 @@
   <header>
     <a class="u-url" href="/notes/{{timestamp}}"><time datetime="{{datetime}}" class="dt-published">{{humanDateTime datetime timezone}}</time></a>
   </header>
+  {{#if spoiler}}<details><summary>⚠︎ {{spoiler}} ⚠︎</summary>{{/if}}
   <div class="e-content">
     {{{content}}}
   </div>
@@ -13,4 +14,5 @@
       <img class="u-photo" src="{{value}}" alt="{{alt}}" width="{{width}}" height="{{height}}" loading="lazy">
     </picture>
   {{/photos}}
+  {{#if spoiler}}</details>{{/if}}
 </article>

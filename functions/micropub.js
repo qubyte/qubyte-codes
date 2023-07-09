@@ -63,22 +63,26 @@ async function createFile(message, type, data) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
-function parseBody(headers, body, isBase64Encoded) {
+async function parseBody(headers, body, isBase64Encoded) {
   const type = headers['content-type'];
 
+  let parsed = null;
+
   if (type.match(/multipart/)) {
-    return parseMultipart(headers, body, isBase64Encoded);
+    parsed = await parseMultipart(headers, body, isBase64Encoded);
+  } else if (type.match(/json/)) {
+    parsed = JSON.parse(body);
+  } else if (type.match(/x-www-form-urlencoded/)) {
+    parsed = convertQueryStringToObject(body);
+  } else {
+    throw new Error(`Unhandled MIME type: ${type}`);
   }
 
-  if (type.match(/json/)) {
-    return JSON.parse(body);
-  }
+  parsed.spoiler = [].concat(parsed.spoiler || [])
+    .map(s => s.trim())
+    .filter(Boolean);
 
-  if (type.match(/x-www-form-urlencoded/)) {
-    return convertQueryStringToObject(body);
-  }
-
-  throw new Error(`Unhandled MIME type: ${type}`);
+  return parsed;
 }
 
 export async function handler(event) {
