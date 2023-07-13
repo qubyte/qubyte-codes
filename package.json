@@ -47,6 +47,6 @@
     "chokidar": "3.5.3",
     "eslint": "8.44.0",
     "eslint-config-qubyte": "5.0.0",
-    "inquirer": "9.2.7"
+    "inquirer": "9.2.8"
   }
 }
