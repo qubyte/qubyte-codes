@@ -20,9 +20,9 @@ import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
 import hashCopy from './lib/hash-copy.js';
 
-function renderResources({ resources, template, cssPath, baseUrl, backlinks = {}, dev, indexJsFile }) {
+function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev, indexJsFile }) {
   return resources.map(resource => ({
-    html: template({ ...resource, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev, indexJsFile }),
+    html: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev, indexJsFile }),
     filename: resource.filename
   }));
 }
@@ -565,19 +565,19 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     renderedJapaneseNotes: {
       dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks', 'indexJsFile'],
       action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
+        return renderResources({ noIndex: true, resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
       action({ noteFiles: resources, templates: { note: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
+        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedStudySessions: {
       dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
       action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
+        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev, indexJsFile });
       }
     },
     renderedLinks: {
@@ -619,6 +619,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
+          noIndex: true,
           posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
           indexJsFile,
@@ -633,6 +634,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
       action({ noteFiles: notes, templates, css: cssPath, indexJsFile }) {
         return templates.notes({
+          noIndex: true,
           notes,
           cssPath,
           indexJsFile,
@@ -647,6 +649,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
       action({ studySessionFiles: studySessions, templates, css: cssPath, indexJsFile }) {
         return templates['study-sessions']({
+          noIndex: true,
           studySessions,
           cssPath,
           indexJsFile,
