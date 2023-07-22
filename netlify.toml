@@ -2,19 +2,11 @@
   publish = "public"
   command = "npm run build"
 
+[build.processing]
+  skip_processing = true
+
 [build.processing.html]
   pretty_urls = true
-
-[build.processing.images]
-  compress = false
-
-[build.processing.css]
-  bundle = false
-  minify = false
-
-[build.processing.js]
-  bundle = false
-  minify = false
 
 [build.environment]
   NODE_ENV = "production"
