@@ -37,8 +37,3 @@ export default async function addHtmlSecurityHeaders(_, context) {
 
   return response;
 }
-
-export const config = {
-  path: '/*',
-  excludedPath: ['/**/hashed-*', '/icons/*', '/images/*', '/img/*', '/**/*.xml']
-};
