@@ -18,7 +18,9 @@
   external_node_modules = ["jsdom"]
 
 [[edge_functions]]
+  cache = "manual"
   path = "/*"
+  excludedPath = ["/**/hashed-*", "/icons/*", "/images/*", "/img/*", "/**/*.xml"]
   function = "add-html-security-headers"
 
 [[context.production.plugins]]
