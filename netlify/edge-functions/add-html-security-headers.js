@@ -26,7 +26,7 @@ export default async function addHtmlSecurityHeaders(_, context) {
       `default-src 'self'; script-src${match ? ` '${match[1]}'` : ''} 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
     );
     headers.set('referrer-policy', 'strict-origin-when-cross-origin');
-    headers.set('cache-control', 'no-cache');
+    headers.set('cache-control', 'max-age=0, s-maxage=31536000');
     headers.set(
       'permissions-policy',
       'accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self), midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()' // eslint-disable-line max-len
