@@ -1,7 +1,7 @@
 const scriptSrcHashRegex = /^\s*<meta name="script-src-hash" content="(.*)">$/m;
 
 /* eslint-env browser */
-export default async function addHtmlSecurityHeaders(_, context) {
+export default async function addHtmlSecurityHeaders(request, context) {
   /** @type Response */
   const response = await context.next({ sendConditionalRequest: true });
 
@@ -34,6 +34,8 @@ export default async function addHtmlSecurityHeaders(_, context) {
 
     return new Response(body, response);
   }
+
+  console.log('Unexpected invocation:', request.url); // eslint-disable-line no-console
 
   return response;
 }
