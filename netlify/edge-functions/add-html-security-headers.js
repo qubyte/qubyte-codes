@@ -3,12 +3,7 @@ const scriptSrcHashRegex = /^\s*<meta name="script-src-hash" content="(.*)">$/m;
 /* eslint-env browser */
 export default async function addHtmlSecurityHeaders(request, context) {
   /** @type Response */
-  const response = await context.next({ sendConditionalRequest: true });
-
-  // No need to do any work if the response cached by the client hasn't changed.
-  if (response.status === 304) {
-    return response;
-  }
+  const response = await context.next();
 
   const { headers } = response;
   const type = headers.get('content-type');
