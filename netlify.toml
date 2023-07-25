@@ -20,7 +20,7 @@
 [[edge_functions]]
   cache = "manual"
   path = "/*"
-  excludedPattern = "^(.*)\.(json|xml|opml|css|js|pdf|svg|png|avif|webp|jpeg|jpg|txt)$"
+  excludedPattern = "^(.*)\\.(json|xml|opml|css|js|pdf|svg|png|avif|webp|jpeg|jpg|txt)$"
   function = "add-html-security-headers"
 
 [[context.production.plugins]]
