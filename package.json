@@ -10,7 +10,6 @@
     "test": "URL=https://qubyte.codes.test/ node --test",
     "build": "node scripts/clean.js && node scripts/build.js",
     "start": "node scripts/clean.js && node scripts/serve.js",
-    "create-post": "node scripts/create-post.js",
     "lint": "eslint .",
     "publish-scheduled": "node scripts/publish-scheduled.js"
   },
@@ -46,7 +45,6 @@
     "@toisu/toisu": "4.0.5",
     "chokidar": "3.5.3",
     "eslint": "8.46.0",
-    "eslint-config-qubyte": "5.0.0",
-    "inquirer": "9.2.8"
+    "eslint-config-qubyte": "5.0.0"
   }
 }
