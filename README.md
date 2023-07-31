@@ -23,9 +23,6 @@ files copied over (ones which need no compilation, such as the service worker).
 Other files must be generated and are placed in the public directory as they are
 created.
 
-[create-post](./scripts/create-post) is a little CLI utility to create a new markdown
-post file with pre-populated metadata.
-
 [netlify.toml](./netlify.toml) is a configuration for
 [Netlify](https://www.netlify.com/), which hosts my blog (I highly recommend
 it). At the time of writing this file contains only configuration for headers.
