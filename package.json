@@ -31,7 +31,7 @@
     "http-link-header": "1.1.1",
     "iso8601-duration": "2.1.1",
     "jsdom": "22.1.0",
-    "marked": "^6.0.0",
+    "marked": "^7.0.0",
     "marked-gfm-heading-id": "^3.0.5",
     "marked-highlight": "^2.0.2",
     "postcss": "8.4.27",
