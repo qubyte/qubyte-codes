@@ -17,12 +17,6 @@
   node_bundler = "esbuild"
   external_node_modules = ["jsdom"]
 
-[[edge_functions]]
-  cache = "manual"
-  path = "/*"
-  excludedPattern = "^(.*)\\.(json|xml|opml|css|js|pdf|svg|png|avif|webp|jpeg|jpg|txt)$"
-  function = "add-html-security-headers"
-
 [[context.production.plugins]]
   package = "/plugins/dispatch-webmentions"
 
