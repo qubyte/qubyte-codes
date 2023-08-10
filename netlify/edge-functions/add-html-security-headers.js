@@ -34,3 +34,9 @@ export default async function addHtmlSecurityHeaders(request, context) {
 
   return response;
 }
+
+export const config = {
+  cache: 'manual',
+  path: '/*',
+  excludedPath: '/*.(json|xml|opml|css|js|pdf|svg|png|avif|webp|jpeg|jpg|txt)'
+};
