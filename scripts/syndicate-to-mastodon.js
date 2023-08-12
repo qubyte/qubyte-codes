@@ -1,5 +1,3 @@
-/* global Blob */
-
 import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import postToMastodon from '../lib/post-to-mastodon.js';
