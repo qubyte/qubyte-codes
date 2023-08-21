@@ -509,9 +509,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     css: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
-        if (cssUrl) {
-          await unlink(cssUrl);
-        }
+        if (cssUrl) await unlink(cssUrl);
 
         const { url, htmlPath } = await generateMainCss({
           entry: new URL('css/entry.css', source),

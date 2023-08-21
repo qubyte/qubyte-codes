@@ -60,9 +60,7 @@ export async function handler(event) {
     return { statusCode: 400, body: 'No files found.' };
   }
 
-  if (fileKeys.length > 1) {
-    console.log('Unexpected number of file keys:', fileKeys);
-  }
+  if (fileKeys.length > 1) console.log('Unexpected number of file keys:', fileKeys);
 
   const photo = parsed.files[fileKeys[0]];
 

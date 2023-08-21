@@ -2,5 +2,8 @@
   "extends": "qubyte/ES2022-module",
   "env": {
     "node": true
+  },
+  "rules": {
+    "curly": ["error", "multi-line"]
   }
 }

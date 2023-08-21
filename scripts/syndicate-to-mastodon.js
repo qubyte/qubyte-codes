@@ -4,9 +4,7 @@ import postToMastodon from '../lib/post-to-mastodon.js';
 
 const { positionals: paths } = parseArgs({ allowPositionals: true });
 
-if (!paths.length) {
-  console.log('No path given.');
-}
+if (!paths.length) console.log('No path given.');
 
 for (const path of paths) {
   console.log('Processing:', path);
@@ -23,9 +21,7 @@ for (const path of paths) {
   const status = (url && name) ? `${content}\n\n${name}: ${url}`.trim() : content;
   const statusBody = new URLSearchParams({ status });
 
-  if (spoiler) {
-    statusBody.append('spoiler_text', spoiler);
-  }
+  if (spoiler) statusBody.append('spoiler_text', spoiler);
 
   for (const { value, alt } of photo) {
     const form = new FormData();
