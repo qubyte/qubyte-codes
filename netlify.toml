@@ -26,41 +26,6 @@
 [[context.production.plugins]]
   package = "/plugins/update-shortlinks"
 
-[[headers]]
-  for = "/japanese-notes*"
-  [headers.values]
-    X-Robots-Tag = "none"
-
-[[headers]]
-  for = "/hashed-*"
-  [headers.values]
-    Cache-Control = "max-age=315360000, public, immutable"
-
-[[headers]]
-  for = "/scripts/hashed-*"
-  [headers.values]
-    Cache-Control = "max-age=315360000, public, immutable"
-
-[[headers]]
-  for = "*.css"
-  [headers.values]
-    Cache-Control = "max-age=315360000, public, immutable"
-
-[[headers]]
-  for = "*atom.xml"
-  [headers.values]
-    Content-Type = "application/atom+xml; charset=utf-8"
-
-[[headers]]
-  for = "/feeds.opml"
-  [headers.values]
-    Content-Type = "application/xml; charset=utf-8"
-
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Content-Security-Policy = "connect-src *;"
-
 [[redirects]]
   from = "/s/gh"
   to = "https://github.com/qubyte/"

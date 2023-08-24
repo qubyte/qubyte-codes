@@ -3,6 +3,7 @@
 import { fileURLToPath } from 'node:url';
 import { readdir, writeFile, rm, mkdir, readFile, copyFile, unlink } from 'node:fs/promises';
 import { once } from 'node:events';
+import { createHash } from 'node:crypto';
 
 import sharp from 'sharp';
 
@@ -19,6 +20,7 @@ import collateTags from './lib/collate-tags.js';
 import getLastCommitTime from './lib/get-last-commit-time.js';
 import ExecutionGraph from './lib/execution-graph.js';
 import hashCopy from './lib/hash-copy.js';
+import NetlifyHeaders from './lib/netlify-headers.js';
 
 function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev, indexJsFile }) {
   return resources.map(resource => ({
@@ -43,6 +45,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   const sourcePath = new URL('./src/', import.meta.url);
   const contentPath = new URL('./content/', import.meta.url);
   const targetPath = new URL('./public/', import.meta.url);
+  const netlifyHeaders = new NetlifyHeaders();
 
   let watcher = null;
 
@@ -128,6 +131,27 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           path: postsPath,
           result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts })
         });
+      }
+    },
+    populateHeaders: {
+      dependencies: ['paths', 'postFiles'],
+      action({ paths: { target }, postFiles }) {
+        for (const post of postFiles) {
+          if (post.importMap) {
+            const hash = createHash('sha256')
+              .update(post.importMap)
+              .digest('base64');
+
+            netlifyHeaders.addHeaders(post.localUrl, [
+              [
+                'Content-Security-Policy',
+                `default-src 'self'; script-src 'sha256-${hash}' 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
+              ]
+            ]);
+
+            writeFile(new URL('_headers', target), `${netlifyHeaders.generate()}\n`);
+          }
+        }
       }
     },
     japaneseNotesFiles: {
