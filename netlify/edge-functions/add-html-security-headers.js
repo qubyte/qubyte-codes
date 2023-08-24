@@ -12,7 +12,7 @@ export default async function addHtmlSecurityHeaders(request, context) {
     if (!type || type.startsWith('text/html')) {
       const body = await response.text();
       const match = body.match(scriptSrcHashRegex);
-  
+
       headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains; preload');
       headers.set('x-frame-options', 'SAMEORIGIN');
       headers.set('x-xss-protection', '1');
