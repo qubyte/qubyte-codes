@@ -8,8 +8,8 @@ export default async function addHtmlSecurityHeaders(request, context) {
   const { headers } = response;
   const type = headers.get('content-type');
 
-  try {
-    if (!type || type.startsWith('text/html')) {
+  if ((!type || type.startsWith('text/html')) && response.ok) {
+    try {
       const body = await response.text();
       const match = body.match(scriptSrcHashRegex);
 
@@ -27,11 +27,10 @@ export default async function addHtmlSecurityHeaders(request, context) {
         'permissions-policy',
         'accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self), midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()' // eslint-disable-line max-len
       );
+      return new Response(body, response);
+    } catch (e) {
+      console.error('Unexpected error:', response.status, e); // eslint-disable-line no-console
     }
-
-    return new Response(body, response);
-  } catch (e) {
-    console.error("Unexpected error:", response.status, e);
   }
 
   console.log('Unexpected invocation:', request.url); // eslint-disable-line no-console
