@@ -27,11 +27,11 @@ export default async function addHtmlSecurityHeaders(request, context) {
         'permissions-policy',
         'accelerometer=(self), ambient-light-sensor=(self), camera=(self), fullscreen=(self), gyroscope=(self), magnetometer=(self), microphone=(self), midi=(self), picture-in-picture=(), sync-xhr=(), usb=(self), interest-cohort=()' // eslint-disable-line max-len
       );
-    } catch (e) {
-      console.error("Unexpected error:", response.status, e);
     }
 
     return new Response(body, response);
+  } catch (e) {
+    console.error("Unexpected error:", response.status, e);
   }
 
   console.log('Unexpected invocation:', request.url); // eslint-disable-line no-console
