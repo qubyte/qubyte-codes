@@ -33,7 +33,7 @@ export default async function addHtmlSecurityHeaders(request, context) {
     }
   }
 
-  console.log('Unexpected invocation:', request.url); // eslint-disable-line no-console
+  console.log('Unexpected invocation:', response.status, request.url); // eslint-disable-line no-console
 
   return response;
 }
