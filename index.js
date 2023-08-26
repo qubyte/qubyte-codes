@@ -45,7 +45,6 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   const sourcePath = new URL('./src/', import.meta.url);
   const contentPath = new URL('./content/', import.meta.url);
   const targetPath = new URL('./public/', import.meta.url);
-  const netlifyHeaders = new NetlifyHeaders();
 
   let watcher = null;
 
@@ -136,20 +135,22 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     populateHeaders: {
       dependencies: ['paths', 'postFiles'],
       action({ paths: { target }, postFiles }) {
+        const headers = new NetlifyHeaders();
+
         for (const post of postFiles) {
           if (post.importMap) {
             const hash = createHash('sha256')
               .update(post.importMap)
               .digest('base64');
 
-            netlifyHeaders.addHeaders(post.localUrl, [
+            headers.addHeaders(post.localUrl, [
               [
                 'Content-Security-Policy',
                 `default-src 'self'; script-src 'sha256-${hash}' 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
               ]
             ]);
 
-            writeFile(new URL('_headers', target), `${netlifyHeaders.generate()}\n`);
+            writeFile(new URL('_headers', target), `${headers.generate()}\n`);
           }
         }
       }
