@@ -1,0 +1,23 @@
+{
+  "type": [
+    "h-event"
+  ],
+  "properties": {
+    "category": [
+      "study-session",
+      "homework"
+    ],
+    "duration": [
+      "PT0H22M"
+    ],
+    "latitude": 50.83273960557143,
+    "name": [
+      "Study session"
+    ],
+    "longitude": -0.1289546274713835,
+    "description": [
+      ""
+    ],
+    "spoiler": []
+  }
+}
