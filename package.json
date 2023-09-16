@@ -31,9 +31,9 @@
     "http-link-header": "1.1.1",
     "iso8601-duration": "2.1.1",
     "jsdom": "22.1.0",
-    "marked": "^8.0.1",
-    "marked-gfm-heading-id": "^3.0.7",
-    "marked-highlight": "^2.0.5",
+    "marked": "^9.0.1",
+    "marked-gfm-heading-id": "^3.0.8",
+    "marked-highlight": "^2.0.6",
     "postcss": "8.4.29",
     "postcss-import": "^15.1.0",
     "sharp": "0.32.5",
@@ -44,7 +44,7 @@
     "@toisu/static": "4.1.0",
     "@toisu/toisu": "4.0.5",
     "chokidar": "3.5.3",
-    "eslint": "8.48.0",
+    "eslint": "^8.49.0",
     "eslint-config-qubyte": "5.0.0"
   }
 }
