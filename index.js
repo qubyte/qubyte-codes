@@ -1,9 +1,10 @@
 /* eslint max-lines: off */
 
 import { fileURLToPath } from 'node:url';
-import { readdir, writeFile, rm, mkdir, readFile, copyFile, unlink } from 'node:fs/promises';
+import { readdir, writeFile, rm, mkdir, readFile, copyFile, cp, unlink } from 'node:fs/promises';
 import { once } from 'node:events';
 import { createHash } from 'node:crypto';
+import { extname } from 'node:path';
 
 import sharp from 'sharp';
 
@@ -36,6 +37,17 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
       return rendered.map(({ html, filename }) => writeFile(new URL(`${pathFragment}/${filename}`, target), html));
     }
   };
+}
+
+async function copyStaticDirectory(sourceDirectory, targetDirectory, allowedFileEndings) {
+  await cp(sourceDirectory, targetDirectory, {
+    filter(source) {
+      return source === sourceDirectory.pathname || allowedFileEndings.includes(extname(source));
+    },
+    recursive: true
+  });
+
+  return ExecutionGraph.createWatchableResult({ path: sourceDirectory, result: targetDirectory });
 }
 
 // This is where it all kicks off. This function loads posts and templates,
@@ -277,29 +289,13 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         return makeDirectory('tags/');
       }
     },
-    activitypubTarget: {
-      dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('activitypub/', source),
-          result: await makeDirectory('activitypub/')
-        });
-      }
-    },
     activitypubDocuments: {
-      dependencies: ['paths', 'activitypubTarget'],
-      async action({ paths: { source }, activitypubTarget }) {
-        const directory = new URL('activitypub/', source);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.json'));
+      dependencies: ['paths'],
+      action({ paths: { source, target } }) {
+        const sourceDirectory = new URL('activitypub/', source);
+        const targetDirectory = new URL('activitypub/', target);
 
-        await Promise.all(
-          items.map(
-            item => copyFile(
-              new URL(item, directory),
-              new URL(item, activitypubTarget)
-            )
-          )
-        );
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.json']);
       }
     },
     fingerTarget: {
@@ -323,115 +319,51 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         }));
       }
     },
-    iconsTarget: {
-      dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('icons/', source),
-          result: await makeDirectory('icons/')
-        });
-      }
-    },
     icons: {
-      dependencies: ['paths', 'iconsTarget'],
-      async action({ paths: { source }, iconsTarget }) {
-        const directory = new URL('icons/', source);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.png') || i.endsWith('.svg'));
-
-        await Promise.all(
-          items.map(
-            item => copyFile(
-              new URL(item, directory),
-              new URL(item, iconsTarget)
-            )
-          )
-        );
-      }
-    },
-    imgTarget: {
       dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('img/', source),
-          result: await makeDirectory('img/')
-        });
+      action({ paths: { source, target } }) {
+        const sourceDirectory = new URL('icons/', source);
+        const targetDirectory = new URL('icons/', target);
+
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.png', '.svg']);
       }
     },
     img: {
-      dependencies: ['paths', 'imgTarget'],
-      async action({ paths: { source }, imgTarget }) {
-        const directory = new URL('img/', source);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.jpg') || i.endsWith('.webp') || i.endsWith('.avif'));
-
-        await Promise.all(
-          items.map(
-            item => copyFile(
-              new URL(item, directory),
-              new URL(item, imgTarget)
-            )
-          )
-        );
-      }
-    },
-    scriptsTarget: {
       dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('scripts/', source),
-          result: await makeDirectory('scripts/')
-        });
+      action({ paths: { source, target } }) {
+        const sourceDirectory = new URL('img/', source);
+        const targetDirectory = new URL('img/', target);
+
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.jpeg', '.webp', '.avif']);
       }
     },
     scripts: {
-      dependencies: ['paths', 'scriptsTarget'],
-      async action({ paths: { content }, scriptsTarget }) {
-        const directory = new URL('scripts/', content);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.js'));
+      dependencies: ['paths'],
+      action({ paths: { content, target } }) {
+        const sourceDirectory = new URL('scripts/', content);
+        const targetDirectory = new URL('scripts/', target);
 
-        await Promise.all(
-          items.map(
-            item => copyFile(
-              new URL(item, directory),
-              new URL(item, scriptsTarget)
-            )
-          )
-        );
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.js']);
       }
     },
     hashedScripts: {
-      dependencies: ['paths', 'scriptsTarget'],
-      async action({ paths: { content, target }, scriptsTarget }) {
+      dependencies: ['paths', 'scripts'],
+      async action({ paths: { content, target }, scripts }) {
         const path = new URL('scripts/', content);
         const items = (await readdir(path)).filter(i => i.endsWith('.js'));
-        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, path), scriptsTarget)));
+        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, path), scripts)));
         const result = Object.fromEntries(entries);
 
         return ExecutionGraph.createWatchableResult({ path, result });
       }
     },
-    papersTarget: {
-      dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('papers/', source),
-          result: await makeDirectory('papers/')
-        });
-      }
-    },
     papers: {
-      dependencies: ['paths', 'papersTarget'],
-      async action({ paths: { content }, papersTarget }) {
-        const directory = new URL('papers/', content);
-        const items = (await readdir(directory)).filter(i => i.endsWith('.pdf'));
+      dependencies: ['paths'],
+      action({ paths: { content, target } }) {
+        const sourceDirectory = new URL('papers/', content);
+        const targetDirectory = new URL('papers/', target);
 
-        await Promise.all(
-          items.map(
-            item => copyFile(
-              new URL(item, directory),
-              new URL(item, papersTarget)
-            )
-          )
-        );
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.pdf']);
       }
     },
     imagesTarget: {
