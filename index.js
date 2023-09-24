@@ -22,9 +22,9 @@ import ExecutionGraph from './lib/execution-graph.js';
 import hashCopy from './lib/hash-copy.js';
 import NetlifyHeaders from './lib/netlify-headers.js';
 
-function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev, indexJsFile }) {
+function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
   return resources.map(resource => ({
-    html: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev, indexJsFile }),
+    html: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
     filename: resource.filename
   }));
 }
@@ -494,43 +494,6 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         });
       }
     },
-    indexJsFile: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
-        const [, { hashedFilePath }] = await hashCopy(target, new URL('index.js', source), target);
-
-        return ExecutionGraph.createWatchableResult({
-          path: hashedFilePath,
-          result: hashedFilePath
-        });
-      }
-    },
-    serviceWorkerFile: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
-        const swPath = new URL('sw.js', source);
-
-        await copyFile(swPath, new URL('sw.js', target));
-
-        return ExecutionGraph.createWatchableResult({
-          path: swPath,
-          result: null
-        });
-      }
-    },
-    manifestFile: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
-        const manifestPath = new URL('manifest.json', source);
-
-        await copyFile(manifestPath, new URL('manifest.json', target));
-
-        return ExecutionGraph.createWatchableResult({
-          path: manifestPath,
-          result: null
-        });
-      }
-    },
     css: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
@@ -576,61 +539,60 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedShortlinks: {
-      dependencies: ['templates', 'postFiles', 'indexJsFile'],
-      action({ postFiles, templates, indexJsFile }) {
-        return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl, indexJsFile });
+      dependencies: ['templates', 'postFiles'],
+      action({ postFiles, templates }) {
+        return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl });
       }
     },
     renderedPosts: {
-      dependencies: ['css', 'templates', 'postFiles', 'backlinks', 'indexJsFile'],
-      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
+      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedJapaneseNotes: {
-      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks', 'indexJsFile'],
-      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ noIndex: true, resources, backlinks, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks'],
+      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+        return renderResources({ noIndex: true, resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedNotes: {
-      dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
-      action({ noteFiles: resources, templates: { note: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'noteFiles'],
+      action({ noteFiles: resources, templates: { note: template }, css: cssPath }) {
+        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedStudySessions: {
-      dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
-      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath, indexJsFile }) {
-        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'studySessionFiles'],
+      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath }) {
+        return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLinks: {
-      dependencies: ['css', 'templates', 'linkFiles', 'indexJsFile'],
-      action({ linkFiles: resources, templates: { link: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'linkFiles'],
+      action({ linkFiles: resources, templates: { link: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLikes: {
-      dependencies: ['css', 'templates', 'likeFiles', 'indexJsFile'],
-      action({ likeFiles: resources, templates: { like: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'likeFiles'],
+      action({ likeFiles: resources, templates: { like: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedReplies: {
-      dependencies: ['css', 'templates', 'replyFiles', 'indexJsFile'],
-      action({ replyFiles: resources, templates: { reply: template }, css: cssPath, indexJsFile }) {
-        return renderResources({ resources, template, cssPath, baseUrl, dev, indexJsFile });
+      dependencies: ['css', 'templates', 'replyFiles'],
+      action({ replyFiles: resources, templates: { reply: template }, css: cssPath }) {
+        return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedBlogIndex: {
-      dependencies: ['css', 'templates', 'postFiles', 'indexJsFile'],
-      action({ postFiles: posts, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'postFiles'],
+      action({ postFiles: posts, templates, css: cssPath }) {
         return templates.blogs({
           blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
           posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/blog',
@@ -639,15 +601,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedJapaneseNotesIndex: {
-      dependencies: ['css', 'templates', 'japaneseNotesFiles', 'indexJsFile'],
-      action({ japaneseNotesFiles: posts, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'japaneseNotesFiles'],
+      action({ japaneseNotesFiles: posts, templates, css: cssPath }) {
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
           noIndex: true,
           posts: posts.map(p => ({ ...p, hasRuby: false })),
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/japanese-notes',
@@ -656,13 +617,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedNotesIndex: {
-      dependencies: ['css', 'templates', 'noteFiles', 'indexJsFile'],
-      action({ noteFiles: notes, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'noteFiles'],
+      action({ noteFiles: notes, templates, css: cssPath }) {
         return templates.notes({
           noIndex: true,
           notes,
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/notes',
@@ -671,13 +631,12 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedStudySessionsIndex: {
-      dependencies: ['css', 'templates', 'studySessionFiles', 'indexJsFile'],
-      action({ studySessionFiles: studySessions, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'studySessionFiles'],
+      action({ studySessionFiles: studySessions, templates, css: cssPath }) {
         return templates['study-sessions']({
           noIndex: true,
           studySessions,
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/study-sessions',
@@ -686,12 +645,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedLinksIndex: {
-      dependencies: ['css', 'templates', 'linkFiles', 'indexJsFile'],
-      action({ linkFiles: links, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'linkFiles'],
+      action({ linkFiles: links, templates, css: cssPath }) {
         return templates.links({
           links,
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/links',
@@ -700,12 +658,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedLikesIndex: {
-      dependencies: ['css', 'templates', 'likeFiles', 'indexJsFile'],
-      action({ likeFiles: likes, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'likeFiles'],
+      action({ likeFiles: likes, templates, css: cssPath }) {
         return templates.likes({
           likes,
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/likes',
@@ -714,12 +671,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedRepliesIndex: {
-      dependencies: ['css', 'templates', 'replyFiles', 'indexJsFile'],
-      action({ replyFiles: replies, templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates', 'replyFiles'],
+      action({ replyFiles: replies, templates, css: cssPath }) {
         return templates.replies({
           replies,
           cssPath,
-          indexJsFile,
           dev,
           baseUrl,
           localUrl: '/replies',
@@ -728,43 +684,41 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedAbout: {
-      dependencies: ['css', 'templates', 'indexJsFile'],
-      action({ templates, css: cssPath, indexJsFile }) {
+      dependencies: ['css', 'templates'],
+      action({ templates, css: cssPath }) {
         return templates.about({
           cssPath,
           dev,
           baseUrl,
           localUrl: '/',
-          indexJsFile,
           title: 'About',
           description: 'The personal site of Mark Stanley Everitt.'
         });
       }
     },
     renderedPublications: {
-      dependencies: ['css', 'templates', 'publications', 'indexJsFile'],
-      action({ templates, css: cssPath, publications, indexJsFile }) {
+      dependencies: ['css', 'templates', 'publications'],
+      action({ templates, css: cssPath, publications }) {
         return templates.publications({
           cssPath,
           dev,
           baseUrl,
           localUrl: '/publications',
-          indexJsFile,
           publications,
           title: 'Publications'
         });
       }
     },
     renderedFourOhFour: {
-      dependencies: ['css', 'templates', 'indexJsFile'],
-      action({ templates, css: cssPath, indexJsFile }) {
-        return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found', indexJsFile });
+      dependencies: ['css', 'templates'],
+      action({ templates, css: cssPath }) {
+        return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found' });
       }
     },
     renderedWebmentionConfirmation: {
-      dependencies: ['css', 'templates', 'indexJsFile'],
-      action({ templates, css: cssPath, indexJsFile }) {
-        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention', indexJsFile });
+      dependencies: ['css', 'templates'],
+      action({ templates, css: cssPath }) {
+        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
       }
     },
     renderedSitemap: {
