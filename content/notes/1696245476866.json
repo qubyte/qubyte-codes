@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Jet lag has its perks! Up before sunrise for a coffee at a nice little place called Fahrenheit in downtown Toronto."
+    ],
+    "latitude": 43.64701333333333,
+    "longitude": -79.40093333333333,
+    "photo": [
+      {
+        "alt": "A photograph of a cup of black coffee on a wooden bar.",
+        "value": "/images/1696245377641.jpeg"
+      }
+    ],
+    "spoiler": []
+  }
+}
