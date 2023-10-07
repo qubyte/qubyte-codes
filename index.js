@@ -1,6 +1,6 @@
 /* eslint max-lines: off */
 
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { readdir, writeFile, rm, mkdir, readFile, copyFile, cp, unlink } from 'node:fs/promises';
 import { once } from 'node:events';
 import { createHash } from 'node:crypto';
@@ -41,8 +41,8 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
 
 async function copyStaticDirectory(sourceDirectory, targetDirectory, allowedFileEndings) {
   await cp(sourceDirectory, targetDirectory, {
-    filter(source) {
-      return source === sourceDirectory.pathname || allowedFileEndings.includes(extname(source));
+    filter(src) {
+      return pathToFileURL(src).pathname === sourceDirectory.pathname || allowedFileEndings.includes(extname(src));
     },
     recursive: true
   });
@@ -50,14 +50,14 @@ async function copyStaticDirectory(sourceDirectory, targetDirectory, allowedFile
   return ExecutionGraph.createWatchableResult({ path: sourceDirectory, result: targetDirectory });
 }
 
+const basePath = new URL('./', import.meta.url);
+const sourcePath = new URL('./src/', import.meta.url);
+const contentPath = new URL('./content/', import.meta.url);
+const targetPath = new URL('./public/', import.meta.url);
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
-  const basePath = new URL('./', import.meta.url);
-  const sourcePath = new URL('./src/', import.meta.url);
-  const contentPath = new URL('./content/', import.meta.url);
-  const targetPath = new URL('./public/', import.meta.url);
-
   let watcher = null;
 
   if (dev) {
@@ -67,10 +67,6 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   }
 
   const graph = new ExecutionGraph({ watcher });
-
-  // This stores a reference to the exitsing css so it can be cleaned up on
-  // change. Eventually I'd like to build this into the execution graph.
-  let cssUrl;
 
   await graph.addNodes({
     paths: {
@@ -429,22 +425,19 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     css: {
       dependencies: ['paths'],
       async action({ paths: { source, target } }) {
-        if (cssUrl) {
-          await unlink(cssUrl);
-        }
-
         const { url, htmlPath } = await generateMainCss({
           entry: new URL('css/entry.css', source),
           targetDirectory: target,
           codeStyle: 'default'
         });
 
-        cssUrl = url;
-
         return ExecutionGraph.createWatchableResult({
           path: new URL('css/', source),
-          result: htmlPath
+          result: { url, htmlPath }
         });
+      },
+      onRemove() {
+        return unlink(this.result.url);
       }
     },
     extraCss: {
@@ -460,7 +453,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     collatedTags: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: posts, css: cssPath, templates: { tag: template } }) {
+      action({ postFiles: posts, css: { htmlPath: cssPath }, templates: { tag: template } }) {
         return collateTags({ posts, cssPath, baseUrl, dev, template });
       }
     },
@@ -478,49 +471,49 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedPosts: {
       dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
-      action({ postFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+      action({ postFiles: resources, backlinks, templates: { blog: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedJapaneseNotes: {
       dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks'],
-      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: cssPath }) {
+      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ noIndex: true, resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: resources, templates: { note: template }, css: cssPath }) {
+      action({ noteFiles: resources, templates: { note: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedStudySessions: {
       dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: cssPath }) {
+      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: { htmlPath: cssPath } }) {
         return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLinks: {
       dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: resources, templates: { link: template }, css: cssPath }) {
+      action({ linkFiles: resources, templates: { link: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLikes: {
       dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: resources, templates: { like: template }, css: cssPath }) {
+      action({ likeFiles: resources, templates: { like: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedReplies: {
       dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: resources, templates: { reply: template }, css: cssPath }) {
+      action({ replyFiles: resources, templates: { reply: template }, css: { htmlPath: cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedBlogIndex: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: posts, templates, css: cssPath }) {
+      action({ postFiles: posts, templates, css: { htmlPath: cssPath } }) {
         return templates.blogs({
           blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
           posts: posts.map(p => ({ ...p, hasRuby: false })),
@@ -534,7 +527,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedJapaneseNotesIndex: {
       dependencies: ['css', 'templates', 'japaneseNotesFiles'],
-      action({ japaneseNotesFiles: posts, templates, css: cssPath }) {
+      action({ japaneseNotesFiles: posts, templates, css: { htmlPath: cssPath } }) {
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
@@ -550,7 +543,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedNotesIndex: {
       dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: notes, templates, css: cssPath }) {
+      action({ noteFiles: notes, templates, css: { htmlPath: cssPath } }) {
         return templates.notes({
           noIndex: true,
           notes,
@@ -564,7 +557,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedStudySessionsIndex: {
       dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: studySessions, templates, css: cssPath }) {
+      action({ studySessionFiles: studySessions, templates, css: { htmlPath: cssPath } }) {
         return templates['study-sessions']({
           noIndex: true,
           studySessions,
@@ -578,7 +571,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedLinksIndex: {
       dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: links, templates, css: cssPath }) {
+      action({ linkFiles: links, templates, css: { htmlPath: cssPath } }) {
         return templates.links({
           links,
           cssPath,
@@ -591,7 +584,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedLikesIndex: {
       dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: likes, templates, css: cssPath }) {
+      action({ likeFiles: likes, templates, css: { htmlPath: cssPath } }) {
         return templates.likes({
           likes,
           cssPath,
@@ -604,7 +597,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedRepliesIndex: {
       dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: replies, templates, css: cssPath }) {
+      action({ replyFiles: replies, templates, css: { htmlPath: cssPath } }) {
         return templates.replies({
           replies,
           cssPath,
@@ -617,7 +610,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedAbout: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
+      action({ templates, css: { htmlPath: cssPath } }) {
         return templates.about({
           cssPath,
           dev,
@@ -630,7 +623,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedPublications: {
       dependencies: ['css', 'templates', 'publications'],
-      action({ templates, css: cssPath, publications }) {
+      action({ templates, css: { htmlPath: cssPath }, publications }) {
         return templates.publications({
           cssPath,
           dev,
@@ -643,13 +636,13 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedFourOhFour: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
+      action({ templates, css: { htmlPath: cssPath } }) {
         return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found' });
       }
     },
     renderedWebmentionConfirmation: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: cssPath }) {
+      action({ templates, css: { htmlPath: cssPath } }) {
         return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
       }
     },
@@ -781,7 +774,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     writtenBlogroll: {
       dependencies: ['css', 'paths', 'templates', 'feeds'],
-      action({ css: cssPath, paths: { target }, templates, feeds }) {
+      action({ css: { htmlPath: cssPath }, paths: { target }, templates, feeds }) {
         return writeFile(new URL('blogroll.html', target), templates.blogroll({
           feeds,
           cssPath,

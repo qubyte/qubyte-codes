@@ -206,12 +206,12 @@ describe('execution-graph', () => {
         action() {}
       });
 
-      graph.removeNode({ name: 'a' });
+      await graph.removeNode({ name: 'a' });
 
       assert.equal(graph.nodes.size, 0);
     });
 
-    it('throws when attempting to remove a node with dependencies', async () => {
+    it('rejects when attempting to remove a node with dependencies', async () => {
       await Promise.all([
         graph.addNode({
           name: 'a',
@@ -229,7 +229,7 @@ describe('execution-graph', () => {
         })
       ]);
 
-      assert.throws(
+      assert.rejects(
         () => graph.removeNode({ name: 'a' }),
         Error,
         'Node a has dependent nodes: b, c'
@@ -237,13 +237,36 @@ describe('execution-graph', () => {
 
       assert.deepEqual([...graph.nodes.keys()], ['a', 'b', 'c']);
     });
+
+    it('runs cleanup when a node needs it', async () => {
+      let guard = false;
+
+      await Promise.all([
+        graph.addNode({
+          name: 'a',
+          action() {},
+          onRemove() {
+            return new Promise(resolve => setTimeout(() => {
+              guard = true;
+              resolve();
+            }, 500));
+          }
+        })
+      ]);
+
+      await graph.removeNode({ name: 'a' });
+
+      assert.equal(guard, true);
+    });
   });
 
   describe('rerunning nodes', () => {
     let nodesRerun;
+    let guard;
 
     beforeEach(async () => {
       nodesRerun = [];
+      guard = false;
 
       await Promise.all([
         graph.addNode({
@@ -259,6 +282,12 @@ describe('execution-graph', () => {
           async action() {
             await wait(10);
             nodesRerun.push('b');
+          },
+          onRemove() {
+            return new Promise(resolve => setTimeout(() => {
+              guard = true;
+              resolve();
+            }, 500));
           }
         }),
         graph.addNode({
@@ -284,6 +313,16 @@ describe('execution-graph', () => {
       await graph.rerunNode({ name: 'b' });
 
       assert.deepEqual(nodesRerun, ['b', 'c']);
+    });
+
+    it('runs cleanup on nodes which need it', async () => {
+      await graph.rerunNode({ name: 'c' });
+
+      assert.equal(guard, false);
+
+      await graph.rerunNode({ name: 'a' });
+
+      assert.equal(guard, true);
     });
   });
 
