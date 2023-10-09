@@ -39,6 +39,15 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
   };
 }
 
+function writeRendered(renderedName, path) {
+  return {
+    dependencies: ['paths', renderedName],
+    action(config) {
+      return writeFile(new URL(path, config.paths.target), config[renderedName]);
+    }
+  };
+}
+
 async function copyStaticDirectory(sourceDirectory, targetDirectory, allowedFileEndings) {
   await cp(sourceDirectory, targetDirectory, {
     filter(src) {
@@ -678,84 +687,19 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         };
       }
     },
-    writtenIndex: {
-      dependencies: ['paths', 'renderedAbout'],
-      action({ paths: { target }, renderedAbout }) {
-        return writeFile(new URL('index.html', target), renderedAbout);
-      }
-    },
-    writtenBlogIndex: {
-      dependencies: ['paths', 'renderedBlogIndex'],
-      action({ paths: { target }, renderedBlogIndex }) {
-        return writeFile(new URL('blog/index.html', target), renderedBlogIndex);
-      }
-    },
-    writtenJapaneseNotesIndex: {
-      dependencies: ['paths', 'renderedJapaneseNotesIndex'],
-      action({ paths: { target }, renderedJapaneseNotesIndex }) {
-        return writeFile(new URL('japanese-notes/index.html', target), renderedJapaneseNotesIndex);
-      }
-    },
-    writtenNotesIndex: {
-      dependencies: ['paths', 'renderedNotesIndex'],
-      action({ paths: { target }, renderedNotesIndex }) {
-        return writeFile(new URL('notes/index.html', target), renderedNotesIndex);
-      }
-    },
-    writtenStudySessionsIndex: {
-      dependencies: ['paths', 'renderedStudySessionsIndex'],
-      action({ paths: { target }, renderedStudySessionsIndex }) {
-        return writeFile(new URL('study-sessions/index.html', target), renderedStudySessionsIndex);
-      }
-    },
-    writtenLinksIndex: {
-      dependencies: ['paths', 'renderedLinksIndex'],
-      action({ paths: { target }, renderedLinksIndex }) {
-        return writeFile(new URL('links/index.html', target), renderedLinksIndex);
-      }
-    },
-    writtenLikesIndex: {
-      dependencies: ['paths', 'renderedLikesIndex'],
-      action({ paths: { target }, renderedLikesIndex }) {
-        return writeFile(new URL('likes/index.html', target), renderedLikesIndex);
-      }
-    },
-    writtenRepliesIndex: {
-      dependencies: ['paths', 'renderedRepliesIndex'],
-      action({ paths: { target }, renderedRepliesIndex }) {
-        return writeFile(new URL('replies/index.html', target), renderedRepliesIndex);
-      }
-    },
-    writtenPublications: {
-      dependencies: ['paths', 'renderedPublications'],
-      action({ paths: { target }, renderedPublications }) {
-        return writeFile(new URL('publications.html', target), renderedPublications);
-      }
-    },
-    writtenWebmentionConfirmation: {
-      dependencies: ['paths', 'renderedWebmentionConfirmation'],
-      action({ paths: { target }, renderedWebmentionConfirmation }) {
-        return writeFile(new URL('webmention.html', target), renderedWebmentionConfirmation);
-      }
-    },
-    writtenFourOhFour: {
-      dependencies: ['paths', 'renderedFourOhFour'],
-      action({ paths: { target }, renderedFourOhFour }) {
-        return writeFile(new URL('404.html', target), renderedFourOhFour);
-      }
-    },
-    writtenSitemap: {
-      dependencies: ['paths', 'renderedSitemap'],
-      action({ paths: { target }, renderedSitemap }) {
-        return writeFile(new URL('sitemap.txt', target), renderedSitemap);
-      }
-    },
-    writtenShortlinks: {
-      dependencies: ['paths', 'renderedShortlinks'],
-      action({ paths: { target }, renderedShortlinks }) {
-        return writeFile(new URL('shortlinks.txt', target), renderedShortlinks);
-      }
-    },
+    writtenIndex: writeRendered('renderedAbout', 'index.html'),
+    writtenBlogIndex: writeRendered('renderedBlogIndex', 'blog/index.html'),
+    writtenJapaneseNotesIndex: writeRendered('renderedJapaneseNotesIndex', 'japanese-notes/index.html'),
+    writtenNotesIndex: writeRendered('renderedNotesIndex', 'notes/index.html'),
+    writtenStudySessionsIndex: writeRendered('renderedStudySessionsIndex', 'study-sessions/index.html'),
+    writtenLinksIndex: writeRendered('renderedLinksIndex', 'links/index.html'),
+    writtenLikesIndex: writeRendered('renderedLikesIndex', 'likes/index.html'),
+    writtenRepliesIndex: writeRendered('renderedRepliesIndex', 'replies/index.html'),
+    writtenPublications: writeRendered('renderedPublications', 'publications.html'),
+    writtenWebmentionConfirmation: writeRendered('renderedWebmentionConfirmation', 'webmention.html'),
+    writtenFourOhFour: writeRendered('renderedFourOhFour', '404.html'),
+    writtenSitemap: writeRendered('renderedSitemap', 'sitemap.txt'),
+    writtenShortlinks: writeRendered('renderedShortlinks', 'shortlinks.txt'),
     writtenAtomFeeds: {
       dependencies: ['paths', 'renderedAtomFeeds'],
       action({ paths: { target }, renderedAtomFeeds: { all, posts, social } }) {
