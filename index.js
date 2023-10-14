@@ -23,6 +23,11 @@ import ExecutionGraph from './lib/execution-graph.js';
 import hashCopy from './lib/hash-copy.js';
 import NetlifyHeaders from './lib/netlify-headers.js';
 
+const basePath = new URL('./', import.meta.url);
+const sourcePath = new URL('./src/', import.meta.url);
+const contentPath = new URL('./content/', import.meta.url);
+const targetPath = new URL('./public/', import.meta.url);
+
 function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
   return resources.map(resource => ({
     html: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
@@ -32,18 +37,18 @@ function renderResources({ noIndex, resources, template, cssPath, baseUrl, backl
 
 function makeWriteEntries({ renderedDependencies, pathFragment }) {
   return {
-    dependencies: ['paths', renderedDependencies],
-    action({ paths: { target }, [renderedDependencies]: rendered }) {
-      return rendered.map(({ html, filename }) => writeFile(new URL(`${pathFragment}/${filename}`, target), html));
+    dependencies: ['targetPath', renderedDependencies],
+    action({ [renderedDependencies]: rendered }) {
+      return rendered.map(({ html, filename }) => writeFile(new URL(`${pathFragment}/${filename}`, targetPath), html));
     }
   };
 }
 
 function writeRendered(renderedName, path) {
   return {
-    dependencies: ['paths', renderedName],
+    dependencies: ['targetPath', renderedName],
     action(config) {
-      return writeFile(new URL(path, config.paths.target), config[renderedName]);
+      return writeFile(new URL(path, targetPath), config[renderedName]);
     }
   };
 }
@@ -59,10 +64,25 @@ async function copyStaticDirectory(sourceDirectory, targetDirectory, allowedFile
   return ExecutionGraph.createWatchableResult({ path: sourceDirectory, result: targetDirectory });
 }
 
-const basePath = new URL('./', import.meta.url);
-const sourcePath = new URL('./src/', import.meta.url);
-const contentPath = new URL('./content/', import.meta.url);
-const targetPath = new URL('./public/', import.meta.url);
+async function makeDirectory(path) {
+  const directory = new URL(path, targetPath);
+
+  await rm(directory, { recursive: true, force: true });
+  await mkdir(directory, { recursive: true });
+
+  return directory;
+}
+
+function makeDirectoryNode(path, watchPath) {
+  return {
+    dependencies: ['targetPath'],
+    async action() {
+      const result = await makeDirectory(path);
+
+      return watchPath ? ExecutionGraph.createWatchableResult({ path: watchPath, result }) : result;
+    }
+  };
+}
 
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
@@ -78,80 +98,51 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   const graph = new ExecutionGraph({ watcher });
 
   await graph.addNodes({
-    paths: {
-      async action() {
-        await rm(targetPath, { recursive: true, force: true });
-        await mkdir(targetPath);
-
-        return {
-          base: basePath,
-          source: sourcePath,
-          target: targetPath,
-          content: contentPath,
-          async makeDirectory(path) {
-            const directory = new URL(path, targetPath);
-
-            await rm(directory, { recursive: true, force: true });
-            await mkdir(directory, { recursive: true });
-
-            return directory;
-          }
-        };
-      }
+    async targetPath() {
+      await rm(targetPath, { recursive: true, force: true });
+      await mkdir(targetPath);
     },
-    commitTime: {
-      dependencies: ['paths'],
-      action({ paths: { content } }) {
-        return getLastCommitTime(content);
-      }
+    commitTime() {
+      return getLastCommitTime(contentPath);
     },
-    templates: {
-      dependencies: ['paths'],
-      async action({ paths: { source } }) {
-        const path = new URL('templates/', source);
-        const result = await loadTemplates(path, { baseTitle });
+    async templates() {
+      const path = new URL('templates/', sourcePath);
+      const result = await loadTemplates(path, { baseTitle });
 
-        return ExecutionGraph.createWatchableResult({ path, result });
-      }
+      return ExecutionGraph.createWatchableResult({ path, result });
     },
-    feeds: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const feedsPath = new URL('feeds.json', content);
-        const json = await readFile(feedsPath, 'utf8');
+    async feeds() {
+      const feedsPath = new URL('feeds.json', contentPath);
+      const json = await readFile(feedsPath, 'utf8');
 
-        return ExecutionGraph.createWatchableResult({
-          path: feedsPath,
-          result: JSON.parse(json)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: feedsPath,
+        result: JSON.parse(json)
+      });
     },
-    publications: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const publicationsPath = new URL('publications.json', content);
-        const json = await readFile(publicationsPath, 'utf8');
+    async publications() {
+      const publicationsPath = new URL('publications.json', contentPath);
+      const json = await readFile(publicationsPath, 'utf8');
 
-        return ExecutionGraph.createWatchableResult({
-          path: publicationsPath,
-          result: JSON.parse(json)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: publicationsPath,
+        result: JSON.parse(json)
+      });
     },
     postFiles: {
-      dependencies: ['paths', 'extraCss', 'hashedScripts'],
-      async action({ paths: { base, content }, extraCss, hashedScripts }) {
-        const postsPath = new URL('posts/', content);
+      dependencies: ['extraCss', 'hashedScripts'],
+      async action({ extraCss, hashedScripts }) {
+        const postsPath = new URL('posts/', contentPath);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath: base, repoUrl, baseUrl, extraCss, hashedScripts })
+          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts })
         });
       }
     },
     populateHeaders: {
-      dependencies: ['paths', 'postFiles'],
-      action({ paths: { target }, postFiles }) {
+      dependencies: ['targetPath', 'postFiles'],
+      action({ postFiles }) {
         const headers = new NetlifyHeaders();
 
         for (const post of postFiles) {
@@ -167,28 +158,28 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
               ]
             ]);
 
-            writeFile(new URL('_headers', target), `${headers.generate()}\n`);
+            writeFile(new URL('_headers', targetPath), `${headers.generate()}\n`);
           }
         }
       }
     },
     japaneseNotesFiles: {
-      dependencies: ['paths', 'hashedScripts'],
-      async action({ paths: { base, content }, hashedScripts }) {
-        const notesPath = new URL('japanese-notes/', content);
+      dependencies: ['hashedScripts'],
+      async action({ hashedScripts }) {
+        const notesPath = new URL('japanese-notes/', contentPath);
         const type = 'japanese-notes';
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, basePath: base, repoUrl, baseUrl, type, hashedScripts })
+          result: await loadPostFiles({ path: notesPath, basePath, repoUrl, baseUrl, type, hashedScripts })
         });
       }
     },
     noteFiles: {
-      dependencies: ['paths', 'images'],
-      async action({ paths: { content }, images: imagesDimensions }) {
-        const dir = new URL('notes/', content);
-        const imagesDir = new URL('images/', content);
+      dependencies: ['images'],
+      async action({ images: imagesDimensions }) {
+        const dir = new URL('notes/', contentPath);
+        const imagesDir = new URL('images/', contentPath);
 
         return ExecutionGraph.createWatchableResult({
           path: dir,
@@ -196,123 +187,63 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         });
       }
     },
-    studySessionFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const studySessionsPath = new URL('study-sessions/', content);
+    async studySessionFiles() {
+      const studySessionsPath = new URL('study-sessions/', contentPath);
 
-        return ExecutionGraph.createWatchableResult({
-          path: studySessionsPath,
-          result: await loadStudySessionsFiles(studySessionsPath)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: studySessionsPath,
+        result: await loadStudySessionsFiles(studySessionsPath)
+      });
     },
-    linkFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const linksPath = new URL('links/', content);
+    async linkFiles() {
+      const linksPath = new URL('links/', contentPath);
 
-        return ExecutionGraph.createWatchableResult({
-          path: linksPath,
-          result: await loadLinkFiles(linksPath)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: linksPath,
+        result: await loadLinkFiles(linksPath)
+      });
     },
-    likeFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const likesPath = new URL('likes/', content);
+    async likeFiles() {
+      const likesPath = new URL('likes/', contentPath);
 
-        return ExecutionGraph.createWatchableResult({
-          path: likesPath,
-          result: await loadLikeFiles(likesPath)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: likesPath,
+        result: await loadLikeFiles(likesPath)
+      });
     },
-    replyFiles: {
-      dependencies: ['paths'],
-      async action({ paths: { content } }) {
-        const repliesPath = new URL('replies/', content);
+    async replyFiles() {
+      const repliesPath = new URL('replies/', contentPath);
 
-        return ExecutionGraph.createWatchableResult({
-          path: repliesPath,
-          result: await loadReplyFiles(repliesPath)
-        });
-      }
+      return ExecutionGraph.createWatchableResult({
+        path: repliesPath,
+        result: await loadReplyFiles(repliesPath)
+      });
     },
-    stylesDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('styles/');
-      }
-    },
-    blogDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('blog/');
-      }
-    },
-    japaneseNotesDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('japanese-notes/');
-      }
-    },
-    notesDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('notes/');
-      }
-    },
-    studySessionsDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('study-sessions/');
-      }
-    },
-    linksDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('links/');
-      }
-    },
-    likesDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('likes/');
-      }
-    },
-    repliesDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('replies/');
-      }
-    },
-    tagsDirectory: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('tags/');
-      }
-    },
+    stylesDirectory: makeDirectoryNode('styles/'),
+    blogDirectory: makeDirectoryNode('blog/'),
+    japaneseNotesDirectory: makeDirectoryNode('japanese-notes/'),
+    notesDirectory: makeDirectoryNode('notes/'),
+    studySessionsDirectory: makeDirectoryNode('study-sessions/'),
+    linksDirectory: makeDirectoryNode('links/'),
+    likesDirectory: makeDirectoryNode('likes/'),
+    repliesDirectory: makeDirectoryNode('replies/'),
+    tagsDirectory: makeDirectoryNode('tags/'),
+    imagesTarget: makeDirectoryNode('images/', new URL('images/', sourcePath)),
     activitypubDocuments: {
-      dependencies: ['paths'],
-      action({ paths: { source, target } }) {
-        const sourceDirectory = new URL('activitypub/', source);
-        const targetDirectory = new URL('activitypub/', target);
+      dependencies: ['targetPath'],
+      action() {
+        const sourceDirectory = new URL('activitypub/', sourcePath);
+        const targetDirectory = new URL('activitypub/', targetPath);
 
         return copyStaticDirectory(sourceDirectory, targetDirectory, ['.json']);
       }
     },
     fingerTarget: {
-      dependencies: ['paths'],
-      action({ paths: { makeDirectory } }) {
-        return makeDirectory('.well-known/');
-      }
-    },
-    fingerDocument: {
-      dependencies: ['fingerTarget'],
-      action({ fingerTarget }) {
-        return writeFile(new URL('webfinger', fingerTarget), JSON.stringify({
+      dependencies: ['targetPath'],
+      async action() {
+        const wellKnownDirectory = await makeDirectory('.well-known/');
+
+        await writeFile(new URL('webfinger', wellKnownDirectory), JSON.stringify({
           subject: 'acct:qubyte@qubyte.codes',
           links: [
             {
@@ -325,65 +256,56 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     icons: {
-      dependencies: ['paths'],
-      action({ paths: { source, target } }) {
-        const sourceDirectory = new URL('icons/', source);
-        const targetDirectory = new URL('icons/', target);
+      dependencies: ['targetPath'],
+      action() {
+        const sourceDirectory = new URL('icons/', sourcePath);
+        const targetDirectory = new URL('icons/', targetPath);
 
         return copyStaticDirectory(sourceDirectory, targetDirectory, ['.png', '.svg']);
       }
     },
     img: {
-      dependencies: ['paths'],
-      action({ paths: { source, target } }) {
-        const sourceDirectory = new URL('img/', source);
-        const targetDirectory = new URL('img/', target);
+      dependencies: ['targetPath'],
+      action() {
+        const sourceDirectory = new URL('img/', sourcePath);
+        const targetDirectory = new URL('img/', targetPath);
 
         return copyStaticDirectory(sourceDirectory, targetDirectory, ['.jpeg', '.webp', '.avif']);
       }
     },
     scripts: {
-      dependencies: ['paths'],
-      action({ paths: { content, target } }) {
-        const sourceDirectory = new URL('scripts/', content);
-        const targetDirectory = new URL('scripts/', target);
+      dependencies: ['targetPath'],
+      action() {
+        const sourceDirectory = new URL('scripts/', contentPath);
+        const targetDirectory = new URL('scripts/', targetPath);
 
         return copyStaticDirectory(sourceDirectory, targetDirectory, ['.js']);
       }
     },
     hashedScripts: {
-      dependencies: ['paths', 'scripts'],
-      async action({ paths: { content, target }, scripts }) {
-        const path = new URL('scripts/', content);
+      dependencies: ['targetPath', 'scripts'],
+      async action({ scripts }) {
+        const path = new URL('scripts/', contentPath);
         const items = (await readdir(path)).filter(i => i.endsWith('.js'));
-        const entries = await Promise.all(items.map(item => hashCopy(target, new URL(item, path), scripts)));
+        const entries = await Promise.all(items.map(item => hashCopy(targetPath, new URL(item, path), scripts)));
         const result = Object.fromEntries(entries);
 
         return ExecutionGraph.createWatchableResult({ path, result });
       }
     },
     papers: {
-      dependencies: ['paths'],
-      action({ paths: { content, target } }) {
-        const sourceDirectory = new URL('papers/', content);
-        const targetDirectory = new URL('papers/', target);
+      dependencies: ['targetPath'],
+      action() {
+        const sourceDirectory = new URL('papers/', contentPath);
+        const targetDirectory = new URL('papers/', targetPath);
 
         return copyStaticDirectory(sourceDirectory, targetDirectory, ['.pdf']);
       }
     },
-    imagesTarget: {
-      dependencies: ['paths'],
-      async action({ paths: { source, makeDirectory } }) {
-        return ExecutionGraph.createWatchableResult({
-          path: new URL('images/', source),
-          result: await makeDirectory('images/')
-        });
-      }
-    },
     images: {
-      dependencies: ['paths', 'imagesTarget'],
-      async action({ paths: { content }, imagesTarget }) {
-        const directory = new URL('images/', content);
+      dependencies: ['imagesTarget'],
+      async action({ imagesTarget }) {
+        const directory = new URL('images/', contentPath);
         const items = (await readdir(directory)).filter(i => !i.startsWith('.'));
 
         return new Map(await Promise.all(
@@ -399,18 +321,18 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     googleSiteVerification: {
-      dependencies: ['paths'],
-      action({ paths: { target } }) {
+      dependencies: ['targetPath'],
+      action() {
         const name = 'google91826e4f943d9ee9.html';
-        return writeFile(new URL(name, target), `google-site-verification: ${name}\n`);
+        return writeFile(new URL(name, targetPath), `google-site-verification: ${name}\n`);
       }
     },
     keybaseVerification: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
-        const verificationPath = new URL('keybase.txt', source);
+      dependencies: ['targetPath'],
+      async action() {
+        const verificationPath = new URL('keybase.txt', sourcePath);
 
-        await copyFile(verificationPath, new URL('keybase.txt', target));
+        await copyFile(verificationPath, new URL('keybase.txt', targetPath));
 
         return ExecutionGraph.createWatchableResult({
           path: verificationPath,
@@ -419,11 +341,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     robotsFile: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
-        const robotsPath = new URL('robots.txt', source);
+      dependencies: ['targetPath'],
+      async action() {
+        const robotsPath = new URL('robots.txt', sourcePath);
 
-        await copyFile(robotsPath, new URL('robots.txt', target));
+        await copyFile(robotsPath, new URL('robots.txt', targetPath));
 
         return ExecutionGraph.createWatchableResult({
           path: robotsPath,
@@ -432,17 +354,17 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     css: {
-      dependencies: ['paths'],
-      async action({ paths: { source, target } }) {
+      dependencies: ['targetPath'],
+      async action() {
         const { url, htmlPath } = await generateMainCss({
-          entry: new URL('css/entry.css', source),
-          targetDirectory: target,
+          entry: new URL('css/entry.css', sourcePath),
+          targetDirectory: targetPath,
           codeStyle: 'default'
         });
 
         return ExecutionGraph.createWatchableResult({
-          path: new URL('css/', source),
-          result: { url, htmlPath }
+          path: new URL('css/', sourcePath),
+          result: { url, cssPath: htmlPath }
         });
       },
       onRemove() {
@@ -450,9 +372,9 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     extraCss: {
-      dependencies: ['paths', 'stylesDirectory'],
-      async action({ paths: { content }, stylesDirectory }) {
-        const cssPath = new URL('styles/', content);
+      dependencies: ['stylesDirectory'],
+      async action({ stylesDirectory }) {
+        const cssPath = new URL('styles/', contentPath);
 
         return ExecutionGraph.createWatchableResult({
           path: cssPath,
@@ -462,7 +384,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     collatedTags: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: posts, css: { htmlPath: cssPath }, templates: { tag: template } }) {
+      action({ postFiles: posts, css: { cssPath }, templates: { tag: template } }) {
         return collateTags({ posts, cssPath, baseUrl, dev, template });
       }
     },
@@ -480,49 +402,49 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedPosts: {
       dependencies: ['css', 'templates', 'postFiles', 'backlinks'],
-      action({ postFiles: resources, backlinks, templates: { blog: template }, css: { htmlPath: cssPath } }) {
+      action({ postFiles: resources, backlinks, templates: { blog: template }, css: { cssPath } }) {
         return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedJapaneseNotes: {
       dependencies: ['css', 'templates', 'japaneseNotesFiles', 'backlinks'],
-      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: { htmlPath: cssPath } }) {
+      action({ japaneseNotesFiles: resources, backlinks, templates: { blog: template }, css: { cssPath } }) {
         return renderResources({ noIndex: true, resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedNotes: {
       dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: resources, templates: { note: template }, css: { htmlPath: cssPath } }) {
+      action({ noteFiles: resources, templates: { note: template }, css: { cssPath } }) {
         return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedStudySessions: {
       dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: { htmlPath: cssPath } }) {
+      action({ studySessionFiles: resources, templates: { 'study-session': template }, css: { cssPath } }) {
         return renderResources({ noIndex: true, resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLinks: {
       dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: resources, templates: { link: template }, css: { htmlPath: cssPath } }) {
+      action({ linkFiles: resources, templates: { link: template }, css: { cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedLikes: {
       dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: resources, templates: { like: template }, css: { htmlPath: cssPath } }) {
+      action({ likeFiles: resources, templates: { like: template }, css: { cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedReplies: {
       dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: resources, templates: { reply: template }, css: { htmlPath: cssPath } }) {
+      action({ replyFiles: resources, templates: { reply: template }, css: { cssPath } }) {
         return renderResources({ resources, template, cssPath, baseUrl, dev });
       }
     },
     renderedBlogIndex: {
       dependencies: ['css', 'templates', 'postFiles'],
-      action({ postFiles: posts, templates, css: { htmlPath: cssPath } }) {
+      action({ postFiles: posts, templates, css: { cssPath } }) {
         return templates.blogs({
           blurb: 'This is a collection of my blog posts. If you use a feed reader, <a href="/blog.atom.xml">you can subscribe</a>!',
           posts: posts.map(p => ({ ...p, hasRuby: false })),
@@ -536,7 +458,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedJapaneseNotesIndex: {
       dependencies: ['css', 'templates', 'japaneseNotesFiles'],
-      action({ japaneseNotesFiles: posts, templates, css: { htmlPath: cssPath } }) {
+      action({ japaneseNotesFiles: posts, templates, css: { cssPath } }) {
         return templates.blogs({
           // eslint-disable-next-line
           blurb: 'This is a collection of my notes taken as I learn to use the Japanese language. Be warned! These documents are <em>not</em> authoritative. They represent my current understanding, which is certainly flawed.',
@@ -552,7 +474,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedNotesIndex: {
       dependencies: ['css', 'templates', 'noteFiles'],
-      action({ noteFiles: notes, templates, css: { htmlPath: cssPath } }) {
+      action({ noteFiles: notes, templates, css: { cssPath } }) {
         return templates.notes({
           noIndex: true,
           notes,
@@ -566,7 +488,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedStudySessionsIndex: {
       dependencies: ['css', 'templates', 'studySessionFiles'],
-      action({ studySessionFiles: studySessions, templates, css: { htmlPath: cssPath } }) {
+      action({ studySessionFiles: studySessions, templates, css: { cssPath } }) {
         return templates['study-sessions']({
           noIndex: true,
           studySessions,
@@ -580,7 +502,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedLinksIndex: {
       dependencies: ['css', 'templates', 'linkFiles'],
-      action({ linkFiles: links, templates, css: { htmlPath: cssPath } }) {
+      action({ linkFiles: links, templates, css: { cssPath } }) {
         return templates.links({
           links,
           cssPath,
@@ -593,7 +515,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedLikesIndex: {
       dependencies: ['css', 'templates', 'likeFiles'],
-      action({ likeFiles: likes, templates, css: { htmlPath: cssPath } }) {
+      action({ likeFiles: likes, templates, css: { cssPath } }) {
         return templates.likes({
           likes,
           cssPath,
@@ -606,7 +528,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedRepliesIndex: {
       dependencies: ['css', 'templates', 'replyFiles'],
-      action({ replyFiles: replies, templates, css: { htmlPath: cssPath } }) {
+      action({ replyFiles: replies, templates, css: { cssPath } }) {
         return templates.replies({
           replies,
           cssPath,
@@ -619,7 +541,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedAbout: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: { htmlPath: cssPath } }) {
+      action({ templates, css: { cssPath } }) {
         return templates.about({
           cssPath,
           dev,
@@ -632,7 +554,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedPublications: {
       dependencies: ['css', 'templates', 'publications'],
-      action({ templates, css: { htmlPath: cssPath }, publications }) {
+      action({ templates, css: { cssPath }, publications }) {
         return templates.publications({
           cssPath,
           dev,
@@ -645,13 +567,13 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     },
     renderedFourOhFour: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: { htmlPath: cssPath } }) {
+      action({ templates, css: { cssPath } }) {
         return templates[404]({ cssPath, dev, baseUrl, localUrl: '/404', title: 'Not Found' });
       }
     },
     renderedWebmentionConfirmation: {
       dependencies: ['css', 'templates'],
-      action({ templates, css: { htmlPath: cssPath } }) {
+      action({ templates, css: { cssPath } }) {
         return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
       }
     },
@@ -701,25 +623,25 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     writtenSitemap: writeRendered('renderedSitemap', 'sitemap.txt'),
     writtenShortlinks: writeRendered('renderedShortlinks', 'shortlinks.txt'),
     writtenAtomFeeds: {
-      dependencies: ['paths', 'renderedAtomFeeds'],
-      action({ paths: { target }, renderedAtomFeeds: { all, posts, social } }) {
+      dependencies: ['targetPath', 'renderedAtomFeeds'],
+      action({ renderedAtomFeeds: { all, posts, social } }) {
         return Promise.all([
-          writeFile(new URL('atom.xml', target), all),
-          writeFile(new URL('blog.atom.xml', target), posts),
-          writeFile(new URL('social.atom.xml', target), social)
+          writeFile(new URL('atom.xml', targetPath), all),
+          writeFile(new URL('blog.atom.xml', targetPath), posts),
+          writeFile(new URL('social.atom.xml', targetPath), social)
         ]);
       }
     },
     writtenOpml: {
-      dependencies: ['paths', 'templates', 'feeds'],
-      action({ paths: { target }, templates, feeds }) {
-        return writeFile(new URL('feeds.opml', target), templates.feeds({ feeds }));
+      dependencies: ['targetPath', 'templates', 'feeds'],
+      action({ templates, feeds }) {
+        return writeFile(new URL('feeds.opml', targetPath), templates.feeds({ feeds }));
       }
     },
     writtenBlogroll: {
-      dependencies: ['css', 'paths', 'templates', 'feeds'],
-      action({ css: { htmlPath: cssPath }, paths: { target }, templates, feeds }) {
-        return writeFile(new URL('blogroll.html', target), templates.blogroll({
+      dependencies: ['css', 'targetPath', 'templates', 'feeds'],
+      action({ css: { cssPath }, templates, feeds }) {
+        return writeFile(new URL('blogroll.html', targetPath), templates.blogroll({
           feeds,
           cssPath,
           dev,
@@ -738,9 +660,9 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     writtenReplies: makeWriteEntries({ renderedDependencies: 'renderedReplies', pathFragment: 'replies' }),
     writtenTags: makeWriteEntries({ renderedDependencies: 'collatedTags', pathFragment: 'tags' }),
     lastBuild: {
-      dependencies: ['paths', 'writtenSitemap'],
-      action({ paths: { target } }) {
-        return writeFile(new URL('last-build.txt', target), `${new Date().toISOString()}\n`);
+      dependencies: ['targetPath', 'writtenSitemap'],
+      action() {
+        return writeFile(new URL('last-build.txt', targetPath), `${new Date().toISOString()}\n`);
       }
     }
   });
