@@ -178,6 +178,23 @@ describe('execution-graph', () => {
       assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
     });
 
+    it('has a compact API for nodes with no dependencies', async () => {
+      const results = await graph.addNodes({
+        async a() {
+          await wait(10);
+          return 'result-a';
+        },
+        b: {
+          dependencies: ['a'],
+          action({ a }) {
+            return `result-b: result-a is "${a}"`;
+          }
+        }
+      });
+
+      assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
+    });
+
     it('does not include results of nodes not in the collection added', async () => {
       await graph.addNode({
         name: 'x',
