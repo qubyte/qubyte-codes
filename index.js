@@ -146,21 +146,28 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         const headers = new NetlifyHeaders();
 
         for (const post of postFiles) {
+          const customHeaders = [];
+
           if (post.importMap) {
             const hash = createHash('sha256')
               .update(post.importMap)
               .digest('base64');
 
-            headers.addHeaders(post.localUrl, [
-              [
-                'Content-Security-Policy',
-                `default-src 'self'; script-src 'sha256-${hash}' 'self'; style-src 'self'; img-src *; child-src https://www.youtube-nocookie.com 'self'; frame-src https://www.youtube-nocookie.com 'self';` // eslint-disable-line max-len
-              ]
+            customHeaders.push([
+              'Content-Security-Policy',
+              `default-src 'self'; script-src 'sha256-${hash}' 'self'; img-src *;`
             ]);
+          }
+          for (const [key, val] of Object.entries(post.attributes.customHeaders || {})) {
+            customHeaders.push([key, val]);
+          }
 
-            writeFile(new URL('_headers', targetPath), `${headers.generate()}\n`);
+          if (customHeaders.length) {
+            headers.addHeaders(post.localUrl, customHeaders);
           }
         }
+
+        writeFile(new URL('_headers', targetPath), `${headers.generate()}\n`);
       }
     },
     japaneseNotesFiles: {
