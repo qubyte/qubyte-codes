@@ -1,6 +1,0 @@
-{
-  "extends": "qubyte/ES2022-module",
-  "env": {
-    "node": true
-  }
-}
