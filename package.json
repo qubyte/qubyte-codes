@@ -41,7 +41,7 @@
     "temml": "^0.10.16"
   },
   "devDependencies": {
-    "@toisu/static": "4.1.0",
+    "@toisu/static": "5.0.0",
     "@toisu/toisu": "5.0.0",
     "chokidar": "3.5.3",
     "eslint": "^8.51.0",
