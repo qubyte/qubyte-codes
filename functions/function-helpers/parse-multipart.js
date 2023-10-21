@@ -1,27 +1,27 @@
+import { Readable } from 'node:stream';
 import busboy from 'busboy';
 
-export function parseMultipart(headers, body, isBase64Encoded) {
+/** @param {Request} req  */
+export function parseMultipart(req) {
   console.log('In parseMultipart');
+
+  const headers = Object.fromEntries(req.headers.entries());
 
   return new Promise((resolve, reject) => {
     const bb = busboy({ headers });
     const files = {};
     const fields = {};
 
-    bb.on('file', (name, filestream, info) => { // eslint-disable-line max-params
+    bb.on('file', async (name, filestream, info) => { // eslint-disable-line max-params
       console.log('file:', name, info);
 
-      const chunks = [];
+      const chunks = await filestream.toArray();
 
-      filestream.on('data', chunk => chunks.push(chunk));
-
-      filestream.on('close', () => {
-        files[name] = {
-          filename: info.filename,
-          type: info.mime,
-          content: Buffer.concat(chunks)
-        };
-      });
+      files[name] = {
+        filename: info.filename,
+        type: info.mime,
+        content: Buffer.concat(chunks)
+      };
     });
 
     bb.on('field', (field, value) => {
@@ -37,6 +37,6 @@ export function parseMultipart(headers, body, isBase64Encoded) {
     bb.on('error', reject);
     bb.on('close', () => resolve({ files, ...fields }));
 
-    bb.end(isBase64Encoded ? Buffer.from(body, 'base64') : body);
+    Readable.fromWeb(req.body.getReader()).pipe(bb);
   });
 }

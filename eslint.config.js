@@ -3,20 +3,34 @@ import config from 'eslint-config-qubyte';
 
 export default [
   {
-    ignores: ['public/**/*.js', '.netlify/**/*.js']
+    ignores: ['public/*', '.netlify/*']
   },
   {
     languageOptions: {
       ...config.languageOptions,
-      globals: globals.node
+      globals: globals.nodeBuiltin
     },
     rules: config.rules
   },
   {
-    files: ['scripts/**/*.js', 'functions/**/*.js', 'plugins/**/*.js'],
+    files: ['scripts/**/*.js', 'plugins/**/*.js'],
     languageOptions: {
       ...config.languageOptions,
-      globals: globals.node
+      globals: globals.nodeBuiltin
+    },
+    rules: {
+      ...config.rules,
+      'no-console': 'off'
+    }
+  },
+  {
+    files: ['functions/**/*.js'],
+    languageOptions: {
+      ...config.languageOptions,
+      globals: {
+        ...globals.nodeBuiltin,
+        Netlify: true
+      }
     },
     rules: {
       ...config.rules,

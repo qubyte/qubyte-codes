@@ -1,9 +1,13 @@
 import { JSDOM } from 'jsdom';
 
+import { getEnvVars } from './function-helpers/get-env-vars.js';
+
+const { URL: BASE_URL, GITHUB_TOKEN } = getEnvVars('URL');
+
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.
 const IGNORED_SOURCES = [];
-const validTargetRegex = new RegExp(`^${process.env.URL}/(blog|japanese-notes)/`);
+const validTargetRegex = new RegExp(`^${BASE_URL}/(blog|japanese-notes)/`);
 
 class HttpError extends Error {
   constructor(message, { status = 400, ...options } = {}) {
@@ -12,19 +16,14 @@ class HttpError extends Error {
   }
 
   toResponseObject() {
-    return { statusCode: this.status, body: this.message };
+    return new Response(this.message, { status: this.status });
   }
 }
 
-function parseBodyAndPerformSimpleChecks(raw) {
-  const body = new URLSearchParams(raw);
-
-  if (!body.has('source') || !body.has('target')) {
-    return { statusCode: 400, body: 'Bad body format.' };
-  }
-
-  let source;
-  let target;
+/** @param {FormData} body */
+function parseBodyAndPerformSimpleChecks(body) {
+  let source = null;
+  let target = null;
 
   try {
     source = new URL(body.get('source'));
@@ -33,7 +32,7 @@ function parseBodyAndPerformSimpleChecks(raw) {
     throw new HttpError('Source and target must be valid, fully qualified URLs.');
   }
 
-  if (source.href.startsWith(process.env.URL)) {
+  if (source.href.startsWith(BASE_URL)) {
     throw new HttpError('Source cannot be from this domain.');
   }
 
@@ -70,7 +69,7 @@ async function checkSource(source, target) {
 
   for (const { href } of dom.window.document.getElementsByTagName('a')) {
     try {
-      if (new URL(href).href === target.href) {
+      if (new URL(href, res.url).href === target.href) {
         return true;
       }
     } catch { /* */ }
@@ -122,7 +121,7 @@ async function createIssue({ source, target, sourceDoesMention, targetHasMention
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${Buffer.from(`qubyte:${process.env.GITHUB_TOKEN}`).toString('base64')}`
+      Authorization: `Basic ${Buffer.from(`qubyte:${GITHUB_TOKEN}`).toString('base64')}`
     },
     body: JSON.stringify({
       title: `New webmention from ${source.hostname}!`,
@@ -136,51 +135,47 @@ async function createIssue({ source, target, sourceDoesMention, targetHasMention
   }
 }
 
-// eslint-disable-next-line max-statements
-export async function handler(event) {
-  console.log('GOT REQUEST', { body: event.body });
+/**
+ * @param {Error} error
+ * @param {String} defaultLogMessage
+ */
+function handleError(error, defaultLogMessage) {
+  if (error instanceof HttpError) {
+    return error.toResponseObject();
+  }
+
+  console.error(defaultLogMessage, error);
+
+  return new Response(`Unknown Error: ${error.message}`, { status: 500 });
+}
+
+/** @param {Request} req */
+export default async function handler(req) {
+  const body = await req.formData();
+
+  console.log('GOT REQUEST WITH BODY', body);
 
   let source;
   let target;
+  let sourceDoesMention;
+  let targetHasMention;
 
   try {
-    ({ source, target } = parseBodyAndPerformSimpleChecks(event.body));
+    ({ source, target } = parseBodyAndPerformSimpleChecks(body));
   } catch (e) {
-    if (e instanceof HttpError) {
-      return e.toResponseObject();
-    }
-
-    console.error('UNKNOWN ERROR PARSING REQUEST BODY:', e);
-
-    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+    return handleError(e, 'UNKNOWN ERROR PARSING REQUEST BODY:');
   }
-
-  let sourceDoesMention;
 
   try {
     sourceDoesMention = await checkSource(source, target);
   } catch (e) {
-    if (e instanceof HttpError) {
-      return e.toResponseObject();
-    }
-
-    console.error('UNKNOWN ERROR VALIDATING TARGET:', e);
-
-    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+    return handleError(e, 'UNKNOWN ERROR VALIDATING TARGET:');
   }
-
-  let targetHasMention;
 
   try {
     targetHasMention = await checkTarget(source, target);
   } catch (e) {
-    if (e instanceof HttpError) {
-      return e.toResponseObject();
-    }
-
-    console.error('UNKNOWN ERROR VALIDATING SOURCE:', e);
-
-    return { statusCode: 500, body: `Unknown Error: ${e.message}` };
+    return handleError(e, 'UNKNOWN ERROR VALIDATING SOURCE:');
   }
 
   // This is an MVP. At the moment it will only send a source and a target to
@@ -193,14 +188,8 @@ export async function handler(event) {
   try {
     await createIssue({ source, target, sourceDoesMention, targetHasMention });
   } catch (e) {
-    if (e instanceof HttpError) {
-      return e.toResponseObject();
-    }
-
-    console.error('UNKNOWN ERROR CREATING ISSUE:', e);
-
-    return { statusCode: 500, body: `Unexpected error posting to GitHub: ${e.message}` };
+    return handleError(e, 'UNKNOWN ERROR CREATING ISSUE:');
   }
 
-  return { statusCode: 202 };
+  return new Response('Accepted', { status: 202 });
 }
