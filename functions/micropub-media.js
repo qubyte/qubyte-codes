@@ -2,42 +2,42 @@ import { checkAuth } from './function-helpers/check-auth.js';
 import { responseHeaders } from './function-helpers/response-headers.js';
 import { parseMultipart } from './function-helpers/parse-multipart.js';
 import { uploadImage } from './function-helpers/upload-image.js';
+import { handleError } from './function-helpers/http-error.js';
+import { getEnvVars } from './function-helpers/get-env-vars.js';
 
+const { URL: BASE_URL } = getEnvVars('URL');
+
+/** @param {Request} req */
 // eslint-disable-next-line max-statements
-export async function handler(event) {
+export default async function handler(req) {
+  const headers = Object.fromEntries(req.headers.entries());
+
   console.log('GOT REQUEST:', {
-    headers: { ...event.headers, authorization: '[redacted]' },
-    length: event.body.length,
-    isBase64Encoded: event.isBase64Encoded
+    headers: { ...headers, authorization: '[redacted]' }
   });
 
   try {
-    await checkAuth(event.headers);
+    await checkAuth(headers);
   } catch (e) {
-    console.log('Error checking auth:', e.stack);
-    return { statusCode: 401, body: 'Not authorized.' };
+    return handleError(e, 'Error checking auth.', responseHeaders());
   }
 
-  const contentType = event.headers['content-type'] || '';
+  const contentType = headers['content-type'] || '';
 
   // This is not to spec, but Apple Shortcuts have broken support for multipart
   // form uploads.
   if (contentType.startsWith('image/')) {
-    console.log('PLAIN FILE UPLOAD OF ', contentType, event.isBase64Encoded);
+    console.log('PLAIN FILE UPLOAD OF ', contentType);
 
-    const content = event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
-    const path = await uploadImage({ content, type: contentType });
+    const body = Buffer.from(await req.arrayBuffer());
+    const path = await uploadImage({ content: body, type: contentType });
 
     console.log('path', path);
 
-    return {
-      statusCode: 202,
-      headers: responseHeaders({
-        location: `${process.env.URL}${path}`,
-        'content-type': 'application/json'
-      }),
-      body: JSON.stringify({ path })
-    };
+    return Response.json(
+      { path },
+      { headers: responseHeaders({ location: `${BASE_URL}${path}` }) }
+    );
   }
 
   console.log('BEFORE PARSING.');
@@ -45,10 +45,9 @@ export async function handler(event) {
   let parsed;
 
   try {
-    parsed = await parseMultipart(event.headers, event.body, event.isBase64Encoded);
+    parsed = await parseMultipart(req);
   } catch (e) {
-    console.log('Error parsing multipart body:', e.stack);
-    return { statusCode: 500, body: 'Multipart parsing failed.' };
+    return handleError(e, 'Error parsing multipart body.');
   }
 
   const fileKeys = Object.keys(parsed.files);
@@ -57,7 +56,7 @@ export async function handler(event) {
 
   if (!fileKeys.length) {
     console.log('No files found.');
-    return { statusCode: 400, body: 'No files found.' };
+    return new Response('No files found.', { status: 400 });
   }
 
   if (fileKeys.length > 1) {
@@ -68,19 +67,18 @@ export async function handler(event) {
 
   if (!photo) {
     console.error('No photo.');
-    return { statusCode: 400, body: 'No photo found.' };
+    return new Response('No photo found.', { status: 400 });
   }
 
   const path = await uploadImage(photo);
 
   console.log('path', path);
 
-  return {
-    statusCode: 202,
-    headers: responseHeaders({
-      location: `${process.env.URL}${path}`,
-      'content-type': 'application/json'
-    }),
-    body: JSON.stringify({ path })
-  };
+  return Response.json(
+    { path },
+    {
+      status: 202,
+      headers: responseHeaders({ location: `${BASE_URL}${path}` })
+    }
+  );
 }

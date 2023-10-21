@@ -1,3 +1,4 @@
+import { STATUS_CODES } from 'http';
 import { JSDOM } from 'jsdom';
 
 import { checkAuth } from './function-helpers/check-auth.js';
@@ -5,6 +6,10 @@ import { parseMultipart } from './function-helpers/parse-multipart.js';
 import { upload } from './function-helpers/upload.js';
 import { uploadImage } from './function-helpers/upload-image.js';
 import { responseHeaders } from './function-helpers/response-headers.js';
+import { HttpError, handleError } from './function-helpers/http-error.js';
+import { getEnvVars } from './function-helpers/get-env-vars.js';
+
+const { URL: BASE_URL } = getEnvVars('URL');
 
 async function getTitle(url) {
   try {
@@ -18,16 +23,11 @@ async function getTitle(url) {
 function syndications() {
   return [
     {
-      uid: 'https://mastodon.social/@qubyte',
+      uid: 'mastodon',
       name: 'qubyte on mastodon.social',
       service: {
         name: 'Mastodon',
         url: 'https://mastodon.social/'
-      },
-      user: {
-        name: '@qubyte',
-        url: 'https://mastodon.social/@qubyte',
-        photo: 'https://files.mastodon.social/accounts/avatars/000/034/232/original/19ce997f84ca75fe.png'
       }
     }
   ];
@@ -63,19 +63,19 @@ async function createFile(message, type, data) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
-async function parseBody(headers, body, isBase64Encoded) {
-  const type = headers['content-type'];
+async function parseBody(req) {
+  const type = req.headers.get('content-type');
 
   let parsed = null;
 
   if (type.match(/multipart/)) {
-    parsed = await parseMultipart(headers, body, isBase64Encoded);
+    parsed = await parseMultipart(req);
   } else if (type.match(/json/)) {
-    parsed = JSON.parse(body);
+    parsed = await req.json();
   } else if (type.match(/x-www-form-urlencoded/)) {
-    parsed = convertQueryStringToObject(body);
+    parsed = convertQueryStringToObject(await req.text());
   } else {
-    throw new Error(`Unhandled MIME type: ${type}`);
+    throw new HttpError(`Unhandled MIME type: ${type}`, { status: 400 });
   }
 
   parsed.properties.spoiler = [].concat(parsed.properties.spoiler || [])
@@ -85,39 +85,37 @@ async function parseBody(headers, body, isBase64Encoded) {
   return parsed;
 }
 
-export async function handler(event) {
+/** @type {Request} */
+export default async function handler(req) {
   /* eslint max-statements: off */
   /* eslint complexity: off */
+  const headers = Object.fromEntries(req.headers.entries());
 
-  console.log('GOT REQUEST:', { ...event.headers, authorization: '[redacted]' });
+  console.log('GOT REQUEST:', { ...headers, authorization: '[redacted]' });
 
   try {
-    await checkAuth(event.headers);
+    await checkAuth(headers);
   } catch (e) {
-    console.error(e.stack);
-    return { statusCode: 401, body: 'Not authorized.' };
+    return handleError(e, 'Error checking auth.');
   }
 
-  if (event.queryStringParameters.q === 'syndicate-to' || event.queryStringParameters.q === 'config') {
-    console.log(`Responding to ${event.queryStringParameters.q} query.`);
+  const q = new URL(req.url).searchParams.get('q');
 
-    return {
-      statusCode: 200,
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        'syndicate-to': syndications(),
-        'media-endpoint': `${process.env.URL}/micropub-media`
-      })
-    };
+  if (q === 'syndicate-to' || q === 'config') {
+    console.log(`Responding to ${q} query.`);
+
+    return Response.json({
+      'syndicate-to': syndications(),
+      'media-endpoint': `${BASE_URL}/micropub-media`
+    });
   }
 
   let data;
 
   try {
-    data = await parseBody(event.headers, event.body, event.isBase64Encoded);
+    data = await parseBody(req);
   } catch (e) {
-    console.error(e);
-    return { statusCode: 400, headers: responseHeaders(), body: '' };
+    return handleError(e, 'Error parsing body.', responseHeaders());
   }
 
   delete data.access_token; // quill
@@ -126,23 +124,23 @@ export async function handler(event) {
 
   if (!Object.keys(data).length) {
     console.log('Responding to empty body.');
-    return { statusCode: 204, headers: responseHeaders(), body: '' };
+    return new Response(null, { status: 204, headers: responseHeaders() });
   }
 
-  let created;
+  let location;
 
   if (data?.properties['repost-of']) {
     data.name = await getTitle(data.properties['repost-of'][0]);
-    created = await createFile('New link.', 'links', data);
+    location = await createFile('New link.', 'links', data);
   } else if (data?.properties['bookmark-of']) {
-    created = await createFile('New link.', 'links', data);
+    location = await createFile('New link.', 'links', data);
   } else if (data?.properties['like-of']) {
-    created = await createFile('New like.', 'likes', data);
+    location = await createFile('New like.', 'likes', data);
   } else if (data?.properties['in-reply-to']) {
     data.name = await getTitle(data.properties['in-reply-to'][0]);
-    created = await createFile('New Reply.', 'replies', data);
+    location = await createFile('New Reply.', 'replies', data);
   } else if (data?.properties?.category?.includes('study-session')) {
-    created = await createFile('New study session.', 'study-sessions', data);
+    location = await createFile('New study session.', 'study-sessions', data);
   } else {
     // The default is a note, which I allow to have images.
     if (data.files && data.files.photo && data.files.photo.length) { // quill uses a photo field
@@ -152,8 +150,8 @@ export async function handler(event) {
 
       data.photos = [uploadedImage];
     }
-    created = await createFile('New note.', 'notes', data);
+    location = await createFile('New note.', 'notes', data);
   }
 
-  return { statusCode: 202, headers: responseHeaders({ location: created }), body: '' };
+  return new Response(STATUS_CODES[202], { status: 202, headers: responseHeaders({ location }) });
 }
