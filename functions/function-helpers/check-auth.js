@@ -24,7 +24,7 @@ export async function checkAuth(req) {
   const res = await fetch('https://tokens.indieauth.com/token', {
     headers: {
       accept: 'application/json',
-      authorization: headers.authorization
+      authorization
     }
   });
 
