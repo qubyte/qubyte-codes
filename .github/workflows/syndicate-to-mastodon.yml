@@ -25,10 +25,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 18
+    - name: use node 20
       uses: actions/setup-node@v3
       with:
-        node-version: 18.x
+        node-version: 20.x
     - name: Dispatch mastodon API call
       env:
         MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
