@@ -2,7 +2,7 @@ import { JSDOM } from 'jsdom';
 
 import { getEnvVars } from './function-helpers/get-env-vars.js';
 
-const { URL: BASE_URL, GITHUB_TOKEN } = getEnvVars('URL');
+const { URL: BASE_URL, GITHUB_TOKEN } = getEnvVars('URL', 'GITHUB_TOKEN');
 
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.
