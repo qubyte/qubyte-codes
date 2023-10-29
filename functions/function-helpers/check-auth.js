@@ -1,9 +1,22 @@
 import { HttpError } from './http-error.js';
 
-export async function checkAuth(headers) {
-  if (headers['short-circuit-auth']) {
-    if (headers.authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
-      throw new HttpError(`Secret mismatch. Got: ${headers.authorization?.slice(0, 4)}`, { status: 401 });
+/**
+ * Returns a promise which rejects when auth fails, and resolves with no data
+ * when auth is successful.
+ *
+ * When a header named short-circuit-auth is defined, the authorization header
+ * is checked against a shared secret (this is to make writing Apple shortcuts
+ * easier). Otherwise the authorization header is used with an IndieAuth
+ * request, and the response of that request checked.
+ *
+ * @param {Request} req
+ **/
+export async function checkAuth(req) {
+  const authorization = req.headers.get('authorization');
+
+  if (req.headers.get('short-circuit-auth')) {
+    if (authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
+      throw new HttpError(`Secret mismatch. Got: ${authorization?.slice(0, 4)}`, { status: 401 });
     }
     return;
   }
