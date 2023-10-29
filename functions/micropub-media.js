@@ -10,23 +10,19 @@ const { URL: BASE_URL } = getEnvVars('URL');
 /** @param {Request} req */
 // eslint-disable-next-line max-statements
 export default async function handler(req) {
-  const headers = Object.fromEntries(req.headers.entries());
-
-  console.log('GOT REQUEST:', {
-    headers: { ...headers, authorization: '[redacted]' }
-  });
+  console.log('GOT REQUEST');
 
   try {
-    await checkAuth(headers);
+    await checkAuth(req);
   } catch (e) {
     return handleError(e, 'Error checking auth.', responseHeaders());
   }
 
-  const contentType = headers['content-type'] || '';
+  const contentType = req.headers.get('content-type');
 
   // This is not to spec, but Apple Shortcuts have broken support for multipart
   // form uploads.
-  if (contentType.startsWith('image/')) {
+  if (contentType?.startsWith('image/')) {
     console.log('PLAIN FILE UPLOAD OF ', contentType);
 
     const body = Buffer.from(await req.arrayBuffer());

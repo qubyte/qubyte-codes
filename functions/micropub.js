@@ -85,24 +85,60 @@ async function parseBody(req) {
   return parsed;
 }
 
-/** @type {Request} */
-export default async function handler(req) {
-  /* eslint max-statements: off */
-  /* eslint complexity: off */
-  const headers = Object.fromEntries(req.headers.entries());
+async function determineTypeAndCreate(data) {
+  if (data?.properties['repost-of']) {
+    const name = await getTitle(data.properties['repost-of'][0]);
+    return createFile('New link.', 'links', { ...data, name });
+  }
 
-  console.log('GOT REQUEST:', { ...headers, authorization: '[redacted]' });
+  if (data?.properties['bookmark-of']) {
+    return createFile('New link.', 'links', data);
+  }
+
+  if (data?.properties['like-of']) {
+    return createFile('New like.', 'likes', data);
+  }
+
+  if (data?.properties['in-reply-to']) {
+    const name = await getTitle(data.properties['in-reply-to'][0]);
+    return createFile('New Reply.', 'replies', { ...data, name });
+  }
+
+  if (data?.properties?.category?.includes('study-session')) {
+    return createFile('New study session.', 'study-sessions', data);
+  }
+
+  // The default is a note, which I allow to have images.
+  if (data?.files?.photo.length) { // quill uses a photo field
+    const uploadedImage = await uploadImage(data.files.photo[0]);
+
+    delete data.files;
+
+    data.photos = [uploadedImage];
+  }
+
+  return createFile('New note.', 'notes', data);
+}
+
+/** @param {Request} req */
+function isSyndicationsQuery(req) {
+  const q = new URL(req.url).searchParams.get('q');
+
+  return q === 'syndicate-to' || q === 'config';
+}
+
+/** @param {Request} req */
+export default async function handler(req) {
+  console.log('GOT REQUEST');
 
   try {
-    await checkAuth(headers);
+    await checkAuth(req);
   } catch (e) {
     return handleError(e, 'Error checking auth.');
   }
 
-  const q = new URL(req.url).searchParams.get('q');
-
-  if (q === 'syndicate-to' || q === 'config') {
-    console.log(`Responding to ${q} query.`);
+  if (isSyndicationsQuery(req)) {
+    console.log('Responding to syndications query.');
 
     return Response.json({
       'syndicate-to': syndications(),
@@ -127,31 +163,7 @@ export default async function handler(req) {
     return new Response(null, { status: 204, headers: responseHeaders() });
   }
 
-  let location;
-
-  if (data?.properties['repost-of']) {
-    data.name = await getTitle(data.properties['repost-of'][0]);
-    location = await createFile('New link.', 'links', data);
-  } else if (data?.properties['bookmark-of']) {
-    location = await createFile('New link.', 'links', data);
-  } else if (data?.properties['like-of']) {
-    location = await createFile('New like.', 'likes', data);
-  } else if (data?.properties['in-reply-to']) {
-    data.name = await getTitle(data.properties['in-reply-to'][0]);
-    location = await createFile('New Reply.', 'replies', data);
-  } else if (data?.properties?.category?.includes('study-session')) {
-    location = await createFile('New study session.', 'study-sessions', data);
-  } else {
-    // The default is a note, which I allow to have images.
-    if (data.files && data.files.photo && data.files.photo.length) { // quill uses a photo field
-      const uploadedImage = await uploadImage(data.files.photo[0]);
-
-      delete data.files;
-
-      data.photos = [uploadedImage];
-    }
-    location = await createFile('New note.', 'notes', data);
-  }
+  const location = await determineTypeAndCreate(data);
 
   return new Response(STATUS_CODES[202], { status: 202, headers: responseHeaders({ location }) });
 }

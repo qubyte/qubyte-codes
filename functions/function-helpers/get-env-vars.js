@@ -1,4 +1,6 @@
+/** @param {...String} names */
 export function getEnvVars(...names) {
+  /** @type {Record<String, String>} */
   const vars = {};
 
   let loggedStrategy = false;
