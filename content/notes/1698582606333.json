@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I made a cheesecake the other day."
+    ],
+    "latitude": 50.84031333333333,
+    "longitude": -0.1139333333333333,
+    "photo": [
+      {
+        "alt": "A slice of white chocolate cheesecake on a small plate. A raspberry is perched atop the slice, and the handle of a fork can be seen behind the slice. The small plate is on a wooden table.",
+        "value": "/images/1698582491759.jpeg"
+      }
+    ],
+    "spoiler": []
+  }
+}
