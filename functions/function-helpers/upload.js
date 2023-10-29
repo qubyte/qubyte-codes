@@ -1,7 +1,7 @@
 import { HttpError } from './http-error.js';
 import { getEnvVars } from './get-env-vars.js';
 
-const { GITHUB_TOKEN } = getEnvVars('URL');
+const { GITHUB_TOKEN } = getEnvVars('GITHUB_TOKEN');
 
 export async function upload(message, type, filename, buffer) {
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
