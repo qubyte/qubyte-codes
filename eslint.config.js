@@ -2,50 +2,26 @@ import globals from 'globals';
 import config from 'eslint-config-qubyte';
 
 export default [
+  config,
   {
-    ignores: ['public/*', '.netlify/*']
+    ignores: ['public', '.netlify']
   },
   {
-    languageOptions: {
-      ...config.languageOptions,
-      globals: globals.nodeBuiltin
-    },
-    rules: config.rules
+    files: ['index.js', 'lib/**/*.js', 'tests/**/*.js', 'scripts/**/*.js', 'plugins/**/*.js', 'functions/**/*.js'],
+    languageOptions: { globals: globals.nodeBuiltin }
   },
   {
     files: ['scripts/**/*.js', 'plugins/**/*.js'],
-    languageOptions: {
-      ...config.languageOptions,
-      globals: globals.nodeBuiltin
-    },
-    rules: {
-      ...config.rules,
-      'no-console': 'off'
-    }
+    rules: { 'no-console': 'off' }
   },
   {
     files: ['functions/**/*.js'],
-    languageOptions: {
-      ...config.languageOptions,
-      globals: {
-        ...globals.nodeBuiltin,
-        Netlify: true
-      }
-    },
-    rules: {
-      ...config.rules,
-      'no-console': 'off'
-    }
+    languageOptions: { globals: { Netlify: true } },
+    rules: { 'no-console': 'off' }
   },
   {
     files: ['content/scripts/**/*.js'],
-    languageOptions: {
-      ...config.languageOptions,
-      globals: globals.browser
-    },
-    rules: {
-      ...config.rules,
-      'no-console': 'off'
-    }
+    languageOptions: { globals: globals.browser },
+    rules: { 'no-console': 'off' }
   }
 ];

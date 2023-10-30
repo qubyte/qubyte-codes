@@ -47,7 +47,7 @@ const rangeφ = makeNumberInput({
   max: 20,
   value: battenberg.δφ * 10000,
   onchange() {
-    battenberg.δφ = this.valueAsNumber / 10000; // eslint-disable-line no-invalid-this
+    battenberg.δφ = this.valueAsNumber / 10000;
   }
 });
 
@@ -56,7 +56,7 @@ const rangeθ = makeNumberInput({
   min: 0, max: 20,
   value: battenberg.δθ * 10000,
   onchange() {
-    battenberg.δθ = this.valueAsNumber / 10000; // eslint-disable-line no-invalid-this
+    battenberg.δθ = this.valueAsNumber / 10000;
   }
 });
 
@@ -66,7 +66,7 @@ const rangeω = makeNumberInput({
   max: 100,
   value: battenberg.δω * 10000,
   onchange() {
-    battenberg.δω = this.valueAsNumber / 10000; // eslint-disable-line no-invalid-this
+    battenberg.δω = this.valueAsNumber / 10000;
   }
 });
 
