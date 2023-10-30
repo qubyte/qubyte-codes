@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "Big skies over Brighton these days."
+    ],
+    "latitude": 50.84059166666667,
+    "longitude": -0.1153361666666667,
+    "photo": [
+      {
+        "alt": "The view from my home towards the ocean off of Brighton. A sliver of the sea can be seen over the houses, and you can just about make out the wind farm. Above are some dramatic clouds of various kinds. Above those the sky is blue.",
+        "value": "/images/1698677990783.jpeg"
+      }
+    ],
+    "spoiler": []
+  }
+}
