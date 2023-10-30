@@ -12,7 +12,7 @@ export function parseMultipart(req) {
     const files = {};
     const fields = {};
 
-    bb.on('file', async (name, filestream, info) => { // eslint-disable-line max-params
+    bb.on('file', async (name, filestream, info) => {
       console.log('file:', name, info);
 
       const chunks = await filestream.toArray();
