@@ -193,3 +193,7 @@ export default async function handler(req) {
 
   return new Response('Accepted', { status: 202 });
 }
+
+export const config = {
+  path: '/functions/webmention'
+};

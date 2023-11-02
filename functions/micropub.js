@@ -33,10 +33,12 @@ function syndications() {
   ];
 }
 
-function convertQueryStringToObject(queryString) {
-  const query = new URLSearchParams(queryString);
-  const keys = new Set(query.keys());
+/** @param {Request} req */
+async function convertFormRequestToObject(req) {
+  /** @type {Record<String, String>} */
   const properties = {};
+  const query = await req.formData();
+  const keys = new Set(query.keys());
 
   let type = 'h-entry';
 
@@ -63,6 +65,7 @@ async function createFile(message, type, data) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
+/** @param {Request} req */
 async function parseBody(req) {
   const type = req.headers.get('content-type');
 
@@ -73,7 +76,7 @@ async function parseBody(req) {
   } else if (type.match(/json/)) {
     parsed = await req.json();
   } else if (type.match(/x-www-form-urlencoded/)) {
-    parsed = convertQueryStringToObject(await req.text());
+    parsed = await convertFormRequestToObject(req);
   } else {
     throw new HttpError(`Unhandled MIME type: ${type}`, { status: 400 });
   }
@@ -142,7 +145,7 @@ export default async function handler(req) {
 
     return Response.json({
       'syndicate-to': syndications(),
-      'media-endpoint': `${BASE_URL}/micropub-media`
+      'media-endpoint': `${BASE_URL}/functions/micropub-media`
     });
   }
 
@@ -167,3 +170,7 @@ export default async function handler(req) {
 
   return new Response(STATUS_CODES[202], { status: 202, headers: responseHeaders({ location }) });
 }
+
+export const config = {
+  path: '/functions/micropub'
+};
