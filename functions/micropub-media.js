@@ -3,9 +3,7 @@ import { responseHeaders } from './function-helpers/response-headers.js';
 import { parseMultipart } from './function-helpers/parse-multipart.js';
 import { uploadImage } from './function-helpers/upload-image.js';
 import { handleError } from './function-helpers/http-error.js';
-import { getEnvVars } from './function-helpers/get-env-vars.js';
-
-const { URL: BASE_URL } = getEnvVars('URL');
+import { getEnvVar } from './function-helpers/get-env-var.js';
 
 /** @param {Request} req */
 // eslint-disable-next-line max-statements
@@ -19,6 +17,7 @@ export default async function handler(req) {
   }
 
   const contentType = req.headers.get('content-type');
+  const baseUrl = getEnvVar('URL');
 
   // This is not to spec, but Apple Shortcuts have broken support for multipart
   // form uploads.
@@ -32,7 +31,7 @@ export default async function handler(req) {
 
     return Response.json(
       { path },
-      { headers: responseHeaders({ location: `${BASE_URL}${path}` }) }
+      { headers: responseHeaders({ location: `${baseUrl}${path}` }) }
     );
   }
 
@@ -74,7 +73,7 @@ export default async function handler(req) {
     { path },
     {
       status: 202,
-      headers: responseHeaders({ location: `${BASE_URL}${path}` })
+      headers: responseHeaders({ location: `${baseUrl}${path}` })
     }
   );
 }

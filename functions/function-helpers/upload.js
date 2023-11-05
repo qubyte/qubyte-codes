@@ -1,11 +1,10 @@
 import { HttpError } from './http-error.js';
-import { getEnvVars } from './get-env-vars.js';
-
-const { GITHUB_TOKEN } = getEnvVars('GITHUB_TOKEN');
+import { getEnvVar } from './get-env-var.js';
 
 export async function upload(message, type, filename, buffer) {
   const body = JSON.stringify({ message, content: buffer.toString('base64') });
   const path = `content/${type}/${filename}`;
+  const githubToken = getEnvVar('GITHUB_TOKEN');
 
   console.log('UPLOADING FILE:', path);
 
@@ -14,7 +13,7 @@ export async function upload(message, type, filename, buffer) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${Buffer.from(`qubyte:${GITHUB_TOKEN}`).toString('base64')}`
+      Authorization: `Basic ${Buffer.from(`qubyte:${githubToken}`).toString('base64')}`
     },
     body
   });
