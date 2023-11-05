@@ -1,13 +1,11 @@
 import { JSDOM } from 'jsdom';
 
-import { getEnvVars } from './function-helpers/get-env-vars.js';
-
-const { URL: BASE_URL, GITHUB_TOKEN } = getEnvVars('URL', 'GITHUB_TOKEN');
+import { getEnvVar } from './function-helpers/get-env-var.js';
 
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.
 const IGNORED_SOURCES = [];
-const validTargetRegex = new RegExp(`^${BASE_URL}/(blog|japanese-notes)/`);
+
 
 class HttpError extends Error {
   constructor(message, { status = 400, ...options } = {}) {
@@ -22,6 +20,9 @@ class HttpError extends Error {
 
 /** @param {FormData} body */
 function parseBodyAndPerformSimpleChecks(body) {
+  const baseUrl = getEnvVar('URL');
+  const validTargetRegex = new RegExp(`^${baseUrl}/(blog|japanese-notes)/`);
+
   let source = null;
   let target = null;
 
@@ -32,7 +33,7 @@ function parseBodyAndPerformSimpleChecks(body) {
     throw new HttpError('Source and target must be valid, fully qualified URLs.');
   }
 
-  if (source.href.startsWith(BASE_URL)) {
+  if (source.href.startsWith(baseUrl)) {
     throw new HttpError('Source cannot be from this domain.');
   }
 
@@ -116,12 +117,13 @@ async function createIssue({ source, target, sourceDoesMention, targetHasMention
   }
 
   const action = sourceDoesMention ? 'add' : 'remove';
+  const githubToken = getEnvVar('GITHUB_TOKEN');
 
   const res = await fetch('https://api.github.com/repos/qubyte/qubyte-codes/issues', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Basic ${Buffer.from(`qubyte:${GITHUB_TOKEN}`).toString('base64')}`
+      Authorization: `Basic ${Buffer.from(`qubyte:${githubToken}`).toString('base64')}`
     },
     body: JSON.stringify({
       title: `New webmention from ${source.hostname}!`,

@@ -7,9 +7,7 @@ import { upload } from './function-helpers/upload.js';
 import { uploadImage } from './function-helpers/upload-image.js';
 import { responseHeaders } from './function-helpers/response-headers.js';
 import { HttpError, handleError } from './function-helpers/http-error.js';
-import { getEnvVars } from './function-helpers/get-env-vars.js';
-
-const { URL: BASE_URL } = getEnvVars('URL');
+import { getEnvVar } from './function-helpers/get-env-var.js';
 
 async function getTitle(url) {
   try {
@@ -143,9 +141,11 @@ export default async function handler(req) {
   if (isSyndicationsQuery(req)) {
     console.log('Responding to syndications query.');
 
+    const baseUrl = getEnvVar('URL');
+
     return Response.json({
       'syndicate-to': syndications(),
-      'media-endpoint': `${BASE_URL}/functions/micropub-media`
+      'media-endpoint': `${baseUrl}/functions/micropub-media`
     });
   }
 
