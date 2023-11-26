@@ -1,3 +1,5 @@
+// @ts-check
+
 import { JSDOM } from 'jsdom';
 import linkHeader from 'http-link-header';
 
@@ -16,7 +18,7 @@ export class Mention {
   async dispatch() {
     const res = await fetch(this.endpoint, {
       method: 'POST',
-      body: new URLSearchParams({ source: this.source, target: this.target })
+      body: new URLSearchParams({ source: this.source.toString(), target: this.target.toString() })
     });
 
     if (!res.ok) {
@@ -34,7 +36,7 @@ export class Mention {
    */
   static async discover(source, target) {
     const res = await fetch(target);
-    const [webmention] = linkHeader.parse(res.headers.link || '').rel('webmention');
+    const [webmention] = linkHeader.parse(res.headers.get('link') || '').rel('webmention');
 
     // Link header takes precedence.
     if (webmention) {
@@ -45,7 +47,13 @@ export class Mention {
       throw new Error(`Unexpected status: ${res.status}`);
     }
 
-    const { window } = new JSDOM(await res.text(), { url: res.url, contentType: res.headers.get('content-type') });
+    const contentType = res.headers.get('content-type') || 'text/html';
+
+    if (contentType !== 'text/html' && contentType !== 'application/xhtml+xml') {
+      return null;
+    }
+
+    const { window } = new JSDOM(await res.text(), { url: res.url, contentType });
 
     // If no webmention link header is discovered, the first webmention link or
     // anchor is picked (if any).
