@@ -1,5 +1,8 @@
+// @ts-check
+
 import { JSDOM } from 'jsdom';
 
+/** @param {URL} url */
 export default async function getTagsForUrl(url) {
   const res = await fetch(url);
 

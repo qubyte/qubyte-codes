@@ -1,4 +1,5 @@
 import { HttpError } from './http-error.js';
+import { getEnvVar } from './get-env-var.js';
 
 /**
  * Returns a promise which rejects when auth fails, and resolves with no data
@@ -15,7 +16,7 @@ export async function checkAuth(req) {
   const authorization = req.headers.get('authorization');
 
   if (req.headers.get('short-circuit-auth')) {
-    if (authorization !== `Bearer ${process.env.SHORT_CIRCUIT_AUTH}`) {
+    if (authorization !== `Bearer ${getEnvVar('SHORT_CIRCUIT_AUTH')}`) {
       throw new HttpError(`Secret mismatch. Got: ${authorization?.slice(0, 4)}`, { status: 401 });
     }
     return;

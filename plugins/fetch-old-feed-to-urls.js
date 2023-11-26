@@ -1,7 +1,10 @@
+// @ts-check
+
 import { Readable } from 'node:stream';
 import parseFeedToUrls from './parse-feed-to-urls.js';
 import retry from '../lib/linear-retry.js';
 
+/** @param {URL} url */
 export default function fetchOldFeedToUrls(url) {
   async function fetchOldFeed() {
     const res = await fetch(url);
@@ -10,7 +13,13 @@ export default function fetchOldFeedToUrls(url) {
       throw new Error(`Unexpected response from ${url}: ${res.status} ${await res.text()}`);
     }
 
-    return parseFeedToUrls(Readable.fromWeb(res.body));
+    if (!res.body) {
+      return new Map();
+    }
+
+    const body = /** @type {import("node:stream/web").ReadableStream<Uint8Array>} */ (res.body);
+
+    return parseFeedToUrls(Readable.fromWeb(body));
   }
 
   return retry(fetchOldFeed, 5);

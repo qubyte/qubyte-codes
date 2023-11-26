@@ -1,12 +1,12 @@
+// @ts-check
+
 import { join as pathJoin } from 'node:path';
 import { readFile } from 'node:fs/promises';
+import getEnvVar from '../get-env-var.js';
 
+/** @param {string} publishDir */
 function buildShortlinksPath(publishDir) {
   return pathJoin('.', publishDir, 'shortlinks.txt');
-}
-
-function buildShortlinksUrl(baseUrl) {
-  return `${baseUrl}/shortlinks.txt`;
 }
 
 async function fetchShortlinks({ constants, utils }) {
@@ -23,7 +23,7 @@ async function fetchShortlinks({ constants, utils }) {
 
   // If we can't find the shortlinks file in the cache then get it from the
   // site itself.
-  const res = await fetch(buildShortlinksUrl(process.env.URL));
+  const res = await fetch(new URL('/shortlinks.txt', getEnvVar('URL')));
 
   if (!res.ok) {
     throw new Error(`Unexpected status: ${res.status}`);
@@ -39,16 +39,15 @@ const oldShortLinksForBuild = new Map();
 export async function onPreBuild({ constants, utils }) {
   try {
     const oldShortlinks = (await fetchShortlinks({ constants, utils })).trim();
-    oldShortLinksForBuild.set(process.env.BUILD_ID, oldShortlinks);
+    oldShortLinksForBuild.set(getEnvVar('BUILD_ID'), oldShortlinks);
     console.log('Size of old shortlinks:', Buffer.byteLength(oldShortlinks));
   } catch (error) {
     utils.build.failPlugin('Error making feed request.', { error });
   }
 }
 
-
 export async function onSuccess({ constants, utils }) {
-  const oldShortlinks = oldShortLinksForBuild.get(process.env.BUILD_ID);
+  const oldShortlinks = oldShortLinksForBuild.get(getEnvVar('BUILD_ID'));
   const shortlinksPath = buildShortlinksPath(constants.PUBLISH_DIR);
   const newShortlinks = (await readFile(shortlinksPath, 'utf8')).trim();
 
@@ -60,7 +59,7 @@ export async function onSuccess({ constants, utils }) {
     return console.log('No change to shortlinks.');
   }
 
-  const res = await fetch(process.env.BUILD_SHORTLINKS_TRIGGER, { method: 'POST' });
+  const res = await fetch(getEnvVar('BUILD_SHORTLINKS_TRIGGER'), { method: 'POST' });
 
   if (!res.ok) {
     utils.build.failPlugin('Error triggering shortlinks build.', { status: res.status });
@@ -68,5 +67,5 @@ export async function onSuccess({ constants, utils }) {
 }
 
 export function onEnd() {
-  oldShortLinksForBuild.delete(process.env.BUILD_ID);
+  oldShortLinksForBuild.delete(getEnvVar('BUILD_ID'));
 }
