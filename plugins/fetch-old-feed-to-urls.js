@@ -6,6 +6,7 @@ import retry from '../lib/linear-retry.js';
 
 /** @param {URL} url */
 export default function fetchOldFeedToUrls(url) {
+  /** @returns {Promise<Map<string, Date>>} */
   async function fetchOldFeed() {
     const res = await fetch(url);
 
