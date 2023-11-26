@@ -1,3 +1,5 @@
+// @ts-check
+
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { Mention } from './mention.js';
@@ -92,10 +94,10 @@ function loadDomFromFile(url, publicDirPath) {
 export default async function getMentionsForPage(url, publicDir, options) {
   const contents = await Promise.all([
     // The old version may have links removed in the new version.
-    options.old ? JSDOM.fromURL(url) : null,
+    options.old ? JSDOM.fromURL(url) : [],
     // The new version may have links not present in the old version.
-    options.new ? loadDomFromFile(url, publicDir) : null
+    options.new ? loadDomFromFile(url, publicDir) : []
   ]);
 
-  return getMentionsFromPages(contents.filter(Boolean), options.ignoredHostnames || []);
+  return getMentionsFromPages(contents.flat(), options.ignoredHostnames || []);
 }

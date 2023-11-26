@@ -1,10 +1,13 @@
+// @ts-check
+
 import { join as pathJoin } from 'node:path';
 
 import fetchOldFeedToUrls from '../fetch-old-feed-to-urls.js';
 import readNewFeedToUrls from '../read-new-feed-to-urls.js';
 import getMentionsForPage from './get-mentions-for-page.js';
+import getEnvVar from '../get-env-var.js';
 
-const pageRegex = new RegExp(`^${process.env.URL}/(blog|links|likes|replies|notes)/.+`);
+const pageRegex = new RegExp(`^${getEnvVar('URL')}/(blog|links|likes|replies|notes)/.+`);
 const ignoredHostnames = [
   'localhost',
   'qubyte.codes',
@@ -15,7 +18,7 @@ const ignoredHostnames = [
   'ko-fi.com'
 ];
 
-/** @type Map<string, import('./mention.js').Mention[]*/
+/** @type Map<string, import('./mention.js').Mention[]> */
 const allMentions = new Map();
 
 // Gather URLs, targets, and endpoints *after* the build has run but *before*
@@ -25,11 +28,11 @@ const allMentions = new Map();
 // The old and new version of an updated page, so we can send mentions for all
 // added, removed, and unchanged targets (as required by the spec).
 export async function onPostBuild({ constants }) {
-  /** @type string[] */
+  /** @type string */
   const publicDir = pathJoin('.', constants.PUBLISH_DIR);
 
   const [oldEntries, newEntries] = await Promise.all([
-    fetchOldFeedToUrls(`${process.env.URL}/atom.xml`),
+    fetchOldFeedToUrls(new URL('/atom.xml', getEnvVar('URL'))),
     readNewFeedToUrls(pathJoin(publicDir, 'atom.xml'))
   ]);
 

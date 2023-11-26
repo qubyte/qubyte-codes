@@ -30,7 +30,4 @@ jobs:
       with:
         node-version: 20.x
     - name: Dispatch mastodon API call
-      env:
-        MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
-        MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
-      run: node scripts/syndicate-to-mastodon.js ${{ needs.get-added-files.outputs.documents }}
+      run: node scripts/syndicate-to-mastodon.js --base-url ${{ secrets.MASTODON_BASE_URL }} --access-token ${{ secrets.MASTODON_ACCESS_TOKEN }} ${{ needs.get-added-files.outputs.documents }}

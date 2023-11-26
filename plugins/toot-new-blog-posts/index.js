@@ -1,15 +1,19 @@
+// @ts-check
+
 import { join as pathJoin } from 'node:path';
 import fetchOldFeedToUrls from '../fetch-old-feed-to-urls.js';
 import readNewFeedToUrls from '../read-new-feed-to-urls.js';
 import getTagsForUrl from './get-tags-for-url.js';
 import postToMastodon from '../../lib/post-to-mastodon.js';
+import getEnvVar from '../get-env-var.js';
 
+/** @param {string} publishDir */
 function buildfeedPath(publishDir) {
   return pathJoin('.', publishDir, 'atom.xml');
 }
 
 function buildFeedUrl() {
-  return `${process.env.URL}/atom.xml`;
+  return new URL('/atom.xml', getEnvVar('URL'));
 }
 
 // This is probably unnecessary since each method in this module will only be
@@ -26,10 +30,10 @@ export async function onPreBuild({ constants, utils }) {
     if (restored) {
       const oldUrls = await readNewFeedToUrls(feedPath);
       console.log('Feed retrieved from cache. Number of old URLs:', oldUrls.size);
-      oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
+      oldUrlsForBuild.set(getEnvVar('BUILD_ID'), oldUrls);
     } else {
       const oldUrls = await fetchOldFeedToUrls(buildFeedUrl());
-      oldUrlsForBuild.set(process.env.BUILD_ID, oldUrls);
+      oldUrlsForBuild.set(getEnvVar('BUILD_ID'), oldUrls);
       console.log('Feed retrieved from network fallback. Number of old URLs:', oldUrls.size);
     }
   } catch (error) {
@@ -39,7 +43,7 @@ export async function onPreBuild({ constants, utils }) {
 
 export async function onSuccess({ constants, utils }) {
   const feedPath = pathJoin('.', constants.PUBLISH_DIR, 'atom.xml');
-  const oldUrls = oldUrlsForBuild.get(process.env.BUILD_ID);
+  const oldUrls = oldUrlsForBuild.get(getEnvVar('BUILD_ID')) || new Map();
   const newUrls = await readNewFeedToUrls(feedPath);
 
   console.log('Number of new URLs:', newUrls.size);
@@ -56,7 +60,7 @@ export async function onSuccess({ constants, utils }) {
       let tags;
 
       try {
-        tags = await getTagsForUrl(url);
+        tags = await getTagsForUrl(new URL(url));
       } catch (error) {
         console.error(`Error getting tags for ${url}: ${error.stack || error.message}`);
         continue;
@@ -65,7 +69,12 @@ export async function onSuccess({ constants, utils }) {
       const status = `New blog post published! ${url} ${tags.join(' ')}`.trim();
 
       try {
-        await postToMastodon('/api/v1/statuses', new URLSearchParams({ status }));
+        await postToMastodon({
+          endpoint: '/api/v1/statuses',
+          mastodonBaseUrl: getEnvVar('MASTODON_BASE_URL'),
+          mastodonAccessToken: getEnvVar('MASTODON_ACCESS_TOKEN'),
+          body: new URLSearchParams({ status })
+        });
         console.log('Done dispatching toot for:', url);
       } catch (error) {
         console.error(`Error dispatching toot for ${url}: ${error.stack || error.message}`);
@@ -75,5 +84,5 @@ export async function onSuccess({ constants, utils }) {
 }
 
 export function onEnd() {
-  oldUrlsForBuild.delete(process.env.BUILD_ID);
+  oldUrlsForBuild.delete(getEnvVar('BUILD_ID'));
 }
