@@ -1,0 +1,13 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I’ve been solving #AdventOfCode23 with Swift this year, it’s not been completely smooth sailing, but I really enjoy the language."
+    ],
+    "latitude": 50.84035762389669,
+    "longitude": -0.1138742940840825,
+    "spoiler": []
+  }
+}
