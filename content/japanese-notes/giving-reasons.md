@@ -15,7 +15,7 @@ When there is one reason for something, you can use {ja:から}.
 
 - {ja:^雨,あめ^が^止,や^んだ==から==、^出,で^かけました。}
 - The rain stopped, ==so== I went out.
-- I went outside ==because== the rain stopped, I went outside.
+- I went outside ==because== the rain stopped.
 
 For adjectives, {ja:から} takes the adjective in a plain tense. That is,
 
