@@ -44,7 +44,7 @@
     "@toisu/static": "5.0.0",
     "@toisu/toisu": "5.0.0",
     "chokidar": "3.5.3",
-    "eslint": "^8.54.0",
+    "eslint": "^8.56.0",
     "eslint-config-qubyte": "^6.0.0",
     "globals": "^13.23.0"
   }
