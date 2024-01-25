@@ -38,7 +38,7 @@
     "postcss-import": "^16.0.0",
     "sharp": "0.33.2",
     "slugify": "1.6.6",
-    "temml": "^0.10.21"
+    "temml": "^0.10.22"
   },
   "devDependencies": {
     "@toisu/static": "5.0.0",
