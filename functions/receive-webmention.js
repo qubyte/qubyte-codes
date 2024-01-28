@@ -1,3 +1,5 @@
+// @ts-check
+
 import { JSDOM } from 'jsdom';
 
 import { getEnvVar } from './function-helpers/get-env-var.js';
@@ -8,8 +10,14 @@ const IGNORED_SOURCES = [];
 
 
 class HttpError extends Error {
-  constructor(message, { status = 400, ...options } = {}) {
-    super(message, options);
+  /**
+   * @param {string} message
+   * @param {object} options
+   * @param {number} [options.status]
+   * @param {Error} [options.cause]
+   */
+  constructor(message, { status = 400, cause } = {}) {
+    super(message, { cause });
     this.status = status;
   }
 
@@ -18,20 +26,31 @@ class HttpError extends Error {
   }
 }
 
-/** @param {FormData} body */
-function parseBodyAndPerformSimpleChecks(body) {
-  const baseUrl = getEnvVar('URL');
-  const validTargetRegex = new RegExp(`^${baseUrl}/(blog|japanese-notes)/`);
+/**
+ * @param {FormData|URLSearchParams} form
+ * @param {string} fieldName
+ */
+function parseUrlFromForm(form, fieldName) {
+  const field = form.get(fieldName);
 
-  let source = null;
-  let target = null;
+  if (!field) {
+    throw new HttpError(`The ${fieldName} must be a valid, fully qualified URL.`);
+  }
 
   try {
-    source = new URL(body.get('source'));
-    target = new URL(body.get('target'));
+    return new URL(field.toString());
   } catch (e) {
-    throw new HttpError('Source and target must be valid, fully qualified URLs.');
+    throw new HttpError(`The ${fieldName} must be a valid, fully qualified URL.`);
   }
+}
+
+/**
+ * @param {URL} source
+ * @param {URL} target
+ */
+function performSimpleChecks(source, target) {
+  const baseUrl = getEnvVar('URL');
+  const validTargetRegex = new RegExp(`^${baseUrl}/(blog|japanese-notes)/`);
 
   if (source.href.startsWith(baseUrl)) {
     throw new HttpError('Source cannot be from this domain.');
@@ -66,7 +85,13 @@ async function checkSource(source, target) {
     return false;
   }
 
-  const dom = new JSDOM(await res.text(), { contentType: res.headers.get('content-type'), url: res.url });
+  const contentType = res.headers.get('content-type') || 'text/html';
+
+  if (contentType !== 'text/html' && contentType !== 'application/xhtml+xml') {
+    return false;
+  }
+
+  const dom = new JSDOM(await res.text(), { contentType, url: res.url });
 
   for (const { href } of dom.window.document.getElementsByTagName('a')) {
     try {
@@ -90,19 +115,34 @@ async function checkTarget(source, target) {
     throw new HttpError('Invalid target URL.');
   }
 
-  const dom = new JSDOM(await res.text(), { contentType: res.headers.get('content-type'), url: res.url });
+  const contentType = res.headers.get('content-type') || 'text/html';
 
-  for (const { href } of dom.window.document.querySelectorAll('.h-cite .u-url')) {
-    try {
-      if (new URL(href).href === source.href) {
-        return true;
-      }
-    } catch { /* */ }
+  if (contentType !== 'text/html' && contentType !== 'application/xhtml+xml') {
+    throw new HttpError('Invalid target content type.');
+  }
+
+  const dom = new JSDOM(await res.text(), { contentType, url: res.url });
+
+  for (const el of dom.window.document.querySelectorAll('.h-cite .u-url')) {
+    if (el instanceof dom.window.HTMLAnchorElement || el instanceof dom.window.HTMLLinkElement) {
+      try {
+        if (new URL(el.href).href === source.href) {
+          return true;
+        }
+      } catch { /* */ }
+    }
   }
 
   return false;
 }
 
+/**
+ * @param {object} options
+ * @param {URL} options.source
+ * @param {URL} options.target
+ * @param {boolean} options.sourceDoesMention
+ * @param {boolean} options.targetHasMention
+ */
 async function createIssue({ source, target, sourceDoesMention, targetHasMention }) {
   if (sourceDoesMention && targetHasMention) {
     // TODO: This may indicate an updated mention. This could mean the author
@@ -157,27 +197,30 @@ export default async function handler(req) {
 
   console.log('GOT REQUEST WITH BODY', body);
 
+  /** @type {undefined|URL} */
   let source;
+  /** @type {undefined|URL} */
   let target;
-  let sourceDoesMention;
-  let targetHasMention;
+  let sourceDoesMention = false;
+  let targetHasMention = false;
 
   try {
-    ({ source, target } = parseBodyAndPerformSimpleChecks(body));
+    ([source, target] = [parseUrlFromForm(body, 'source'), parseUrlFromForm(body, 'target')]);
+    performSimpleChecks(source, target);
   } catch (e) {
-    return handleError(e, 'UNKNOWN ERROR PARSING REQUEST BODY:');
+    return handleError(e, 'UNKNOWN ERROR PARSING REQUEST BODY');
   }
 
   try {
     sourceDoesMention = await checkSource(source, target);
   } catch (e) {
-    return handleError(e, 'UNKNOWN ERROR VALIDATING TARGET:');
+    return handleError(e, 'UNKNOWN ERROR VALIDATING TARGET');
   }
 
   try {
     targetHasMention = await checkTarget(source, target);
   } catch (e) {
-    return handleError(e, 'UNKNOWN ERROR VALIDATING SOURCE:');
+    return handleError(e, 'UNKNOWN ERROR VALIDATING SOURCE');
   }
 
   // This is an MVP. At the moment it will only send a source and a target to
@@ -190,7 +233,7 @@ export default async function handler(req) {
   try {
     await createIssue({ source, target, sourceDoesMention, targetHasMention });
   } catch (e) {
-    return handleError(e, 'UNKNOWN ERROR CREATING ISSUE:');
+    return handleError(e, 'UNKNOWN ERROR CREATING ISSUE');
   }
 
   return new Response('Accepted', { status: 202 });

@@ -1,21 +1,32 @@
+// @ts-check
+
 export class HttpError extends Error {
-  constructor(message, { status = 400, ...options } = {}) {
-    super(message, options);
+  /**
+   * @param {string} message
+   * @param {object} options
+   * @param {number} [options.status]
+   * @param {Error} [options.cause]
+   */
+  constructor(message, { status = 400, cause } = {}) {
+    super(message, { cause });
     this.status = status;
   }
 
-  toResponseObject({ headers } = {}) {
-    return new Response(this.message, { status: this.status, headers });
+  /** @param {Headers|null} headers */
+  toResponseObject(headers) {
+    const options = headers ? { status: this.status, headers } : { status: this.status };
+    return new Response(this.message, options);
   }
 }
 
 /**
  * @param {Error} error
  * @param {String} defaultLogMessage
+ * @param {Headers|null} headers
  */
-export function handleError(error, defaultLogMessage, headers = {}) {
+export function handleError(error, defaultLogMessage, headers) {
   if (error instanceof HttpError) {
-    return error.toResponseObject({ headers });
+    return error.toResponseObject(headers);
   }
 
   console.error(defaultLogMessage, error);

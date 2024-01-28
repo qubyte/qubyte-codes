@@ -1,21 +1,19 @@
+// @ts-check
+
 import { HttpError } from './http-error.js';
 import { getEnvVar } from './get-env-var.js';
 
+function buildAuthHeaderVal() {
+  return `Basic ${Buffer.from(`qubyte:${getEnvVar('GITHUB_TOKEN')}`).toString('base64')}`;
+}
+
 export async function upload(message, type, filename, buffer) {
-  const body = JSON.stringify({ message, content: buffer.toString('base64') });
-  const path = `content/${type}/${filename}`;
-  const githubToken = getEnvVar('GITHUB_TOKEN');
+  console.log('UPLOADING FILE:', type, filename);
 
-  console.log('UPLOADING FILE:', path);
-
-  const url = `https://api.github.com/repos/qubyte/qubyte-codes/contents/${path}`;
-  const res = await fetch(url, {
+  const res = await fetch(`https://api.github.com/repos/qubyte/qubyte-codes/contents/content/${type}/${filename}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${Buffer.from(`qubyte:${githubToken}`).toString('base64')}`
-    },
-    body
+    headers: { 'Content-Type': 'application/json', Authorization: buildAuthHeaderVal() },
+    body: JSON.stringify({ message, content: buffer.toString('base64') })
   });
 
   if (!res.ok) {
@@ -24,7 +22,7 @@ export async function upload(message, type, filename, buffer) {
 
   const result = await res.json();
 
-  console.log('Uploaded', result.content.html_url);
+  console.log('Uploaded:', result?.content?.html_url);
 
   return result;
 }
