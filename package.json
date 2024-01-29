@@ -22,7 +22,7 @@
   "dependencies": {
     "busboy": "1.6.0",
     "cssnano": "6.0.3",
-    "espree": "^9.6.1",
+    "espree": "^10.0.0",
     "estraverse": "^5.3.0",
     "feedme": "^2.0.2",
     "geo-tz": "8.0.1",
