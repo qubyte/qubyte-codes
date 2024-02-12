@@ -46,6 +46,6 @@
     "chokidar": "3.6.0",
     "eslint": "^8.56.0",
     "eslint-config-qubyte": "^6.0.0",
-    "globals": "^13.24.0"
+    "globals": "^14.0.0"
   }
 }
