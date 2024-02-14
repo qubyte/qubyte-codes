@@ -277,7 +277,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         const sourceDirectory = new URL('img/', sourcePath);
         const targetDirectory = new URL('img/', targetPath);
 
-        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.jpeg', '.webp', '.avif']);
+        return copyStaticDirectory(sourceDirectory, targetDirectory, ['.jpg', '.jpeg', '.webp', '.avif']);
       }
     },
     scripts: {
