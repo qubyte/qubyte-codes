@@ -39,7 +39,10 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
   return {
     dependencies: ['targetPath', renderedDependencies],
     action({ [renderedDependencies]: rendered }) {
-      return rendered.map(({ html, filename }) => writeFile(new URL(`${pathFragment}/${filename}`, targetPath), html));
+      return rendered.map(({ html, filename }) => {
+        const path = pathFragment ? `${pathFragment}/${filename}` : filename;
+        return writeFile(new URL(path, targetPath), html);
+      });
     }
   };
 }
@@ -129,6 +132,17 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         result: JSON.parse(json)
       });
     },
+    specialFiles: {
+      dependencies: ['extraCss', 'hashedScripts'],
+      async action({ extraCss, hashedScripts }) {
+        const specialPath = new URL('special/', contentPath);
+
+        return ExecutionGraph.createWatchableResult({
+          path: specialPath,
+          result: await loadPostFiles({ path: specialPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts, type: null })
+        });
+      }
+    },
     postFiles: {
       dependencies: ['extraCss', 'hashedScripts'],
       async action({ extraCss, hashedScripts }) {
@@ -136,16 +150,16 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts })
+          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts, type: 'blog' })
         });
       }
     },
     populateHeaders: {
-      dependencies: ['targetPath', 'postFiles'],
-      action({ postFiles }) {
+      dependencies: ['targetPath', 'postFiles', 'specialFiles'],
+      action({ postFiles, specialFiles }) {
         const headers = new NetlifyHeaders();
 
-        for (const post of postFiles) {
+        for (const post of [...postFiles, ...specialFiles]) {
           const customHeaders = [];
 
           if (post.importMap) {
@@ -396,15 +410,21 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     backlinks: {
-      dependencies: ['japaneseNotesFiles', 'postFiles'],
-      action({ japaneseNotesFiles, postFiles }) {
-        return buildBacklinks([...japaneseNotesFiles, ...postFiles]);
+      dependencies: ['japaneseNotesFiles', 'postFiles', 'specialFiles'],
+      action({ japaneseNotesFiles, postFiles, specialFiles }) {
+        return buildBacklinks([...japaneseNotesFiles, ...postFiles, ...specialFiles]);
       }
     },
     renderedShortlinks: {
       dependencies: ['templates', 'postFiles'],
       action({ postFiles, templates }) {
         return templates.shortlinks({ name: 'shortlinks', items: postFiles, baseUrl });
+      }
+    },
+    renderedSpecials: {
+      dependencies: ['css', 'templates', 'specialFiles', 'backlinks'],
+      action({ specialFiles: resources, backlinks, templates: { blog: template }, css: { cssPath } }) {
+        return renderResources({ resources, backlinks, template, cssPath, baseUrl, dev });
       }
     },
     renderedPosts: {
@@ -585,17 +605,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     renderedSitemap: {
-      dependencies: ['templates', 'collatedTags', 'postFiles', 'noteFiles', 'linkFiles', 'likeFiles', 'replyFiles'],
-      action({
-        templates,
-        collatedTags: tags,
-        postFiles: posts,
-        noteFiles: notes,
-        linkFiles: links,
-        likeFiles: likes,
-        replyFiles: replies
-      }) {
-        return templates.sitemap({ posts, tags, notes, links, likes, replies, baseUrl });
+      dependencies: ['templates', 'collatedTags', 'specialFiles', 'postFiles'],
+      action({ templates, collatedTags, specialFiles, postFiles }) {
+        const pages = [...specialFiles, ...postFiles];
+        return templates.sitemap({ tags: collatedTags, pages, baseUrl });
       }
     },
     renderedAtomFeeds: {
@@ -658,6 +671,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         }));
       }
     },
+    writtenSpecials: makeWriteEntries({ renderedDependencies: 'renderedSpecials', pathFragment: null }),
     writtenPosts: makeWriteEntries({ renderedDependencies: 'renderedPosts', pathFragment: 'blog' }),
     writtenJapaneseNotes: makeWriteEntries({ renderedDependencies: 'renderedJapaneseNotes', pathFragment: 'japanese-notes' }),
     writtenNotes: makeWriteEntries({ renderedDependencies: 'renderedNotes', pathFragment: 'notes' }),
