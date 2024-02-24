@@ -1,0 +1,19 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I finally found time to visit Ikigai Coffee in Brighton. It seems like the baristas in all the other places rave about it, and I can see why. The coffee is amazing."
+    ],
+    "latitude": 50.82642,
+    "longitude": -0.1420721666666667,
+    "photo": [
+      {
+        "alt": "A delicate, simple glass bottle of pour-over coffee. It has a little blue rope tied around the neck. It is presented beside a ridged black cup upon a small, stainless steel tray.",
+        "value": "/images/1708773451366.jpeg"
+      }
+    ],
+    "spoiler": []
+  }
+}
