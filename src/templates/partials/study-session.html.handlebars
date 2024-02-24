@@ -1,7 +1,7 @@
 <article class={{hType}} light-emoji="{{lightEmoji}}" dark-emoji="{{darkEmoji}}">
   <a class="u-author" href="/" hidden></a>
   <header>
-    <a class="u-url" href="/study-sessions/{{timestamp}}"><time datetime="{{datetime}}" class="dt-end">{{humanDateTime datetime timezone}}</time> for <time class="dt-duration" datetime={{isoDuration}}>{{duration}}</time>.</a>
+    <a class="u-url" href="{{canonical}}"><time datetime="{{datetime}}" class="dt-end">{{humanDateTime datetime timezone}}</time> for <time class="dt-duration" datetime={{isoDuration}}>{{duration}}</time>.</a>
   </header>
   <p class="e-content p-name">
     {{content}}: {{#categories}} <span class="p-category">{{@this}}</span>{{/categories}}
