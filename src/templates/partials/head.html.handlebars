@@ -15,11 +15,11 @@
 {{#each imports}}<link rel="modulepreload" href="{{this}}">{{/each}}
 {{/importMapObject}}
 {{#scripts}}
-<script src="{{{href}}}" type="module"></script>
+<script src="{{{src}}}" type="module"></script>
 {{/scripts}}
 <link href="{{cssPath}}" rel="stylesheet">
 {{#styles}}
-<link href="{{src}}" rel="stylesheet">
+<link href="{{href}}" rel="stylesheet">
 {{/styles}}
 <link href="https://twitter.com/qubyte" rel="me">
 <link href="https://github.com/qubyte" rel="me">

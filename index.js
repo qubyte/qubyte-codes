@@ -28,9 +28,18 @@ const sourcePath = new URL('./src/', import.meta.url);
 const contentPath = new URL('./content/', import.meta.url);
 const targetPath = new URL('./public/', import.meta.url);
 
+/**
+ * @param {object} options
+ * @param {boolean} options.noIndex
+ * @param {import('./lib/page.js').default[]} options.resources
+ * @param {string} options.cssPath
+ * @param {string|URL} options.baseUrl
+ * @param {Record<string, any>} options.backlinks
+ * @param {boolean} options.dev
+ */
 function renderResources({ noIndex, resources, template, cssPath, baseUrl, backlinks = {}, dev }) {
   return resources.map(resource => ({
-    html: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
+    content: template({ ...resource, noIndex, cssPath, baseUrl, backlinks: backlinks[resource.localUrl], dev }),
     filename: resource.filename
   }));
 }
@@ -39,9 +48,9 @@ function makeWriteEntries({ renderedDependencies, pathFragment }) {
   return {
     dependencies: ['targetPath', renderedDependencies],
     action({ [renderedDependencies]: rendered }) {
-      return rendered.map(({ html, filename }) => {
+      return rendered.map(({ content, filename }) => {
         const path = pathFragment ? `${pathFragment}/${filename}` : filename;
-        return writeFile(new URL(path, targetPath), html);
+        return writeFile(new URL(path, targetPath), content);
       });
     }
   };
@@ -172,7 +181,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
               `default-src 'self'; script-src 'sha256-${hash}' 'self'; img-src *;`
             ]);
           }
-          for (const [key, val] of Object.entries(post.attributes.customHeaders || {})) {
+          for (const [key, val] of Object.entries(post.customHeaders || {})) {
             customHeaders.push([key, val]);
           }
 
@@ -204,24 +213,24 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
 
         return ExecutionGraph.createWatchableResult({
           path: dir,
-          result: await loadNoteFiles({ dir, imagesDir, imagesDimensions })
+          result: await loadNoteFiles({ baseUrl, dir, imagesDir, imagesDimensions })
         });
       }
     },
     async studySessionFiles() {
-      const studySessionsPath = new URL('study-sessions/', contentPath);
+      const dir = new URL('study-sessions/', contentPath);
 
       return ExecutionGraph.createWatchableResult({
-        path: studySessionsPath,
-        result: await loadStudySessionsFiles(studySessionsPath)
+        path: dir,
+        result: await loadStudySessionsFiles({ baseUrl, dir })
       });
     },
     async linkFiles() {
-      const linksPath = new URL('links/', contentPath);
+      const dir = new URL('links/', contentPath);
 
       return ExecutionGraph.createWatchableResult({
-        path: linksPath,
-        result: await loadLinkFiles(linksPath)
+        path: dir,
+        result: await loadLinkFiles({ baseUrl, dir })
       });
     },
     async likeFiles() {
@@ -233,11 +242,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       });
     },
     async replyFiles() {
-      const repliesPath = new URL('replies/', contentPath);
+      const dir = new URL('replies/', contentPath);
 
       return ExecutionGraph.createWatchableResult({
-        path: repliesPath,
-        result: await loadReplyFiles(repliesPath)
+        path: dir,
+        result: await loadReplyFiles({ baseUrl, dir })
       });
     },
     stylesDirectory: makeDirectoryNode('styles/'),
