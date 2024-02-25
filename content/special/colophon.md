@@ -38,7 +38,7 @@ In practice this means:
 - Progressive enhancement. For example, pages with ruby annotations use a little
   JS to store the ruby position preference in local storage, but browsers with
   JS disabled will still render everything.
-- Deliver optimised images using content negotiation.
+- Deliver optimized images using content negotiation.
 
 ## Hosting
 
@@ -66,10 +66,10 @@ the Nginx configuration was overkill.
 
 ## Static site generator
 
-This site is built with a static site generator of my own design. The generator
-Regular posts and Japanese notes are authored in my
-[own markdown variant][marqdown], compiled with [marked]. Page rendering is
-done with [handlebars].
+This site is built with a static site generator of my own design. Regular posts
+and Japanese notes are authored in my [own markdown variant][marqdown], compiled
+with [marked]. Page rendering is done with [Handlebars]. The generator runs on
+[Node.js].
 
 ## Dynamic IndieWeb functionality
 
@@ -77,7 +77,7 @@ done with [handlebars].
 
 I wrote a Netlify function to [receive][webmention-receiver] [Webmentions]. The
 function performs basic validation (does the source URL really mention the
-target? etc.), and then creates a GitHub issue with a digest of the mention
+target? Etc.), and then creates a GitHub issue with a digest of the mention
 information. I hand moderate these, and mentions I'm happy with are added to
 page they point to.
 
@@ -95,8 +95,8 @@ new notes and links and sends these to [my Mastodon account][mastodon-qubyte].
 
 ### Micropub receiver
 
-I wrote a pair of Netlify functions to act as a [micropub]
-[endpoint][micropub-endpoint] and a micropub
+I wrote a pair of Netlify functions to act as a [Micropub]
+[endpoint][micropub-endpoint] and a Micropub
 [media endpoint][micropub-media-endpoint]. These add content to the repository
 hosted on GitHub, triggering image resizing and builds.
 
@@ -120,14 +120,14 @@ integration across iOS for when I'm on my phone.
 [Node.js]: https://nodejs.org/en
 [marqdown]: /blog/marqdown
 [marked]: https://marked.js.org
-[handlebars]: https://handlebarsjs.com
+[Handlebars]: https://handlebarsjs.com
 [webmention-receiver]: https://github.com/qubyte/qubyte-codes/blob/main/functions/receive-webmention.js
 [webmention-dispatch]: https://github.com/qubyte/qubyte-codes/blob/main/plugins/dispatch-webmentions/index.js
 [POSSE]: https://indieweb.org/POSSE
 [GitHub Actions]: https://docs.github.com/en/actions
 [syndication-workflow]: https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-to-mastodon.yml
 [mastodon-qubyte]: https://mastodon.social/@qubyte
-[micropub]: https://www.w3.org/TR/micropub/
+[Micropub]: https://www.w3.org/TR/micropub/
 [micropub-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
 [micropub-media-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
 [Omnibear]: https://omnibear.com
