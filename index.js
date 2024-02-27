@@ -153,13 +153,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     postFiles: {
-      dependencies: ['extraCss', 'hashedScripts'],
-      async action({ extraCss, hashedScripts }) {
+      dependencies: ['extraCss', 'mathStyles', 'hashedScripts'],
+      async action({ extraCss, mathStyles, hashedScripts }) {
         const postsPath = new URL('posts/', contentPath);
+        const joinedStyles = new Map([...extraCss, ...mathStyles]);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts, type: 'blog' })
+          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss: joinedStyles, hashedScripts, type: 'blog' })
         });
       }
     },
@@ -410,6 +411,49 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           path: cssPath,
           result: await generateSpecificCss(cssPath, stylesDirectory)
         });
+      }
+    },
+    mathsFontName: {
+      dependencies: ['stylesDirectory'],
+      async action({ stylesDirectory }) {
+        const readWoff = await readFile(new URL('node_modules/temml/dist/Temml.woff2', basePath));
+        const woffHash = createHash('md5')
+          .update(readWoff)
+          .digest('hex');
+        const hashedWoffName = `hashed-temml-${woffHash}.woff2`;
+        const path = new URL(hashedWoffName, stylesDirectory);
+
+        await writeFile(path, readWoff);
+
+        return ExecutionGraph.createWatchableResult({
+          path,
+          result: { woffName: hashedWoffName, url: path }
+        });
+      },
+      onRemove() {
+        return unlink(this.result.url);
+      }
+    },
+    mathStyles: {
+      dependencies: ['stylesDirectory', 'mathsFontName'],
+      async action({ stylesDirectory, mathsFontName }) {
+        const cssPath = new URL('node_modules/temml/dist/Temml-Local.css', basePath);
+        const css = await readFile(cssPath, 'utf8');
+        const updatedCss = css.replaceAll('Temml.woff2', `/styles/${mathsFontName.woffName}`);
+        const cssHash = createHash('md5')
+          .update(updatedCss)
+          .digest('hex');
+        const hashedCssName = `hashed-temml-local-${cssHash}.css`;
+
+        await writeFile(new URL(hashedCssName, stylesDirectory), updatedCss);
+
+        return ExecutionGraph.createWatchableResult({
+          path: cssPath,
+          result: new Map([['/styles/temml.css', `/styles/${hashedCssName}`]])
+        });
+      },
+      onRemove() {
+        // todo
       }
     },
     collatedTags: {
