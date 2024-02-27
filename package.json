@@ -17,7 +17,7 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "engines": {
-    "node": ">=18.13"
+    "node": ">=20.11"
   },
   "dependencies": {
     "busboy": "1.6.0",
