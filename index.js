@@ -153,10 +153,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     postFiles: {
-      dependencies: ['extraCss', 'mathStyles', 'hashedScripts'],
-      async action({ extraCss, mathStyles, hashedScripts }) {
+      dependencies: ['extraCss', 'mathStyles', 'codeStyle', 'hashedScripts'],
+      async action({ extraCss, mathStyles, codeStyle, hashedScripts }) {
         const postsPath = new URL('posts/', contentPath);
-        const joinedStyles = new Map([...extraCss, ...mathStyles]);
+        const joinedStyles = new Map([...extraCss, ...mathStyles, ...codeStyle]);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
@@ -389,8 +389,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       async action() {
         const { url, htmlPath } = await generateMainCss({
           entry: new URL('css/entry.css', sourcePath),
-          targetDirectory: targetPath,
-          codeStyle: 'default'
+          targetDirectory: targetPath
         });
 
         return ExecutionGraph.createWatchableResult({
@@ -451,6 +450,24 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           path: cssPath,
           result: new Map([['/styles/temml.css', `/styles/${hashedCssName}`]])
         });
+      },
+      onRemove() {
+        // todo
+      }
+    },
+    codeStyle: {
+      dependencies: ['stylesDirectory'],
+      async action({ stylesDirectory }) {
+        const cssPath = new URL('node_modules/highlight.js/styles/default.css', basePath);
+        const css = await readFile(cssPath, 'utf8');
+        const cssHash = createHash('md5')
+          .update(css)
+          .digest('hex');
+        const hashedCssName = `hashed-highlightjs-${cssHash}.css`;
+
+        await writeFile(new URL(hashedCssName, stylesDirectory), css);
+
+        return new Map([['/styles/highlightjs.css', `/styles/${hashedCssName}`]]);
       },
       onRemove() {
         // todo
