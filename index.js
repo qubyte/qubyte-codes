@@ -235,11 +235,11 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       });
     },
     async likeFiles() {
-      const likesPath = new URL('likes/', contentPath);
+      const dir = new URL('likes/', contentPath);
 
       return ExecutionGraph.createWatchableResult({
-        path: likesPath,
-        result: await loadLikeFiles(likesPath)
+        path: dir,
+        result: await loadLikeFiles({ baseUrl, dir })
       });
     },
     async replyFiles() {
