@@ -1,0 +1,18 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "content": [
+      "I was gonna blog about my time co-organising and attending IndieWebCamp Brighton 2024, but instead I've spent the evening debugging and fixing the webmention dispatcher I 100% perfectly authored and broke at some point."
+    ],
+    "category": [],
+    "mp-slug": [
+      "i-was-gonna-blog-about-my"
+    ],
+    "mp-syndicate-to": [
+      "mastodon"
+    ],
+    "spoiler": []
+  }
+}
