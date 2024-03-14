@@ -118,7 +118,10 @@ async function checkTarget(source, target) {
     throw new HttpError('Invalid target URL.');
   }
 
-  const contentType = res.headers.get('content-type') || 'text/html';
+  const contentTypeHeader = res.headers.get('content-type') || 'text/html';
+  const contentType = contentTypeHeader
+    .split(';')[0]
+    .trim();
 
   if (contentType !== 'text/html' && contentType !== 'application/xhtml+xml') {
     throw new HttpError('Invalid target content type.');
