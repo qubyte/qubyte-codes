@@ -1,4 +1,4 @@
-<form method="post" name="webmention" action="/.netlify/functions/receive-webmention">
+<form method="post" name="webmention" action="/functions/webmention">
   <p>This blog supports webmentions. If your blog supports webmentions and you've linked to this post, then a mention will have been dispatched to me. These are viewed and published manually, so please allow some time. If you would like to manually send me a webmention, please submit the URL to it here:</p>
   <label>Your post: <input name="source" type="url"></label>
   <input name="target" value="{{{canonical}}}" type="hidden">
