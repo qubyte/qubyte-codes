@@ -50,7 +50,7 @@ function parseUrlFromForm(form, fieldName) {
  */
 function performSimpleChecks(source, target) {
   const baseUrl = getEnvVar('URL');
-  const validTargetRegex = new RegExp(`^${baseUrl}/(blog|japanese-notes)/`);
+  const validTargetRegex = new RegExp(`^${baseUrl}/(blog|japanese-notes|colophon)/`);
 
   if (source.href.startsWith(baseUrl)) {
     throw new HttpError('Source cannot be from this domain.');
