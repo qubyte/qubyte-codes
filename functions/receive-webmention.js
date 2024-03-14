@@ -242,7 +242,7 @@ export default async function handler(req) {
     return handleError(e, 'UNKNOWN ERROR CREATING ISSUE');
   }
 
-  return new Response('Accepted', { status: 202 });
+  return new Response('Accepted', { status: 303, headers: { Location: '/webmention' } });
 }
 
 export const config = {
