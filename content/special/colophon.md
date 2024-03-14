@@ -7,6 +7,17 @@
   "description": "Technical details about this site.",
   "tags": [
     "AboutThisBlog"
+  ],
+  "webmentions": [
+    {
+      "source": "https://pesce.cc/colophon",
+      "author": {
+        "name": "João Pesce",
+        "url": "https://pesce.cc"
+      },
+      "published": "2024-03-14",
+      "kind": "mention"
+    }
   ]
 }
 ---
@@ -24,6 +35,7 @@ I have tried to build this website in a way which aligns with my priorities:
 
 In practice this means:
 
+- No tracking.
 - Semantic markup. This is easier for a human reader peaking at the markup to
   reason about, and also easier for screen readers.
 - Less markup. No unnecessary `<div>`s and `<span>`s. This means less over the
