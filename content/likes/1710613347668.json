@@ -1,0 +1,11 @@
+{
+  "type": [
+    "h-entry"
+  ],
+  "properties": {
+    "like-of": [
+      "https://localghost.dev/blog/some-things-i-ve-been-enjoying-recently/"
+    ],
+    "spoiler": []
+  }
+}
