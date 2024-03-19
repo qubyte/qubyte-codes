@@ -11,10 +11,10 @@ export function getEnvVar(name) {
 
   try {
     val = Netlify.env.get(name);
-    console.log('Used Netify global for environment variables.');
+    console.log('Used Netify global for environment variables:', name);
   } catch {
     val = process.env[name];
-    console.log('Used process.env global for environment variables.');
+    console.log('Used process.env global for environment variable:', name);
   }
 
   if (!val) {
