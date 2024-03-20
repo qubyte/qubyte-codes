@@ -210,11 +210,10 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       dependencies: ['images'],
       async action({ images: imagesDimensions }) {
         const dir = new URL('notes/', contentPath);
-        const imagesDir = new URL('images/', contentPath);
 
         return ExecutionGraph.createWatchableResult({
           path: dir,
-          result: await loadNoteFiles({ baseUrl, dir, imagesDir, imagesDimensions })
+          result: await loadNoteFiles({ baseUrl, dir, imagesDimensions })
         });
       }
     },
