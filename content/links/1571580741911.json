@@ -1,8 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "bookmark-of": ["https://webmention.rocks/test/1"],
-    "name": ["Webmention Rocks!"],
-    "content": ["Testing a bookmark from the browser."]
-  }
-}

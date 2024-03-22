@@ -4,7 +4,7 @@
   ],
   "properties": {
     "bookmark-of": [
-      "https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-links-to-mastodon.yml"
+      "https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-to-mastodon.yml"
     ],
     "name": [
       "Link syndication workflow"
