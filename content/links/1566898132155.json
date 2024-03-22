@@ -1,8 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "bookmark-of": ["https://www.sonniesedge.net/posts/react/"],
-    "name": ["React - Charlie Owen"],
-    "content": ["Some thoughts on the problems with react and it's community, which came to a head at the end of last week. Charlie Owen states a bunch of concerns I already shared, and some I hadn't thought of."]
-  }
-}
