@@ -53,10 +53,12 @@ async function convertFormRequestToObject(req) {
   return { type: [type], properties };
 }
 
-async function createFile(message, type, data) {
-  const time = Date.now();
+async function createFile(message, type, data, optionalFilename) {
+  const time = data.published ? Date.parse(data.published) : Date.now();
   const buffer = Buffer.from(`${JSON.stringify(data, null, 2)}\n`);
-  const filename = `${time}.json`;
+  const filename = optionalFilename || `${time}.json`;
+
+  console.log('Creating file:', filename, 'with content:', data);
 
   await upload(message, type, filename, buffer);
 
@@ -96,8 +98,16 @@ async function determineTypeAndCreate(data) {
     return createFile('New link.', 'links', data);
   }
 
+  // Likes are in JF2 format now.
   if (data?.properties['like-of']) {
-    return createFile('New like.', 'likes', data);
+    const published = new Date();
+    const js2data = {
+      type: data.type[0].slice(2), // h-entry -> entry etc.
+      published: published.toISOString(),
+      'like-of': data.properties['like-of'][0]
+    };
+    const filename = `${published.getTime()}.jf2.json`;
+    return createFile('New like.', 'likes', js2data, filename);
   }
 
   if (data?.properties['in-reply-to']) {
