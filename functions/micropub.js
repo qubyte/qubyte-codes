@@ -140,7 +140,7 @@ async function determineTypeAndCreate(data) {
   }
 
   if (data?.properties?.category?.includes('study-session')) {
-    return createFile('New study session.', 'study-sessions', mf2tojf2({ ...data }));
+    return createFile('New study session.', 'study-sessions', mf2tojf2({ ...data, published }), filename);
   }
 
   // The default is a note, which I allow to have images.
