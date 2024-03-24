@@ -1,0 +1,5 @@
+{
+  "type": "entry",
+  "content": "Idea: Set up a web hook for webmention.io which posts to a glitch which in turn opens an issue on the GitHub repository for this blog.",
+  "published": "2019-06-21T09:41:05.925Z"
+}

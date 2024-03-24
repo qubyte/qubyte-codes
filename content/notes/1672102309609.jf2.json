@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "Another syndication test. This is a photo of a new pedestrian bridge close to where I live.",
+  "photo": {
+    "alt": "Taken at night. The bridge has downlighting on either side of the path, showing the light brown colour and slightly rough texture (for grip). On the other side of the bride is the entrance to an elevator down to street level. Some lights are on in the high rise university residences behind.",
+    "value": "/images/1672102069959.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.842925,
+    "longitude": -0.11955
+  },
+  "published": "2022-12-27T00:51:49.609Z"
+}

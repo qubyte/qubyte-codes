@@ -1,6 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "content": ["I have a real completionist streak to me, which is a lot of fun as it interacts with IndieWeb stuff like microformats. The next thing on my radar is WebSub. I'm keen to implement both the hub and publisher in one as a glitch."]
-  }
-}

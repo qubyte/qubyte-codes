@@ -1,0 +1,11 @@
+{
+  "type": "entry",
+  "content": "Text should be hidden behind a warning.",
+  "spoiler": "Testing syndicated posting to mastodon with spoiler text.",
+  "location": {
+    "type": "geo",
+    "latitude": 50.84036826941387,
+    "longitude": -0.1138831408495977
+  },
+  "published": "2023-07-09T15:41:19.834Z"
+}

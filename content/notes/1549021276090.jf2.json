@@ -1,0 +1,5 @@
+{
+  "type": "entry",
+  "content": "I've come to refer to my preferrred way of creating microservices as \"calving\". Start with a monolith, and move bits into microservices where the coupling is weak (like a big iceberg calving off a smaller iceberg).",
+  "published": "2019-02-01T11:41:16.090Z"
+}

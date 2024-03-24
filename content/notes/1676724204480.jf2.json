@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "Last night we went to see Mogwai at The Brighton Dome. Just amazing.",
+  "photo": {
+    "alt": "The band Mogwai on stage at The Brighton Dome. Seen from the left circle.",
+    "value": "/images/1676724047577.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.823405,
+    "longitude": -0.1383945
+  },
+  "published": "2023-02-18T12:43:24.480Z"
+}

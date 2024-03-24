@@ -1,0 +1,10 @@
+{
+  "type": "entry",
+  "content": "I’m tantalisingly close to replacing LaTeX statically rendered to SVG with MathJax with presentational MathML. It’s bulkier to write, but not difficult. Browser rendering (chrome seems quirkiest) isn’t quite there yet though.",
+  "location": {
+    "type": "geo",
+    "latitude": 50.83274458610057,
+    "longitude": -0.1290217919057719
+  },
+  "published": "2023-06-18T09:16:47.933Z"
+}

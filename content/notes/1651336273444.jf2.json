@@ -1,0 +1,7 @@
+{
+  "type": "entry",
+  "content": "This afternoon I'm playing with webmentions again. I've decided to implement my own endpoint and migrate away from webmention.io (which is fine, I just want to build my own).",
+  "mp-slug": "this-afternoon-im-playing-with-webmentions",
+  "mp-syndicate-to": "https://mastodon.social/@qubyte",
+  "published": "2022-04-30T16:31:13.444Z"
+}
