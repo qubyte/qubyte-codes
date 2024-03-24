@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "Toronto at dusk.",
+  "photo": {
+    "alt": "The Toronto skyline as viewed from the roof of the Shopify offices. The CN tower is in frame.",
+    "value": "/images/1696517405820.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 43.64479666666666,
+    "longitude": -79.40094666666667
+  },
+  "published": "2023-10-05T14:51:13.287Z"
+}

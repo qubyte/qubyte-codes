@@ -65,6 +65,34 @@ async function createFile(message, type, data, optionalFilename) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
+function mf2tojf2(mf2) {
+  if (Object.prototype.toString.call(mf2) !== '[object Object]' || !mf2.type) {
+    return mf2;
+  }
+
+  const jf2 = {};
+
+  for (const [key, value] of Object.entries(mf2)) {
+    if (key === 'type') {
+      jf2.type = value[0].slice(2);
+    } else if (key === 'properties') {
+      for (const [pkey, pvalue] of Object.entries(value)) {
+        if (!pvalue || !pvalue[0]) {
+          continue;
+        } else if (pvalue.length > 1) {
+          jf2[pkey] = pvalue.map(v => mf2tojf2(v));
+        } else {
+          jf2[pkey] = mf2tojf2(pvalue[0]);
+        }
+      }
+    } else {
+      jf2[key] = value[0];
+    }
+  }
+
+  return jf2;
+}
+
 /** @param {Request} req */
 async function parseBody(req) {
   const type = req.headers.get('content-type');
@@ -89,34 +117,30 @@ async function parseBody(req) {
 }
 
 async function determineTypeAndCreate(data) {
+  const publishedDate = new Date();
+  const filename = `${publishedDate.getTime()}.jf2.json`;
+  const published = publishedDate.toISOString();
+
   if (data?.properties['repost-of']) {
     const name = await getTitle(data.properties['repost-of'][0]);
-    return createFile('New link.', 'links', { ...data, name });
+    return createFile('New link.', 'links', mf2tojf2({ ...data, name, published }), filename);
   }
 
   if (data?.properties['bookmark-of']) {
-    return createFile('New link.', 'links', data);
+    return createFile('New link.', 'links', mf2tojf2({ ...data, published }), filename);
   }
 
-  // Likes are in JF2 format now.
   if (data?.properties['like-of']) {
-    const published = new Date();
-    const js2data = {
-      type: data.type[0].slice(2), // h-entry -> entry etc.
-      published: published.toISOString(),
-      'like-of': data.properties['like-of'][0]
-    };
-    const filename = `${published.getTime()}.jf2.json`;
-    return createFile('New like.', 'likes', js2data, filename);
+    return createFile('New like.', 'likes', mf2tojf2({ ...data, published }), filename);
   }
 
   if (data?.properties['in-reply-to']) {
     const name = await getTitle(data.properties['in-reply-to'][0]);
-    return createFile('New Reply.', 'replies', { ...data, name });
+    return createFile('New Reply.', 'replies', mf2tojf2({ ...data, name, published }), filename);
   }
 
   if (data?.properties?.category?.includes('study-session')) {
-    return createFile('New study session.', 'study-sessions', data);
+    return createFile('New study session.', 'study-sessions', mf2tojf2({ ...data }));
   }
 
   // The default is a note, which I allow to have images.

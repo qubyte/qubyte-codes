@@ -1,0 +1,10 @@
+{
+  "type": "entry",
+  "content": "Ever since I figured out how to build monochrome (black and white or any other pair of colours) PNGs I’ve been thinking about hiding secret messages in the unused bits…\n\nMonochrome PNGs have a bit depth of 1 (when encoded efficiently), which means that each pixel only needs one bit. Each row of the image is an integer number of octets though, so when the number of pixels in a row isn’t divisible by 8 you get some unused padding bits at the end.",
+  "location": {
+    "type": "geo",
+    "latitude": 50.832728185501,
+    "longitude": -0.1290043855920708
+  },
+  "published": "2023-03-18T15:43:07.931Z"
+}

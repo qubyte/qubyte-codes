@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "I may have a problem.",
+  "photo": {
+    "alt": "A display of my mechanical keyboard collection. There are five displayed. Two ortholinear, one compact ANSI layout. One full size ANSI layout, and two splits.",
+    "value": "/images/1674499084068.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.840345,
+    "longitude": -0.1139361666666667
+  },
+  "published": "2023-01-23T18:40:41.102Z"
+}

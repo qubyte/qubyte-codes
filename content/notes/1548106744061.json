@@ -1,6 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "content": ["One of the cool things about micropub is that I can use a third party client really easily. This post was created with micropublish.net"]
-  }
-}

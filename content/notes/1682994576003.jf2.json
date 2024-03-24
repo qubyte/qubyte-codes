@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "I love it when I find a good spot for a coffee. This one has it all. Fairly calm and quiet. Close to the museums in Ueno, so some foot traffic for people watching. Trees. Shade.",
+  "photo": {
+    "alt": "The view from the patio of a cafe. In front is a quiet road, and on the other side green trees and some pedestrians walking by an old brick wall. It’s a sunny day, but the photo is taken from the shade of an awning.",
+    "value": "/images/1682994394454.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 35.71868833333333,
+    "longitude": 139.7730866666667
+  },
+  "published": "2023-05-02T02:29:36.003Z"
+}

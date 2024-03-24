@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "A pop up gallery below Brighton station.",
+  "photo": {
+    "alt": "Viewed from the back toward the entrance. Cobbled floor. Art hung on the walls.",
+    "value": "/images/1677526216726.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.829055,
+    "longitude": -0.1404111666666667
+  },
+  "published": "2023-02-27T19:31:15.266Z"
+}

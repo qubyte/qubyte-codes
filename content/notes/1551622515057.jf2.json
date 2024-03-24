@@ -1,0 +1,5 @@
+{
+  "type": "entry",
+  "content": "I have a glitch which tweets out new blog entries. Right now it just looks at changes in the sitemap. Reminder to improve it to include tags.\n\nThe selector to use is `'[rel=\"tag\"]'`.\n\nhttps://tweet-new-blog-posts.glitch.me/",
+  "published": "2019-03-03T14:15:15.057Z"
+}

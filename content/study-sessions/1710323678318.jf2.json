@@ -1,0 +1,15 @@
+{
+  "type": "event",
+  "category": [
+    "study-session",
+    "reading"
+  ],
+  "duration": "PT0H10M",
+  "name": "Study session",
+  "location": {
+    "type": "geo",
+    "latitude": 50.83280344714284,
+    "longitude": -0.1290171
+  },
+  "published": "2024-03-13T09:54:38.318Z"
+}

@@ -1,9 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "in-reply-to": ["https://webmention.rocks/test/1"],
-    "content": ["Testing a reply."],
-    "category": [],
-    "name": ["Webmention Rocks!"]
-  }
-}

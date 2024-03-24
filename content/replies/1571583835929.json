@@ -1,9 +1,0 @@
-{
-  "type": ["h-entry"],
-  "properties": {
-    "content": ["Pre show and tell test reply."],
-    "in-reply-to": ["https://webmention.rocks/test/1"],
-    "category": [],
-    "name": ["Webmention Rocks!"]
-  }
-}

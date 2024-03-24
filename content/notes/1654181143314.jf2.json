@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "{ja:^多読,たどく^} time! First up, {ja:しろくまカフェ}",
+  "photo": {
+    "alt": "The first book of shirokuma cafe (in Japanese). Beside the book is an iced coffee.",
+    "value": "/images/1654180945493.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.83274666666667,
+    "longitude": -0.12895
+  },
+  "published": "2022-06-02T14:45:43.314Z"
+}

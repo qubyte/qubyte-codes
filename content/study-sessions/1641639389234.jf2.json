@@ -1,0 +1,8 @@
+{
+  "type": "event",
+  "duration": "PT7M",
+  "name": "Study session",
+  "description": "Study session.",
+  "category": "flashcards",
+  "published": "2022-01-08T10:56:29.234Z"
+}

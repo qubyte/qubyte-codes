@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "I built a keyboard. Hopefully it's more practical than it looks.",
+  "photo": {
+    "alt": "A photo of a four row ortholinear (square layout) keyboard. The keycaps are mostly light grey, with dark grey on the bottom row and the first and last columns. The escape and return keys are red. The caps have a high profile, with each row pitched differently at the top for comfort. The base has a low profile, so you can see the switches below the caps.",
+    "value": "/images/1658074739108.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.84036333333334,
+    "longitude": -0.1139166666666667
+  },
+  "published": "2022-07-17T16:23:58.505Z"
+}

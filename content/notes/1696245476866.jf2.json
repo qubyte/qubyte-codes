@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "Jet lag has its perks! Up before sunrise for a coffee at a nice little place called Fahrenheit in downtown Toronto.",
+  "photo": {
+    "alt": "A photograph of a cup of black coffee on a wooden bar.",
+    "value": "/images/1696245377641.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 43.64701333333333,
+    "longitude": -79.40093333333333
+  },
+  "published": "2023-10-02T11:17:56.866Z"
+}

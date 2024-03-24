@@ -1,0 +1,7 @@
+{
+  "type": "entry",
+  "bookmark-of": "https://tools.ietf.org/html/rfc822",
+  "name": "RFC 822 - STANDARD FOR THE FORMAT OF ARPA INTERNET TEXT MESSAGES",
+  "content": "I bang on about this a lot, but it still amazes me that headers, as used by HTTP/1.1 (which is still a current standard, not obsoleted by HTTP/2) are only a little different from the message format defined in this RFC, which is older than me!",
+  "published": "2019-08-08T15:24:56.538Z"
+}

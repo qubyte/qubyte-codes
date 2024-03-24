@@ -1,0 +1,5 @@
+{
+  "type": "entry",
+  "content": "Reminder for later... Paths are predicable enough in my setup that I can improve the netlify config to apply headers only to HTML by batching routes with wildcards.",
+  "published": "2019-11-07T09:26:36.275Z"
+}

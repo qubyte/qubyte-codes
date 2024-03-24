@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "Group photo for #IndieWebCampBrighton day 1.",
+  "photo": {
+    "alt": "The group photo for IndieWebCamp day 1. It’s a sunny day, and there are 26 folk in the photo, with a building behind them.",
+    "value": "/images/1710062881792.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.82933833333333,
+    "longitude": -0.1387833333333333
+  },
+  "published": "2024-03-10T09:29:31.035Z"
+}

@@ -1,0 +1,15 @@
+{
+  "type": "event",
+  "category": [
+    "study-session",
+    "flashcards"
+  ],
+  "duration": "PT0H12M",
+  "name": "Study session",
+  "location": {
+    "type": "geo",
+    "latitude": 50.84035357827933,
+    "longitude": -0.1138827586266367
+  },
+  "published": "2023-03-10T17:35:37.313Z"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "An interesting path close to home.",
+  "photo": {
+    "value": "/images/1628256856626.jpeg",
+    "alt": "Steps in the shade between houses."
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.84033246606199,
+    "longitude": -0.113888962365236
+  },
+  "published": "2021-08-06T13:34:43.634Z"
+}

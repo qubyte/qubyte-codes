@@ -1,0 +1,14 @@
+{
+  "type": "entry",
+  "content": "This cat is attempting to be adopted by us and is in no way subtle about it.",
+  "photo": {
+    "alt": "A cat sitting on my doormat, right outside my house.",
+    "value": "/images/1655565195542.jpeg"
+  },
+  "location": {
+    "type": "geo",
+    "latitude": 50.84041666666667,
+    "longitude": -0.1138445
+  },
+  "published": "2022-06-18T15:13:52.054Z"
+}
