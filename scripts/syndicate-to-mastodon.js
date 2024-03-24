@@ -21,15 +21,8 @@ if (!paths.length) {
 for (const path of paths) {
   console.log('Processing:', path);
 
-  const {
-    properties: {
-      content: [content] = [],
-      name: [name] = [],
-      photo = [],
-      spoiler: [spoiler] = [],
-      'bookmark-of': [url] = []
-    }
-  } = JSON.parse(await readFile(path, 'utf8'));
+  const data = await readFile(path, 'utf8');
+  const { content, name, photo = [], spoiler, 'bookmark-of': url } = JSON.parse(data);
   const status = (url && name) ? `${content}\n\n${name}: ${url}`.trim() : content;
   const statusBody = new URLSearchParams({ status });
 
@@ -37,9 +30,9 @@ for (const path of paths) {
     statusBody.append('spoiler_text', spoiler);
   }
 
-  for (const { value, alt } of photo) {
+  for (const { value, alt } of [].concat(photo)) {
     const form = new FormData();
-    const filePath = `content/${value}`.replace('.jpeg', '-original.jpeg');
+    const filePath = `content${value}`.replace('.jpeg', '-original.jpeg');
     const content = await readFile(filePath);
 
     form.set('file', new Blob([content], { type: 'image/jpeg' }), 'image.jpeg');
