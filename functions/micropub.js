@@ -1,5 +1,6 @@
 import { STATUS_CODES } from 'http';
 import { JSDOM } from 'jsdom';
+import { mf2tojf2 } from '@paulrobertlloyd/mf2tojf2';
 
 import { checkAuth } from './function-helpers/check-auth.js';
 import { parseMultipart } from './function-helpers/parse-multipart.js';
@@ -65,45 +66,6 @@ async function createFile(message, type, data, optionalFilename) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
-// eslint-disable-next-line complexity
-function mf2tojf2(mf2) {
-  if (!mf2) {
-    return undefined;
-  }
-
-  if (Object.prototype.toString.call(mf2) !== '[object Object]' || !mf2.type) {
-    return mf2;
-  }
-
-  const jf2 = {};
-
-  for (const [key, value] of Object.entries(mf2)) {
-    if (key === 'type') {
-      jf2.type = value[0].slice(2);
-    } else if (key === 'properties') {
-      for (const [pkey, pvalue] of Object.entries(value)) {
-        if (!pvalue) {
-          // Do nothing.
-        } else if (Object.prototype.toString.call(pvalue) === '[object Object]') {
-          jf2[pkey] = mf2tojf2(pvalue);
-        } else if (Array.isArray(pvalue)) {
-          if (pvalue.length) {
-            jf2[pkey] = mf2tojf2(pvalue[0]);
-          }
-        } else if (pvalue.length > 1) {
-          jf2[pkey] = pvalue.map(v => mf2tojf2(v));
-        } else {
-          jf2[pkey] = mf2tojf2(pvalue[0]);
-        }
-      }
-    } else {
-      jf2[key] = value[0];
-    }
-  }
-
-  return jf2;
-}
-
 /** @param {Request} req */
 async function parseBody(req) {
   const type = req.headers.get('content-type');
@@ -120,50 +82,58 @@ async function parseBody(req) {
     throw new HttpError(`Unhandled MIME type: ${type}`, { status: 400 });
   }
 
-  parsed.properties.spoiler = [].concat(parsed.properties.spoiler || [])
+  const spoiler = (parsed.properties.spoiler || [])
     .map(s => s.trim())
     .filter(Boolean);
+
+  if (spoiler.length) {
+    parsed.properties.spoiler = spoiler;
+  } else {
+    delete parsed.properties.spoiler;
+  }
 
   return parsed;
 }
 
+// eslint-disable-next-line max-statements
 async function determineTypeAndCreate(data) {
   const publishedDate = new Date();
   const filename = `${publishedDate.getTime()}.jf2.json`;
   const published = publishedDate.toISOString();
+  const jf2 = mf2tojf2({ items: [data] });
 
-  if (data?.properties['repost-of']) {
-    const name = await getTitle(data.properties['repost-of'][0]);
-    return createFile('New link.', 'links', { ...mf2tojf2(data), name, published }, filename);
+  if (jf2['repost-of']) {
+    const name = await getTitle(jf2['repost-of']);
+    return createFile('New link.', 'links', { ...jf2, name, published }, filename);
   }
 
-  if (data?.properties['bookmark-of']) {
-    return createFile('New link.', 'links', { ...mf2tojf2(data), published }, filename);
+  if (jf2['bookmark-of']) {
+    return createFile('New link.', 'links', { ...jf2, published }, filename);
   }
 
-  if (data?.properties['like-of']) {
-    return createFile('New like.', 'likes', { ...mf2tojf2(data), published }, filename);
+  if (jf2['like-of']) {
+    return createFile('New like.', 'likes', { ...jf2, published }, filename);
   }
 
-  if (data?.properties['in-reply-to']) {
-    const name = await getTitle(data.properties['in-reply-to'][0]);
-    return createFile('New Reply.', 'replies', { ...mf2tojf2(data), name, published }, filename);
+  if (jf2['in-reply-to']) {
+    const name = await getTitle(jf2['in-reply-to']);
+    return createFile('New Reply.', 'replies', { ...jf2, name, published }, filename);
   }
 
-  if (data?.properties?.category?.includes('study-session')) {
-    return createFile('New study session.', 'study-sessions', { ...mf2tojf2(data), published }, filename);
+  if (jf2.category?.includes('study-session')) {
+    return createFile('New study session.', 'study-sessions', { ...jf2, published }, filename);
   }
 
   // The default is a note, which I allow to have images.
   if (data?.files?.photo.length) { // quill uses a photo field
     const uploadedImage = await uploadImage(data.files.photo[0]);
 
-    delete data.files;
+    delete jf2.files;
 
-    data.photos = [uploadedImage];
+    jf2.photos = [uploadedImage];
   }
 
-  return createFile('New note.', 'notes', data);
+  return createFile('New note.', 'notes', { ...jf2, published });
 }
 
 /** @param {Request} req */
