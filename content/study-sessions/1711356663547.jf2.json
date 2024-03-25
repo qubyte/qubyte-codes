@@ -6,5 +6,10 @@
   ],
   "duration": "PT0H5M",
   "name": "Study session",
-  "published": "2"
+  "location": {
+    "type": "geo",
+    "longitude": 50.83278754264543,
+    "latitude": -0.1289554943851017
+  },
+  "published": "2024-03-25T08:51:03.547Z"
 }

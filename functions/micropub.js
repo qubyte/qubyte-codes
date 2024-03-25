@@ -123,24 +123,24 @@ async function determineTypeAndCreate(data) {
 
   if (data?.properties['repost-of']) {
     const name = await getTitle(data.properties['repost-of'][0]);
-    return createFile('New link.', 'links', mf2tojf2({ ...data, name, published }), filename);
+    return createFile('New link.', 'links', { ...mf2tojf2(data), name, published }, filename);
   }
 
   if (data?.properties['bookmark-of']) {
-    return createFile('New link.', 'links', mf2tojf2({ ...data, published }), filename);
+    return createFile('New link.', 'links', { ...mf2tojf2(data), published }, filename);
   }
 
   if (data?.properties['like-of']) {
-    return createFile('New like.', 'likes', mf2tojf2({ ...data, published }), filename);
+    return createFile('New like.', 'likes', { ...mf2tojf2(data), published }, filename);
   }
 
   if (data?.properties['in-reply-to']) {
     const name = await getTitle(data.properties['in-reply-to'][0]);
-    return createFile('New Reply.', 'replies', mf2tojf2({ ...data, name, published }), filename);
+    return createFile('New Reply.', 'replies', { ...mf2tojf2(data), name, published }, filename);
   }
 
   if (data?.properties?.category?.includes('study-session')) {
-    return createFile('New study session.', 'study-sessions', mf2tojf2({ ...data, published }), filename);
+    return createFile('New study session.', 'study-sessions', { ...mf2tojf2(data), published }, filename);
   }
 
   // The default is a note, which I allow to have images.
