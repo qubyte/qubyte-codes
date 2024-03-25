@@ -65,7 +65,12 @@ async function createFile(message, type, data, optionalFilename) {
   return `https://qubyte.codes/${type}/${time}`;
 }
 
+// eslint-disable-next-line complexity
 function mf2tojf2(mf2) {
+  if (!mf2) {
+    return undefined;
+  }
+
   if (Object.prototype.toString.call(mf2) !== '[object Object]' || !mf2.type) {
     return mf2;
   }
@@ -77,8 +82,14 @@ function mf2tojf2(mf2) {
       jf2.type = value[0].slice(2);
     } else if (key === 'properties') {
       for (const [pkey, pvalue] of Object.entries(value)) {
-        if (!pvalue || !pvalue[0]) {
-          continue;
+        if (!pvalue) {
+          // Do nothing.
+        } else if (Object.prototype.toString.call(pvalue) === '[object Object]') {
+          jf2[pkey] = mf2tojf2(pvalue);
+        } else if (Array.isArray(pvalue)) {
+          if (pvalue.length) {
+            jf2[pkey] = mf2tojf2(pvalue[0]);
+          }
         } else if (pvalue.length > 1) {
           jf2[pkey] = pvalue.map(v => mf2tojf2(v));
         } else {
