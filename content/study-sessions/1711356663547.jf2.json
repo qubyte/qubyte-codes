@@ -1,0 +1,10 @@
+{
+  "type": "event",
+  "category": [
+    "study-session",
+    "flashcards"
+  ],
+  "duration": "PT0H5M",
+  "name": "Study session",
+  "published": "2"
+}
