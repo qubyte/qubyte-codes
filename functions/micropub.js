@@ -14,7 +14,7 @@ async function getTitle(url) {
   try {
     const dom = await JSDOM.fromURL(url);
     return dom.window.document.title;
-  } catch (e) {
+  } catch {
     return url;
   }
 }
