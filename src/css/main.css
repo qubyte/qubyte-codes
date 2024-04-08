@@ -260,6 +260,13 @@ img {
   box-sizing: border-box;
 }
 
+figcaption {
+  width: calc(100% - 2em);
+  font-size: 0.75rem;
+  margin: 1em 1em;
+  line-height: 1.5em;
+}
+
 select {
   background-color: var(--background-color-main);
   color: var(--standout-color-main);
