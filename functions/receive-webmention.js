@@ -39,7 +39,7 @@ function parseUrlFromForm(form, fieldName) {
 
   try {
     return new URL(field.toString());
-  } catch (e) {
+  } catch {
     throw new HttpError(`The ${fieldName} must be a valid, fully qualified URL.`);
   }
 }
