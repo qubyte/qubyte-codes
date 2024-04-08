@@ -8,7 +8,7 @@ export default [
   },
   {
     files: ['index.js', 'lib/**/*.js', 'tests/**/*.js', 'scripts/**/*.js', 'plugins/**/*.js', 'functions/**/*.js'],
-    languageOptions: { globals: globals.nodeBuiltin }
+    languageOptions: { globals: { ...globals.nodeBuiltin, Intl: true } }
   },
   {
     files: ['scripts/**/*.js', 'plugins/**/*.js'],
