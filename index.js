@@ -142,25 +142,35 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       });
     },
     specialFiles: {
-      dependencies: ['extraCss', 'hashedScripts'],
-      async action({ extraCss, hashedScripts }) {
+      dependencies: ['extraCss', 'hashedScripts', 'images'],
+      async action({ extraCss, hashedScripts, images }) {
         const specialPath = new URL('special/', contentPath);
 
         return ExecutionGraph.createWatchableResult({
           path: specialPath,
-          result: await loadPostFiles({ path: specialPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts, type: null })
+          result: await loadPostFiles({ path: specialPath, basePath, repoUrl, baseUrl, extraCss, hashedScripts, type: null, images })
         });
       }
     },
     postFiles: {
-      dependencies: ['extraCss', 'mathStyles', 'codeStyle', 'hashedScripts'],
-      async action({ extraCss, mathStyles, codeStyle, hashedScripts }) {
+      dependencies: ['extraCss', 'mathStyles', 'codeStyle', 'hashedScripts', 'images'],
+      async action({ extraCss, mathStyles, codeStyle, hashedScripts, images }) {
         const postsPath = new URL('posts/', contentPath);
         const joinedStyles = new Map([...extraCss, ...mathStyles, ...codeStyle]);
 
         return ExecutionGraph.createWatchableResult({
           path: postsPath,
-          result: await loadPostFiles({ path: postsPath, basePath, repoUrl, baseUrl, extraCss: joinedStyles, hashedScripts, type: 'blog' })
+          result: await loadPostFiles({
+            path: postsPath,
+            basePath,
+            repoUrl,
+            baseUrl,
+            extraCss:
+            joinedStyles,
+            hashedScripts,
+            type: 'blog',
+            images
+          })
         });
       }
     },
@@ -195,14 +205,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     japaneseNotesFiles: {
-      dependencies: ['hashedScripts'],
-      async action({ hashedScripts }) {
+      dependencies: ['hashedScripts', 'images'],
+      async action({ hashedScripts, images }) {
         const notesPath = new URL('japanese-notes/', contentPath);
         const type = 'japanese-notes';
 
         return ExecutionGraph.createWatchableResult({
           path: notesPath,
-          result: await loadPostFiles({ path: notesPath, basePath, repoUrl, baseUrl, type, hashedScripts })
+          result: await loadPostFiles({ path: notesPath, basePath, repoUrl, baseUrl, type, hashedScripts, images })
         });
       }
     },
@@ -548,7 +558,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/blog',
-          title: 'Archive'
+          title: 'Archive',
+          description: 'A collection of my long form articles.'
         });
       }
     },
@@ -564,7 +575,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/japanese-notes',
-          title: 'Japanese Study Notes'
+          title: 'Japanese Study Notes',
+          description: 'A collection of notes I\'ve written on the Japanese language, as I study it.'
         });
       }
     },
@@ -578,7 +590,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/notes',
-          title: 'Notes'
+          title: 'Notes',
+          description: 'A collection of my short notes.'
         });
       }
     },
@@ -592,7 +605,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/study-sessions',
-          title: 'Study Sessions'
+          title: 'Study Sessions',
+          description: 'A collection of my study sessions.'
         });
       }
     },
@@ -605,7 +619,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/links',
-          title: 'Links'
+          title: 'Links',
+          description: 'A collection of links to articles elsewhere on the web.'
         });
       }
     },
@@ -618,7 +633,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/likes',
-          title: 'Likes'
+          title: 'Likes',
+          description: 'A collection of likes of articles elsewhere on the web.'
         });
       }
     },
@@ -631,7 +647,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           dev,
           baseUrl,
           localUrl: '/replies',
-          title: 'Replies'
+          title: 'Replies',
+          description: 'A collection of the replies to articles elsewhere on the web.'
         });
       }
     },
@@ -657,7 +674,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           baseUrl,
           localUrl: '/publications',
           publications,
-          title: 'Publications'
+          title: 'Publications',
+          description: 'A collection of academic publications I have authored and coauthored.'
         });
       }
     },
@@ -670,7 +688,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     renderedWebmentionConfirmation: {
       dependencies: ['css', 'templates'],
       action({ templates, css: { cssPath } }) {
-        return templates.webmention({ cssPath, dev, baseUrl, localUrl: '/webmention', title: 'Webmention' });
+        return templates.webmention({
+          cssPath,
+          dev,
+          baseUrl,
+          localUrl: '/webmention',
+          title: 'Webmention',
+          description: 'Your mention is confirmed! Please check back later.'
+        });
       }
     },
     renderedSitemap: {
