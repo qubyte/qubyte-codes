@@ -1,0 +1,10 @@
+{
+  "type": "entry",
+  "content": "Inspired by [Chris Newton’s work on captioned images in Markdown](https://chrisnewtn.com/posts/2024-03-10-image-captions.html), I decided to alter rendering of images both to add an optional caption, but also to include alternative formats and scales using `<source>` elements. I was previously doing this all by hand with inline HTML and it somehow hadn’t occurred to me!",
+  "location": {
+    "type": "geo",
+    "longitude": -0.1290400875286148,
+    "latitude": 50.83274631117247
+  },
+  "published": "2024-04-15T12:28:06.327Z"
+}
