@@ -48,7 +48,7 @@ h2 {
 h3,
 h4 {
   font-size: 1.5rem;
-  margin: 2rem 0 1em 0;
+  margin: 2rem 0;
 }
 
 p,
@@ -108,8 +108,9 @@ dl > div {
   padding: 0.5rem 0;
 }
 
-.share {
-  border-top: 1px solid var(--standout-color-main);
+hr {
+  width: calc(100% - 2em);
+  margin: 2em auto;
 }
 
 blockquote {

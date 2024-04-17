@@ -1,10 +1,13 @@
 {{#if webmentions}}
+<hr>
 <section>
   <h3>Mentions</h3>
+  <ul>
   {{#webmentions}}
-  <p class="{{#if content}}u-comment {{/if}}h-cite">
+  <li class="{{#if content}}u-comment {{/if}}h-cite">
     {{initialUpper kind}} from <a class="u-author" href="{{author.url}}">{{author.name}}</a> on <a class="webmention u-url" href="{{source}}"><time datetime="{{published}}" class="dt-published">{{humanDate published}}</time></a>{{#if content}}: <em class="p-content">{{content}}</em>{{/if}}
-  </p>
+  </li>
   {{/webmentions}}
+  </ul>
 </section>
 {{/if}}
