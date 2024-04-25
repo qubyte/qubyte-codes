@@ -25,9 +25,9 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 20
+    - name: use node 22
       uses: actions/setup-node@v3
       with:
-        node-version: 20.x
+        node-version: 22.x
     - name: Dispatch mastodon API call
       run: node scripts/syndicate-to-mastodon.js --base-url ${{ secrets.MASTODON_BASE_URL }} --access-token ${{ secrets.MASTODON_ACCESS_TOKEN }} ${{ needs.get-added-files.outputs.documents }}
