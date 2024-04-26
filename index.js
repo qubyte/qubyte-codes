@@ -1,10 +1,9 @@
 /* eslint max-lines: off */
 
-import { fileURLToPath, pathToFileURL } from 'node:url';
-import { readdir, writeFile, rm, mkdir, readFile, copyFile, cp, unlink } from 'node:fs/promises';
-import { once } from 'node:events';
+import { pathToFileURL } from 'node:url';
+import { readdir, writeFile, rm, mkdir, readFile, copyFile, cp, unlink, watch } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { extname } from 'node:path';
+import { extname, join as pathJoin } from 'node:path';
 
 import sharp from 'sharp';
 
@@ -102,9 +101,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   let watcher = null;
 
   if (dev) {
-    const { watch } = await import('chokidar');
-    watcher = watch([fileURLToPath(sourcePath), fileURLToPath(contentPath)]);
-    await once(watcher, 'ready');
+    async function* makeWatcher() {
+      for await (const { eventType, filename } of watch('./', { recursive: true })) {
+        if (filename && filename.startsWith('content/') || filename.startsWith('src/')) {
+          yield { eventType, url: pathToFileURL(pathJoin(import.meta.dirname, filename)) };
+        }
+      }
+    }
+    watcher = makeWatcher();
   }
 
   const graph = new ExecutionGraph({ watcher });
