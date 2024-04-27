@@ -1,0 +1,10 @@
+{
+  "type": "entry",
+  "content": "After a year and a half working on Scala 2 applications, I've gone from enamoured to jaded. It's proof that smart people can design extremely stupid things.\n\nOh, you want an example?\n\nTry `0L until Instant.now`.\n\nIt's a range, right? It's the interval of long integers, containing the numbers $[0, now)$, so it's completely expressible as a pair of longs.\n\nBUT NOT TO SCALA. Scala is like *fuck you there aren't enough regular ints to make this long int range*.\n\nSo, so stupid.",
+  "location": {
+    "type": "geo",
+    "longitude": -0.1290899990609564,
+    "latitude": 50.83276430517
+  },
+  "published": "2024-04-27T13:33:29.454Z"
+}
