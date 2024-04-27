@@ -103,7 +103,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
   if (dev) {
     async function* makeWatcher() {
       for await (const { eventType, filename } of watch('./', { recursive: true })) {
-        if (filename && filename.startsWith('content/') || filename.startsWith('src/')) {
+        if (filename && (filename.startsWith('content/') || filename.startsWith('src/'))) {
           yield { eventType, url: pathToFileURL(pathJoin(import.meta.dirname, filename)) };
         }
       }
