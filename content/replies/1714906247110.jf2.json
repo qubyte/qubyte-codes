@@ -1,0 +1,9 @@
+{
+  "type": "entry",
+  "in-reply-to": "https://adactio.com/journal/21104",
+  "content": "If you want to avoid using a nonce value, the other way to go about it is to hash the resource and put that in the CSP header. I blogged about the interaction between CSP and import maps (which must be inline), and caching and it turns out to work really well: https://qubyte.codes/blog/progressively-enhanced-caching-of-javascript-modules-without-bundling-using-import-maps",
+  "category": {},
+  "mp-slug": "if-you-want-to-avoid-using",
+  "name": "Adactio: Journal—Securing client-side JavaScript",
+  "published": "2024-05-05T10:50:47.110Z"
+}
