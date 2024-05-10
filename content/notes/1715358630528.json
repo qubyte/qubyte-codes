@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "One of the best things about living in Brighton (UK) is the density of pubs.",
+  "photo": [
+    {
+      "alt": "A mostly empty pint of beer on a table in the foreground. The photo is looking out of a pub window, at a pub across the street.",
+      "url": "/images/1715358532371.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1138611666666667,
+    "latitude": 50.840355
+  },
+  "published": "2024-05-10T16:30:30.528Z"
+}
