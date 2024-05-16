@@ -37,7 +37,7 @@
     "marked-highlight": "^2.1.1",
     "postcss": "8.4.38",
     "postcss-import": "^16.1.0",
-    "sharp": "0.33.3",
+    "sharp": "0.33.4",
     "slugify": "1.6.6",
     "temml": "^0.10.24"
   },
