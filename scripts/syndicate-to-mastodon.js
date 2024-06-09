@@ -30,9 +30,9 @@ for (const path of paths) {
     statusBody.append('spoiler_text', spoiler);
   }
 
-  for (const { value, alt } of [].concat(photo)) {
+  for (const { value, url, alt } of [].concat(photo)) {
     const form = new FormData();
-    const filePath = `content${value}`.replace('.jpeg', '-original.jpeg');
+    const filePath = `content${value || url}`.replace('.jpeg', '-original.jpeg');
     const content = await readFile(filePath);
 
     form.set('file', new Blob([content], { type: 'image/jpeg' }), 'image.jpeg');
