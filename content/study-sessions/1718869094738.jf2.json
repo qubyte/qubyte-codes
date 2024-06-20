@@ -1,0 +1,15 @@
+{
+  "type": "event",
+  "duration": "PT0H20M",
+  "name": "Study session",
+  "location": {
+    "type": "geo",
+    "longitude": -0.1289612417819839,
+    "latitude": 50.83275107244599
+  },
+  "category": [
+    "study-session",
+    "homework"
+  ],
+  "published": "2024-06-20T07:38:14.738Z"
+}
