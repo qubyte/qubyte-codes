@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "I’m in Toronto for Shopify Summit. ",
+  "photo": [
+    {
+      "alt": "A crowd of people at food trucks with the Toronto skyline in the background. ",
+      "url": "/images/1719261485737.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -79.41353666666667,
+    "latitude": 43.62871666666667
+  },
+  "published": "2024-06-24T20:39:10.970Z"
+}
