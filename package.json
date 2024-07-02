@@ -46,6 +46,6 @@
     "@toisu/toisu": "5.0.0",
     "eslint": "^9.5.0",
     "eslint-config-qubyte": "^6.0.0",
-    "globals": "^15.6.0"
+    "globals": "^15.8.0"
   }
 }
