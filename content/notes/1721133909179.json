@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "A couple of weeks ago I took part in an unofficially record breaking (number of participants) hackathon, with around 6000 others as part of a work summit.",
+  "photo": [
+    {
+      "alt": "A large display hanging by from a conference hall ceiling. It wraps around on itself into a tube, so the image can horizontally scroll around on itself. The screen reads “We’ve (unofficially) broken the world record”.",
+      "url": "/images/1721133597424.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -79.411155,
+    "latitude": 43.63566666666667
+  },
+  "published": "2024-07-16T12:45:09.179Z"
+}
