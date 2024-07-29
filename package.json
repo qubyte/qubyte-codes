@@ -44,7 +44,7 @@
   "devDependencies": {
     "@toisu/static": "5.0.0",
     "@toisu/toisu": "5.0.0",
-    "eslint": "^9.7.0",
+    "eslint": "^9.8.0",
     "eslint-config-qubyte": "^6.0.0",
     "globals": "^15.8.0"
   }
