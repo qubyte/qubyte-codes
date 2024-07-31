@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import crypto from 'node:crypto';
-import ExecutionGraph from '../../lib/execution-graph.js';
+import ExecutionGraph, { GraphNode } from '../../lib/execution-graph.js';
 import { setTimeout as wait } from 'timers/promises';
 
 describe('execution-graph', () => {
@@ -26,7 +26,7 @@ describe('execution-graph', () => {
 
   describe('adding a node', () => {
     it('returns a promise', () => {
-      assert.ok(graph.addNode({ name: 'a-name', action() {} }) instanceof Promise);
+      assert.ok(graph.addNode(new GraphNode({ name: 'a-name', action() {} })) instanceof Promise);
     });
 
     it('resolves the promise after a synchronous action is run when there are no dependencies', async () => {
@@ -34,12 +34,12 @@ describe('execution-graph', () => {
 
       graph.once('done:a-name', () => order.push('event'));
 
-      const promise = graph.addNode({
+      const promise = graph.addNode(new GraphNode({
         name: 'a-name',
         action() {
           order.push('action');
         }
-      });
+      }));
 
       await promise.then(() => order.push('promise'));
 
@@ -48,12 +48,12 @@ describe('execution-graph', () => {
 
     it('resolves to the return value of a synchronous action to the node', async () => {
       const expected = crypto.randomBytes(8).toString('hex');
-      const result = await graph.addNode({
+      const result = await graph.addNode(new GraphNode({
         name: 'a-name',
         action() {
           return expected;
         }
-      });
+      }));
 
       assert.equal(result, expected);
     });
@@ -63,13 +63,13 @@ describe('execution-graph', () => {
 
       graph.once('done:a-name', () => order.push('event'));
 
-      const promise = graph.addNode({
+      const promise = graph.addNode(new GraphNode({
         name: 'a-name',
         async action() {
           await wait(100);
           order.push('action');
         }
-      });
+      }));
 
       await promise.then(() => order.push('promise'));
 
@@ -78,12 +78,12 @@ describe('execution-graph', () => {
 
     it('resolves to the resulution value of an asynchronous action to the node', async () => {
       const expected = crypto.randomBytes(8).toString('hex');
-      const result = await graph.addNode({
+      const result = await graph.addNode(new GraphNode({
         name: 'a-name',
         action() {
           return Promise.resolve(expected);
         }
-      });
+      }));
 
       assert.equal(result, expected);
     });
@@ -92,27 +92,27 @@ describe('execution-graph', () => {
       const order = [];
       const promises = [];
 
-      promises.push(graph.addNode({
+      promises.push(graph.addNode(new GraphNode({
         name: 'a',
         dependencies: ['b', 'c'],
         action() {
           assert.deepEqual(order, ['c', 'b']);
         }
-      }).then(() => order.push('a')));
+      })).then(() => order.push('a')));
 
-      promises.push(graph.addNode({
+      promises.push(graph.addNode(new GraphNode({
         name: 'b',
         action() {
           return wait(100);
         }
-      }).then(() => order.push('b')));
+      })).then(() => order.push('b')));
 
-      promises.push(graph.addNode({
+      promises.push(graph.addNode(new GraphNode({
         name: 'c',
         action() {
           return wait(50);
         }
-      }).then(() => order.push('c')));
+      })).then(() => order.push('c')));
 
       await Promise.all(promises);
 
@@ -120,35 +120,35 @@ describe('execution-graph', () => {
     });
 
     it('passes results from dependencies into an action', async () => {
-      graph.addNode({
+      graph.addNode(new GraphNode({
         name: 'a',
         action() {
           return 'result-a';
         }
-      });
+      }));
 
-      graph.addNode({
+      graph.addNode(new GraphNode({
         name: 'b',
         action() {
           return Promise.resolve('result-b');
         }
-      });
+      }));
 
-      graph.addNode({
+      graph.addNode(new GraphNode({
         name: 'c',
         async action() {
           await wait(10);
           return 'result-c';
         }
-      });
+      }));
 
-      const passedIn = await graph.addNode({
+      const passedIn = await graph.addNode(new GraphNode({
         name: 'd',
         dependencies: ['a', 'b', 'c'],
         action(input) {
           return input;
         }
-      });
+      }));
 
       assert.deepEqual(passedIn, { a: 'result-a', b: 'result-b', c: 'result-c' });
     });
@@ -156,61 +156,65 @@ describe('execution-graph', () => {
 
   describe('adding multiple nodes', () => {
     it('returns a promise', () => {
-      assert.ok(graph.addNodes({ name: { action() {} } }) instanceof Promise);
+      assert.ok(graph.addNodes([new GraphNode({ name: 'name', action() {} })]) instanceof Promise);
     });
 
     it('resolves to a collection of results for the added nodes', async () => {
-      const results = await graph.addNodes({
-        a: {
+      const results = await graph.addNodes([
+        new GraphNode({
+          name: 'a',
           async action() {
             await wait(10);
             return 'result-a';
           }
-        },
-        b: {
+        }),
+        new GraphNode({
+          name: 'b',
           dependencies: ['a'],
           action({ a }) {
             return `result-b: result-a is "${a}"`;
           }
-        }
-      });
+        })
+      ]);
 
       assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
     });
 
     it('has a compact API for nodes with no dependencies', async () => {
-      const results = await graph.addNodes({
-        async a() {
+      const results = await graph.addNodes([
+        async function a() {
           await wait(10);
           return 'result-a';
         },
-        b: {
+        new GraphNode({
+          name: 'b',
           dependencies: ['a'],
           action({ a }) {
             return `result-b: result-a is "${a}"`;
           }
-        }
-      });
+        })
+      ]);
 
       assert.deepEqual(results, { a: 'result-a', b: 'result-b: result-a is "result-a"' });
     });
 
     it('does not include results of nodes not in the collection added', async () => {
-      await graph.addNode({
+      await graph.addNode(new GraphNode({
         name: 'x',
         action() {
           return 3;
         }
-      });
+      }));
 
-      const results = await graph.addNodes({
-        a: {
+      const results = await graph.addNodes([
+        new GraphNode({
+          name: 'a',
           dependencies: ['x'],
           action({ x }) {
             return x ** 2;
           }
-        }
-      });
+        })
+      ]);
 
       assert.deepEqual(results, { a: 9 });
     });
@@ -218,36 +222,36 @@ describe('execution-graph', () => {
 
   describe('removing nodes', () => {
     it('removes a node with no dependencies', async () => {
-      await graph.addNode({
+      await graph.addNode(new GraphNode({
         name: 'a',
         action() {}
-      });
+      }));
 
-      await graph.removeNode({ name: 'a' });
+      await graph.removeNode('a');
 
       assert.equal(graph.nodes.size, 0);
     });
 
     it('rejects when attempting to remove a node with dependencies', async () => {
       await Promise.all([
-        graph.addNode({
+        graph.addNode(new GraphNode({
           name: 'a',
           action() {}
-        }),
-        graph.addNode({
+        })),
+        graph.addNode(new GraphNode({
           name: 'b',
           dependencies: ['a'],
           action() {}
-        }),
-        graph.addNode({
+        })),
+        graph.addNode(new GraphNode({
           name: 'c',
           dependencies: ['a'],
           action() {}
-        })
+        }))
       ]);
 
       assert.rejects(
-        () => graph.removeNode({ name: 'a' }),
+        () => graph.removeNode('a'),
         Error,
         'Node a has dependent nodes: b, c'
       );
@@ -259,7 +263,7 @@ describe('execution-graph', () => {
       let guard = false;
 
       await Promise.all([
-        graph.addNode({
+        graph.addNode(new GraphNode({
           name: 'a',
           action() {},
           onRemove() {
@@ -268,10 +272,10 @@ describe('execution-graph', () => {
               resolve();
             }, 500));
           }
-        })
+        }))
       ]);
 
-      await graph.removeNode({ name: 'a' });
+      await graph.removeNode('a');
 
       assert.equal(guard, true);
     });
@@ -286,14 +290,14 @@ describe('execution-graph', () => {
       guard = false;
 
       await Promise.all([
-        graph.addNode({
+        graph.addNode(new GraphNode({
           name: 'a',
           async action() {
             await wait(10);
             nodesRerun.push('a');
           }
-        }),
-        graph.addNode({
+        })),
+        graph.addNode(new GraphNode({
           name: 'b',
           dependencies: ['a'],
           async action() {
@@ -306,38 +310,38 @@ describe('execution-graph', () => {
               resolve();
             }, 500));
           }
-        }),
-        graph.addNode({
+        })),
+        graph.addNode(new GraphNode({
           name: 'c',
           dependencies: ['b'],
           async action() {
             await wait(10);
             nodesRerun.push('c');
           }
-        })
+        }))
       ]);
 
       nodesRerun = [];
     });
 
     it('reruns leaf nodes', async () => {
-      await graph.rerunNode({ name: 'c' });
+      await graph.rerunNode('c');
 
       assert.deepEqual(nodesRerun, ['c']);
     });
 
     it('reruns on-leaf nodes and their decendents in order', async () => {
-      await graph.rerunNode({ name: 'b' });
+      await graph.rerunNode('b');
 
       assert.deepEqual(nodesRerun, ['b', 'c']);
     });
 
     it('runs cleanup on nodes which need it', async () => {
-      await graph.rerunNode({ name: 'c' });
+      await graph.rerunNode('c');
 
       assert.equal(guard, false);
 
-      await graph.rerunNode({ name: 'a' });
+      await graph.rerunNode('a');
 
       assert.equal(guard, true);
     });
@@ -345,25 +349,25 @@ describe('execution-graph', () => {
 
   describe('getting results', () => {
     it('gets results of returned and resolved nodes', async () => {
-      graph.addNode({
+      graph.addNode(new GraphNode({
         name: 'a',
         action() {
           return 1;
         }
-      });
-      graph.addNode({
+      }));
+      graph.addNode(new GraphNode({
         name: 'c',
         async action() {
           await wait(200);
           return '3';
         }
-      });
-      await graph.addNode({
+      }));
+      await graph.addNode(new GraphNode({
         name: 'b',
         action() {
           return Promise.resolve(2);
         }
-      });
+      }));
 
       assert.deepEqual(graph.results, { a: 1, b: 2 });
     });
