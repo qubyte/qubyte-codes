@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "My partner treated me to a couple of days stay in the Tokyo Station Hotel for my birthday. We’re in the south dome, and I can see the gates and folk come and go from up here. I don’t know how they did it, but it’s totally silent here. Absolutely no station noise at all!",
+  "photo": [
+    {
+      "alt": "The view from a room in the south dome of the Tokyo Station Hotel. It’s a few stories above the concourse, where people can be seen entering the automated gates. Ticket machines can also be seen.",
+      "url": "/images/1722690173183.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 139.765075,
+    "latitude": 35.681105
+  },
+  "published": "2024-08-03T13:07:52.447Z"
+}
