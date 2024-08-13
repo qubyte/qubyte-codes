@@ -273,6 +273,14 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
     repliesDirectory: makeDirectoryNode('replies/'),
     tagsDirectory: makeDirectoryNode('tags/'),
     imagesTarget: makeDirectoryNode('images/', new URL('images/', sourcePath)),
+    fairUseImagesTarget: {
+      dependencies: ['imagesTarget'],
+      action() {
+        const result = makeDirectory('images/fair-use/');
+
+        return ExecutionGraph.createWatchableResult({ path: new URL('images/fair-use/', sourcePath), result });
+      }
+    },
     activitypubDocuments: {
       dependencies: ['targetPath'],
       action() {
@@ -347,21 +355,35 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       }
     },
     images: {
-      dependencies: ['imagesTarget'],
+      dependencies: ['imagesTarget', 'fairUseImagesTarget'],
       async action({ imagesTarget }) {
         const directory = new URL('images/', contentPath);
-        const items = (await readdir(directory)).filter(i => !i.startsWith('.'));
+        const items = await readdir(directory, { recursive: true, withFileTypes: true });
+        const allowedTypes = new Set(['.jpeg', '.avif', '.webp', '.png']);
 
-        return new Map(await Promise.all(
+        const metadata = await Promise.all(
           items.map(async item => {
-            const sourceFile = await readFile(new URL(item, directory));
+            if (!item.isFile() || !allowedTypes.has(extname(item.name))) {
+              return null;
+            }
+
+            const parentPathUrl = pathToFileURL(item.parentPath);
+
+            if (!parentPathUrl.pathname.endsWith('/')) {
+              parentPathUrl.pathname += '/';
+            }
+
+            const dir = parentPathUrl.href.slice(directory.href.length);
+            const sourceFile = await readFile(new URL(item.name, parentPathUrl));
             const { width, height } = await sharp(sourceFile).metadata();
 
-            await writeFile(new URL(item, imagesTarget), sourceFile);
+            await writeFile(new URL(item.name, imagesTarget + dir), sourceFile);
 
-            return [`/images/${item}`, { width, height }];
+            return [`/images/${dir}${item.name}`, { width, height }];
           })
-        ));
+        );
+
+        return new Map(metadata.filter(i => i));
       }
     },
     googleSiteVerification: {
