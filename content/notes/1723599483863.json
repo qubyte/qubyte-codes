@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "My view from the Rikugien tea house.",
+  "photo": [
+    {
+      "alt": "In the foreground (close to me) is the trunk of a gnarled, ornamental pine tree. Below it is grass. Its branches and needles stretch out over a calm lake. The green opposing shore can be seen through the branches. There other side is grassy with woodland behind.",
+      "url": "/images/1723599325433.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 139.747025,
+    "latitude": 35.73367833333333
+  },
+  "published": "2024-08-14T01:38:03.863Z"
+}
