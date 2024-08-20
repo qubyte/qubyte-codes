@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "The super blue moon over Tokyo.",
+  "photo": [
+    {
+      "alt": "The moon over Tokyo at night, as seen from the Sky Tree. It’s shortly after moonrise, so it’s bright orange in colour.",
+      "url": "/images/1724158746722.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 139.8140866666667,
+    "latitude": 35.709045
+  },
+  "published": "2024-08-20T13:00:50.059Z"
+}
