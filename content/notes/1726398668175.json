@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "I’m challenging myself to walk 100k steps this week. I have about 15000 to do today, and I’m half way through that, so I’m taking a coffee break. Portland Coffee in Kemptown, Brighton is super chill. Look at that stained glass, too.",
+  "photo": [
+    {
+      "alt": "A photo taken inside the cafe, from the back, looking toward the front. It’s sunny outside and whitewashed walls can be seen opposite, giving it a Mediterranean feel. Above the door is a stained glass window depicting a seagull standing on pebbles, with the sea an a windmill behind. Paintings for sale are on the wall to the right. People sitting by the window are chatting.",
+      "url": "/images/1726398343266.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1212555,
+    "latitude": 50.81851166666667
+  },
+  "published": "2024-09-15T11:11:08.175Z"
+}
