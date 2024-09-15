@@ -95,6 +95,19 @@ function makeDirectoryNode(path, watchPath) {
   };
 }
 
+function copyFileAtRoot(filename, sourcePath, targetPath) {
+  const path = new URL(filename, sourcePath);
+
+  return {
+    dependencies: ['targetPath'],
+    async action() {
+      await copyFile(path, new URL(filename, targetPath));
+
+      return ExecutionGraph.createWatchableResult({ path, result: null });
+    }
+  };
+}
+
 // This is where it all kicks off. This function loads posts and templates,
 // renders it all to files, and saves them to the public directory.
 export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
@@ -393,32 +406,9 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
         return writeFile(new URL(name, targetPath), `google-site-verification: ${name}\n`);
       }
     },
-    keybaseVerification: {
-      dependencies: ['targetPath'],
-      async action() {
-        const verificationPath = new URL('keybase.txt', sourcePath);
-
-        await copyFile(verificationPath, new URL('keybase.txt', targetPath));
-
-        return ExecutionGraph.createWatchableResult({
-          path: verificationPath,
-          result: null
-        });
-      }
-    },
-    robotsFile: {
-      dependencies: ['targetPath'],
-      async action() {
-        const robotsPath = new URL('robots.txt', sourcePath);
-
-        await copyFile(robotsPath, new URL('robots.txt', targetPath));
-
-        return ExecutionGraph.createWatchableResult({
-          path: robotsPath,
-          result: null
-        });
-      }
-    },
+    keybaseVerification: copyFileAtRoot('keybase.txt', sourcePath, targetPath),
+    pgpPublicKeyFile: copyFileAtRoot('pgp-public-key.txt', sourcePath, targetPath),
+    robotsFile: copyFileAtRoot('robots.txt', sourcePath, targetPath),
     css: {
       dependencies: ['targetPath'],
       async action() {
