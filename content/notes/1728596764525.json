@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "It’s not much, but I’ve waited so long to see it. I caught a shooting star while waiting too.",
+  "photo": [
+    {
+      "alt": "A photograph of a weak aurora over houses. The pink can be clearly seen.",
+      "url": "/images/1728596702533.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1138138333333333,
+    "latitude": 50.84033833333334
+  },
+  "published": "2024-10-10T21:46:04.525Z"
+}
