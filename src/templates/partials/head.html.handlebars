@@ -57,8 +57,13 @@
 <meta name="twitter:image" property="og:image" content="{{baseUrl}}{{image.value}}">
 <meta name="twitter:image:alt" content="{{image.alt}}">
 {{else}}
+  {{#if ogImage}}
+<meta name="twitter:image" property="og:image" content="{{ogImage}}">
+<meta name="twitter:image:alt" content="Random art.">
+  {{else}}
 <meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
 <meta name="twitter:image:alt" content="The qubyte.codes site icon.">
+  {{/if}}
 {{/if}}
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1e7cd">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
