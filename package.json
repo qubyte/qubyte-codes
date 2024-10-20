@@ -22,7 +22,6 @@
   "dependencies": {
     "@paulrobertlloyd/mf2tojf2": "^2.1.1",
     "busboy": "1.6.0",
-    "canvas": "^2.11.2",
     "cssnano": "^7.0.6",
     "espree": "^10.2.0",
     "estraverse": "^5.3.0",
