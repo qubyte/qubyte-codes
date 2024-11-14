@@ -1,4 +1,4 @@
-name: Syndicate to Mastodon
+name: Syndicate to Bluesky
 on:
   push:
     branches:
@@ -19,7 +19,7 @@ jobs:
     - name: Get added documents
       id: added-documents
       run: echo "documents=$(git diff --name-only --diff-filter=A ${{ github.sha }}{^,} | grep -e ^content/notes/ -e ^content/links/ | xargs)" > $GITHUB_OUTPUT
-  syndicate-to-mastodon:
+  syndicate-to-bluesky:
     needs: get-added-files
     runs-on: ubuntu-latest
     steps:
@@ -29,5 +29,5 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 22.x
-    - name: Dispatch mastodon API calls
-      run: node scripts/syndicate-to-mastodon.js --base-url ${{ secrets.MASTODON_BASE_URL }} --access-token ${{ secrets.MASTODON_ACCESS_TOKEN }} ${{ needs.get-added-files.outputs.documents }}
+    - name: Dispatch bluesky API calls
+      run: node scripts/syndicate-to-bluesky.js --app-password ${{ secrets.BLUESKY_APP_PASSWORD }} ${{ needs.get-added-files.outputs.documents }}
