@@ -30,14 +30,14 @@ for (const path of paths) {
   };
 
   if (url && name) {
-    post.text = `${content}\n\n${name}: ${url}`;
+    post.text = `${content}\n\n${name}`;
 
     const length = Buffer.byteLength(post.text);
 
     post.facets ||= [];
     post.facets.push({
       index: {
-        byteStart: length - Buffer.byteLength(url),
+        byteStart: length - Buffer.byteLength(name),
         byteEnd: length
       },
       features: [
