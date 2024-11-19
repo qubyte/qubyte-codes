@@ -34,7 +34,7 @@
     "iso8601-duration": "2.1.2",
     "jsdom": "25.0.1",
     "marked": "^14.1.4",
-    "marked-gfm-heading-id": "^4.1.0",
+    "marked-gfm-heading-id": "^4.1.1",
     "marked-highlight": "^2.2.1",
     "postcss": "8.4.49",
     "postcss-import": "^16.1.0",
