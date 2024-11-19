@@ -3,7 +3,7 @@
 import { JSDOM } from 'jsdom';
 
 /** @param {URL} url */
-export default async function getTagsForUrl(url) {
+export default async function getTitleAndTagsForUrl(url) {
   const res = await fetch(url);
 
   if (!res.ok) {
@@ -11,6 +11,7 @@ export default async function getTagsForUrl(url) {
   }
 
   const { window: { document } } = new JSDOM(await res.text());
+  const title = document.title;
   const tags = [];
 
   for (const $el of document.querySelectorAll('[rel="tag"]')) {
@@ -21,5 +22,5 @@ export default async function getTagsForUrl(url) {
     }
   }
 
-  return tags;
+  return { tags, title };
 }
