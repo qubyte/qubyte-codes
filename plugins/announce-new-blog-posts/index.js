@@ -2,7 +2,7 @@ import { join as pathJoin } from 'node:path';
 import fetchOldFeedToUrls from '../fetch-old-feed-to-urls.js';
 import readNewFeedToUrls from '../read-new-feed-to-urls.js';
 import getTagsForUrl from './get-tags-for-url.js';
-// import postToMastodon from '../../lib/post-to-mastodon.js';
+import postToMastodon from '../../lib/post-to-mastodon.js';
 import getEnvVar from '../get-env-var.js';
 import blueskyAuth from '../../lib/bluesky-auth.js';
 import postToBluesky from '../../lib/post-to-bluesky.js';
@@ -68,17 +68,15 @@ export async function onSuccess({ constants, utils }) {
         continue;
       }
 
-      console.log('title and tags ->', titleAndTags);
-
       try {
         blueskyAuthResult ||= await blueskyAuth('qubyte.codes', getEnvVar('BLUESKY_APP_PASSWORD'));
 
-        // await postToMastodon({
-        //   endpoint: '/api/v1/statuses',
-        //   mastodonBaseUrl: getEnvVar('MASTODON_BASE_URL'),
-        //   mastodonAccessToken: getEnvVar('MASTODON_ACCESS_TOKEN'),
-        //   body: new URLSearchParams({ status: buildTootText(url, titleAndTags.tags) })
-        // });
+        await postToMastodon({
+          endpoint: '/api/v1/statuses',
+          mastodonBaseUrl: getEnvVar('MASTODON_BASE_URL'),
+          mastodonAccessToken: getEnvVar('MASTODON_ACCESS_TOKEN'),
+          body: new URLSearchParams({ status: buildTootText(url, titleAndTags.tags) })
+        });
 
         await buildBlueskyPost({
           did: blueskyAuthResult.did,
@@ -98,9 +96,9 @@ export async function onSuccess({ constants, utils }) {
   }
 }
 
-// function buildTootText(url, tags) {
-//   return `New article published! ${url} ${tags.join(' ')}`.trim();
-// }
+function buildTootText(url, tags) {
+  return `New article published! ${url} ${tags.join(' ')}`.trim();
+}
 
 async function buildBlueskyPost({ did, accessJwt, url, title, description, thumbnailUrl, tags }) {
   const imageRes = await fetch(thumbnailUrl);
@@ -121,6 +119,7 @@ async function buildBlueskyPost({ did, accessJwt, url, title, description, thumb
   const post = {
     $type: 'app.bsky.feed.post',
     createdAt: new Date().toISOString(),
+    facets: [],
     embed: {
       $type: 'app.bsky.embed.external',
       external: {
@@ -133,7 +132,7 @@ async function buildBlueskyPost({ did, accessJwt, url, title, description, thumb
   };
 
   for (const tag of tags) {
-    if (tag.match(/^bluesky$/i)) {
+    if (tag.match(/^#bluesky$/i)) {
       continue;
     }
 
@@ -156,8 +155,6 @@ async function buildBlueskyPost({ did, accessJwt, url, title, description, thumb
   }
 
   post.text = message;
-
-  console.log('post ->', post);
 
   return await postToBluesky({
     endpoint: '/xrpc/com.atproto.repo.createRecord',
