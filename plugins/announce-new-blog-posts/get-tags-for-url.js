@@ -1,5 +1,3 @@
-// @ts-check
-
 import { JSDOM } from 'jsdom';
 
 /** @param {URL} url */
@@ -12,6 +10,8 @@ export default async function getTitleAndTagsForUrl(url) {
 
   const { window: { document } } = new JSDOM(await res.text());
   const title = document.title;
+  const description = document.head.querySelector('meta[name="description"]')?.content;
+  const thumbnailUrl = new URL(document.head.querySelector('meta[property="og:image"]')?.content, url).href;
   const tags = [];
 
   for (const $el of document.querySelectorAll('[rel="tag"]')) {
@@ -22,5 +22,5 @@ export default async function getTitleAndTagsForUrl(url) {
     }
   }
 
-  return { tags, title };
+  return { title, description, thumbnailUrl, tags };
 }

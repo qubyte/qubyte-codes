@@ -78,15 +78,14 @@ export async function onSuccess({ constants, utils }) {
           body: new URLSearchParams({ status: buildTootText(url, titleAndTags.tags) })
         });
 
-        await postToBluesky({
-          endpoint: '/xrpc/com.atproto.repo.createRecord',
-          body: Buffer.from(JSON.stringify({
-            repo: blueskyAuthResult.did,
-            collection: 'app.bsky.feed.post',
-            record: buildBlueskyPost(titleAndTags.title, url, titleAndTags.tags)
-          })),
-          blueskyAccessToken: blueskyAuthResult.accessJwt,
-          headers: { 'content-type': 'application/json' }
+        await buildBlueskyPost({
+          did: blueskyAuthResult.did,
+          accessJwt: blueskyAuthResult.accessJwt,
+          url,
+          title: titleAndTags.title,
+          description: titleAndTags.description,
+          thumbnailUrl: titleAndTags.thumbnailUrl,
+          tags: titleAndTags.tags
         });
 
         console.log('Done dispatching announcement for:', url);
@@ -101,33 +100,39 @@ function buildTootText(url, tags) {
   return `New blog post published! ${url} ${tags.join(' ')}`.trim();
 }
 
-function buildBlueskyPost(title, url, tags) {
-  let message = 'New blog post published!';
-  let byteStart = Buffer.byteLength(message);
+async function buildBlueskyPost({ did, accessJwt, url, title, description, thumbnailUrl, tags }) {
+  const imageRes = await fetch(thumbnailUrl);
 
-  message += ` ${title}`;
+  let message = `New blog post published! ${title}`;
+
+  if (!imageRes.ok) {
+    throw new Error(`Unexpected error from site: ${imageRes.status} ${await imageRes.text()}`);
+  }
+
+  const { blob } = await postToBluesky({
+    endpoint: '/xrpc/com.atproto.repo.uploadBlob',
+    body: await imageRes.arrayBuffer(),
+    blueskyAccessToken: accessJwt,
+    headers: { 'content-type': 'image/jpeg' }
+  });
 
   const post = {
     $type: 'app.bsky.feed.post',
     createdAt: new Date().toISOString(),
-    facets: [
-      {
-        index: {
-          byteStart,
-          byteEnd: Buffer.byteLength(message)
-        },
-        features: [
-          {
-            $type: 'app.bsky.richtext.facet#link',
-            uri: url
-          }
-        ]
+    embed: {
+      $type: 'app.bsky.embed.external',
+      external: {
+        uri: url,
+        title,
+        description,
+        thumb: blob
       }
-    ]
+    }
   };
 
   for (const tag of tags) {
-    byteStart = Buffer.byteLength(message + 1);
+    const byteStart = Buffer.byteLength(message + 1);
+
     message += ` ${tag}`;
 
     post.facets.push({
@@ -146,7 +151,16 @@ function buildBlueskyPost(title, url, tags) {
 
   post.text = message;
 
-  return post;
+  return await postToBluesky({
+    endpoint: '/xrpc/com.atproto.repo.createRecord',
+    body: Buffer.from(JSON.stringify({
+      repo: did,
+      collection: 'app.bsky.feed.post',
+      record: post
+    })),
+    blueskyAccessToken: accessJwt,
+    headers: { 'content-type': 'application/json' }
+  });
 }
 
 export function onEnd() {
