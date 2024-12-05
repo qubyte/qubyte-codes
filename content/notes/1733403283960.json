@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Back in Fahrenheit Coffee in Toronto.",
+  "photo": [
+    {
+      "alt": "Black coffee in a white cup and saucer on a wooden bar, facing a window onto the street.",
+      "url": "/images/1733403206602.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -79.40076333333333,
+    "latitude": 43.64705
+  },
+  "published": "2024-12-05T12:54:43.960Z"
+}
