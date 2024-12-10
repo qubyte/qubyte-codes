@@ -11,13 +11,13 @@ describe('render', () => {
   });
 
   it('returns rendered content', () => {
-    const rendered = render('a paragraph', URL);
+    const { content: rendered } = render('a paragraph', URL);
 
     assert.equal(rendered.trim(), '<p>a paragraph</p>');
   });
 
   it('renders $$ delimited blocks labelled as math with an annotation containing original maths', () => {
-    const rendered = render('$$\na=b\n$$', URL);
+    const { content: rendered } = render('$$\na=b\n$$', URL);
 
     const { window: { document } } = new JSDOM(rendered);
     const $math = document.querySelector('math');
@@ -29,7 +29,7 @@ describe('render', () => {
 
   describe('mathematics with dollar delimiters', () => {
     it('removes inline style from rendered mathematics', () => {
-      const rendered = render('$$\na=b\n$$', URL);
+      const { content: rendered } = render('$$\na=b\n$$', URL);
 
       const { window: { document } } = new JSDOM(rendered);
 
@@ -37,7 +37,7 @@ describe('render', () => {
     });
 
     it('updates the ID of the title of the rendered mathematics', () => {
-      const rendered = render('$$\na=b\n$$', URL);
+      const { content: rendered } = render('$$\na=b\n$$', URL);
 
       const { window: { document } } = new JSDOM(rendered);
       const math = document.querySelector('math');
@@ -46,7 +46,7 @@ describe('render', () => {
     });
 
     it('increments the title ID to avoid collisions', () => {
-      const rendered = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
+      const { content: rendered } = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
       const { window: { document } } = new JSDOM(rendered);
       const maths = document.querySelectorAll('math');
 
@@ -56,7 +56,7 @@ describe('render', () => {
     });
 
     it('sets aria-label to the original math for each snipped', () => {
-      const rendered = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
+      const { content: rendered } = render('$$\na=b\n$$\n\ntext\n\n$$\nc=d\n$$', URL);
 
       const { window: { document } } = new JSDOM(rendered);
       const maths = document.querySelectorAll('math');
@@ -67,14 +67,14 @@ describe('render', () => {
   });
 
   describe('inline mathematics with single dollar delimiters', () => {
-    const rendered = render('hello $a$ world', URL);
+    const { content: rendered } = render('hello $a$ world', URL);
 
     assert.equal(rendered.trim(), '<p>hello <math><mi>a</mi></math> world</p>');
   });
 
   describe('inline ruby links', () => {
     it('renders ruby elements', () => {
-      const rendered = render('^買,か,いに,,行,い,く,^', URL).trim();
+      const { content: rendered } = render('^買,か,いに,,行,い,く,^', URL);
       const { window: { document } } = new JSDOM(rendered);
       const $rubies = document.getElementsByTagName('ruby');
 
@@ -93,121 +93,82 @@ describe('render', () => {
 
   describe('highlighted text', () => {
     it('renders text surrounded by pairs of == in mark tags', () => {
-      const rendered = render('==start==, ==middle== and ==end==.').trim();
+      const { content: rendered } = render('==start==, ==middle== and ==end==.');
 
-      assert.equal(rendered, '<p><mark>start</mark>, <mark>middle</mark> and <mark>end</mark>.</p>');
+      assert.equal(rendered.trim(), '<p><mark>start</mark>, <mark>middle</mark> and <mark>end</mark>.</p>');
     });
 
     it('renders highlighted text inside another inline element', () => {
-      const rendered = render('_==text==_').trim();
+      const { content: rendered } = render('_==text==_');
 
-      assert.equal(rendered, '<p><em><mark>text</mark></em></p>');
+      assert.equal(rendered.trim(), '<p><em><mark>text</mark></em></p>');
     });
 
     it('renders highlighted text with another inline element within', () => {
-      const rendered = render('==_text_==').trim();
+      const { content: rendered } = render('==_text_==');
 
-      assert.equal(rendered, '<p><mark><em>text</em></mark></p>');
+      assert.equal(rendered.trim(), '<p><mark><em>text</em></mark></p>');
     });
   });
 
   describe('lang attributes', () => {
     it('retains spans with a lang attribute when they have no child elements (only text nodes)', () => {
-      const rendered = render('{ab:xyz} def').trim();
+      const { content: rendered } = render('{ab:xyz} def');
 
-      assert.equal(rendered, '<p><span lang="ab">xyz</span> def</p>');
+      assert.equal(rendered.trim(), '<p><span lang="ab">xyz</span> def</p>');
     });
 
     it('removes the span when the span has an element as its single child node and copies over the lang attribute', () => {
-      const rendered = render('{ab:*xyz*}').trim();
+      const { content: rendered } = render('{ab:*xyz*}');
 
-      assert.equal(rendered, '<p><em lang="ab">xyz</em></p>');
+      assert.equal(rendered.trim(), '<p><em lang="ab">xyz</em></p>');
     });
 
     it('retains spans with lang attributes when they have more than one node', () => {
-      const rendered = render('{ab:*xx* yy} zz').trim();
+      const { content: rendered } = render('{ab:*xx* yy} zz');
 
-      assert.equal(rendered, '<p><span lang="ab"><em>xx</em> yy</span> zz</p>');
+      assert.equal(rendered.trim(), '<p><span lang="ab"><em>xx</em> yy</span> zz</p>');
     });
 
     it('moves the lang and children of the span to its parent element when the parent element has the span as its only child', () => {
-      const rendered = render('{ab:xyz *lmn*}').trim();
+      const { content: rendered } = render('{ab:xyz *lmn*}');
 
-      assert.equal(rendered, '<p lang="ab">xyz <em>lmn</em></p>');
+      assert.equal(rendered.trim(), '<p lang="ab">xyz <em>lmn</em></p>');
     });
   });
 
   describe('footnotes', () => {
-    it('does not add a footnotes section when there are no footnotes', () => {
-      const rendered = render('abc def').trim();
-      const { window: { document } } = new JSDOM(rendered);
-
-      assert.equal(document.querySelector('.footnotes'), null);
-    });
-
-    it('places the text of a footnote in a footnotes section', () => {
-      const rendered = render('abc[^][a footnote] def').trim();
-      const { window: { document } } = new JSDOM(rendered);
-
-      assert.ok(document.querySelector('.footnotes li')?.textContent.includes('a footnote'));
-    });
-
-    it('renders inline markdown in footnote text', () => {
-      const rendered = render('abc[^][a _footnote_ with markdown] def');
-      const { window: { document } } = new JSDOM(rendered);
-
-      assert.ok(document.querySelector('.footnotes li')?.innerHTML.includes('a <em>footnote</em> with markdown'));
-    });
-
-    it('links the location of the footnote to the footnote text', () => {
-      const rendered = render('abc[^][a footnote] def').trim();
-      const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
-
-      const anchor = document.querySelector('p a');
-      const footnote = document.querySelector('.footnotes li');
-
-      assert.equal(footnote.id, 'footnote-1');
-      assert.equal(anchor.href, 'http://example.test/#footnote-1');
-    });
-
     it('links the footnote text to the location of the footnote', () => {
-      const rendered = render('abc[^][a footnote] def').trim();
+      const { content: rendered } = render('abc[^][a footnote] def');
       const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
 
-      const footnoteTextAnchor = document.querySelector('.footnotes li a');
       const footnoteRefAnchor = document.querySelector('p a');
 
       assert.equal(footnoteRefAnchor.id, 'footnote-ref-1');
-      assert.equal(footnoteTextAnchor.href, 'http://example.test/#footnote-ref-1');
     });
 
     it('renders the footnote ref as superscript with a number in square brackets', () => {
-      const rendered = render('abc[^][a footnote] def').trim();
+      const { content: rendered } = render('abc[^][a footnote] def');
       const { window: { document } } = new JSDOM(rendered);
       const content = document.querySelector('p').outerHTML;
 
       assert.equal(content, '<p>abc<sup class="footnote-ref"><a id="footnote-ref-1" href="#footnote-1">[1]</a></sup> def</p>');
     });
 
-    it('renders the footnote ref with a reverse link at the end', () => {
-      const rendered = render('abc[^][a footnote] def').trim();
-      const { window: { document } } = new JSDOM(rendered);
-      const content = document.querySelector('li').outerHTML;
+    it('renders footnotes', () => {
+      const { footnotes } = render('abc[^][a _footnote_] def');
 
-      assert.equal(content, '<li id="footnote-1">a footnote<a class="footnote-back-link" href="#footnote-ref-1">ꜛ</a></li>');
+      assert.equal(footnotes.length, 1);
+      assert.equal(footnotes[0], 'a <em>footnote</em>');
     });
 
     it('labels each ref sequentially', () => {
-      const rendered = render('abc[^][fn 1] def[^][fn 2] ghi').trim();
+      const { content: rendered } = render('abc[^][fn 1] def[^][fn 2] ghi');
       const { window: { document } } = new JSDOM(rendered, { url: 'http://example.test/' });
 
       const footnoteRefAnchors = document.querySelectorAll('p a');
-      const footnoteTexts = document.querySelectorAll('.footnotes ol li');
-      const footnoteTextAnchors = document.querySelectorAll('.footnotes ol li a');
 
       assert.equal(footnoteRefAnchors.length, 2);
-      assert.equal(footnoteTexts.length, 2);
-      assert.equal(footnoteTextAnchors.length, 2);
 
       assert.equal(footnoteRefAnchors[0].textContent, '[1]');
       assert.equal(footnoteRefAnchors[1].textContent, '[2]');
@@ -215,14 +176,8 @@ describe('render', () => {
       assert.equal(footnoteRefAnchors[0].id, 'footnote-ref-1');
       assert.equal(footnoteRefAnchors[1].id, 'footnote-ref-2');
 
-      assert.equal(footnoteTexts[0].id, 'footnote-1');
-      assert.equal(footnoteTexts[1].id, 'footnote-2');
-
       assert.equal(footnoteRefAnchors[0].href, 'http://example.test/#footnote-1');
       assert.equal(footnoteRefAnchors[1].href, 'http://example.test/#footnote-2');
-
-      assert.equal(footnoteTextAnchors[0].href, 'http://example.test/#footnote-ref-1');
-      assert.equal(footnoteTextAnchors[1].href, 'http://example.test/#footnote-ref-2');
     });
   });
 });

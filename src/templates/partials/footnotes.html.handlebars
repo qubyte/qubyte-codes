@@ -1,0 +1,14 @@
+{{#if footnotes}}
+<hr>
+<section>
+  <h3>Footnotes</h2>
+  <ol>
+  {{#each footnotes}}
+  <li id="footnote-{{inc @index}}">
+    {{{this}}}
+    <a class="footnote-back-link" href="#footnote-ref-{{inc @index}}">ꜛ</a>
+  </li>
+  {{/each}}
+  </ol>
+</section>
+{{/if}}
