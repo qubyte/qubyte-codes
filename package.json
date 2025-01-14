@@ -36,7 +36,7 @@
     "marked": "^15.0.6",
     "marked-gfm-heading-id": "^4.1.1",
     "marked-highlight": "^2.2.1",
-    "postcss": "8.4.49",
+    "postcss": "8.5.1",
     "postcss-import": "^16.1.0",
     "sharp": "0.33.5",
     "slugify": "1.6.6",
