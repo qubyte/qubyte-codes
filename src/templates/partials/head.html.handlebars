@@ -45,24 +45,22 @@
 <link href="{{nextLink}}" rel="next">
 {{/if}}
 {{/isBlogEntry}}
-<meta property="og:type" content="blog">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@qubyte">
-<meta name="twitter:title" property="og:title" content="{{baseTitle}}{{#if title}} - {{title}}{{/if}}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{baseTitle}}{{#if title}} - {{title}}{{/if}}">
 {{#if description}}
 <meta name="description" content="{{description}}">
-<meta name="twitter:description" property="og:description" content="{{description}}">
+<meta property="og:description" content="{{description}}">
 {{/if}}
 {{#if image}}
-<meta name="twitter:image" property="og:image" content="{{baseUrl}}{{image.value}}">
-<meta name="twitter:image:alt" content="{{image.alt}}">
+<meta property="og:image" content="{{baseUrl}}{{image.value}}">
+<meta property="og:image:alt" content="{{image.alt}}">
 {{else}}
   {{#if ogImage}}
-<meta name="twitter:image" property="og:image" content="{{ogImage}}">
-<meta name="twitter:image:alt" content="Random art.">
+<meta property="og:image" content="{{baseUrl}}{{ogImage}}">
+<meta property="og:image:alt" content="Random art.">
   {{else}}
-<meta name="twitter:image" property="og:image" content="https://qubyte.codes/icons/icon-512.png">
-<meta name="twitter:image:alt" content="The qubyte.codes site icon.">
+<meta property="og:image" content="https://qubyte.codes/icons/icon-512.png">
+<meta property="og:image:alt" content="The qubyte.codes site icon.">
   {{/if}}
 {{/if}}
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f1e7cd">
