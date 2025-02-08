@@ -315,6 +315,21 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
               rel: 'self',
               type: 'application/activity+json',
               href: 'https://qubyte.codes/activitypub/actor.json'
+            },
+            {
+              rel: 'http://webfinger.net/rel/profile-page',
+              type: 'text/html',
+              href: 'https://qubyte.codes/'
+            },
+            {
+              rel: 'http://webfinger.net/rel/avatar',
+              type: 'image/jpeg',
+              href: 'https://qubyte.codes/img/profile-300.jpg'
+            },
+            {
+              rel: 'alternate',
+              type: 'application/atom+xml',
+              href: 'https://qubyte.codes/atom.xml'
             }
           ]
         }));
