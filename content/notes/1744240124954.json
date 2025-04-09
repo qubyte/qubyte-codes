@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Bright night! This is my shadow, as cast by the moon.",
+  "photo": [
+    {
+      "alt": "A shadow of myself, cast by the moon onto a path made of concrete slabs.",
+      "url": "/images/1744240037778.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1167333333333333,
+    "latitude": 50.84035833333333
+  },
+  "published": "2025-04-09T23:08:44.954Z"
+}
