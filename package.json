@@ -22,7 +22,7 @@
   "dependencies": {
     "@paulrobertlloyd/mf2tojf2": "^2.4.0",
     "busboy": "1.6.0",
-    "cssnano": "^7.0.6",
+    "cssnano": "^7.0.7",
     "d3-color": "^3.1.0",
     "espree": "^10.2.0",
     "estraverse": "^5.3.0",
