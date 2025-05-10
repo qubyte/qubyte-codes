@@ -25,9 +25,9 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 22
+    - name: use node 24
       uses: actions/setup-node@v3
       with:
-        node-version: 22.x
+        node-version: 24.x
     - name: Dispatch bluesky API calls
       run: node scripts/syndicate-to-bluesky.js --handle qubyte.codes --app-password ${{ secrets.BLUESKY_APP_PASSWORD }} ${{ needs.get-added-files.outputs.documents }}
