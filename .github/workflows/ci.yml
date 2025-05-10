@@ -18,10 +18,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 22
+    - name: use node 24
       uses: actions/setup-node@v3
       with:
-        node-version: 22.x
+        node-version: 24.x
     - run: npm ci
     - run: node --test
   lint:
@@ -29,9 +29,9 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 22
+    - name: use node 24
       uses: actions/setup-node@v3
       with:
-        node-version: 22.x
+        node-version: 24.x
     - run: npm ci
     - run: node --run lint
