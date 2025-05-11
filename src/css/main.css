@@ -241,7 +241,7 @@ input {
 
 article + article::before,
 dl > div + div::before {
-  content: attr(light-emoji);
+  content: attr(light-emoji) / "";
   display: block;
   text-align: center;
   padding-bottom: 1rem;
@@ -350,6 +350,6 @@ input#party-time + label:after {
 
   article + article::before,
   dl > div + div::before {
-    content: attr(dark-emoji);
+    content: attr(dark-emoji) / "";
   }
 }
