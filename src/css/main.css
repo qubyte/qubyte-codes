@@ -1,15 +1,11 @@
 /* main */
 :root {
-  --base-background-hue: 45;
-  --base-background-sat: 100%;
-  --base-background-lum: 90%;
-  --base-foreground-hue: calc(var(--base-background-hue) + 180);
-  --base-foreground-sat: 100%;
-  --base-foreground-lum: 30%;
-  --background-color-main: hsl(var(--base-background-hue), var(--base-background-sat), var(--base-background-lum));
-  --background-color-alt: hsl(calc(var(--base-background-hue) - 30), var(--base-background-sat), var(--base-background-lum));
-  --standout-color-main: hsl(var(--base-foreground-hue), var(--base-foreground-sat), var(--base-foreground-lum));
-  --standout-color-alt: hsl(calc(var(--base-foreground-hue) - 30), var(--base-foreground-sat), var(--base-foreground-lum));
+  --base-background-color: hsl(45 100% 90%);
+  --base-foreground-color: hsl(from var(--base-background-color) calc(h + 180) s 30%);
+  --background-color-main: var(--base-background-color);
+  --background-color-alt: hsl(from var(--base-background-color) calc(h - 30) s l);
+  --standout-color-main: var(--base-foreground-color);
+  --standout-color-alt: hsl(from var(--standout-color-main) calc(h - 30) 100% 30%);
 }
 
 body {
@@ -329,8 +325,8 @@ input#party-time + label:after {
   :root {
     --background-color-main: #000;
     --background-color-alt: #000;
-    --standout-color-main: hsl(var(--base-background-hue), var(--base-background-sat), var(--base-background-lum));
-    --standout-color-alt: hsl(calc(var(--base-background-hue) - 30), var(--base-background-sat), var(--base-background-lum));
+    --standout-color-main: var(--base-background-color);
+    --standout-color-alt: hsl(from var(--base-background-color) calc(h - 30) s l);
   }
 
   img:not([src*=".svg"]) {
