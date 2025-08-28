@@ -23,7 +23,7 @@ function syndications() {
   return [
     {
       uid: 'mastodon',
-      name: 'aura on sunny.gaeden',
+      name: 'aura on sunny.garden',
       service: {
         name: 'Mastodon',
         url: 'https://sunny.garden/'
