@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Post-migraine Aura",
+  "photo": [
+    {
+      "alt": "A picture of me sitting in an office chair next to a window. My eyes are wide but I’m otherwise expressionless. I’m wearing glasses, a black baseball cap, and a grey tank top.",
+      "url": "/images/1756413407579.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1138333333333333,
+    "latitude": 50.84033833333334
+  },
+  "published": "2025-08-28T20:38:20.016Z"
+}
