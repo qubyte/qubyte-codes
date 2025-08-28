@@ -138,7 +138,7 @@ integration across iOS for when I'm on my phone.
 [POSSE]: https://indieweb.org/POSSE
 [GitHub Actions]: https://docs.github.com/en/actions
 [syndication-workflow]: https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-to-mastodon.yml
-[mastodon-qubyte]: https://mastodon.social/@qubyte
+[mastodon-qubyte]: https://sunny.garden/@aura
 [Micropub]: https://www.w3.org/TR/micropub/
 [micropub-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
 [micropub-media-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
