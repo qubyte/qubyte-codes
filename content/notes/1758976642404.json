@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "I’m at Taith Coffee in Lewes. Incredible vibes here.",
+  "photo": [
+    {
+      "alt": "A photo of the back room at Taith Coffee. Lots of brown tones. Wooden tables and wicker chairs. The room is dominated by the bar at the back with huge bifold windows that are open to an incredible view of the South Downs.",
+      "url": "/images/1758976498048.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 0.007472216666666667,
+    "latitude": 50.872125
+  },
+  "published": "2025-09-27T12:37:22.404Z"
+}
