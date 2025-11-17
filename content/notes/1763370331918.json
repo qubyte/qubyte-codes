@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Cold day! Fortunately, a short walk from dropping the kid off at school is Casco, one of my favourite cafes. It’s warm in here.",
+  "photo": [
+    {
+      "alt": "A photograph of a flat white in a matte black cup, on a black saucer, on a black wooden table. My gloves are on the table to the left of the coffee. My right hand, with long plum colour nails is resting on the rim of the saucer to the right.",
+      "url": "/images/1763370121159.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1254638333333333,
+    "latitude": 50.83593833333333
+  },
+  "published": "2025-11-17T09:05:31.918Z"
+}
