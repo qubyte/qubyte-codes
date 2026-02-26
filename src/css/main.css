@@ -1,6 +1,12 @@
 /* main */
+@property --party-hue {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 45deg;
+}
+
 :root {
-  --base-background-color: hsl(45 100% 90%);
+  --base-background-color: hsl(var(--party-hue) 100% 90%);
   --base-foreground-color: hsl(from var(--base-background-color) calc(h + 180) s 30%);
   --background-color-main: var(--base-background-color);
   --background-color-alt: hsl(from var(--base-background-color) calc(h - 30) s l);
@@ -301,16 +307,12 @@ body:has(.furigana-position option[value="off"]:checked) :is(rt, rp) {
 }
 
 @keyframes party-animation {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    filter: hue-rotate(360deg);
-  }
+  0%   { --party-hue: 45deg; }
+  100% { --party-hue: 405deg; }
 }
 
 html:has(input#party-time:checked) {
-  animation: party-animation 3s infinite;
+  animation: party-animation 3s infinite linear;
 }
 
 input#party-time {
