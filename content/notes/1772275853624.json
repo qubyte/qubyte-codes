@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "The Conservatory at The Barbican. I’m here for Sate of the Browser.",
+  "photo": [
+    {
+      "alt": "A view of the tropical foliage in the Barbican Conservatory. It’s a delightful juxtaposition of green and brutalist concrete and glass.",
+      "url": "/images/1772275741951.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.09318883333333333,
+    "latitude": 51.51978333333334
+  },
+  "published": "2026-02-28T10:50:53.624Z"
+}
