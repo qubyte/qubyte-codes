@@ -692,7 +692,7 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
           baseUrl,
           localUrl: '/',
           title: 'About',
-          description: 'The personal site of Mark Stanley Everitt.'
+          description: 'The personal site of Aura Everitt.'
         });
       }
     },
