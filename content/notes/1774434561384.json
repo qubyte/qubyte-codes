@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "One day I’ll take a selfie in which I smile without looking unhinged.",
+  "photo": [
+    {
+      "alt": "A selfie of me in a cafe in Brighton. I’m sitting with a panelled wooden wall and a window behind me. I’m wearing my usual cat-eye shaped glasses and wide black headband.  I’m wearing a brown check dress with a plunging neckline and a black fabric corset / harness thing. I’m attempting to smile and looking pretty wild-eyed.",
+      "url": "/images/1774434367608.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1374833333333333,
+    "latitude": 50.82777833333333
+  },
+  "published": "2026-03-25T10:29:21.384Z"
+}
