@@ -8,10 +8,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@main
-    - name: use node 24
+    - name: use node 26
       uses: actions/setup-node@v3
       with:
-        node-version: '24.x'
+        node-version: '26.x'
     - name: publish scheduled
       env:
         BUILD_HOOK_URL: ${{ secrets.BUILD_HOOK_URL }}

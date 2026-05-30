@@ -1,5 +1,4 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { parse as parseDuration, toSeconds } from 'iso8601-duration';
 import { JSDOM } from 'jsdom';
 
 const year = parseInt(process.argv[2], 10);
@@ -31,9 +30,8 @@ for (const filename of await readdir(directory)) {
 
   const session =  JSON.parse(await readFile(path, 'utf8'));
   const isoDuration = session.properties.duration[0];
-  const duration = parseDuration(isoDuration);
-  const minutes = toSeconds(duration) / 60;
-
+  const duration = Temporal.Duration.from(isoDuration);
+  const minutes = duration.minutes + duration.seconds / 60;
 
   if (!aggregate[formattedDate]) {
     aggregate[formattedDate] = 0;
