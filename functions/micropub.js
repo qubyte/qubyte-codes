@@ -12,7 +12,9 @@ import { getEnvVar } from './function-helpers/get-env-var.js';
 
 async function getTitle(url) {
   try {
-    const dom = await JSDOM.fromURL(url);
+    const response = await fetch(url);
+    const html = await response.text();
+    const dom = new JSDOM(html, { url });
     return dom.window.document.title;
   } catch {
     return url;
