@@ -22,7 +22,7 @@
   "dependencies": {
     "@paulrobertlloyd/mf2tojf2": "^3.0.0",
     "busboy": "1.6.0",
-    "cssnano": "^8.0.1",
+    "cssnano": "^8.0.2",
     "d3-color": "^3.1.0",
     "espree": "^11.2.0",
     "estraverse": "^5.3.0",
@@ -32,12 +32,13 @@
     "highlight.js": "11.11.1",
     "http-link-header": "1.1.3",
     "jsdom": "29.1.1",
-    "marked": "^18.0.4",
+    "jsdon": "^0.2.3",
+    "marked": "^18.0.5",
     "marked-gfm-heading-id": "^4.1.4",
     "marked-highlight": "^2.2.4",
     "postcss": "^8.5.15",
     "postcss-import": "^16.1.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.1",
     "slugify": "1.6.9",
     "temml": "^0.13.3"
   },
@@ -45,7 +46,7 @@
     "@toisu/router": "9",
     "@toisu/static": "6",
     "@toisu/toisu": "6",
-    "eslint": "^10.4.1",
+    "eslint": "^10.5.0",
     "eslint-config-qubyte": "^6.0.0"
   }
 }
