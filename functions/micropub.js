@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'http';
-import { JSDOM } from 'jsdom';
+import { parseHTML } from 'linkedom';
 import { mf2tojf2 } from '@paulrobertlloyd/mf2tojf2';
 
 import { checkAuth } from './function-helpers/check-auth.js';
@@ -14,8 +14,8 @@ async function getTitle(url) {
   try {
     const response = await fetch(url);
     const html = await response.text();
-    const dom = new JSDOM(html, { url });
-    return dom.window.document.title;
+    const { document } = parseHTML(html);
+    return document.title;
   } catch {
     return url;
   }
