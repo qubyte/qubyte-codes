@@ -1,11 +1,11 @@
 // @ts-check
 
-import { JSDOM } from 'jsdom';
-
+import { parseHTML } from 'linkedom';
 import { getEnvVar } from './function-helpers/get-env-var.js';
 
 // Some blogs dispatch *all* mentions on every build or something. Whenever that
 // happens add the offending source URL to the list.
+/** @type { URL[] } */
 const IGNORED_SOURCES = [];
 
 
@@ -94,9 +94,10 @@ async function checkSource(source, target) {
     return false;
   }
 
-  const dom = new JSDOM(await res.text(), { contentType, url: res.url });
+  const content = await res.text();
+  const { document } = parseHTML(content);
 
-  for (const { href } of dom.window.document.getElementsByTagName('a')) {
+  for (const { href } of document.getElementsByTagName('a')) {
     try {
       if (new URL(href, res.url).href === target.href) {
         return true;
@@ -127,10 +128,11 @@ async function checkTarget(source, target) {
     throw new HttpError('Invalid target content type.');
   }
 
-  const dom = new JSDOM(await res.text(), { contentType, url: res.url });
+  const content = await res.text();
+  const { document, window } = parseHTML(content);
 
-  for (const el of dom.window.document.querySelectorAll('.h-cite .u-url')) {
-    if (el instanceof dom.window.HTMLAnchorElement || el instanceof dom.window.HTMLLinkElement) {
+  for (const el of document.querySelectorAll('.h-cite .u-url')) {
+    if (el instanceof window.HTMLLinkElement || el instanceof window.HTMLAnchorElement) {
       try {
         if (new URL(el.href).href === source.href) {
           return true;
@@ -184,7 +186,7 @@ async function createIssue({ source, target, sourceDoesMention, targetHasMention
 }
 
 /**
- * @param {Error} error
+ * @param {any} error
  * @param {String} defaultLogMessage
  */
 function handleError(error, defaultLogMessage) {
