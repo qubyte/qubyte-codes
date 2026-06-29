@@ -46,7 +46,7 @@
     "@toisu/router": "9",
     "@toisu/static": "6",
     "@toisu/toisu": "6",
-    "eslint": "^10.5.0",
+    "eslint": "^10.6.0",
     "eslint-config-qubyte": "^6.0.0"
   }
 }
