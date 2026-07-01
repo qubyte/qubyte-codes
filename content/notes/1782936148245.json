@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "I had a head CT scan a couple of weeks ago and they gave me the data! So I did what you’d expect and extracted my skull to 3D print. I failed to get the tooth enamel (it’s denser than bone) though.",
+  "photo": [
+    {
+      "alt": "A photograph of a 3D print of my own skull, sitting on a round side table.",
+      "url": "/images/1782936036482.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.11385,
+    "latitude": 50.840345
+  },
+  "published": "2026-07-01T20:02:28.245Z"
+}
