@@ -29,5 +29,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 26.x
+    - run: npm ci
     - name: Dispatch bluesky API calls
       run: node scripts/syndicate-to-bluesky.js --handle qubyte.codes --app-password ${{ secrets.BLUESKY_APP_PASSWORD }} ${{ needs.get-added-files.outputs.documents }}
