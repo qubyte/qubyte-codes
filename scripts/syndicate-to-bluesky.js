@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
+import sharp from 'sharp';
 import blueskyAuth from '../lib/bluesky-auth.js';
 import postToBluesky from '../lib/post-to-bluesky.js';
 
@@ -76,12 +77,14 @@ for (const path of paths) {
   for (const { value, url, alt } of [].concat(photo)) {
     // Image paths are from the content directory.
     const fileUrl = new URL(`../content${value || url}`, import.meta.url);
+    const imageBuffer = await readFile(fileUrl);
+    const { autoOrient: { width, height } } = await sharp(imageBuffer).metadata();
 
     // First the image must be uploaded to Bluesky. It returns a blob object I
     // can use like a reference.
     const { blob } = await postToBluesky({
       endpoint: '/xrpc/com.atproto.repo.uploadBlob',
-      body: await readFile(fileUrl),
+      body: imageBuffer,
       blueskyAccessToken: accessJwt,
       headers: { 'content-type': 'image/jpeg' }
     });
@@ -89,7 +92,7 @@ for (const path of paths) {
     // A reference to the image is added to the post as an embed. This is where
     // alt text is also applied.
     post.embed ||= { $type: 'app.bsky.embed.images', images: [] };
-    post.embed.images.push({ alt, image: blob });
+    post.embed.images.push({ alt, image: blob, aspectRatio: { width, height } });
   }
 
   // With the post assembled, it can be sent to Bluesky to create the post.
