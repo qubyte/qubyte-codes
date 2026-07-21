@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Back in Tokyo.",
+  "photo": [
+    {
+      "alt": "An aerial photo of Tokyo Tower, taken in daytime from a plane.",
+      "url": "/images/1784630713066.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 0,
+    "latitude": 0
+  },
+  "published": "2026-07-21T10:45:59.398Z"
+}
