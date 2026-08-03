@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "One of my favourite popular treats in Japan is coffee jelly. It’s not too sweet, very firm, and usually served with cream.",
+  "photo": [
+    {
+      "alt": "A photograph taken in a cafe, facing down toward a teaspoon of coffee jelly coated in cream.",
+      "url": "/images/1785798323866.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 139.7125383333333,
+    "latitude": 35.67647166666666
+  },
+  "published": "2026-08-03T23:08:50.269Z"
+}
