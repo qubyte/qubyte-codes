@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Goodbye Tokyo! See you soon.",
+  "photo": [
+    {
+      "alt": "A photo of Tokyo’s skyline at night, taken from Daiba. The centre is dominated by the Rainbow Bridge, and Tokyo Tower can be seen behind it.",
+      "url": "/images/1785889036442.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": 139.77127,
+    "latitude": 35.62762
+  },
+  "published": "2026-08-05T00:20:33.420Z"
+}
