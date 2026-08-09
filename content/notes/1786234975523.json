@@ -1,0 +1,16 @@
+{
+  "type": "entry",
+  "content": "Bandanas now.",
+  "photo": [
+    {
+      "alt": "A mirror selfie of me with a bandana tied around my head. The bandana ha a pattern in black, white, blue, and pink. I’m also wearing a dark grey tank top, blue denim shorts, and my small pink shoulder bag.",
+      "url": "/images/1786234819489.jpeg"
+    }
+  ],
+  "location": {
+    "type": "geo",
+    "longitude": -0.1137945,
+    "latitude": 50.84026666666666
+  },
+  "published": "2026-08-09T00:22:55.523Z"
+}
