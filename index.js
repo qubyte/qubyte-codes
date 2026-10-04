@@ -308,6 +308,8 @@ export async function build({ baseUrl, baseTitle, repoUrl, dev }) {
       async action() {
         const wellKnownDirectory = await makeDirectory('.well-known/');
 
+        await writeFile(new URL('atproto-did', wellKnownDirectory), 'did:plc:jdypfmxmlb27yv4pz4fnjgng');
+
         await writeFile(new URL('webfinger', wellKnownDirectory), JSON.stringify({
           subject: 'acct:qubyte@qubyte.codes',
           links: [
