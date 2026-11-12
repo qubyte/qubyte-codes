@@ -1,7 +1,7 @@
 ---
 {
   "datetime": "2024-02-18T15:00:00Z",
-  "updatedAt": null,
+  "updatedAt": "2026-11-12T10:20:00Z",
   "draft": false,
   "title": "Colophon",
   "description": "Technical details about this site.",
