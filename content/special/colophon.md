@@ -56,10 +56,9 @@ In practice this means:
 
 ### DNS
 
-I buy my domain names through [Namecheap]. Domain name providers are often a
-source of pain, but I've been with Namecheap since 2015 and so far I've had no
-issue with them. That said, I've not tried to move domain name providers, so
-your mileage may vary.
+I buy my domain names through [Porkbun], and previously with [Namecheap]. Domain
+name providers are often source of pain. I found Porkbun to be a friendlier
+experience, and had no trouble migrating my domains there.
 
 ### Version control and source code hosting
 
@@ -103,7 +102,8 @@ dispatched as appropriate.
 ### [POSSE] (publish on your own site and syndicate elsewhere)
 
 A [GitHub Actions] workflow [watches the repository][syndication-workflow] for
-new notes and links and sends these to [my Mastodon account][mastodon-qubyte].
+new notes and links and sends these to [my Mastodon account][mastodon-qubyte]
+and [my Bluesky account][bluesky-qubyte].
 
 ### Micropub receiver
 
@@ -122,6 +122,7 @@ integration across iOS for when I'm on my phone.
 
 [website-carbon-calculator]: https://www.websitecarbon.com/website/qubyte-codes/
 [rule-of-least-power]: https://adactio.com/journal/14327
+[Porkbun]: https://porkbun.com/
 [Namecheap]: https://www.namecheap.com
 [git]: https://git-scm.com/
 [GitHub]: https://github.com
@@ -139,6 +140,7 @@ integration across iOS for when I'm on my phone.
 [GitHub Actions]: https://docs.github.com/en/actions
 [syndication-workflow]: https://github.com/qubyte/qubyte-codes/blob/main/.github/workflows/syndicate-to-mastodon.yml
 [mastodon-qubyte]: https://sunny.garden/@aura
+[bluesky-qubyte]: https://bsky.app/profile/qubyte.codes
 [Micropub]: https://www.w3.org/TR/micropub/
 [micropub-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
 [micropub-media-endpoint]: https://github.com/qubyte/qubyte-codes/blob/main/functions/micropub.js
