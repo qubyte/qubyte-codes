@@ -1,3 +1,9 @@
+// @ts-check
+
+/**
+ * @param {Record<string, string>} extras
+ * @returns {Record<string, string>}
+ */
 export function responseHeaders(extras) {
   return {
     'Access-Control-Allow-Origin': '*',

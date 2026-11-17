@@ -1,5 +1,8 @@
+// @ts-check
+
 import { upload } from './upload.js';
 
+/** @param {{ content: Buffer, type: string }} photo */
 export async function uploadImage(photo) {
   console.log('Pushing image...', photo);
 
