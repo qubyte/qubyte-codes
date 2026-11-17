@@ -7,6 +7,12 @@ function buildAuthHeaderVal() {
   return `Basic ${Buffer.from(`qubyte:${getEnvVar('GITHUB_TOKEN')}`).toString('base64')}`;
 }
 
+/**
+ * @param {string} message
+ * @param {string} type
+ * @param {string} filename
+ * @param {Buffer} buffer
+ */
 export async function upload(message, type, filename, buffer) {
   console.log('UPLOADING FILE:', type, filename);
 
@@ -23,6 +29,4 @@ export async function upload(message, type, filename, buffer) {
   const result = await res.json();
 
   console.log('Uploaded:', result?.content?.html_url);
-
-  return result;
 }
